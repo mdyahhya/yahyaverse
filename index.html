@@ -853,6 +853,24 @@ checkPWAStatus();
             generateStars();
             generateProjects();
             generateProjectList();
+            loadSavedData();
+    generateStars();
+    generateProjects();
+    generateProjectList();
+    initPWA();
+    
+    // Force check for updates on app launch
+    setTimeout(() => {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistration().then((registration) => {
+                if (registration) {
+                    console.log('App launched - checking for updates...');
+                    registration.update();
+                }
+            });
+        }
+    }, 2000);
+}
         }
 
         // Start the app
