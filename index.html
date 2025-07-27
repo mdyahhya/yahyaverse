@@ -3,6 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="YahyaVerse">
+    <meta name="msapplication-TileColor" content="#1a1a2e">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16x16.png">
+
+    
     <title>The YahyaVerse</title>
     <style>
         * {
@@ -794,6 +811,173 @@
                 nebula.style.transform = `translateX(${cursor * speed * 20}px)`;
             });
         });
+
+
+
+
+
+
+
+
+        // PWA Installation and Service Worker Registration
+let deferredPrompt;
+let installButton = null;
+
+// Check if PWA is already installed
+function isPWAInstalled() {
+    return window.matchMedia('(display-mode: standalone)').matches || 
+           window.navigator.standalone === true;
+}
+
+// Create install button
+function createInstallButton() {
+    if (isPWAInstalled()) return;
+    
+    installButton = document.createElement('button');
+    installButton.innerHTML = '📱 Install App';
+    installButton.className = 'install-button';
+    installButton.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 25px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 1000;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        transition: all 0.3s ease;
+        font-size: 14px;
+        display: none;
+    `;
+    
+    installButton.addEventListener('click', installPWA);
+    document.body.appendChild(installButton);
+}
+
+// Install PWA
+async function installPWA() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        
+        if (outcome === 'accepted') {
+            showSuccessMessage('App installed successfully! 🎉');
+            installButton.style.display = 'none';
+        }
+        
+        deferredPrompt = null;
+    }
+}
+
+// Service Worker Registration
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', async () => {
+        try {
+            const registration = await navigator.serviceWorker.register('sw.js');
+            console.log('ServiceWorker registered successfully:', registration.scope);
+            
+            // Check for updates
+            registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        showUpdateMessage();
+                    }
+                });
+            });
+            
+        } catch (error) {
+            console.log('ServiceWorker registration failed:', error);
+        }
+    });
+}
+
+// PWA Install Prompt
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    if (installButton) {
+        installButton.style.display = 'block';
+    }
+});
+
+// Hide install button after installation
+window.addEventListener('appinstalled', () => {
+    if (installButton) {
+        installButton.style.display = 'none';
+    }
+    showSuccessMessage('Welcome to YahyaVerse! 🚀');
+});
+
+// Show update message
+function showUpdateMessage() {
+    const updateDiv = document.createElement('div');
+    updateDiv.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span>New version available! 🆕</span>
+            <button onclick="window.location.reload()" style="
+                background: #4a90e2; 
+                color: white; 
+                border: none; 
+                padding: 5px 10px; 
+                border-radius: 5px; 
+                cursor: pointer;
+                margin-left: 10px;
+            ">Update</button>
+        </div>
+    `;
+    updateDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #4a90e2, #7b8fa3);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        z-index: 300;
+        font-weight: bold;
+        max-width: 300px;
+    `;
+    
+    document.body.appendChild(updateDiv);
+    
+    setTimeout(() => {
+        updateDiv.remove();
+    }, 10000);
+}
+
+// Network status monitoring
+function updateNetworkStatus() {
+    const isOnline = navigator.onLine;
+    if (!isOnline) {
+        showSuccessMessage('You\'re offline - but the app still works! 🌐');
+    }
+}
+
+window.addEventListener('online', () => {
+    showSuccessMessage('Back online! 🌐');
+});
+
+window.addEventListener('offline', updateNetworkStatus);
+
+// Initialize PWA features
+function initPWA() {
+    createInstallButton();
+    updateNetworkStatus();
+}
+
+// Update the existing init function
+const originalInit = init;
+init = function() {
+    originalInit();
+    initPWA();
+};
+
     </script>
 </body>
 </html>
