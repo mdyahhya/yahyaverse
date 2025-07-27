@@ -738,6 +738,20 @@
             localStorage.removeItem('yahyaverse-background');
             showSuccessMessage('Background reset! 🔄');
         }
+        // Add this debug function to your script
+function checkPWAStatus() {
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+  const isInstalled = window.navigator.standalone === true;
+  
+  console.log('PWA Status:');
+  console.log('- Standalone mode:', isStandalone);
+  console.log('- iOS installed:', isInstalled);
+  console.log('- Should show install button:', !isStandalone && !isInstalled);
+}
+
+// Call this function
+checkPWAStatus();
+
 
         // Save icon change
         function saveIconChange() {
@@ -855,20 +869,12 @@
 
 
 
-        // PWA Installation and Service Worker Registration
+       // Replace the existing PWA initialization with this improved version:
 let deferredPrompt;
 let installButton = null;
 
-// Check if PWA is already installed
-function isPWAInstalled() {
-    return window.matchMedia('(display-mode: standalone)').matches || 
-           window.navigator.standalone === true;
-}
-
-// Create install button
+// Create install button immediately but keep it hidden
 function createInstallButton() {
-    if (isPWAInstalled()) return;
-    
     installButton = document.createElement('button');
     installButton.innerHTML = '📱 Install App';
     installButton.className = 'install-button';
@@ -892,7 +898,47 @@ function createInstallButton() {
     
     installButton.addEventListener('click', installPWA);
     document.body.appendChild(installButton);
+    
+    // Debug: Force show button for testing (remove after debugging)
+    setTimeout(() => {
+        if (!isPWAInstalled() && !deferredPrompt) {
+            console.log('🔧 Debug: Showing install button for testing');
+            installButton.style.display = 'block';
+            installButton.innerHTML = '📱 Install App (Debug)';
+        }
+    }, 3000);
 }
+
+// Enhanced PWA detection
+function isPWAInstalled() {
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    const isIOS = window.navigator.standalone === true;
+    const isInstalled = isStandalone || isIOS;
+    
+    console.log('PWA Installation Check:', {
+        standalone: isStandalone,
+        iOS: isIOS,
+        installed: isInstalled
+    });
+    
+    return isInstalled;
+}
+
+// Better event handling
+window.addEventListener('beforeinstallprompt', (e) => {
+    console.log('✅ beforeinstallprompt event fired');
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    if (installButton && !isPWAInstalled()) {
+        installButton.style.display = 'block';
+        installButton.innerHTML = '📱 Install App';
+        console.log('✅ Install button shown');
+    }
+});
+
+// Call this in your init function
+createInstallButton();
 
 // Install PWA
 async function installPWA() {
