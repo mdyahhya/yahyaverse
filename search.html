@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alternatives Finder</title>
+    <style>
+        
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: white;
+}
+
+.mobile-container {
+    width: 97vw;
+    max-width: 380px;
+    height: 97vh;
+    max-height: 770px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    color: black;
+    border: 1px solid #000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.header {
+    padding: 20px 15px;
+    background-color: #ffffff;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid #000;
+}
+.instructions-btn {
+    position: absolute;
+    right: 15px;
+    width: 20px;
+    top: 20px; /* Aligns with the app title */
+    font-size: 20px;
+    color: #555;
+    cursor: pointer;
+    z-index: 101;
+}
+
+.app-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #000;
+    text-align: center;
+}
+
+.search-container {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 40px 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #000;
+    background-color: #fff;
+    color: black;
+    font-size: 16px;
+}
+
+.search-input::placeholder {
+    color: #555;
+}
+
+.search-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #555;
+}
+
+.segments-container {
+    padding: 5px;
+    overflow-x: auto;
+    white-space: nowrap;
+    margin-bottom: 10px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #000;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.segments-container::-webkit-scrollbar {
+    display: none;
+}
+
+.segment-pill {
+    display: inline-block;
+    padding: 8px 16px;
+    margin: 5px;
+    background-color: #f0f0f0;
+    border: 1px solid #000;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    color: #000;
+}
+
+.segment-pill.active {
+    background-color: #4CAF50;
+    color: white;
+    border: 1px solid #4CAF50;
+}
+
+.content-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    background-color: #ffffff;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding-bottom: 10px;
+}
+
+.product-header {
+    position: relative;
+  padding-right: 30px; /* Make room for the expand icon */
+  cursor: pointer;
+
+
+    /* padding: 10px; */
+    text-align: center;
+    background-color: #f0f0f0;
+    border: 1px solid #000;
+    border-bottom: none;
+    font-weight: 600;
+    font-size: 14px;
+    height: auto;
+    min-height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    color: #000;
+}
+
+.product-company {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #000;
+}
+
+.product-alternative {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.company-logo, .alternative-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 8px;
+    object-fit: cover;
+    background-color: #f0f0f0;
+    border: 1px solid #000;
+}
+
+.company-name {
+    font-size: 16px;
+    color: #cc0000;
+}
+
+.alternative-name {
+    font-size: 16px;
+    color: #007700;
+}
+
+.alternative-label, .company-label {
+    font-size: 12px;
+    color: #333;
+    margin-bottom: 2px;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 375px;
+    background-color: #ffffff;
+    padding: 15px;
+    border-top: 1px solid #000;
+    display: flex;
+    justify-content: space-around;
+    z-index: 100;
+}
+
+.footer-icon {
+    color: #555;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.footer-icon.active {
+    color: #4CAF50;
+}
+
+.no-results {
+    text-align: center;
+    padding: 30px;
+    color: #555;
+}
+
+.loading-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.loading-circle {
+    border: 2px solid #f0f0f0;
+    border-top: 2px solid #4CAF50;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.product-alternatives summary {
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #000;
+}
+
+.alternative-option {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+}
+
+.alternative-option img {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    border: 1px solid #000;
+}
+
+.product-card {
+    background-color: #ffffff;
+    border: 1px solid #000;
+    border-radius: 8px;
+    overflow: hidden;
+    min-height: 200px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.product-card.expanded {
+    height: auto;
+    min-height: 300px;
+    padding-bottom: 20px;
+}
+
+.product-card .show-more-btn {
+    margin: 10px auto;
+    background-color: #f0f0f0;
+    color: #000;
+    padding: 8px 12px;
+    border: 1px solid #000;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.2s;
+    z-index: 10;
+}
+
+.product-card .show-more-btn:hover {
+    background-color: #4CAF50;
+    color: white;
+    border-color: #4CAF50;
+}
+
+.more-alternatives {
+    padding: 0 10px 10px;
+}
+
+.more-alternatives .alternative-option {
+    border-top: 1px solid #000;
+    padding: 10px 0;
+}
+
+/* Detail Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    padding-top: 50px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.9);
+    overflow-y: auto;
+}
+
+.modal-content {
+    background-color: #ffffff;
+    margin: auto;
+    max-width: 90%;
+    width: 350px;
+    border-radius: 10px;
+    position: relative;
+    border: 1px solid #000;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.2);
+}
+
+.detail-modal-content {
+    padding: 20px;
+    color: #000;
+}
+
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    color: #000;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.modal-product-card h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 22px;
+    color: #000;
+}
+
+.modal-section {
+    margin-bottom: 20px;
+}
+
+.modal-section h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #000;
+}
+
+.modal-company, .modal-alternative {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #000;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.modal-logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+    object-fit: cover;
+    border: 1px solid #000;
+}
+
+.modal-company-name {
+    font-size: 18px;
+    color: #cc0000;
+}
+
+.modal-alternative-name {
+    font-size: 18px;
+    color: #007700;
+}
+
+/* Logo modal */
+#logo-modal .modal-content {
+    background: transparent;
+    width: auto;
+    border: none;
+}
+
+
+
+
+
+.header-expand-icon {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  color: white;
+  transition: background-color 0.2s;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.product-header:hover .header-expand-icon {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <div class="header">
+            <h1 class="app-title">Alternatives Finder</h1>
+            <div class="search-container">
+                <input type="text" id="search-input" class="search-input" placeholder="Search products or companies...">
+                <div class="search-icon">🔍</div>
+            </div>
+        </div>
+        
+        <div class="segments-container" id="segments-container">
+            <span class="segment-pill active" data-segment="all">All</span>
+            <!-- Segments will be added dynamically -->
+        </div>
+        <div id="logo-modal" class="modal">
+            <span class="modal-close">&times;</span>
+            <img class="modal-content" id="modal-image">
+          </div>
+          
+        <div class="content-area">
+            <div class="products-grid" id="products-grid">
+                <!-- Products will be added dynamically -->
+            </div>
+            <div id="no-results" class="no-results" style="display: none;">
+                No products found matching your search.
+            </div>
+        </div>
+        
+        
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script type="module">
+        
+
+// Full updated JavaScript code
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+const supabaseUrl = 'https://naohqjcldkkqmdkqomxt.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5hb2hxamNsZGtrcW1ka3FvbXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU4MjEwNjQsImV4cCI6MjA2MTM5NzA2NH0.nF0X4VU2AZhy0xatooFIFVdLTj1OH5d-5t_bbsl3mRg';
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const segmentsContainer = document.getElementById('segments-container');
+  const productsGrid = document.getElementById('products-grid');
+  const noResults = document.getElementById('no-results');
+  const searchInput = document.getElementById('search-input');
+
+  // Create logo modal if it doesn't exist yet
+  if (!document.getElementById('logo-modal')) {
+    const logoModal = document.createElement('div');
+    logoModal.id = 'logo-modal';
+    logoModal.className = 'modal';
+    logoModal.innerHTML = `
+      <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <img id="modal-image" src="" alt="Enlarged logo">
+      </div>
+    `;
+    document.body.appendChild(logoModal);
+  }
+
+  // Create instructions modal
+  const instructionsModal = document.createElement('div');
+  instructionsModal.id = 'instructions-modal';
+  instructionsModal.className = 'modal instructions-modal';
+  instructionsModal.innerHTML = `
+    <div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <h2>How to Use This App</h2>
+      <ul>
+        <li>
+          <span class="instruction-icon">🔍</span>
+          <span>Search for products or companies using the search bar</span>
+        </li>
+        <li>
+          <span class="instruction-icon">🏷️</span>
+          <span>Filter by categories using the segment pills</span>
+        </li>
+        <li>
+          <span class="instruction-icon">👆</span>
+          <span>Tap on a product card or the expand icon to see more details</span>
+        </li>
+        <li>
+          <span class="instruction-icon">➕</span>
+          <span>Click "Show More Alternatives" to see additional options</span>
+        </li>
+        <li>
+          <span class="instruction-icon">🖼️</span>
+          <span>Tap on any logo to enlarge it</span>
+        </li>
+      </ul>
+    </div>
+  `;
+  document.body.appendChild(instructionsModal);
+
+  // Add instructions button
+  const instructionsBtn = document.createElement('button');
+  instructionsBtn.id = 'instructions-btn';
+  instructionsBtn.className = 'instructions-btn';
+  instructionsBtn.textContent = '?';
+  document.querySelector('.header').appendChild(instructionsBtn);
+
+  // Loader while fetching
+  productsGrid.innerHTML = `<div class="loading-container"><div class="loading-circle"></div></div>`;
+
+  try {
+    // Fetch segments (categories)
+    const { data: segments, error: segmentsError } = await supabase
+      .from('segments')
+      .select('*');
+
+    if (segmentsError) throw segmentsError;
+
+    // Add segments to the filter
+    segments.forEach(segment => {
+      const pill = document.createElement('span');
+      pill.className = 'segment-pill';
+      pill.dataset.segment = segment.slug;
+      pill.textContent = segment.name;
+      segmentsContainer.appendChild(pill);
+    });
+
+    // Fetch all products initially
+    const { data: products, error: productsError } = await supabase
+      .from('products')
+      .select(`
+        product_name,
+        company_name,
+        company_logo,
+        alternative_1_name,
+        alternative_1_logo,
+        alternative_2_name,
+        alternative_2_logo,
+        alternative_3_name,
+        alternative_3_logo,
+        alternative_4_name,
+        alternative_4_logo,
+        alternative_5_name,
+        alternative_5_logo,
+        alternative_6_name,
+        alternative_6_logo,
+        segment:segments(name, slug)
+      `);
+
+    if (productsError) throw productsError;
+
+    renderProducts(products);
+
+    // Segment filter
+    segmentsContainer.addEventListener('click', e => {
+      if (e.target.classList.contains('segment-pill')) {
+        document.querySelectorAll('.segment-pill').forEach(p => p.classList.remove('active'));
+        e.target.classList.add('active');
+        const selected = e.target.dataset.segment;
+
+        const filtered = selected === 'all'
+          ? products
+          : products.filter(p => p.segment.slug.toLowerCase() === selected.toLowerCase());
+
+        renderProducts(filtered);
+      }
+    });
+
+    // Search filter
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase();
+      const filtered = products.filter(p =>
+        (p.product_name?.toLowerCase().includes(query)) ||
+        (p.company_name?.toLowerCase().includes(query)) ||
+        (p.alternative_1_name?.toLowerCase().includes(query)) ||
+        (p.alternative_2_name?.toLowerCase().includes(query)) ||
+        (p.alternative_3_name?.toLowerCase().includes(query)) ||
+        (p.alternative_4_name?.toLowerCase().includes(query)) ||
+        (p.alternative_5_name?.toLowerCase().includes(query)) ||
+        (p.alternative_6_name?.toLowerCase().includes(query))
+      );
+      renderProducts(filtered);
+    });
+
+  } catch (err) {
+    console.error('Error:', err.message);
+    productsGrid.innerHTML = `<p>Error loading content: ${err.message}</p>`;
+  }
+
+  // Helper function to get valid alternatives
+  function getValidAlternatives(product) {
+    const alternatives = [];
+    
+    // Check each alternative and only add if it has a name
+    for (let i = 1; i <= 6; i++) {
+      const name = product[`alternative_${i}_name`];
+      const logo = product[`alternative_${i}_logo`] || 'https://via.placeholder.com/150';
+      
+      if (name) {
+        alternatives.push({
+          name,
+          logo
+        });
+      }
+    }
+    
+    return alternatives;
+  }
+
+  // Render products to the grid with correct styling
+  function renderProducts(products) {
+    productsGrid.innerHTML = '';
+    if (!products || products.length === 0) {
+      noResults.style.display = 'block';
+      return;
+    }
+
+    noResults.style.display = 'none';
+    
+    // Close any open expanded cards
+    const closeAllCards = () => {
+      document.querySelectorAll('.product-card.expanded').forEach(card => {
+        const moreAlts = card.querySelector('.more-alternatives');
+        const showMoreBtn = card.querySelector('.show-more-btn');
+        if (moreAlts && showMoreBtn) {
+          moreAlts.style.display = 'none';
+          showMoreBtn.textContent = 'Show More Alternatives';
+          card.classList.remove('expanded');
+        }
+      });
+    };
+
+    products.forEach(product => {
+      const {
+        product_name,
+        company_name,
+        company_logo
+      } = product;
+
+      // Get all valid alternatives
+      const alternatives = getValidAlternatives(product);
+      
+      // If no alternatives, skip this product
+      if (alternatives.length === 0) return;
+      
+      const companyLogo = company_logo || 'https://via.placeholder.com/150';
+      
+      const productCard = document.createElement('div');
+      productCard.classList.add('product-card');
+      
+      // Create the expand icon SVG for the header
+      const expandSvg = `
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5.5 1H1V5.5M10.5 1H15V5.5M15 10.5V15H10.5M1 10.5V15H5.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      `;
+      
+      // Start building the card HTML with the new expand icon in header
+      let cardHTML = `
+        <div class="product-header" title="${product_name}">
+          ${product_name}
+          <div class="header-expand-icon">${expandSvg}</div>
+        </div>
+
+        <div class="product-company">
+          <div class="logo-container">
+            <img src="${companyLogo}" alt="${company_name}" class="company-logo">
+          </div>
+          <div>
+            <div class="company-label">Parent Company</div>
+            <span class="company-name">${company_name}</span>
+          </div>
+        </div>
+      `;
+      
+      // Always show the first alternative
+      if (alternatives.length > 0) {
+        cardHTML += `
+          <div class="product-alternative">
+            <div class="logo-container">
+              <img src="${alternatives[0].logo}" alt="${alternatives[0].name}" class="alternative-logo">
+            </div>
+            <div>
+              <div class="alternative-label">Alternative</div>
+              <span class="alternative-name">${alternatives[0].name}</span>
+            </div>
+          </div>
+        `;
+      }
+      
+      // If we have more than one alternative, add the "Show More" button
+      if (alternatives.length > 1) {
+        cardHTML += `<button class="show-more-btn">Show More Alternatives</button>`;
+        
+        cardHTML += `<div class="more-alternatives" style="display: none;">`;
+        
+        // Add remaining alternatives (starting from index 1)
+        for (let i = 1; i < alternatives.length; i++) {
+          cardHTML += `
+            <div class="alternative-option">
+              <div class="logo-container">
+                <img src="${alternatives[i].logo}" alt="${alternatives[i].name}" class="alternative-logo">
+              </div>
+              <div>
+                <div class="alternative-label">Alternative</div>
+                <span class="alternative-name">${alternatives[i].name}</span>
+              </div>
+            </div>
+          `;
+        }
+        
+        cardHTML += `</div>`;
+      }
+      
+      productCard.innerHTML = cardHTML;
+
+      // Add show more/less functionality if there are more alternatives
+      if (alternatives.length > 1) {
+        const showMoreBtn = productCard.querySelector('.show-more-btn');
+        const moreAlts = productCard.querySelector('.more-alternatives');
+
+        if (showMoreBtn && moreAlts) {
+          showMoreBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent card modal from opening when clicking the button
+            
+            // If this card is already expanded, collapse it
+            if (productCard.classList.contains('expanded')) {
+              moreAlts.style.display = 'none';
+              showMoreBtn.textContent = 'Show More Alternatives';
+              productCard.classList.remove('expanded');
+            } else {
+              // Close any other expanded cards first
+              closeAllCards();
+              
+              // Then expand this card
+              moreAlts.style.display = 'block';
+              showMoreBtn.textContent = 'Hide Alternatives';
+              productCard.classList.add('expanded');
+            }
+          });
+        }
+      }
+
+      // Make the product header and expand icon clickable to open the detail modal
+      const productHeader = productCard.querySelector('.product-header');
+      const expandIcon = productCard.querySelector('.header-expand-icon');
+      
+      const openProductDetails = (e) => {
+        e.stopPropagation(); // Prevent any potential parent event handlers
+        openDetailModal(product, alternatives);
+      };
+      
+      productHeader.addEventListener('click', openProductDetails);
+      
+      // The expand icon is already inside the header, but we add a specific handler to it as well
+      expandIcon.addEventListener('click', openProductDetails);
+
+      productsGrid.appendChild(productCard);
+    });
+
+    // Set up logo click handlers for both initial and expanded states
+    setupLogoClickHandlers();
+  }
+  
+  // Function to set up all logo click handlers
+  function setupLogoClickHandlers() {
+    document.querySelectorAll('.logo-container').forEach(container => {
+      container.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent card modal from opening
+        
+        // Get the image src from inside the container
+        const logoImg = container.querySelector('img');
+        if (logoImg) {
+          openLogoModal(logoImg.src);
+        }
+      });
+    });
+  }
+
+  // Function to create and open a detailed modal for each card
+  function openDetailModal(product, alternatives) {
+    // Create or get the modal
+    let detailModal = document.getElementById('detail-modal');
+    
+    if (!detailModal) {
+      detailModal = document.createElement('div');
+      detailModal.id = 'detail-modal';
+      detailModal.className = 'modal';
+      
+      const modalContent = document.createElement('div');
+      modalContent.className = 'modal-content detail-modal-content';
+      
+      const closeBtn = document.createElement('span');
+      closeBtn.className = 'modal-close';
+      closeBtn.innerHTML = '&times;';
+      closeBtn.onclick = (e) => { 
+        e.stopPropagation();
+        detailModal.style.display = 'none'; 
+      };
+      
+      detailModal.appendChild(modalContent);
+      detailModal.appendChild(closeBtn);
+      document.body.appendChild(detailModal);
+    }
+    
+    // Update modal content
+    const modalContent = detailModal.querySelector('.detail-modal-content');
+    
+    let alternativesHTML = '';
+    
+    // Generate HTML for all valid alternatives
+    alternatives.forEach(alt => {
+      alternativesHTML += `
+        <div class="modal-alternative">
+          <div class="logo-container">
+            <img src="${alt.logo}" alt="${alt.name}" class="modal-logo">
+          </div>
+          <span class="modal-alternative-name">${alt.name}</span>
+        </div>
+      `;
+    });
+    
+    modalContent.innerHTML = `
+      <div class="modal-product-card">
+        <h2>${product.product_name}</h2>
+        
+        <div class="modal-section">
+          <h3>Parent Company</h3>
+          <div class="modal-company">
+            <div class="logo-container">
+              <img src="${product.company_logo || 'https://via.placeholder.com/150'}" alt="${product.company_name}" class="modal-logo">
+            </div>
+            <span class="modal-company-name">${product.company_name}</span>
+          </div>
+        </div>
+        
+        <div class="modal-section">
+          <h3>Alternatives</h3>
+          ${alternativesHTML}
+        </div>
+      </div>
+    `;
+    
+    // Show the modal
+    detailModal.style.display = 'block';
+    
+    // Close modal when clicking outside
+    window.onclick = (event) => {
+      if (event.target === detailModal) {
+        detailModal.style.display = 'none';
+      }
+    };
+    
+    // Set up logo click handlers inside the modal
+    setupLogoClickHandlers();
+  }
+
+  // Open the logo modal with high z-index to appear above everything else
+  function openLogoModal(imageSrc) {
+    const modal = document.getElementById("logo-modal");
+    const modalImg = document.getElementById("modal-image");
+    modal.style.display = "block";
+    modal.style.zIndex = "1001"; // Ensure it's above any expanded cards
+    modalImg.src = imageSrc;
+  }
+
+  // Setup instructions modal
+  function setupInstructionsModal() {
+    const instructionsBtn = document.getElementById('instructions-btn');
+    const instructionsModal = document.getElementById('instructions-modal');
+    const instructionsClose = instructionsModal.querySelector('.modal-close');
+    
+    instructionsBtn.addEventListener('click', () => {
+      instructionsModal.style.display = 'block';
+    });
+    
+    instructionsClose.addEventListener('click', () => {
+      instructionsModal.style.display = 'none';
+    });
+    
+    window.addEventListener('click', (event) => {
+      if (event.target === instructionsModal) {
+        instructionsModal.style.display = 'none';
+      }
+    });
+  }
+
+  // Set up logo modal close button
+  document.querySelectorAll('.modal-close').forEach(closeBtn => {
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.target.closest('.modal').style.display = 'none';
+    });
+  });
+
+  // Close modal when clicking outside
+  window.addEventListener('click', (event) => {
+    const logoModal = document.getElementById("logo-modal");
+    if (event.target === logoModal) {
+      logoModal.style.display = 'none';
+    }
+  });
+  
+  // Initialize the instructions modal
+  setupInstructionsModal();
+});
+      </script>
+      
+</body>
+</html>

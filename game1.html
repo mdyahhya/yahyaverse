@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Gravity Balls Simulation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+        }
+
+        .mobile-container {
+            width: 375px;
+            height: 770px;
+            position: relative;
+            border: 2px solid #00ffff;
+            border-radius: 25px;
+            overflow: hidden;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 0, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 0, 128, 0.1) 0%, transparent 50%),
+                linear-gradient(135deg, #0f0f23, #1a1a2e, #16213e);
+            box-shadow: 
+                0 0 50px rgba(0, 255, 255, 0.3),
+                inset 0 0 50px rgba(255, 255, 255, 0.05);
+        }
+
+        .simulation-area {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hud {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .stats {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 10px 15px;
+            color: #00ffff;
+            font-size: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .control-btn {
+            background: rgba(255, 0, 128, 0.2);
+            border: 1px solid rgba(255, 0, 128, 0.5);
+            color: #ff0080;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 0, 128, 0.4);
+            box-shadow: 0 0 15px rgba(255, 0, 128, 0.6);
+        }
+
+        .control-btn.active {
+            background: rgba(255, 0, 128, 0.6);
+            box-shadow: 0 0 20px rgba(255, 0, 128, 0.8);
+        }
+
+        .ball {
+            position: absolute;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: box-shadow 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .ball-glow {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(4px);
+            opacity: 0.7;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.2); opacity: 0.9; }
+        }
+
+        .energy-ball {
+            background: radial-gradient(circle at 30% 30%, 
+                rgba(0, 255, 255, 0.9), 
+                rgba(0, 200, 255, 0.7), 
+                rgba(0, 150, 255, 0.5));
+            border: 2px solid rgba(0, 255, 255, 0.8);
+        }
+
+        .plasma-ball {
+            background: radial-gradient(circle at 30% 30%, 
+                rgba(255, 0, 128, 0.9), 
+                rgba(200, 0, 100, 0.7), 
+                rgba(150, 0, 80, 0.5));
+            border: 2px solid rgba(255, 0, 128, 0.8);
+        }
+
+        .quantum-ball {
+            background: radial-gradient(circle at 30% 30%, 
+                rgba(128, 0, 255, 0.9), 
+                rgba(100, 0, 200, 0.7), 
+                rgba(80, 0, 150, 0.5));
+            border: 2px solid rgba(128, 0, 255, 0.8);
+        }
+
+        .gravity-well {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, 
+                transparent 20%, 
+                rgba(255, 255, 255, 0.1) 40%, 
+                transparent 60%);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            pointer-events: none;
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .trajectory {
+            position: absolute;
+            width: 2px;
+            background: linear-gradient(to bottom, 
+                rgba(0, 255, 255, 0.8), 
+                transparent);
+            pointer-events: none;
+            animation: fade 1s ease-out;
+        }
+
+        @keyframes fade {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .collision-spark {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, 
+                rgba(255, 255, 255, 1), 
+                rgba(255, 255, 0, 0.8), 
+                transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: spark 0.5s ease-out;
+        }
+
+        @keyframes spark {
+            0% { transform: scale(0) rotate(0deg); opacity: 1; }
+            50% { transform: scale(2) rotate(180deg); opacity: 0.8; }
+            100% { transform: scale(4) rotate(360deg); opacity: 0; }
+        }
+
+        .instructions {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 11px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .field-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .field-line {
+            position: absolute;
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(to bottom, 
+                transparent, 
+                rgba(0, 255, 255, 0.2), 
+                transparent);
+            animation: fieldPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes fieldPulse {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 0.4; }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <div class="simulation-area" id="simulationArea">
+            <div class="field-lines" id="fieldLines"></div>
+            
+            <div class="hud">
+                <div class="stats" id="stats">
+                    <div>Balls: <span id="ballCount">0</span></div>
+                    <div>Energy: <span id="totalEnergy">0</span></div>
+                    <div>Gravity: <span id="gravityLevel">9.8</span></div>
+                </div>
+                
+                <div class="controls">
+                    <button class="control-btn" id="gravityBtn" onclick="toggleGravity()">GRAVITY</button>
+                    <button class="control-btn" id="resetBtn" onclick="resetSimulation()">RESET</button>
+                    <button class="control-btn" id="modeBtn" onclick="cycleBallType()">MODE</button>
+                </div>
+            </div>
+
+            <div class="instructions">
+                Tap to create balls • Long press for gravity wells • Watch physics magic!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class Ball {
+            constructor(x, y, radius, type) {
+                this.x = x;
+                this.y = y;
+                this.vx = (Math.random() - 0.5) * 4;
+                this.vy = (Math.random() - 0.5) * 4;
+                this.radius = radius;
+                this.type = type;
+                this.mass = radius * 0.5;
+                this.element = this.createElement();
+                this.glowElement = this.createGlow();
+                this.trail = [];
+                this.energy = 0;
+            }
+
+            createElement() {
+                const ball = document.createElement('div');
+                ball.className = `ball ${this.type}`;
+                ball.style.width = this.radius * 2 + 'px';
+                ball.style.height = this.radius * 2 + 'px';
+                ball.style.left = (this.x - this.radius) + 'px';
+                ball.style.top = (this.y - this.radius) + 'px';
+                
+                ball.addEventListener('touchstart', (e) => this.onTouch(e));
+                ball.addEventListener('mousedown', (e) => this.onTouch(e));
+                
+                return ball;
+            }
+
+            createGlow() {
+                const glow = document.createElement('div');
+                glow.className = 'ball-glow';
+                glow.style.width = (this.radius * 3) + 'px';
+                glow.style.height = (this.radius * 3) + 'px';
+                glow.style.left = (this.x - this.radius * 1.5) + 'px';
+                glow.style.top = (this.y - this.radius * 1.5) + 'px';
+                
+                const colors = {
+                    'energy-ball': 'rgba(0, 255, 255, 0.4)',
+                    'plasma-ball': 'rgba(255, 0, 128, 0.4)',
+                    'quantum-ball': 'rgba(128, 0, 255, 0.4)'
+                };
+                
+                glow.style.background = `radial-gradient(circle, ${colors[this.type]}, transparent)`;
+                return glow;
+            }
+
+            onTouch(e) {
+                e.preventDefault();
+                this.vx += (Math.random() - 0.5) * 10;
+                this.vy += (Math.random() - 0.5) * 10;
+                this.createSpark();
+            }
+
+            createSpark() {
+                const spark = document.createElement('div');
+                spark.className = 'collision-spark';
+                spark.style.left = this.x + 'px';
+                spark.style.top = this.y + 'px';
+                simulationArea.appendChild(spark);
+                
+                setTimeout(() => {
+                    if (spark.parentNode) spark.parentNode.removeChild(spark);
+                }, 500);
+            }
+
+            update() {
+                // Apply gravity
+                if (gravityEnabled) {
+                    this.vy += gravity * 0.016; // 60fps
+                }
+
+                // Apply gravity wells
+                gravityWells.forEach(well => {
+                    const dx = well.x - this.x;
+                    const dy = well.y - this.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance > 0 && distance < well.radius) {
+                        const force = (well.strength * this.mass) / (distance * distance);
+                        this.vx += (dx / distance) * force * 0.016;
+                        this.vy += (dy / distance) * force * 0.016;
+                    }
+                });
+
+                // Add trail point
+                this.trail.push({x: this.x, y: this.y, life: 30});
+                if (this.trail.length > 15) this.trail.shift();
+
+                // Update position
+                this.x += this.vx * 0.016 * 60;
+                this.y += this.vy * 0.016 * 60;
+
+                // Bounce off walls with energy loss
+                const damping = 0.8;
+                if (this.x - this.radius < 0) {
+                    this.x = this.radius;
+                    this.vx *= -damping;
+                    this.createSpark();
+                }
+                if (this.x + this.radius > containerWidth) {
+                    this.x = containerWidth - this.radius;
+                    this.vx *= -damping;
+                    this.createSpark();
+                }
+                if (this.y - this.radius < 0) {
+                    this.y = this.radius;
+                    this.vy *= -damping;
+                    this.createSpark();
+                }
+                if (this.y + this.radius > containerHeight) {
+                    this.y = containerHeight - this.radius;
+                    this.vy *= -damping * 0.9; // Extra damping on ground
+                    this.createSpark();
+                }
+
+                // Update energy
+                this.energy = 0.5 * this.mass * (this.vx * this.vx + this.vy * this.vy);
+
+                // Update DOM position
+                this.element.style.left = (this.x - this.radius) + 'px';
+                this.element.style.top = (this.y - this.radius) + 'px';
+                this.glowElement.style.left = (this.x - this.radius * 1.5) + 'px';
+                this.glowElement.style.top = (this.y - this.radius * 1.5) + 'px';
+
+                // Update trail opacity
+                this.trail.forEach(point => point.life--);
+                this.trail = this.trail.filter(point => point.life > 0);
+            }
+
+            checkCollision(other) {
+                const dx = other.x - this.x;
+                const dy = other.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < this.radius + other.radius) {
+                    // Collision detected
+                    const overlap = this.radius + other.radius - distance;
+                    const separationX = (dx / distance) * overlap * 0.5;
+                    const separationY = (dy / distance) * overlap * 0.5;
+                    
+                    this.x -= separationX;
+                    this.y -= separationY;
+                    other.x += separationX;
+                    other.y += separationY;
+                    
+                    // Elastic collision
+                    const totalMass = this.mass + other.mass;
+                    const vx1 = ((this.mass - other.mass) * this.vx + 2 * other.mass * other.vx) / totalMass;
+                    const vy1 = ((this.mass - other.mass) * this.vy + 2 * other.mass * other.vy) / totalMass;
+                    const vx2 = ((other.mass - this.mass) * other.vx + 2 * this.mass * this.vx) / totalMass;
+                    const vy2 = ((other.mass - this.mass) * other.vy + 2 * this.mass * this.vy) / totalMass;
+                    
+                    this.vx = vx1;
+                    this.vy = vy1;
+                    other.vx = vx2;
+                    other.vy = vy2;
+                    
+                    // Create collision spark
+                    this.createSpark();
+                    other.createSpark();
+                }
+            }
+
+            destroy() {
+                if (this.element.parentNode) this.element.parentNode.removeChild(this.element);
+                if (this.glowElement.parentNode) this.glowElement.parentNode.removeChild(this.glowElement);
+            }
+        }
+
+        class GravityWell {
+            constructor(x, y, radius, strength) {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.strength = strength;
+                this.element = this.createElement();
+                this.life = 300; // 5 seconds at 60fps
+            }
+
+            createElement() {
+                const well = document.createElement('div');
+                well.className = 'gravity-well';
+                well.style.width = this.radius * 2 + 'px';
+                well.style.height = this.radius * 2 + 'px';
+                well.style.left = (this.x - this.radius) + 'px';
+                well.style.top = (this.y - this.radius) + 'px';
+                return well;
+            }
+
+            update() {
+                this.life--;
+                const opacity = Math.min(1, this.life / 60);
+                this.element.style.opacity = opacity;
+                return this.life > 0;
+            }
+
+            destroy() {
+                if (this.element.parentNode) this.element.parentNode.removeChild(this.element);
+            }
+        }
+
+        // Global variables
+        const simulationArea = document.getElementById('simulationArea');
+        const containerWidth = 375;
+        const containerHeight = 770;
+        let balls = [];
+        let gravityWells = [];
+        let gravity = 9.8;
+        let gravityEnabled = true;
+        let currentBallType = 'energy-ball';
+        let animationId;
+        let touchTimer;
+
+        const ballTypes = ['energy-ball', 'plasma-ball', 'quantum-ball'];
+        let ballTypeIndex = 0;
+
+        // Create field lines
+        function createFieldLines() {
+            const fieldLines = document.getElementById('fieldLines');
+            for (let i = 0; i < 20; i++) {
+                const line = document.createElement('div');
+                line.className = 'field-line';
+                line.style.left = (i * (containerWidth / 20)) + 'px';
+                line.style.animationDelay = (i * 0.1) + 's';
+                fieldLines.appendChild(line);
+            }
+        }
+
+        // Touch/Click handlers
+        simulationArea.addEventListener('touchstart', handleStart);
+        simulationArea.addEventListener('mousedown', handleStart);
+
+        function handleStart(e) {
+            e.preventDefault();
+            
+            const touch = e.touches ? e.touches[0] : e;
+            const rect = simulationArea.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+
+            // Start long press timer
+            touchTimer = setTimeout(() => {
+                createGravityWell(x, y);
+            }, 500);
+
+            // Handle touch end
+            const handleEnd = () => {
+                clearTimeout(touchTimer);
+                createBall(x, y);
+                document.removeEventListener('touchend', handleEnd);
+                document.removeEventListener('mouseup', handleEnd);
+            };
+
+            document.addEventListener('touchend', handleEnd);
+            document.addEventListener('mouseup', handleEnd);
+        }
+
+        function createBall(x, y) {
+            if (balls.length >= 15) return; // Limit for performance
+            
+            const radius = 15 + Math.random() * 10;
+            const ball = new Ball(x, y, radius, currentBallType);
+            
+            balls.push(ball);
+            simulationArea.appendChild(ball.element);
+            simulationArea.appendChild(ball.glowElement);
+            
+            updateStats();
+        }
+
+        function createGravityWell(x, y) {
+            const radius = 80 + Math.random() * 40;
+            const strength = 500 + Math.random() * 300;
+            const well = new GravityWell(x, y, radius, strength);
+            
+            gravityWells.push(well);
+            simulationArea.appendChild(well.element);
+        }
+
+        function toggleGravity() {
+            gravityEnabled = !gravityEnabled;
+            const btn = document.getElementById('gravityBtn');
+            btn.classList.toggle('active', gravityEnabled);
+            btn.textContent = gravityEnabled ? 'GRAVITY ON' : 'GRAVITY OFF';
+        }
+
+        function cycleBallType() {
+            ballTypeIndex = (ballTypeIndex + 1) % ballTypes.length;
+            currentBallType = ballTypes[ballTypeIndex];
+            const btn = document.getElementById('modeBtn');
+            btn.textContent = currentBallType.split('-')[0].toUpperCase();
+        }
+
+        function resetSimulation() {
+            balls.forEach(ball => ball.destroy());
+            gravityWells.forEach(well => well.destroy());
+            balls = [];
+            gravityWells = [];
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('ballCount').textContent = balls.length;
+            
+            const totalEnergy = balls.reduce((sum, ball) => sum + ball.energy, 0);
+            document.getElementById('totalEnergy').textContent = Math.round(totalEnergy);
+            
+            document.getElementById('gravityLevel').textContent = gravity.toFixed(1);
+        }
+
+        function animate() {
+            // Update balls
+            for (let i = 0; i < balls.length; i++) {
+                balls[i].update();
+                
+                // Check collisions with other balls
+                for (let j = i + 1; j < balls.length; j++) {
+                    balls[i].checkCollision(balls[j]);
+                }
+            }
+
+            // Update gravity wells
+            gravityWells = gravityWells.filter(well => {
+                const alive = well.update();
+                if (!alive) well.destroy();
+                return alive;
+            });
+
+            updateStats();
+            animationId = requestAnimationFrame(animate);
+        }
+
+        // Initialize
+        createFieldLines();
+        animate();
+
+        // Initial setup
+        document.getElementById('gravityBtn').classList.add('active');
+        document.getElementById('modeBtn').textContent = 'ENERGY';
+    </script>
+</body>
+</html>

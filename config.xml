@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.continental.yahyaverse" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>The YahyaVerse</name>
+    <description>YouBuddy Chatbot App</description>
+    <author email="quizapp.yahya@gmail.com">Yahya</author>
+    <content src="index.html" />
+
+    <!-- Navigation & Access -->
+    <access origin="*" />
+    <allow-navigation href="*" />
+    <allow-intent href="*" />
+
+    <!-- Preferences -->
+    <preference name="AllowInlineMediaPlayback" value="true" />
+    <preference name="android-minSdkVersion" value="21" />
+    <preference name="android-targetSdkVersion" value="33" />
+
+    <engine name="android" spec="12.0.1" />
+
+    <!-- Plugins -->
+    <plugin name="cordova-plugin-inappbrowser" source="npm" />
+    <plugin name="cordova-plugin-file" spec="^8.0.0" />
+    <plugin name="cordova-plugin-media-capture" />
+    <plugin name="cordova-plugin-media" source="npm" />
+
+    <!-- Platform-specific permissions -->
+    <platform name="android">
+        <uses-permission android:name="android.permission.RECORD_AUDIO" />
+        <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    </platform>
+
+    <!-- Optional app icon -->
+    <icon src="mewithlaptop.png" />
+
+    <!-- Optional splash screen -->
+    <!-- <splash src="youbuddysplash.jpg" /> -->
+
+    <!-- Specific domain access -->
+    <access origin="https://youtube.com/*" />
+    <access origin="https://www.instagram.com/*" />
+    <access origin="https://www.geeksforgeeks.org/*" />
+    <access origin="whatsapp:*" launch-external="yes" />
+    <access origin="https://google.com/*" />
+    <access origin="https://drive.google.com/*" />
+</widget>

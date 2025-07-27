@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouBuddy App</title>
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            outline: none;
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        /* Container Styles */
+        .mobile-container {
+            width: 97vw;
+            max-width: 375px;
+            height: 97vh;
+            max-height: 770px;
+            margin: 0 auto;
+            background-color: #000000;
+            overflow-x: hidden;
+            overflow-y: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 97vw;
+            max-width: 375px;
+            height: 97vh;
+            max-height: 770px;
+            margin: 0 auto;
+            background-color: #000000;
+            overflow-y: auto;
+            position: relative;
+            scrollbar-width: none;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        .container::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Header Styles */
+        .header {
+            position: fixed;
+            top: 5px;
+            background-color: #000000;
+            padding: 22px;
+            z-index: 1000;
+            text-align: center;
+            width: 100%;
+            transition: all 0.6s ease-in-out;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 20px;
+            font-size: 12px;
+            max-width: 375px;
+        }
+
+        .header.hidden {
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
+            height: 0;
+        }
+
+        .header h1 {
+            color: #4CAF50;
+            margin: 0;
+            font-size: 22px;
+            margin-right: 10px;
+        }
+
+        .header p {
+            color: #ffffff;
+        }
+
+        /* Menu Button */
+        .menu-btn {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            font-size: 24px;
+            background: black;
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+            transition: 0.3s ease-in-out;
+        }
+
+        /* Side Menu */
+        .side-menu {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1001;
+            top: 0;
+            left: 0;
+            background-color: #1a1a1a;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .side-menu a {
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #fff;
+            display: block;
+            transition: 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .side-menu a:hover {
+            background-color: #2d2d2d;
+            border-left: 3px solid #4CAF50;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 30px;
+            color: #fff;
+        }
+
+        /* Content Area */
+        .content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            text-align: center;
+            padding-bottom: 80px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            overflow-x: hidden;
+        }
+
+        .content::-webkit-scrollbar {
+            width: 0;
+            background: transparent;
+        }
+
+        /* Fixed Header Image Section */
+        .fixed-header-text {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .fixed-header-image {
+            width: 100%;
+            max-width: 350px;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        /* Feed Styles */
+        .feed {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+            transition: margin-top 0.6s ease-in-out;
+            overflow-x: hidden;
+            margin-top: 0;
+        }
+
+        /* Post Styles */
+        .post-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        .post {
+            padding: 16px;
+            margin-bottom: 12px;
+            background-color: #000000;
+            color: #ffffff;
+            box-shadow: inset 0 -0.2px 0 rgba(230, 230, 230, 0.5);
+            position: relative;
+        }
+
+        .post-header {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .post-heading {
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 1.25;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            letter-spacing: 0.5px;
+            text-align: left;
+        }
+
+        .text-post {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #ffffff;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 0;
+            padding: 0;
+            font-weight: 350;
+            text-align: left;
+        }
+
+        .caption {
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 1.25;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            letter-spacing: 0.5px;
+            text-align: left;
+        }
+
+        .media-container {
+            margin: 12px 0;
+            overflow: hidden;
+            background-color: #1c1c1c;
+        }
+
+        .media-container img,
+        .media-container video {
+            width: 100%;
+            height: auto;
+            display: block;
+            cursor: pointer;
+        }
+
+        .timestamp {
+            font-size: 12px;
+            color: #7a7a7a;
+            text-align: right;
+            margin-top: 8px;
+        }
+
+        .post-bottom-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .save-icon {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            user-select: none;
+            color: #888;
+            transition: color 0.3s;
+        }
+
+        .save-icon.saved {
+            color: #4CAF50;
+        }
+
+        .save-icon.saved svg {
+            fill: #4CAF50;
+            stroke: #4CAF50;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            cursor: pointer;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90vh;
+        }
+
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            border: none;
+            font-size: 34px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            display: flex;
+        }
+
+        /* Segments Container */
+       
+
+        .segments-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Segment Styles - Modified for text-only */
+        
+
+        .segment-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Replace the existing segments-container CSS with this */
+.segments-container {
+    margin: 0;
+    padding: 15px 5px;
+    background-color: #000000;
+    border-radius: 0;
+    margin-top: 10px; /* Space for header */
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    position: relative;
+    z-index: 200;
+    width: 100%;
+    display: block;
+    max-width: 375px;
+}
+
+/* Also add these styles for the segments and wrapper */
+.segment-wrapper {
+    display: flex;
+    padding: 5px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    z-index: 201;
+    position: relative;
+}
+
+.segment {
+    padding: 8px 12px;
+    margin-right: 10px;
+    min-width: auto;
+    cursor: pointer;
+    border-radius: 15px;
+    background-color: #1a1a1a;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+    text-align: center;
+    display: inline-block;
+    z-index: 202;
+}
+        .segment:hover {
+            background-color: #333;
+        }
+
+        .segment span {
+            font-size: 14px;
+            text-align: center;
+            color: #fff;
+        }
+
+        /* App Info Container - For continuous scrolling content */
+        .app-info-container {
+            margin-top: 20px;
+            padding: 10px;
+        }
+
+        .info-section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: #111;
+            border-radius: 10px;
+        }
+
+        .info-section h2 {
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 18px;
+            text-align: left;
+        }
+
+        .info-content {
+            color: #ddd;
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        .info-image {
+            width: 100%;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .text-section, .image-section, .text-image-section {
+            border-bottom: 1px solid #333;
+            padding-bottom: 20px;
+        }
+
+        /* Loading and Error Messages */
+        .loading-message {
+            padding: 20px;
+            text-align: center;
+            color: #888;
+        }
+
+        .error-message {
+            padding: 20px;
+            text-align: center;
+            color: #f44336;
+        }
+
+        /* Update the loading container CSS */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    width: 100%;
+    height: 150px;
+}
+
+.loading-circle {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(76, 175, 80, 0.3);
+    border-radius: 50%;
+    border-top-color: #4CAF50;
+    animation: spin 1s linear infinite;
+}
+
+        .loading-text {
+            margin-top: 8px;
+            color: #4CAF50;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Animations */
+        .post-loading {
+            opacity: 0;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Taskbar Styles */
+        .taskbar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 60px;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+            border-top: 1px solid #333;
+            max-width: 375px;
+            margin: 0 auto;
+            margin-bottom: 5px;
+        }
+
+        .taskbar-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: transparent;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        #universityTaskbarBtn {
+            margin: 0 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: transparent;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        #universityTaskbarText {
+            transform: scale(1) translateY(-8px);
+            margin: 0 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: transparent;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .taskbar-btn-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .taskbar-btn-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .taskbar-btn span {
+            font-size: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 60px;
+            text-align: center;
+        }
+
+        .taskbar-btn:hover, .taskbar-btn.university-selected {
+            color: #4CAF50;
+        }
+
+        .slider-container {
+    position: relative;
+    width: 100%;
+    margin: 15px 0;
+    overflow: hidden;
+    border-radius: 8px;
+    min-height: 150px;
+    background-color: #1a1a1a;
+    display: block;
+}
+
+.slider-slide {
+    min-width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    height: 200px;
+}
+
+.slider-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+        /* Image Slider Styles */
+.slider-container {
+    position: relative;
+    width: 100%;
+    margin: 15px 0;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.slider-wrapper {
+    display: flex;
+    transition: transform 0.5s ease;
+    width: 100%;
+}
+
+
+
+.slider-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    color: white;
+}
+
+.slider-caption h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.slider-caption p {
+    margin: 5px 0 0;
+    font-size: 12px;
+}
+
+.slider-dots {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+}
+
+.slider-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #888;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.slider-dot.active {
+    background-color: #4CAF50;
+}
+
+
+
+
+
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+}
+
+.loading-circle {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(76, 175, 80, 0.3);
+    border-radius: 50%;
+    border-top-color: #4CAF50;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="mobile-container">
+        <div class="content" id="homePage">
+            <div id="sideMenu" class="side-menu">
+                <a href="javascript:void(0)" class="close-btn" onclick="closeMenu()">&times;</a>
+                <a href="#" id="universityOption">University</a>
+                <a href="./gamelist.html">Play Amazing Games</a>
+                <a href="./aboutus.html">About Us</a>
+                <a href="./switch.html">Switch University</a>
+                <a href="./courses.html">Free Courses</a>
+                <a href="./portfolio.html">Meet the Founder</a>
+                <a href="./QRscanner.html">QR Testing</a>
+                <a href="./Shoppinglinks.html">Shopping Links</a>
+            </div>
+            
+                <div class="header" id="header">
+                    <h1>Alternatives
+                    <button class="menu-btn" onclick="openMenu()">☰</button>
+                </div>
+                
+                
+                   
+                    
+                    
+                    
+                    
+                    
+                    
+                    <!-- Fixed header section -->
+                    <div class="fixed-header-section">
+                        <h2 class="fixed-header-text">Alternatives for Boycotted products</h2>
+                        <img src="./boycott.jpg" alt="YouBuddy Banner" class="fixed-header-image">
+                    </div>
+                    
+                    <!-- Combined content container for continuous scrolling -->
+                    <div class="app-info-container" id="appContent">
+                        <!-- All content will be loaded here dynamically -->
+                    </div>
+                    <!-- Image Slider -->
+                    <div class="slider-container" id="sliderContainer">
+                        <div class="slider-wrapper" id="sliderWrapper">
+                            <!-- Slider images will be loaded here -->
+                        </div>
+                        <div class="slider-dots" id="sliderDots"></div>
+                    </div>
+                
+                
+            
+            
+            <!-- Media modal -->
+            <div class="modal" id="mediaModal">
+                <img class="modal-content" id="modalContent">
+            </div>
+            
+            
+            
+            <!-- Taskbar at the bottom -->
+            <div class="taskbar">
+                <button class="taskbar-btn" onclick="navigateToProfile()">
+                    <div class="taskbar-btn-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <span>Profile</span>
+                </button>
+                <button class="taskbar-btn" onclick="navigateToAboutUs()">
+                    <div class="taskbar-btn-icon">
+                        <img src="./youbuddylogo.jpg" alt="YouBuddy Logo" style="width: 24px; height: 24px;">
+                    </div>
+                    <span>About Us</span>
+                </button>
+                <button class="taskbar-btn" onclick="navigateToSearch()">
+                    <div class="taskbar-btn-icon">🔍</div>
+                    <span>Search</span>
+                </button>
+                <button class="taskbar-btn" onclick="navigateToChatbot()">
+                    <div class="taskbar-btn-icon">
+                        <img src="./boticonblack.jpg" alt="Chatbot Icon" style="width: 24px; height: 24px;">
+                    </div>
+                    <span>Chatbot</span>
+                </button>
+                <button class="taskbar-btn" onclick="navigateToGames()">
+                    <div class="taskbar-btn-icon">🎮</div>
+                    <span>Games</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+<script>
+// Supabase configuration - replace with your own URL and anon key
+const SUPABASE_URL = 'https://naohqjcldkkqmdkqomxt.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5hb2hxamNsZGtrcW1ka3FvbXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU4MjEwNjQsImV4cCI6MjA2MTM5NzA2NH0.nF0X4VU2AZhy0xatooFIFVdLTj1OH5d-5t_bbsl3mRg';
+
+// Initialize Supabase client
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// DOM Elements
+const contentContainer = document.getElementById('appContent');
+const segmentsWrapper = document.getElementById('segmentsWrapper');
+const backToTopButton = document.getElementById('backToTop');
+
+// Variables
+let appInfo = [];
+let segments = [];
+
+
+// Variables for slider
+let sliderImages = [];
+let currentSlide = 0;
+let sliderInterval;
+
+// Fetch slider images from Supabase
+// Fetch slider images from Supabase
+async function fetchSliderImages() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('slider_images')
+            .select('*')
+            .order('display_order', { ascending: true });
+        
+        if (error) throw error;
+        
+        console.log("Fetched slider images:", data);
+        sliderImages = data || [];
+        
+        // If no slider images in the database, add temporary ones for testing
+        if (sliderImages.length === 0) {
+            console.log("No slider images found, adding test images");
+            sliderImages = [
+                {
+                    title: "Test Slider 1",
+                    description: "This is a test slider image",
+                    image_url: "https://via.placeholder.com/600x200/4CAF50/ffffff?text=Test+Slider+1",
+                    display_order: 1
+                },
+                {
+                    title: "Test Slider 2",
+                    description: "Another test slider image",
+                    image_url: "https://via.placeholder.com/600x200/2196F3/ffffff?text=Test+Slider+2",
+                    display_order: 2
+                }
+            ];
+        }
+        
+    } catch (error) {
+        console.error("Error fetching slider images:", error);
+        // Add fallback images
+        sliderImages = [
+            {
+                title: "Error Loading Images",
+                description: "Please check your connection",
+                image_url: "https://via.placeholder.com/600x200/ff0000/ffffff?text=Error+Loading",
+                display_order: 1
+            }
+        ];
+    }
+}
+
+// Render slider images
+// Render slider images
+function renderSlider() {
+    const sliderContainer = document.getElementById('sliderContainer');
+    const sliderWrapper = document.getElementById('sliderWrapper');
+    const sliderDots = document.getElementById('sliderDots');
+    
+    if (!sliderWrapper || !sliderDots) {
+        console.error("Slider elements not found");
+        return;
+    }
+    
+    console.log("Slider images:", sliderImages);
+    
+    if (sliderImages.length === 0) {
+        console.log("No slider images found, hiding slider");
+        if (sliderContainer) sliderContainer.style.display = 'none';
+        
+        // Add fallback slider with placeholder
+        sliderWrapper.innerHTML = `
+            <div class="slider-slide" data-index="0">
+                <img src="/api/placeholder/600/200" alt="Placeholder image">
+                <div class="slider-caption">
+                    <h3>Image Slider</h3>
+                    <p>Add slider images to see them here</p>
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    console.log("Rendering slider with", sliderImages.length, "images");
+    
+    // Create slider slides
+    sliderWrapper.innerHTML = sliderImages.map((image, index) => `
+        <div class="slider-slide" data-index="${index}">
+            <img src="${image.image_url}" alt="${image.title || 'Slider image'}">
+            ${image.title || image.description ? `
+                <div class="slider-caption">
+                    ${image.title ? `<h3>${image.title}</h3>` : ''}
+                    ${image.description ? `<p>${image.description}</p>` : ''}
+                </div>
+            ` : ''}
+        </div>
+    `).join('');
+    
+    // Create slider dots
+    sliderDots.innerHTML = sliderImages.map((_, index) => `
+        <div class="slider-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></div>
+    `).join('');
+    
+    // Add click event to dots
+    const dots = sliderDots.querySelectorAll('.slider-dot');
+    dots.forEach(dot => {
+        dot.addEventListener('click', function() {
+            currentSlide = parseInt(this.getAttribute('data-index'));
+            updateSlider();
+        });
+    });
+    
+    // Show slider container
+    if (sliderContainer) sliderContainer.style.display = 'block';
+    
+    // Start automatic sliding if we have more than one image
+    if (sliderImages.length > 1) {
+        startSlider();
+    }
+}
+// Update slider position
+function updateSlider() {
+    const sliderWrapper = document.getElementById('sliderWrapper');
+    const sliderDots = document.getElementById('sliderDots');
+    
+    if (!sliderWrapper || !sliderDots) return;
+    
+    // Update slider position
+    sliderWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+    
+    // Update active dot
+    const dots = sliderDots.querySelectorAll('.slider-dot');
+    dots.forEach((dot, index) => {
+        if (index === currentSlide) {
+            dot.classList.add('active');
+        } else {
+            dot.classList.remove('active');
+        }
+    });
+}
+
+// Start automatic slider
+function startSlider() {
+    stopSlider();
+    sliderInterval = setInterval(() => {
+        currentSlide = (currentSlide + 1) % sliderImages.length;
+        updateSlider();
+    }, 5000);
+}
+
+// Stop automatic slider
+function stopSlider() {
+    clearInterval(sliderInterval);
+}
+// Initialize app
+// Initialize app
+// Initialize app
+async function initApp() {
+    try {
+        // Show loading state just in the app content area, not the whole container
+        contentContainer.innerHTML = '<div class="loading-container"><div class="loading-circle"></div></div>';
+        
+        // Setup segments first (immediately visible)
+        await fetchSegments();
+        renderSegments();
+        
+        // Then load the rest in parallel
+        await Promise.all([
+            fetchAppInfo(),
+            fetchSliderImages()
+        ]);
+        
+        // Now render the content
+        renderSlider();
+        renderAppInfo();
+        setupEventListeners();
+        
+    } catch (error) {
+        console.error("Initialization error:", error);
+        contentContainer.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
+    }
+}
+// Fetch segments data from Supabase
+async function fetchSegments() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('segments')
+            .select('*')
+            .order('display_order', { ascending: true });
+        
+        if (error) throw error;
+        segments = data || [];
+        
+    } catch (error) {
+        console.error("Error fetching segments:", error);
+    }
+}
+
+// Render segments in the UI - text only, no emojis
+function renderSegments() {
+    if (!segmentsWrapper) return;
+    
+    segmentsWrapper.innerHTML = '';
+    
+    if (segments.length === 0) {
+        // If no segments data available, show some default segments
+        const defaultSegments = ['Education', 'Entertainment', 'Sports', 'Technology', 'Lifestyle', 
+                               'Health', 'News', 'Finance', 'Music', 'Food', 'Travel', 'Fashion'];
+        
+        segmentsWrapper.innerHTML = defaultSegments.map(segment => `
+            <div class="segment" onclick="navigateToSegment('${segment.toLowerCase()}')">
+                <span>${segment}</span>
+            </div>
+        `).join('');
+    } else {
+        // Use segments from database
+        segmentsWrapper.innerHTML = segments.map(segment => `
+            <div class="segment" onclick="navigateToSegment('${segment.segment_id}')">
+                <span>${segment.name}</span>
+            </div>
+        `).join('');
+    }
+}
+
+// Navigate to specific segment
+function navigateToSegment(segmentId) {
+    window.location.href = `segment.html?id=${segmentId}`;
+}
+
+// Fetch app info content from Supabase
+async function fetchAppInfo() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('app_info')
+            .select('*')
+            .order('display_order', { ascending: true });
+        
+        if (error) throw error;
+        appInfo = data || [];
+        
+    } catch (error) {
+        console.error("Error fetching app info:", error);
+        throw error;
+    }
+}
+
+// Render app info content
+// Render app info content
+function renderAppInfo() {
+    if (!contentContainer) return;
+    
+    // Show loading state
+    contentContainer.innerHTML = '<div class="loading-container"><div class="loading-circle"></div></div>';
+    
+    // If no app info data available
+    if (appInfo.length === 0) {
+        contentContainer.innerHTML = `
+            <div class="info-section text-section">
+                <h2>Welcome to YouBuddy</h2>
+                <div class="info-content">
+                    <p>YouBuddy is your all-in-one companion for university life. Connect with peers, access educational resources, and enjoy entertainment in one place.</p>
+                </div>
+            </div>
+            <div class="info-section text-section">
+                <h2>Features</h2>
+                <div class="info-content">
+                    <p>• Easy navigation between different content segments</p>
+                    <p>• University resources at your fingertips</p>
+                    <p>• Entertainment options to relax between studies</p>
+                    <p>• Quick access to important information</p>
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    // Clear previous content
+    contentContainer.innerHTML = '';
+    
+    // Render each app info section
+    const infoHTML = appInfo.map(item => {
+        if (item.section_type === 'text') {
+            return `
+                <div class="info-section text-section">
+                    <h2>${item.title || ''}</h2>
+                    <div class="info-content">${item.content || ''}</div>
+                </div>
+            `;
+        } else if (item.section_type === 'image') {
+            return `
+                <div class="info-section image-section">
+                    <img src="${item.image_url}" alt="${item.title || 'App Info Image'}" class="info-image">
+                </div>
+            `;
+        } else if (item.section_type === 'text_with_image') {
+            return `
+                <div class="info-section text-image-section">
+                    <h2>${item.title || ''}</h2>
+                    <img src="${item.image_url}" alt="${item.title || 'App Info'}" class="info-image">
+                    <div class="info-content">${item.content || ''}</div>
+                </div>
+            `;
+        }
+        return '';
+    }).join('');
+    
+    contentContainer.innerHTML = infoHTML;
+}
+
+// Setup event listeners
+function setupEventListeners() {
+    // Menu button
+    const menuBtn = document.querySelector('.menu-btn');
+    if (menuBtn) {
+        menuBtn.addEventListener('click', openMenu);
+    }
+    
+    // Back to top button
+    if (backToTopButton) {
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Show/hide back to top button based on scroll position
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+    }
+    
+    // Header visibility on scroll
+    const header = document.getElementById('header');
+    let lastScrollTop = 0;
+    
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+            // Scrolling down & past threshold - hide header
+            header.classList.add('hidden');
+        } else {
+            // Scrolling up or at top - show header
+            header.classList.remove('hidden');
+        }
+        
+        lastScrollTop = scrollTop;
+    });
+}
+
+// Navigation functions
+function navigateToProfile() {
+    window.location.href = 'profile.html';
+}
+
+function navigateToAboutUs() {
+    window.location.href = 'aboutus.html';
+}
+
+function navigateToSearch() {
+    window.location.href = 'search.html';
+}
+
+function navigateToChatbot() {
+    window.location.href = 'chatbot.html';
+}
+
+function navigateToGames() {
+    window.location.href = 'gamelist.html';
+}
+
+// Menu functions
+function openMenu() {
+    document.getElementById('sideMenu').style.width = '250px';
+}
+
+function closeMenu() {
+    document.getElementById('sideMenu').style.width = '0';
+}
+
+// Initialize the app when document is ready
+document.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>

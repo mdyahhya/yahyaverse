@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Coach</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .setup-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .setup-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .setup-section input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .setup-section input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .interview-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .chat-container {
+            height: 400px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            overflow-y: auto;
+            padding: 20px;
+            background: white;
+            margin-bottom: 20px;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.ai {
+            text-align: left;
+        }
+
+        .message.user {
+            text-align: right;
+        }
+
+        .message-content {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+            position: relative;
+        }
+
+        .message.ai .message-content {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .message.user .message-content {
+            background: #f1f3f4;
+            color: #333;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .input-container input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 16px;
+        }
+
+        .input-container input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .score-display {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #667eea;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.info {
+            background: #cce7ff;
+            color: #004085;
+            border: 1px solid #b3d7ff;
+        }
+
+        .feedback-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .feedback-section h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .interview-controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .chat-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧑‍🎓 AI Interview Coach</h1>
+            <p>Practice interviews with AI feedback and scoring</p>
+        </div>
+
+        <div class="setup-section">
+            <h3>🔑 API Setup</h3>
+            <input type="password" id="apiKeyInput" placeholder="Enter your Hugging Face API key (hf_...)" />
+            <button class="btn btn-primary" id="testApiBtn">Test API Connection</button>
+            <div class="status info" id="apiStatus" style="display: none;">
+                Ready to test connection...
+            </div>
+        </div>
+
+        <div class="interview-controls">
+            <button class="btn btn-primary" id="startInterview" disabled>
+                🚀 Start Interview
+            </button>
+            <button class="btn btn-secondary" id="endInterview" disabled>
+                ⏹️ End Interview
+            </button>
+            <button class="btn btn-success" id="voiceBtn" disabled>
+                🎤 Voice Input
+            </button>
+        </div>
+
+        <div class="score-display" id="scoreDisplay" style="display: none;">
+            Score: <span id="currentScore">0</span>/100
+        </div>
+
+        <div class="chat-container" id="chatContainer">
+            <div class="message ai">
+                <div class="message-content">
+                    Welcome to AI Interview Coach! Enter your Hugging Face API key above, test the connection, and start practicing!
+                </div>
+            </div>
+        </div>
+
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="Type your answer here..." disabled />
+            <button class="btn btn-primary" id="sendBtn" disabled>Send</button>
+        </div>
+
+        <div class="feedback-section" id="feedbackSection" style="display: none;">
+            <h4>📊 Interview Feedback</h4>
+            <div id="feedbackContent"></div>
+        </div>
+    </div>
+
+    <script>
+        class AIInterviewCoach {
+            constructor() {
+                this.apiKey = '';
+                this.isApiConnected = false;
+                this.isInterviewActive = false;
+                this.currentScore = 0;
+                this.questionCount = 0;
+                this.responses = [];
+                this.recognition = null;
+                this.isListening = false;
+                
+                // Multiple models to try (in order of preference)
+                this.models = [
+                    'https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium',
+                    'https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill',
+                    'https://api-inference.huggingface.co/models/microsoft/DialoGPT-small'
+                ];
+                this.currentModelIndex = 0;
+                this.apiUrl = this.models[0];
+                
+                this.initializeElements();
+                this.setupEventListeners();
+                this.setupSpeechRecognition();
+            }
+
+            initializeElements() {
+                this.elements = {
+                    apiKeyInput: document.getElementById('apiKeyInput'),
+                    testApiBtn: document.getElementById('testApiBtn'),
+                    apiStatus: document.getElementById('apiStatus'),
+                    startBtn: document.getElementById('startInterview'),
+                    endBtn: document.getElementById('endInterview'),
+                    voiceBtn: document.getElementById('voiceBtn'),
+                    chatContainer: document.getElementById('chatContainer'),
+                    userInput: document.getElementById('userInput'),
+                    sendBtn: document.getElementById('sendBtn'),
+                    scoreDisplay: document.getElementById('scoreDisplay'),
+                    currentScore: document.getElementById('currentScore'),
+                    feedbackSection: document.getElementById('feedbackSection'),
+                    feedbackContent: document.getElementById('feedbackContent')
+                };
+            }
+
+            setupEventListeners() {
+                this.elements.testApiBtn.addEventListener('click', () => this.testApiConnection());
+                this.elements.startBtn.addEventListener('click', () => this.startInterview());
+                this.elements.endBtn.addEventListener('click', () => this.endInterview());
+                this.elements.voiceBtn.addEventListener('click', () => this.toggleVoiceInput());
+                this.elements.sendBtn.addEventListener('click', () => this.sendResponse());
+                this.elements.userInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.sendResponse();
+                });
+                this.elements.apiKeyInput.addEventListener('input', () => {
+                    this.apiKey = this.elements.apiKeyInput.value.trim();
+                });
+            }
+
+            setupSpeechRecognition() {
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    this.recognition = new SpeechRecognition();
+                    this.recognition.continuous = false;
+                    this.recognition.interimResults = false;
+                    this.recognition.lang = 'en-US';
+
+                    this.recognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript;
+                        this.elements.userInput.value = transcript;
+                        this.isListening = false;
+                        this.elements.voiceBtn.textContent = '🎤 Voice Input';
+                    };
+
+                    this.recognition.onerror = () => {
+                        this.isListening = false;
+                        this.elements.voiceBtn.textContent = '🎤 Voice Input';
+                        this.showStatus('Voice recognition error. Please try again.', 'error');
+                    };
+                }
+            }
+
+            async testApiConnection() {
+                if (!this.apiKey || !this.apiKey.startsWith('hf_')) {
+                    this.showStatus('❌ Please enter a valid Hugging Face API key starting with "hf_"', 'error');
+                    return;
+                }
+
+                this.showStatus('🔄 Testing API connection...', 'info');
+                
+                // Try each model until one works
+                for (let i = 0; i < this.models.length; i++) {
+                    try {
+                        this.showStatus(`🔄 Testing model ${i + 1}/${this.models.length}...`, 'info');
+                        
+                        const response = await fetch(this.models[i], {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${this.apiKey}`,
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                inputs: "Hello",
+                                parameters: {
+                                    max_new_tokens: 20,
+                                    temperature: 0.7,
+                                    return_full_text: false
+                                }
+                            })
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            console.log('API Response:', data);
+                            
+                            this.isApiConnected = true;
+                            this.apiUrl = this.models[i];
+                            this.currentModelIndex = i;
+                            this.showStatus(`✅ API connected successfully using model ${i + 1}!`, 'success');
+                            this.elements.startBtn.disabled = false;
+                            this.addMessage('🎉 API connected! I\'m ready to help you practice interviews. Click "Start Interview" to begin!', 'ai');
+                            return; // Success - exit the loop
+                            
+                        } else if (response.status === 401) {
+                            this.showStatus('❌ Invalid API key or insufficient permissions. Make sure your token has "Inference" permission enabled.', 'error');
+                            return; // Don't try other models if auth fails
+                        } else if (response.status === 503) {
+                            this.showStatus(`🔄 Model ${i + 1} is loading... Trying next model...`, 'info');
+                            continue; // Try next model
+                        } else {
+                            console.log(`Model ${i + 1} failed with status:`, response.status);
+                            continue; // Try next model
+                        }
+                        
+                    } catch (error) {
+                        console.error(`Model ${i + 1} connection error:`, error);
+                        continue; // Try next model
+                    }
+                }
+                
+                // If we get here, all models failed
+                this.isApiConnected = false;
+                this.showStatus('❌ All models failed. Using offline mode with basic feedback. Check your API key permissions.', 'error');
+                this.elements.startBtn.disabled = false;
+            }
+
+            showStatus(message, type) {
+                this.elements.apiStatus.innerHTML = message;
+                this.elements.apiStatus.className = `status ${type}`;
+                this.elements.apiStatus.style.display = 'block';
+            }
+
+            async startInterview() {
+                this.isInterviewActive = true;
+                this.currentScore = 0;
+                this.questionCount = 0;
+                this.responses = [];
+
+                this.elements.startBtn.disabled = true;
+                this.elements.endBtn.disabled = false;
+                this.elements.userInput.disabled = false;
+                this.elements.sendBtn.disabled = false;
+                this.elements.voiceBtn.disabled = false;
+                this.elements.scoreDisplay.style.display = 'block';
+                this.elements.feedbackSection.style.display = 'none';
+
+                this.addMessage('🚀 Interview started! I\'ll ask you some questions. Take your time and give thoughtful answers.', 'ai');
+                
+                setTimeout(() => this.askQuestion(), 1500);
+            }
+
+            endInterview() {
+                this.isInterviewActive = false;
+                
+                this.elements.startBtn.disabled = false;
+                this.elements.endBtn.disabled = true;
+                this.elements.userInput.disabled = true;
+                this.elements.sendBtn.disabled = true;
+                this.elements.voiceBtn.disabled = true;
+
+                this.addMessage('Interview completed! Here\'s your performance summary.', 'ai');
+                this.showFinalFeedback();
+            }
+
+            toggleVoiceInput() {
+                if (!this.recognition) {
+                    this.showStatus('Speech recognition not supported in this browser.', 'error');
+                    return;
+                }
+
+                if (this.isListening) {
+                    this.recognition.stop();
+                    this.isListening = false;
+                    this.elements.voiceBtn.textContent = '🎤 Voice Input';
+                } else {
+                    this.recognition.start();
+                    this.isListening = true;
+                    this.elements.voiceBtn.textContent = '🛑 Stop Listening';
+                }
+            }
+
+            askQuestion() {
+                const questions = [
+                    "Tell me about yourself and your background.",
+                    "What are your greatest strengths and how do they apply to this role?",
+                    "Describe a challenging project you worked on and how you overcame obstacles.",
+                    "Where do you see yourself in 5 years?",
+                    "Why do you want to work for our company?",
+                    "Tell me about a time you had to work under pressure.",
+                    "What is your biggest weakness and how are you working to improve it?",
+                    "Describe your ideal work environment.",
+                    "How do you handle criticism and feedback?",
+                    "Do you have any questions for us?"
+                ];
+
+                const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
+                this.addMessage(randomQuestion, 'ai');
+            }
+
+            async sendResponse() {
+                const userResponse = this.elements.userInput.value.trim();
+                if (!userResponse || !this.isInterviewActive) return;
+
+                this.addMessage(userResponse, 'user');
+                this.elements.userInput.value = '';
+                this.responses.push(userResponse);
+
+                this.showLoading();
+
+                try {
+                    const feedback = await this.getAIFeedback(userResponse);
+                    this.hideLoading();
+                    
+                    const responseScore = this.calculateScore(userResponse, feedback);
+                    this.currentScore = Math.min(100, this.currentScore + responseScore);
+                    this.elements.currentScore.textContent = Math.round(this.currentScore);
+
+                    this.addMessage(feedback, 'ai');
+
+                    this.questionCount++;
+                    if (this.questionCount < 3) {
+                        setTimeout(() => this.askQuestion(), 1000);
+                    } else {
+                        setTimeout(() => this.endInterview(), 2000);
+                    }
+
+                } catch (error) {
+                    this.hideLoading();
+                    this.addMessage('Sorry, I had trouble processing your response. Here\'s some basic feedback.', 'ai');
+                    
+                    // Provide fallback feedback
+                    const fallbackFeedback = this.generateFallbackFeedback(userResponse);
+                    this.addMessage(fallbackFeedback, 'ai');
+                    
+                    const responseScore = this.calculateScore(userResponse, fallbackFeedback);
+                    this.currentScore = Math.min(100, this.currentScore + responseScore);
+                    this.elements.currentScore.textContent = Math.round(this.currentScore);
+                    
+                    this.questionCount++;
+                    if (this.questionCount < 3) {
+                        setTimeout(() => this.askQuestion(), 1000);
+                    } else {
+                        setTimeout(() => this.endInterview(), 2000);
+                    }
+                }
+            }
+
+            async getAIFeedback(userResponse) {
+                if (!this.isApiConnected) {
+                    return this.generateFallbackFeedback(userResponse);
+                }
+
+                try {
+                    const prompt = `Give brief interview feedback for: "${userResponse}". Focus on strengths and one improvement.`;
+                    
+                    const response = await fetch(this.apiUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${this.apiKey}`,
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            inputs: prompt,
+                            parameters: {
+                                max_new_tokens: 80,
+                                temperature: 0.7,
+                                return_full_text: false
+                            }
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    
+                    let feedback = '';
+                    if (Array.isArray(data)) {
+                        feedback = data[0]?.generated_text || '';
+                    } else if (data.generated_text) {
+                        feedback = data.generated_text;
+                    }
+
+                    // Clean up the feedback
+                    feedback = feedback.replace(prompt, '').trim();
+                    
+                    if (!feedback || feedback.length < 10) {
+                        return this.generateFallbackFeedback(userResponse);
+                    }
+
+                    return feedback;
+
+                } catch (error) {
+                    console.error('API Error:', error);
+                    return this.generateFallbackFeedback(userResponse);
+                }
+            }
+
+            generateFallbackFeedback(response) {
+                const length = response.split(' ').length;
+                const feedbacks = [
+                    `Good response! Your answer shows thoughtfulness. Consider adding more specific examples to strengthen your points.`,
+                    `Nice work! You've covered the key points well. Try to be more concise while maintaining detail.`,
+                    `Well articulated! Your response demonstrates good communication skills. Consider adding metrics or outcomes.`,
+                    `Solid answer! You show good self-awareness. Try to connect your experience more directly to the role.`
+                ];
+
+                let feedback = feedbacks[Math.floor(Math.random() * feedbacks.length)];
+                
+                if (length < 10) {
+                    feedback += " Try to elaborate more on your points for a comprehensive answer.";
+                } else if (length > 100) {
+                    feedback += " Consider being more concise to keep the interviewer engaged.";
+                }
+
+                return feedback;
+            }
+
+            calculateScore(response, feedback) {
+                const wordCount = response.split(' ').length;
+                let score = 0;
+
+                if (wordCount >= 20 && wordCount <= 80) score += 15;
+                else if (wordCount >= 10) score += 10;
+                else score += 5;
+
+                const goodPhrases = ['experience', 'skills', 'team', 'project', 'challenge', 'success', 'learned', 'improved'];
+                const phraseCount = goodPhrases.filter(phrase => 
+                    response.toLowerCase().includes(phrase)
+                ).length;
+
+                score += phraseCount * 2;
+                return Math.min(score, 20);
+            }
+
+            showLoading() {
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'loading';
+                loadingDiv.id = 'loading';
+                loadingDiv.innerHTML = '<div class="spinner"></div>Analyzing your response...';
+                this.elements.chatContainer.appendChild(loadingDiv);
+                this.scrollToBottom();
+            }
+
+            hideLoading() {
+                const loading = document.getElementById('loading');
+                if (loading) loading.remove();
+            }
+
+            addMessage(content, type) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${type}`;
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content';
+                contentDiv.textContent = content;
+                
+                messageDiv.appendChild(contentDiv);
+                this.elements.chatContainer.appendChild(messageDiv);
+                this.scrollToBottom();
+            }
+
+            scrollToBottom() {
+                this.elements.chatContainer.scrollTop = this.elements.chatContainer.scrollHeight;
+            }
+
+            showFinalFeedback() {
+                const finalScore = Math.round(this.currentScore);
+                let performance = '';
+                
+                if (finalScore >= 80) performance = 'Excellent! 🌟';
+                else if (finalScore >= 60) performance = 'Good! 👍';
+                else if (finalScore >= 40) performance = 'Fair 📈';
+                else performance = 'Needs Improvement 💪';
+
+                const feedbackHTML = `
+                    <p><strong>Final Score:</strong> ${finalScore}/100 - ${performance}</p>
+                    <p><strong>Questions Answered:</strong> ${this.questionCount}</p>
+                    <p><strong>Key Strengths:</strong> Communication, engagement, thoughtful responses</p>
+                    <p><strong>Areas for Improvement:</strong> Add more specific examples, practice conciseness</p>
+                    <p><strong>Recommendation:</strong> Keep practicing! Research common questions for your field.</p>
+                `;
+
+                this.elements.feedbackContent.innerHTML = feedbackHTML;
+                this.elements.feedbackSection.style.display = 'block';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new AIInterviewCoach();
+        });
+    </script>
+</body>
+</html>

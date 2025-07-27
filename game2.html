@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particle Trail Magic</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c0c0c, #1a1a2e, #16213e);
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .mobile-container {
+            width: 375px;
+            min-height: 100vh;
+            position: relative;
+            border: 2px solid #4a90e2;
+            border-radius: 25px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 0 50px rgba(74, 144, 226, 0.3),
+                inset 0 0 50px rgba(255, 255, 255, 0.05);
+        }
+
+        .canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            border-radius: 23px;
+            overflow: hidden;
+        }
+
+        #particleCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            cursor: none;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            padding: 40px 30px;
+            color: white;
+            text-align: center;
+            pointer-events: none;
+            opacity: 0.3;
+            transition: opacity 0.5s ease;
+        }
+
+        .mobile-container:hover .content {
+            opacity: 0.1;
+        }
+
+        .title {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(74, 144, 226, 0.8);
+        }
+
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 30px 0;
+            backdrop-filter: blur(5px);
+        }
+
+        .feature-list {
+            text-align: left;
+            margin: 20px 0;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .feature-list li {
+            margin: 10px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .feature-list li::before {
+            content: "✨";
+            position: absolute;
+            left: 0;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(180deg); }
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .stat-box {
+            background: rgba(74, 144, 226, 0.2);
+            border: 1px solid rgba(74, 144, 226, 0.4);
+            border-radius: 10px;
+            padding: 15px;
+            
+        }
+
+        .stat-number {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #4ecdc4;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .glow-effect {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(74, 144, 226, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse 4s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.8; }
+        }
+
+        .touch-indicator {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <div class="canvas-container">
+            <canvas id="particleCanvas"></canvas>
+        </div>
+        
+        <div class="content">
+            <div class="glow-effect"></div>
+            
+            <h1 class="title">Particle Galaxy</h1>
+            <p class="subtitle">Touch & Move to Create Magic</p>
+            
+            <div class="stats">
+                <div class="stat-box">
+                    <span class="stat-number" id="particleCount">0</span>
+                    <span class="stat-label">Active Particles</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" id="fps">60</span>
+                    <span class="stat-label">FPS</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="touch-indicator" id="touchIndicator"></div>
+    </div>
+
+    <script>
+        class ParticleSystem {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.particles = [];
+                this.mouse = { x: 0, y: 0, pressed: false };
+                this.touches = new Map();
+                this.colors = [
+                    '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', 
+                    '#ffeaa7', '#fd79a8', '#fdcb6e', '#6c5ce7',
+                    '#a29bfe', '#74b9ff', '#00cec9', '#55a3ff'
+                ];
+                this.particleCount = 0;
+                this.lastTime = 0;
+                this.fps = 60;
+                this.frameCount = 0;
+                this.lastFpsUpdate = 0;
+
+                this.setupCanvas();
+                this.bindEvents();
+                this.animate();
+            }
+
+            setupCanvas() {
+                const container = this.canvas.parentElement;
+                const rect = container.getBoundingClientRect();
+                this.canvas.width = rect.width * window.devicePixelRatio;
+                this.canvas.height = rect.height * window.devicePixelRatio;
+                this.canvas.style.width = rect.width + 'px';
+                this.canvas.style.height = rect.height + 'px';
+                this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            }
+
+            bindEvents() {
+                // Touch events
+                this.canvas.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    for (let touch of e.changedTouches) {
+                        this.touches.set(touch.identifier, {
+                            x: touch.clientX - this.canvas.getBoundingClientRect().left,
+                            y: touch.clientY - this.canvas.getBoundingClientRect().top,
+                            color: this.colors[Math.floor(Math.random() * this.colors.length)]
+                        });
+                    }
+                });
+
+                this.canvas.addEventListener('touchmove', (e) => {
+                    e.preventDefault();
+                    for (let touch of e.changedTouches) {
+                        if (this.touches.has(touch.identifier)) {
+                            const touchData = this.touches.get(touch.identifier);
+                            const newX = touch.clientX - this.canvas.getBoundingClientRect().left;
+                            const newY = touch.clientY - this.canvas.getBoundingClientRect().top;
+                            
+                            this.createParticleTrail(touchData.x, touchData.y, newX, newY, touchData.color);
+                            
+                            touchData.x = newX;
+                            touchData.y = newY;
+                        }
+                    }
+                });
+
+                this.canvas.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    for (let touch of e.changedTouches) {
+                        this.touches.delete(touch.identifier);
+                    }
+                });
+
+                // Mouse events for desktop testing
+                this.canvas.addEventListener('mousedown', (e) => {
+                    this.mouse.pressed = true;
+                    this.mouse.x = e.clientX - this.canvas.getBoundingClientRect().left;
+                    this.mouse.y = e.clientY - this.canvas.getBoundingClientRect().top;
+                });
+
+                this.canvas.addEventListener('mousemove', (e) => {
+                    const newX = e.clientX - this.canvas.getBoundingClientRect().left;
+                    const newY = e.clientY - this.canvas.getBoundingClientRect().top;
+                    
+                    if (this.mouse.pressed) {
+                        this.createParticleTrail(this.mouse.x, this.mouse.y, newX, newY, 
+                            this.colors[Math.floor(Math.random() * this.colors.length)]);
+                    }
+                    
+                    this.mouse.x = newX;
+                    this.mouse.y = newY;
+                });
+
+                this.canvas.addEventListener('mouseup', () => {
+                    this.mouse.pressed = false;
+                });
+
+                window.addEventListener('resize', () => this.setupCanvas());
+            }
+
+            createParticleTrail(x1, y1, x2, y2, baseColor) {
+                const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+                const particleCount = Math.min(3, Math.max(1, Math.floor(distance / 8)));
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const t = i / particleCount;
+                    const x = x1 + (x2 - x1) * t;
+                    const y = y1 + (y2 - y1) * t;
+                    
+                    this.particles.push(new Particle(x, y, baseColor));
+                }
+            }
+
+            updateParticles() {
+                // Limit max particles for performance
+                if (this.particles.length > 500) {
+                    this.particles = this.particles.slice(-500);
+                }
+                
+                this.particles = this.particles.filter(particle => {
+                    particle.update();
+                    return particle.life > 0;
+                });
+                
+                this.particleCount = this.particles.length;
+                
+                // Update UI less frequently
+                if (this.frameCount % 10 === 0) {
+                    document.getElementById('particleCount').textContent = this.particleCount;
+                }
+            }
+
+            drawParticles() {
+                this.ctx.globalCompositeOperation = 'screen';
+                
+                this.particles.forEach(particle => {
+                    particle.draw(this.ctx);
+                });
+                
+                this.ctx.globalCompositeOperation = 'source-over';
+            }
+
+            updateFPS(currentTime) {
+                this.frameCount++;
+                if (currentTime - this.lastFpsUpdate >= 1000) {
+                    this.fps = Math.round(this.frameCount * 1000 / (currentTime - this.lastFpsUpdate));
+                    document.getElementById('fps').textContent = this.fps;
+                    this.frameCount = 0;
+                    this.lastFpsUpdate = currentTime;
+                }
+            }
+
+            animate(currentTime = 0) {
+                this.updateFPS(currentTime);
+                
+                // Clear canvas with fade effect
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                this.ctx.fillRect(0, 0, this.canvas.width / window.devicePixelRatio, 
+                                 this.canvas.height / window.devicePixelRatio);
+                
+                this.updateParticles();
+                this.drawParticles();
+                
+                requestAnimationFrame((time) => this.animate(time));
+            }
+        }
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.vx = (Math.random() - 0.5) * 4;
+                this.vy = (Math.random() - 0.5) * 4;
+                this.life = 1.0;
+                this.decay = Math.random() * 0.02 + 0.01;
+                this.size = Math.random() * 3 + 1;
+                this.color = color;
+                this.hue = this.getHue(color);
+                this.gravity = 0.05;
+                this.friction = 0.98;
+            }
+
+            getHue(color) {
+                const colors = {
+                    '#ff6b6b': 0, '#4ecdc4': 180, '#45b7d1': 200, '#96ceb4': 160,
+                    '#ffeaa7': 50, '#fd79a8': 330, '#fdcb6e': 45, '#6c5ce7': 260,
+                    '#a29bfe': 250, '#74b9ff': 220, '#00cec9': 175, '#55a3ff': 210
+                };
+                return colors[color] || 0;
+            }
+
+            update() {
+                this.vx *= this.friction;
+                this.vy += this.gravity;
+                this.vy *= this.friction;
+                
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life -= this.decay;
+                
+                this.size *= 0.99;
+            }
+
+            draw(ctx) {
+                const alpha = this.life;
+                const currentHue = (this.hue + (1 - this.life) * 60) % 360;
+                
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                
+                // Simplified rendering for better performance
+                ctx.fillStyle = `hsla(${currentHue}, 80%, 60%, ${alpha})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Lighter glow effect
+                if (this.life > 0.5) {
+                    ctx.shadowBlur = 5;
+                    ctx.shadowColor = `hsl(${currentHue}, 100%, 70%)`;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size * 0.3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                ctx.restore();
+            }
+        }
+
+        // Initialize the particle system
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('particleCanvas');
+            new ParticleSystem(canvas);
+        });
+
+        // Touch indicator
+        let touchIndicator = document.getElementById('touchIndicator');
+        document.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            touchIndicator.style.left = touch.clientX + 'px';
+            touchIndicator.style.top = touch.clientY + 'px';
+            touchIndicator.style.opacity = '1';
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            touchIndicator.style.left = touch.clientX + 'px';
+            touchIndicator.style.top = touch.clientY + 'px';
+        });
+
+        document.addEventListener('touchend', () => {
+            touchIndicator.style.opacity = '0';
+        });
+    </script>
+</body>
+</html>

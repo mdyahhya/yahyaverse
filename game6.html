@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Camera</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow-x: hidden;
+            max-width: 375px;
+            max-height: 770px;
+            margin: 0 auto;
+        }
+
+        #container {
+            width: 100%;
+            height: 100vh;
+            max-width: 375px;
+            max-height: 770px;
+            overflow-y: auto;
+            background: #000;
+            position: relative;
+        }
+
+        /* Camera View */
+        #camera-view {
+            position: relative;
+            width: 100%;
+            height: 60vh;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #canvas {
+            display: none;
+        }
+
+        .camera-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .focus-frame {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: focusPulse 2s infinite;
+        }
+
+        @keyframes focusPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+
+        .camera-info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            color: white;
+            font-size: 14px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Camera Controls */
+        .camera-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.8) 50%);
+            padding: 30px 20px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 5;
+        }
+
+        .capture-btn {
+            width: 70px;
+            height: 70px;
+            border: 4px solid white;
+            border-radius: 50%;
+            background: transparent;
+            cursor: pointer;
+            position: relative;
+            touch-action: manipulation;
+            transition: all 0.2s ease;
+        }
+
+        .capture-btn:active {
+            transform: scale(0.9);
+        }
+
+        .capture-btn::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .capture-btn:active::before {
+            background: #00ff88;
+        }
+
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-btn:active {
+            transform: scale(0.9);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Bottom Panel */
+        .bottom-panel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 40vh;
+            padding: 20px;
+            border-radius: 20px 20px 0 0;
+            margin-top: -20px;
+            position: relative;
+            z-index: 3;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .panel-title {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .photo-count {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            touch-action: manipulation;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .action-btn.primary {
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+        }
+
+        .action-btn.secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Photo Gallery */
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .photo-item {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            touch-action: manipulation;
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.2s ease;
+        }
+
+        .photo-item:active img {
+            transform: scale(1.1);
+        }
+
+        .photo-item .delete-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 59, 48, 0.9);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+        }
+
+        .empty-gallery {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+
+        .empty-gallery .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* Status Messages */
+        .status-msg {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .status-msg.show {
+            opacity: 1;
+        }
+
+        /* Flash Effect */
+        .flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .flash.active {
+            opacity: 1;
+            animation: flashEffect 0.2s ease;
+        }
+
+        @keyframes flashEffect {
+            0% { opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+
+        /* Fullscreen Photo View */
+        .fullscreen-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .fullscreen-photo {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 10px;
+        }
+
+        .fullscreen-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        /* Responsive adjustments */
+        @media (max-height: 600px) {
+            #camera-view {
+                height: 50vh;
+            }
+            .bottom-panel {
+                min-height: 50vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <!-- Camera View -->
+        <div id="camera-view">
+            <video id="video" autoplay playsinline></video>
+            <canvas id="canvas"></canvas>
+            
+            <div class="camera-overlay">
+                <div class="focus-frame"></div>
+                <div class="camera-info" id="camera-info">
+                    Tap the capture button to take photos
+                </div>
+            </div>
+
+            <div class="camera-controls">
+                <button class="control-btn" id="switchBtn" title="Switch Camera">
+                    🔄
+                </button>
+                
+                <button class="capture-btn" id="captureBtn"></button>
+                
+                <button class="control-btn" id="flashBtn" title="Toggle Flash">
+                    ⚡
+                </button>
+            </div>
+        </div>
+
+        <!-- Bottom Panel -->
+        <div class="bottom-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">Photo Gallery</h2>
+                <span class="photo-count" id="photoCount">0 photos</span>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn primary" id="startBtn">
+                    📷 Start Camera
+                </button>
+                <button class="action-btn secondary" id="clearBtn">
+                    🗑️ Clear All
+                </button>
+            </div>
+
+            <div class="photo-gallery" id="photoGallery">
+                <div class="empty-gallery">
+                    <div class="icon">📸</div>
+                    <p>No photos yet.<br>Start camera and capture moments!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Message -->
+    <div class="status-msg" id="statusMsg"></div>
+
+    <!-- Flash Effect -->
+    <div class="flash" id="flash"></div>
+
+    <!-- Fullscreen Photo View -->
+    <div class="fullscreen-overlay" id="fullscreenOverlay">
+        <img class="fullscreen-photo" id="fullscreenPhoto" alt="Full size photo">
+        <button class="fullscreen-close" id="fullscreenClose">×</button>
+    </div>
+
+    <script>
+        class MobileCameraApp {
+            constructor() {
+                this.video = document.getElementById('video');
+                this.canvas = document.getElementById('canvas');
+                this.ctx = this.canvas.getContext('2d');
+                
+                // Store photos in memory during session
+                // Note: In a real app with localStorage, you would use:
+                // this.photos = JSON.parse(localStorage.getItem('cameraPhotos') || '[]');
+                this.photos = [];
+                
+                this.isRunning = false;
+                this.currentFacingMode = 'environment';
+                this.flashEnabled = false;
+                
+                this.setupEventListeners();
+                this.updatePhotoCount();
+                this.renderGallery();
+            }
+
+            setupEventListeners() {
+                document.getElementById('startBtn').addEventListener('click', () => this.toggleCamera());
+                document.getElementById('captureBtn').addEventListener('click', () => this.capturePhoto());
+                document.getElementById('switchBtn').addEventListener('click', () => this.switchCamera());
+                document.getElementById('flashBtn').addEventListener('click', () => this.toggleFlash());
+                document.getElementById('clearBtn').addEventListener('click', () => this.clearAllPhotos());
+                document.getElementById('fullscreenClose').addEventListener('click', () => this.closeFullscreen());
+
+                // Touch events for mobile optimization
+                document.addEventListener('touchstart', this.handleTouch.bind(this), { passive: false });
+                
+                // Prevent zoom on double tap
+                document.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                }, { passive: false });
+            }
+
+            handleTouch(event) {
+                // Prevent default zoom behavior
+                if (event.touches.length > 1) {
+                    event.preventDefault();
+                }
+            }
+
+            async toggleCamera() {
+                if (!this.isRunning) {
+                    await this.startCamera();
+                } else {
+                    this.stopCamera();
+                }
+            }
+
+            async startCamera() {
+                try {
+                    this.showStatus('Starting camera...');
+                    
+                    const constraints = {
+                        video: {
+                            facingMode: this.currentFacingMode,
+                            width: { ideal: 375 },
+                            height: { ideal: 600 }
+                        }
+                    };
+
+                    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                    this.video.srcObject = stream;
+                    
+                    this.video.onloadedmetadata = () => {
+                        this.canvas.width = this.video.videoWidth;
+                        this.canvas.height = this.video.videoHeight;
+                        this.isRunning = true;
+                        
+                        document.getElementById('startBtn').innerHTML = '⏹️ Stop Camera';
+                        document.getElementById('camera-info').textContent = 'Camera ready - Tap to capture!';
+                        this.showStatus('Camera started successfully!');
+                    };
+                } catch (error) {
+                    console.error('Camera error:', error);
+                    this.showStatus('Camera access denied or unavailable');
+                    document.getElementById('camera-info').textContent = 'Camera access denied';
+                }
+            }
+
+            stopCamera() {
+                if (this.video.srcObject) {
+                    this.video.srcObject.getTracks().forEach(track => track.stop());
+                    this.video.srcObject = null;
+                }
+                this.isRunning = false;
+                document.getElementById('startBtn').innerHTML = '📷 Start Camera';
+                document.getElementById('camera-info').textContent = 'Camera stopped';
+                this.showStatus('Camera stopped');
+            }
+
+            async switchCamera() {
+                if (this.isRunning) {
+                    this.stopCamera();
+                    this.currentFacingMode = this.currentFacingMode === 'environment' ? 'user' : 'environment';
+                    setTimeout(() => this.startCamera(), 500);
+                    this.showStatus(`Switched to ${this.currentFacingMode === 'environment' ? 'back' : 'front'} camera`);
+                }
+            }
+
+            toggleFlash() {
+                this.flashEnabled = !this.flashEnabled;
+                const flashBtn = document.getElementById('flashBtn');
+                flashBtn.style.background = this.flashEnabled ? 
+                    'rgba(255, 255, 0, 0.3)' : 'rgba(255, 255, 255, 0.1)';
+                this.showStatus(`Flash ${this.flashEnabled ? 'enabled' : 'disabled'}`);
+            }
+
+            capturePhoto() {
+                if (!this.isRunning) {
+                    this.showStatus('Please start camera first');
+                    return;
+                }
+
+                // Flash effect
+                if (this.flashEnabled) {
+                    this.triggerFlash();
+                }
+
+                // Capture photo
+                this.ctx.drawImage(this.video, 0, 0);
+                const photoData = this.canvas.toDataURL('image/jpeg', 0.8);
+                
+                const photo = {
+                    id: Date.now(),
+                    data: photoData,
+                    timestamp: new Date().toLocaleString(),
+                    size: Math.round(photoData.length * 0.75 / 1024) // Approximate KB
+                };
+
+                this.photos.unshift(photo); // Add to beginning
+                
+                // In a real app with localStorage:
+                // localStorage.setItem('cameraPhotos', JSON.stringify(this.photos));
+                
+                this.updatePhotoCount();
+                this.renderGallery();
+                this.showStatus(`Photo captured! (${photo.size}KB)`);
+                
+                // Vibrate if supported
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+            }
+
+            triggerFlash() {
+                const flash = document.getElementById('flash');
+                flash.classList.add('active');
+                setTimeout(() => flash.classList.remove('active'), 200);
+            }
+
+            deletePhoto(photoId) {
+                this.photos = this.photos.filter(photo => photo.id !== photoId);
+                
+                // In a real app with localStorage:
+                // localStorage.setItem('cameraPhotos', JSON.stringify(this.photos));
+                
+                this.updatePhotoCount();
+                this.renderGallery();
+                this.showStatus('Photo deleted');
+            }
+
+            clearAllPhotos() {
+                if (this.photos.length === 0) {
+                    this.showStatus('No photos to clear');
+                    return;
+                }
+
+                if (confirm(`Delete all ${this.photos.length} photos?`)) {
+                    this.photos = [];
+                    
+                    // In a real app with localStorage:
+                    // localStorage.removeItem('cameraPhotos');
+                    
+                    this.updatePhotoCount();
+                    this.renderGallery();
+                    this.showStatus('All photos cleared');
+                }
+            }
+
+            updatePhotoCount() {
+                const count = this.photos.length;
+                document.getElementById('photoCount').textContent = 
+                    `${count} photo${count !== 1 ? 's' : ''}`;
+            }
+
+            renderGallery() {
+                const gallery = document.getElementById('photoGallery');
+                
+                if (this.photos.length === 0) {
+                    gallery.innerHTML = `
+                        <div class="empty-gallery">
+                            <div class="icon">📸</div>
+                            <p>No photos yet.<br>Start camera and capture moments!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                gallery.innerHTML = this.photos.map(photo => `
+                    <div class="photo-item">
+                        <img src="${photo.data}" alt="Photo ${photo.id}" 
+                             onclick="cameraApp.showFullscreen('${photo.data}')">
+                        <button class="delete-btn" onclick="cameraApp.deletePhoto(${photo.id})" 
+                                title="Delete photo">×</button>
+                    </div>
+                `).join('');
+            }
+
+            showFullscreen(photoData) {
+                document.getElementById('fullscreenPhoto').src = photoData;
+                document.getElementById('fullscreenOverlay').style.display = 'flex';
+            }
+
+            closeFullscreen() {
+                document.getElementById('fullscreenOverlay').style.display = 'none';
+            }
+
+            showStatus(message) {
+                const statusMsg = document.getElementById('statusMsg');
+                statusMsg.textContent = message;
+                statusMsg.classList.add('show');
+                
+                setTimeout(() => {
+                    statusMsg.classList.remove('show');
+                }, 2000);
+            }
+        }
+
+        // Initialize the app
+        let cameraApp;
+        window.addEventListener('load', () => {
+            cameraApp = new MobileCameraApp();
+        });
+
+        // Prevent zoom and scroll issues
+        document.addEventListener('touchmove', function(event) {
+            if (event.scale !== 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+
+        // Handle orientation changes
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                if (cameraApp && cameraApp.isRunning) {
+                    cameraApp.canvas.width = cameraApp.video.videoWidth;
+                    cameraApp.canvas.height = cameraApp.video.videoHeight;
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>
