@@ -2,7 +2,8 @@
   "name": "YahyaVerse - Game Portal",
   "short_name": "YahyaVerse",
   "description": "A cosmic game portal with 20 amazing games and customizable interface",
-  "start_url": "/",
+  "version": "1.0.0",
+  "start_url": "/?v=" + Date.now(),
   "display": "standalone",
   "background_color": "#0f0f23",
   "theme_color": "#1a1a2e",
@@ -10,6 +11,7 @@
   "scope": "/",
   "lang": "en",
   "categories": ["games", "entertainment"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "yahya.png",
@@ -58,34 +60,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Settings",
-      "short_name": "Settings",
-      "description": "Customize your YahyaVerse",
-      "url": "/?action=settings",
-      "icons": [
-        {
-          "src": "icons/settings-icon.png",
-          "sizes": "96x96"
-        }
-      ]
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "screenshots/desktop-screenshot.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "platform": "wide"
-    },
-    {
-      "src": "screenshots/mobile-screenshot.png",
-      "sizes": "640x1136",
-      "type": "image/png",
-      "platform": "narrow"
     }
   ]
 }
