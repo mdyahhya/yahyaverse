@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Motion Object Controller</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow/4.4.0/tf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            overflow: hidden;
+            color: white;
+        }
+
+        .game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .camera-view {
+            position: relative;
+            width: 90vw;
+            height: 90vh;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+            background: #000;
+            border: 3px solid rgba(255,255,255,0.2);
+        }
+
+        #videoElement {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+
+        .game-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .calibration-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .calibration-text {
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .hand-target {
+            width: 150px;
+            height: 150px;
+            border: 4px solid #00ff88;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            animation: pulse 2s infinite;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(0,255,136,0.5);
+            }
+            50% { 
+                transform: scale(1.1);
+                box-shadow: 0 0 40px rgba(0,255,136,0.8);
+            }
+        }
+
+        .calibration-progress {
+            width: 300px;
+            height: 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #00ccff);
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        .ui-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.7);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            z-index: 50;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .status {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #00ff88;
+        }
+
+        .coordinates {
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 5px;
+        }
+
+        .moving-object {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 30px rgba(255,107,107,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.1s ease;
+            z-index: 30;
+        }
+
+        .collectible {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #feca57, #ff9f43);
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 20px rgba(254,202,87,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            animation: float 2s ease-in-out infinite;
+            z-index: 25;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-10px) scale(1.1); }
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, #ff6b6b, #4ecdc4);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .score-display {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00ff88;
+        }
+
+        .hand-indicator {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, #ff0080, #ff4080);
+            border: 3px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 25px #ff0080;
+            transform: translate(-50%, -50%);
+            z-index: 40;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .hand-indicator::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border: 2px solid rgba(255,0,128,0.3);
+            border-radius: 50%;
+            animation: ripple 2s infinite;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        .instructions {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            padding: 15px 25px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+            z-index: 50;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .level-complete {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            font-weight: bold;
+            color: #00ff88;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
+            opacity: 0;
+            z-index: 200;
+        }
+
+        .obstacle {
+            position: absolute;
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            border: 2px solid white;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            z-index: 25;
+            animation: obstacle-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes obstacle-pulse {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(231,76,60,0.5);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 40px rgba(231,76,60,0.8);
+                transform: scale(1.05);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="camera-view">
+            <video id="videoElement" autoplay muted playsinline></video>
+            <canvas id="gameCanvas" class="game-overlay"></canvas>
+            
+            <div class="ui-panel">
+                <div class="status" id="status">Starting...</div>
+                <div class="score-display">Score: <span id="score">0</span></div>
+                <div class="coordinates" id="handCoords">Hand: (0, 0)</div>
+                <div class="coordinates" id="motionStrength">Motion: 0%</div>
+            </div>
+
+            <div class="hand-indicator" id="handIndicator"></div>
+            <div class="moving-object" id="playerObject">🎮</div>
+            <div class="level-complete" id="levelComplete">Level Complete!</div>
+
+            <div class="calibration-screen" id="calibrationScreen">
+                <div class="calibration-text">
+                    <h2>🤚 Hand Calibration</h2>
+                    <p>Place your hand in the circle and hold steady</p>
+                    <p>Move slowly to calibrate motion sensitivity</p>
+                </div>
+                <div class="hand-target">
+                    Place Hand Here
+                </div>
+                <div class="calibration-progress">
+                    <div class="progress-bar" id="calibrationProgress"></div>
+                </div>
+                <div id="calibrationStatus">Detecting hand...</div>
+            </div>
+
+            <div class="instructions">
+                Move your hand to control the object • Collect stars ⭐ • Avoid obstacles ⚠️
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class HandMotionGame {
+            constructor() {
+                this.video = document.getElementById('videoElement');
+                this.canvas = document.getElementById('gameCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                
+                // Game state
+                this.isCalibrated = false;
+                this.isGameActive = false;
+                this.score = 0;
+                this.level = 1;
+                
+                // Hand tracking
+                this.handPosition = { x: 0, y: 0 };
+                this.previousHandPosition = { x: 0, y: 0 };
+                this.calibrationData = { x: 0, y: 0, sensitivity: 1 };
+                this.motionHistory = [];
+                this.isHandDetected = false;
+                
+                // Game objects
+                this.playerObject = document.getElementById('playerObject');
+                this.collectibles = [];
+                this.obstacles = [];
+                this.particles = [];
+                
+                // Calibration
+                this.calibrationProgress = 0;
+                this.calibrationFrames = 0;
+                this.requiredCalibrationFrames = 60;
+                
+                // Motion detection
+                this.previousFrame = null;
+                this.motionThreshold = 15;
+                this.smoothingFactor = 0.7;
+                
+                this.initializeCamera();
+                this.setupGameLoop();
+                this.generateGameObjects();
+            }
+
+            async initializeCamera() {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        video: { 
+                            width: { ideal: 1280 },
+                            height: { ideal: 720 },
+                            facingMode: 'user'
+                        }
+                    });
+                    
+                    this.video.srcObject = stream;
+                    
+                    this.video.addEventListener('loadedmetadata', () => {
+                        this.canvas.width = this.video.videoWidth;
+                        this.canvas.height = this.video.videoHeight;
+                        this.canvas.style.width = '100%';
+                        this.canvas.style.height = '100%';
+                        
+                        // Initialize player object position
+                        this.updatePlayerPosition(this.canvas.width / 2, this.canvas.height / 2);
+                        
+                        this.updateStatus('Camera ready - Starting hand detection');
+                    });
+
+                } catch (error) {
+                    console.error('Camera access failed:', error);
+                    this.updateStatus('Camera access required');
+                }
+            }
+
+            detectMotion() {
+                if (!this.video.videoWidth) return;
+
+                // Create temporary canvas for motion detection
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCanvas.width = this.video.videoWidth / 4; // Reduce resolution for performance
+                tempCanvas.height = this.video.videoHeight / 4;
+                
+                // Draw current frame
+                tempCtx.drawImage(this.video, 0, 0, tempCanvas.width, tempCanvas.height);
+                const currentFrame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+                
+                if (this.previousFrame) {
+                    const motionData = this.calculateMotion(this.previousFrame.data, currentFrame.data);
+                    this.processMotionData(motionData);
+                }
+                
+                this.previousFrame = currentFrame;
+            }
+
+            calculateMotion(prevData, currData) {
+                let totalMotion = 0;
+                let motionCenterX = 0;
+                let motionCenterY = 0;
+                let motionPixels = 0;
+                
+                const width = this.canvas.width / 4;
+                const height = this.canvas.height / 4;
+                
+                for (let i = 0; i < prevData.length; i += 4) {
+                    const pixelIndex = i / 4;
+                    const x = pixelIndex % width;
+                    const y = Math.floor(pixelIndex / width);
+                    
+                    // Calculate color difference
+                    const rDiff = Math.abs(prevData[i] - currData[i]);
+                    const gDiff = Math.abs(prevData[i + 1] - currData[i + 1]);
+                    const bDiff = Math.abs(prevData[i + 2] - currData[i + 2]);
+                    
+                    const motionIntensity = (rDiff + gDiff + bDiff) / 3;
+                    
+                    if (motionIntensity > this.motionThreshold) {
+                        totalMotion += motionIntensity;
+                        motionCenterX += x * motionIntensity;
+                        motionCenterY += y * motionIntensity;
+                        motionPixels += motionIntensity;
+                    }
+                }
+                
+                return {
+                    intensity: totalMotion,
+                    center: motionPixels > 0 ? {
+                        x: (motionCenterX / motionPixels) * 4, // Scale back up
+                        y: (motionCenterY / motionPixels) * 4
+                    } : null
+                };
+            }
+
+            processMotionData(motionData) {
+                if (!motionData.center) {
+                    this.isHandDetected = false;
+                    document.getElementById('handIndicator').style.opacity = '0';
+                    return;
+                }
+
+                const newX = motionData.center.x;
+                const newY = motionData.center.y;
+                
+                // Smooth the motion
+                this.handPosition.x = this.handPosition.x * this.smoothingFactor + newX * (1 - this.smoothingFactor);
+                this.handPosition.y = this.handPosition.y * this.smoothingFactor + newY * (1 - this.smoothingFactor);
+                
+                this.isHandDetected = true;
+                this.updateHandIndicator();
+                
+                // Update motion strength display
+                const motionStrength = Math.min(100, motionData.intensity / 1000 * 100);
+                document.getElementById('motionStrength').textContent = `Motion: ${Math.round(motionStrength)}%`;
+                
+                if (!this.isCalibrated) {
+                    this.handleCalibration();
+                } else if (this.isGameActive) {
+                    this.updatePlayerFromHand();
+                }
+                
+                // Update coordinates display
+                document.getElementById('handCoords').textContent = 
+                    `Hand: (${Math.round(this.handPosition.x)}, ${Math.round(this.handPosition.y)})`;
+            }
+
+            handleCalibration() {
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+                const distance = Math.sqrt(
+                    Math.pow(this.handPosition.x - centerX, 2) + 
+                    Math.pow(this.handPosition.y - centerY, 2)
+                );
+                
+                if (distance < 100) { // Hand is in calibration zone
+                    this.calibrationFrames++;
+                    this.calibrationProgress = (this.calibrationFrames / this.requiredCalibrationFrames) * 100;
+                    
+                    document.getElementById('calibrationProgress').style.width = this.calibrationProgress + '%';
+                    document.getElementById('calibrationStatus').textContent = 
+                        `Calibrating... ${Math.round(this.calibrationProgress)}%`;
+                    
+                    if (this.calibrationFrames >= this.requiredCalibrationFrames) {
+                        this.completeCalibration();
+                    }
+                } else {
+                    this.calibrationFrames = Math.max(0, this.calibrationFrames - 2);
+                    this.calibrationProgress = (this.calibrationFrames / this.requiredCalibrationFrames) * 100;
+                    document.getElementById('calibrationProgress').style.width = this.calibrationProgress + '%';
+                }
+            }
+
+            completeCalibration() {
+                this.isCalibrated = true;
+                this.calibrationData = {
+                    x: this.handPosition.x,
+                    y: this.handPosition.y,
+                    sensitivity: 2.5
+                };
+                
+                // Hide calibration screen
+                gsap.to(document.getElementById('calibrationScreen'), {
+                    duration: 0.5,
+                    opacity: 0,
+                    onComplete: () => {
+                        document.getElementById('calibrationScreen').style.display = 'none';
+                        this.startGame();
+                    }
+                });
+                
+                this.updateStatus('Calibration complete - Game starting!');
+            }
+
+            startGame() {
+                this.isGameActive = true;
+                this.updateStatus('Move your hand to control the object!');
+            }
+
+            updateHandIndicator() {
+                const indicator = document.getElementById('handIndicator');
+                const rect = this.canvas.getBoundingClientRect();
+                
+                indicator.style.left = (this.handPosition.x / this.canvas.width) * rect.width + 'px';
+                indicator.style.top = (this.handPosition.y / this.canvas.height) * rect.height + 'px';
+                indicator.style.opacity = '1';
+            }
+
+            updatePlayerFromHand() {
+                if (!this.isHandDetected) return;
+                
+                // Calculate movement based on hand position relative to calibration center
+                const deltaX = (this.handPosition.x - this.calibrationData.x) * this.calibrationData.sensitivity;
+                const deltaY = (this.handPosition.y - this.calibrationData.y) * this.calibrationData.sensitivity;
+                
+                // Update player object position
+                const rect = this.canvas.getBoundingClientRect();
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const newX = Math.max(30, Math.min(rect.width - 30, centerX + deltaX));
+                const newY = Math.max(30, Math.min(rect.height - 30, centerY + deltaY));
+                
+                this.updatePlayerPosition(newX, newY);
+                this.checkCollisions();
+                
+                // Create motion particles
+                if (Math.random() > 0.8) {
+                    this.createParticle(newX, newY);
+                }
+            }
+
+            updatePlayerPosition(x, y) {
+                this.playerObject.style.left = x + 'px';
+                this.playerObject.style.top = y + 'px';
+            }
+
+            generateGameObjects() {
+                // Generate collectibles
+                setInterval(() => {
+                    if (this.isGameActive && this.collectibles.length < 5) {
+                        this.createCollectible();
+                    }
+                }, 2000);
+                
+                // Generate obstacles
+                setInterval(() => {
+                    if (this.isGameActive && this.obstacles.length < 3) {
+                        this.createObstacle();
+                    }
+                }, 3000);
+            }
+
+            createCollectible() {
+                const collectible = document.createElement('div');
+                collectible.className = 'collectible';
+                collectible.textContent = '⭐';
+                
+                const rect = this.canvas.getBoundingClientRect();
+                collectible.style.left = Math.random() * (rect.width - 40) + 'px';
+                collectible.style.top = Math.random() * (rect.height - 40) + 'px';
+                
+                document.querySelector('.camera-view').appendChild(collectible);
+                this.collectibles.push(collectible);
+                
+                // Auto-remove after 10 seconds
+                setTimeout(() => {
+                    this.removeCollectible(collectible);
+                }, 10000);
+            }
+
+            createObstacle() {
+                const obstacle = document.createElement('div');
+                obstacle.className = 'obstacle';
+                obstacle.textContent = '⚠️';
+                obstacle.style.width = '80px';
+                obstacle.style.height = '80px';
+                
+                const rect = this.canvas.getBoundingClientRect();
+                obstacle.style.left = Math.random() * (rect.width - 80) + 'px';
+                obstacle.style.top = Math.random() * (rect.height - 80) + 'px';
+                
+                document.querySelector('.camera-view').appendChild(obstacle);
+                this.obstacles.push(obstacle);
+                
+                // Auto-remove after 15 seconds
+                setTimeout(() => {
+                    this.removeObstacle(obstacle);
+                }, 15000);
+            }
+
+            checkCollisions() {
+                const playerRect = this.playerObject.getBoundingClientRect();
+                
+                // Check collectible collisions
+                this.collectibles.forEach((collectible, index) => {
+                    const collectibleRect = collectible.getBoundingClientRect();
+                    if (this.isColliding(playerRect, collectibleRect)) {
+                        this.collectItem(collectible, index);
+                    }
+                });
+                
+                // Check obstacle collisions
+                this.obstacles.forEach((obstacle) => {
+                    const obstacleRect = obstacle.getBoundingClientRect();
+                    if (this.isColliding(playerRect, obstacleRect)) {
+                        this.hitObstacle();
+                    }
+                });
+            }
+
+            isColliding(rect1, rect2) {
+                return rect1.left < rect2.right &&
+                       rect1.right > rect2.left &&
+                       rect1.top < rect2.bottom &&
+                       rect1.bottom > rect2.top;
+            }
+
+            collectItem(collectible, index) {
+                this.score += 10;
+                document.getElementById('score').textContent = this.score;
+                
+                // Create explosion effect
+                this.createExplosion(
+                    parseFloat(collectible.style.left),
+                    parseFloat(collectible.style.top)
+                );
+                
+                this.removeCollectible(collectible);
+                
+                // Check for level completion
+                if (this.score > 0 && this.score % 100 === 0) {
+                    this.levelComplete();
+                }
+            }
+
+            hitObstacle() {
+                // Flash effect
+                gsap.to(this.playerObject, {
+                    duration: 0.1,
+                    backgroundColor: '#ff0000',
+                    yoyo: true,
+                    repeat: 3,
+                    onComplete: () => {
+                        this.playerObject.style.backgroundColor = '';
+                    }
+                });
+                
+                this.updateStatus('Obstacle hit! Be careful!');
+                setTimeout(() => {
+                    if (this.isGameActive) {
+                        this.updateStatus('Move your hand to control the object!');
+                    }
+                }, 2000);
+            }
+
+            removeCollectible(collectible) {
+                const index = this.collectibles.indexOf(collectible);
+                if (index > -1) {
+                    this.collectibles.splice(index, 1);
+                    collectible.remove();
+                }
+            }
+
+            removeObstacle(obstacle) {
+                const index = this.obstacles.indexOf(obstacle);
+                if (index > -1) {
+                    this.obstacles.splice(index, 1);
+                    obstacle.remove();
+                }
+            }
+
+            createParticle(x, y) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                
+                document.querySelector('.camera-view').appendChild(particle);
+                
+                gsap.to(particle, {
+                    duration: 1,
+                    x: (Math.random() - 0.5) * 100,
+                    y: (Math.random() - 0.5) * 100,
+                    opacity: 0,
+                    scale: 0,
+                    ease: "power2.out",
+                    onComplete: () => particle.remove()
+                });
+            }
+
+            createExplosion(x, y) {
+                for (let i = 0; i < 8; i++) {
+                    setTimeout(() => {
+                        const particle = document.createElement('div');
+                        particle.className = 'particle';
+                        particle.style.left = x + 'px';
+                        particle.style.top = y + 'px';
+                        particle.style.backgroundColor = '#feca57';
+                        
+                        document.querySelector('.camera-view').appendChild(particle);
+                        
+                        gsap.to(particle, {
+                            duration: 0.8,
+                            x: (Math.random() - 0.5) * 200,
+                            y: (Math.random() - 0.5) * 200,
+                            opacity: 0,
+                            scale: 0,
+                            ease: "power2.out",
+                            onComplete: () => particle.remove()
+                        });
+                    }, i * 50);
+                }
+            }
+
+            levelComplete() {
+                const levelCompleteEl = document.getElementById('levelComplete');
+                levelCompleteEl.style.opacity = '1';
+                
+                gsap.to(levelCompleteEl, {
+                    duration: 0.5,
+                    scale: 1.2,
+                    ease: "back.out(1.7)"
+                });
+                
+                setTimeout(() => {
+                    gsap.to(levelCompleteEl, {
+                        duration: 0.3,
+                        opacity: 0,
+                        scale: 1
+                    });
+                }, 2000);
+                
+                this.level++;
+                this.updateStatus(`Level ${this.level} - Keep collecting!`);
+            }
+
+            updateStatus(message) {
+                document.getElementById('status').textContent = message;
+            }
+
+            setupGameLoop() {
+                const gameLoop = () => {
+                    this.detectMotion();
+                    requestAnimationFrame(gameLoop);
+                };
+                gameLoop();
+            }
+        }
+
+        // Initialize game when page loads
+        window.addEventListener('load', () => {
+            new HandMotionGame();
+        });
+    </script>
+</body>
+</html>
