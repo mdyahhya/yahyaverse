@@ -2,8 +2,7 @@
   "name": "YahyaVerse - Game Portal",
   "short_name": "YahyaVerse",
   "description": "A cosmic game portal with 20 amazing games and customizable interface",
-  "version": "1.0.0",
-  "start_url": "/?v=" + Date.now(),
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#0f0f23",
   "theme_color": "#1a1a2e",
@@ -11,55 +10,54 @@
   "scope": "/",
   "lang": "en",
   "categories": ["games", "entertainment"],
-  "prefer_related_applications": false,
   "icons": [
     {
       "src": "yahya.png",
       "sizes": "72x72",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any maskable"
     },
     {
       "src": "yahya.png",
       "sizes": "96x96",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any maskable"
     },
     {
       "src": "yahya.png",
       "sizes": "128x128",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any maskable"
     },
     {
       "src": "yahya.png",
       "sizes": "144x144",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any maskable"
     },
     {
       "src": "yahya.png",
       "sizes": "152x152",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any maskable"
     },
     {
       "src": "yahya.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any maskable"
     },
     {
       "src": "yahya.png",
       "sizes": "384x384",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any maskable"
     },
     {
       "src": "yahya.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any maskable"
     }
   ]
 }
