@@ -17,6 +17,7 @@
 <meta http-equiv="Expires" content="0">
 
     
+    
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
     
@@ -848,16 +849,13 @@ checkPWAStatus();
         }
 
         // Initialize everything
-        function init() {
-            loadSavedData();
-            generateStars();
-            generateProjects();
-            generateProjectList();
-            loadSavedData();
+        // Initialize everything
+function init() {
+    loadSavedData();  // Remove the duplicate - only need this once
     generateStars();
     generateProjects();
     generateProjectList();
-    initPWA();
+    initPWA();  // Add PWA initialization
     
     // Force check for updates on app launch
     setTimeout(() => {
@@ -871,10 +869,10 @@ checkPWAStatus();
         }
     }, 2000);
 }
-        }
 
-        // Start the app
-        init();
+// Start the app
+init();
+
 
         // Add some interactive effects
         document.addEventListener('mousemove', (e) => {
@@ -885,6 +883,16 @@ checkPWAStatus();
                 nebula.style.transform = `translateX(${cursor * speed * 20}px)`;
             });
         });
+
+
+
+        // Initialize PWA features
+function initPWA() {
+    createInstallButton();
+    updateNetworkStatus();
+    addUpdateButton();  // Adds the manual update check button
+}
+
 
 
 
