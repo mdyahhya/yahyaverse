@@ -119,7 +119,7 @@ function doBackgroundSync() {
 self.addEventListener('push', (event) => {
   const options = {
     body: event.data ? event.data.text() : 'New update available!',
-    icon: '/icons/icon-192x192.png',
+    icon: '/yahya.png',
     badge: '/icons/icon-72x72.png',
     vibrate: [100, 50, 100],
     data: {
@@ -130,7 +130,7 @@ self.addEventListener('push', (event) => {
       {
         action: 'explore',
         title: 'Open YahyaVerse',
-        icon: '/icons/icon-96x96.png'
+        icon: '/yahya.png'
       },
       {
         action: 'close',
