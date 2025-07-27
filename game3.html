@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reptile Simulator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #000;
+            color: white;
+            overflow: hidden;
+            touch-action: none;
+            user-select: none;
+        }
+
+        .container {
+            width: 100vw;
+            max-width: 375px;
+            height: 100vh;
+            max-height: 770px;
+            margin: 0 auto;
+            background: black;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            border-radius: 0;
+        }
+
+        .main-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #888;
+            margin-bottom: 40px;
+        }
+
+        .controls-section {
+            margin-bottom: 30px;
+        }
+
+        .control-label {
+            font-size: 14px;
+            margin-bottom: 15px;
+            color: #ccc;
+        }
+
+        .size-control {
+            margin-bottom: 20px;
+        }
+
+        .size-control label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .size-slider {
+            width: 200px;
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .size-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #00ff88;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .control-btn {
+            padding: 12px 20px;
+            background: #333;
+            border: 2px solid #555;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .control-btn.active {
+            background: #00ff88;
+            color: black;
+            border-color: #00ff88;
+        }
+
+        .start-btn {
+            padding: 18px 40px;
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            border: none;
+            color: black;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .game-screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            background: black;
+            touch-action: none;
+        }
+
+        .joystick-container {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 100px;
+            height: 100px;
+            display: none;
+        }
+
+        .joystick-base {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+        }
+
+        .joystick-knob {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0, 255, 136, 0.8);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .control-mode-indicator {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 6px;
+            font-size: 12px;
+            color: #00ff88;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-screen" id="mainScreen">
+            <div class="title">REPTILE SIMULATOR</div>
+            <div class="subtitle">by Continental Group</div>
+            
+            <div class="controls-section">
+                <div class="size-control">
+                    <label for="sizeSlider">Reptile Size:</label>
+                    <input type="range" id="sizeSlider" class="size-slider" min="0.5" max="3" step="0.1" value="1">
+                </div>
+
+                <div class="control-label">Control Mode:</div>
+                <div class="control-buttons">
+                    <button class="control-btn active" data-mode="touch">Touch Follow</button>
+                    <button class="control-btn" data-mode="joystick">Joystick</button>
+                </div>
+            </div>
+
+            <button class="start-btn" onclick="startSimulation()">START</button>
+        </div>
+
+        <div class="game-screen" id="gameScreen">
+            <canvas id="gameCanvas"></canvas>
+            <div class="joystick-container" id="joystickContainer">
+                <div class="joystick-base">
+                    <div class="joystick-knob" id="joystickKnob"></div>
+                </div>
+            </div>
+            <button class="back-btn" onclick="backToMenu()">MENU</button>
+            <div class="control-mode-indicator" id="modeIndicator">Touch Follow Mode</div>
+        </div>
+    </div>
+
+    <script>
+        // Input system with touch support
+        var Input = {
+            keys: [],
+            mouse: {
+                left: false,
+                right: false,
+                middle: false,
+                x: 0,
+                y: 0
+            },
+            touch: {
+                active: false,
+                x: 0,
+                y: 0
+            }
+        };
+
+        for (var i = 0; i < 230; i++) {
+            Input.keys.push(false);
+        }
+
+        // Settings
+        let currentControlMode = 'touch';
+        let reptileSize = 1;
+        let joystickActive = false;
+        let joystickTarget = { x: 0, y: 0 };
+
+        // Menu functionality
+        document.querySelectorAll('.control-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.control-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentControlMode = this.dataset.mode;
+            });
+        });
+
+        document.getElementById('sizeSlider').addEventListener('input', function() {
+            reptileSize = parseFloat(this.value);
+        });
+
+        function startSimulation() {
+            document.getElementById('mainScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            
+            if (currentControlMode === 'joystick') {
+                document.getElementById('joystickContainer').style.display = 'block';
+                document.getElementById('modeIndicator').textContent = 'Joystick Mode';
+                setupJoystick();
+            } else {
+                document.getElementById('joystickContainer').style.display = 'none';
+                document.getElementById('modeIndicator').textContent = 'Touch Follow Mode';
+            }
+
+            initializeGame();
+        }
+
+        function backToMenu() {
+            document.getElementById('mainScreen').style.display = 'flex';
+            document.getElementById('gameScreen').style.display = 'none';
+            if (gameInterval) {
+                clearInterval(gameInterval);
+            }
+        }
+
+        // Joystick setup
+        function setupJoystick() {
+            const joystickBase = document.querySelector('.joystick-base');
+            const joystickKnob = document.getElementById('joystickKnob');
+            const baseRect = joystickBase.getBoundingClientRect();
+            const centerX = baseRect.width / 2;
+            const centerY = baseRect.height / 2;
+            const maxDistance = 30;
+
+            let isDragging = false;
+
+            function handleStart(e) {
+                isDragging = true;
+                joystickKnob.style.background = 'rgba(0, 255, 136, 1)';
+            }
+
+            function handleMove(e) {
+                if (!isDragging) return;
+                
+                e.preventDefault();
+                const touch = e.touches ? e.touches[0] : e;
+                const rect = joystickBase.getBoundingClientRect();
+                const x = touch.clientX - rect.left - centerX;
+                const y = touch.clientY - rect.top - centerY;
+                
+                const distance = Math.sqrt(x * x + y * y);
+                const limitedDistance = Math.min(distance, maxDistance);
+                const angle = Math.atan2(y, x);
+                
+                const knobX = centerX + limitedDistance * Math.cos(angle);
+                const knobY = centerY + limitedDistance * Math.sin(angle);
+                
+                joystickKnob.style.left = knobX + 'px';
+                joystickKnob.style.top = knobY + 'px';
+                joystickKnob.style.transform = 'translate(-50%, -50%)';
+                
+                // Update joystick target
+                const canvas = document.getElementById('gameCanvas');
+                const canvasRect = canvas.getBoundingClientRect();
+                joystickTarget.x = canvasRect.left + canvasRect.width/2 + (limitedDistance/maxDistance) * 150 * Math.cos(angle);
+                joystickTarget.y = canvasRect.top + canvasRect.height/2 + (limitedDistance/maxDistance) * 150 * Math.sin(angle);
+                
+                joystickActive = limitedDistance > 5;
+            }
+
+            function handleEnd(e) {
+                isDragging = false;
+                joystickKnob.style.left = '50%';
+                joystickKnob.style.top = '50%';
+                joystickKnob.style.background = 'rgba(0, 255, 136, 0.8)';
+                joystickActive = false;
+            }
+
+            // Touch events
+            joystickKnob.addEventListener('touchstart', handleStart);
+            document.addEventListener('touchmove', handleMove);
+            document.addEventListener('touchend', handleEnd);
+
+            // Mouse events for desktop testing
+            joystickKnob.addEventListener('mousedown', handleStart);
+            document.addEventListener('mousemove', handleMove);
+            document.addEventListener('mouseup', handleEnd);
+        }
+
+        // Original reptile code with modifications
+        let canvas, ctx, critter, gameInterval;
+
+        function initializeGame() {
+            canvas = document.getElementById('gameCanvas');
+            const container = document.querySelector('.container');
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            ctx = canvas.getContext('2d');
+
+            // Event listeners
+            document.addEventListener("keydown", function(event) {
+                Input.keys[event.keyCode] = true;
+            });
+
+            document.addEventListener("keyup", function(event) {
+                Input.keys[event.keyCode] = false;
+            });
+
+            // Touch events
+            canvas.addEventListener("touchstart", function(event) {
+                event.preventDefault();
+                const touch = event.touches[0];
+                const rect = canvas.getBoundingClientRect();
+                Input.touch.x = touch.clientX - rect.left;
+                Input.touch.y = touch.clientY - rect.top;
+                Input.touch.active = true;
+                Input.mouse.x = Input.touch.x;
+                Input.mouse.y = Input.touch.y;
+            });
+
+            canvas.addEventListener("touchmove", function(event) {
+                event.preventDefault();
+                const touch = event.touches[0];
+                const rect = canvas.getBoundingClientRect();
+                Input.touch.x = touch.clientX - rect.left;
+                Input.touch.y = touch.clientY - rect.top;
+                Input.mouse.x = Input.touch.x;
+                Input.mouse.y = Input.touch.y;
+            });
+
+            canvas.addEventListener("touchend", function(event) {
+                event.preventDefault();
+                Input.touch.active = false;
+            });
+
+            // Mouse events for desktop
+            canvas.addEventListener("mousemove", function(event) {
+                const rect = canvas.getBoundingClientRect();
+                Input.mouse.x = event.clientX - rect.left;
+                Input.mouse.y = event.clientY - rect.top;
+            });
+
+            setupReptile();
+        }
+
+        // Original classes (unchanged)
+        var segmentCount = 0;
+        class Segment {
+            constructor(parent, size, angle, range, stiffness) {
+                segmentCount++;
+                this.isSegment = true;
+                this.parent = parent;
+                if (typeof parent.children == "object") {
+                    parent.children.push(this);
+                }
+                this.children = [];
+                this.size = size;
+                this.relAngle = angle;
+                this.defAngle = angle;
+                this.absAngle = parent.absAngle + angle;
+                this.range = range;
+                this.stiffness = stiffness;
+                this.updateRelative(false, true);
+            }
+
+            updateRelative(iter, flex) {
+                this.relAngle = this.relAngle - 2 * Math.PI * Math.floor((this.relAngle - this.defAngle) / 2 / Math.PI + 1 / 2);
+                if (flex) {
+                    this.relAngle = Math.min(
+                        this.defAngle + this.range / 2,
+                        Math.max(
+                            this.defAngle - this.range / 2,
+                            (this.relAngle - this.defAngle) / this.stiffness + this.defAngle
+                        )
+                    );
+                }
+                this.absAngle = this.parent.absAngle + this.relAngle;
+                this.x = this.parent.x + Math.cos(this.absAngle) * this.size;
+                this.y = this.parent.y + Math.sin(this.absAngle) * this.size;
+                if (iter) {
+                    for (var i = 0; i < this.children.length; i++) {
+                        this.children[i].updateRelative(iter, flex);
+                    }
+                }
+            }
+
+            draw(iter) {
+                ctx.beginPath();
+                ctx.moveTo(this.parent.x, this.parent.y);
+                ctx.lineTo(this.x, this.y);
+                ctx.stroke();
+                if (iter) {
+                    for (var i = 0; i < this.children.length; i++) {
+                        this.children[i].draw(true);
+                    }
+                }
+            }
+
+            follow(iter) {
+                var x = this.parent.x;
+                var y = this.parent.y;
+                var dist = ((this.x - x) ** 2 + (this.y - y) ** 2) ** 0.5;
+                this.x = x + this.size * (this.x - x) / dist;
+                this.y = y + this.size * (this.y - y) / dist;
+                this.absAngle = Math.atan2(this.y - y, this.x - x);
+                this.relAngle = this.absAngle - this.parent.absAngle;
+                this.updateRelative(false, true);
+                if (iter) {
+                    for (var i = 0; i < this.children.length; i++) {
+                        this.children[i].follow(true);
+                    }
+                }
+            }
+        }
+
+        class LimbSystem {
+            constructor(end, length, speed, creature) {
+                this.end = end;
+                this.length = Math.max(1, length);
+                this.creature = creature;
+                this.speed = speed;
+                creature.systems.push(this);
+                this.nodes = [];
+                var node = end;
+                for (var i = 0; i < length; i++) {
+                    this.nodes.unshift(node);
+                    node = node.parent;
+                    if (!node.isSegment) {
+                        this.length = i + 1;
+                        break;
+                    }
+                }
+                this.hip = this.nodes[0].parent;
+            }
+
+            moveTo(x, y) {
+                this.nodes[0].updateRelative(true, true);
+                var dist = ((x - this.end.x) ** 2 + (y - this.end.y) ** 2) ** 0.5;
+                var len = Math.max(0, dist - this.speed);
+                for (var i = this.nodes.length - 1; i >= 0; i--) {
+                    var node = this.nodes[i];
+                    var ang = Math.atan2(node.y - y, node.x - x);
+                    node.x = x + len * Math.cos(ang);
+                    node.y = y + len * Math.sin(ang);
+                    x = node.x;
+                    y = node.y;
+                    len = node.size;
+                }
+                for (var i = 0; i < this.nodes.length; i++) {
+                    var node = this.nodes[i];
+                    node.absAngle = Math.atan2(node.y - node.parent.y, node.x - node.parent.x);
+                    node.relAngle = node.absAngle - node.parent.absAngle;
+                    for (var ii = 0; ii < node.children.length; ii++) {
+                        var childNode = node.children[ii];
+                        if (!this.nodes.includes(childNode)) {
+                            childNode.updateRelative(true, false);
+                        }
+                    }
+                }
+            }
+
+            update() {
+                if (currentControlMode === 'joystick' && joystickActive) {
+                    this.moveTo(joystickTarget.x - canvas.getBoundingClientRect().left, joystickTarget.y - canvas.getBoundingClientRect().top);
+                } else {
+                    this.moveTo(Input.mouse.x, Input.mouse.y);
+                }
+            }
+        }
+
+        class LegSystem extends LimbSystem {
+            constructor(end, length, speed, creature) {
+                super(end, length, speed, creature);
+                this.goalX = end.x;
+                this.goalY = end.y;
+                this.step = 0;
+                this.forwardness = 0;
+                this.reach = 0.9 * ((this.end.x - this.hip.x) ** 2 + (this.end.y - this.hip.y) ** 2) ** 0.5;
+                var relAngle = this.creature.absAngle - Math.atan2(this.end.y - this.hip.y, this.end.x - this.hip.x);
+                relAngle -= 2 * Math.PI * Math.floor(relAngle / 2 / Math.PI + 1 / 2);
+                this.swing = -relAngle + (2 * (relAngle < 0) - 1) * Math.PI / 2;
+                this.swingOffset = this.creature.absAngle - this.hip.absAngle;
+            }
+
+            update(x, y) {
+                this.moveTo(this.goalX, this.goalY);
+                if (this.step == 0) {
+                    var dist = ((this.end.x - this.goalX) ** 2 + (this.end.y - this.goalY) ** 2) ** 0.5;
+                    if (dist > 1) {
+                        this.step = 1;
+                        this.goalX = this.hip.x + this.reach * Math.cos(this.swing + this.hip.absAngle + this.swingOffset) + (2 * Math.random() - 1) * this.reach / 2;
+                        this.goalY = this.hip.y + this.reach * Math.sin(this.swing + this.hip.absAngle + this.swingOffset) + (2 * Math.random() - 1) * this.reach / 2;
+                    }
+                } else if (this.step == 1) {
+                    var theta = Math.atan2(this.end.y - this.hip.y, this.end.x - this.hip.x) - this.hip.absAngle;
+                    var dist = ((this.end.x - this.hip.x) ** 2 + (this.end.y - this.hip.y) ** 2) ** 0.5;
+                    var forwardness2 = dist * Math.cos(theta);
+                    var dF = this.forwardness - forwardness2;
+                    this.forwardness = forwardness2;
+                    if (dF * dF < 1) {
+                        this.step = 0;
+                        this.goalX = this.hip.x + (this.end.x - this.hip.x);
+                        this.goalY = this.hip.y + (this.end.y - this.hip.y);
+                    }
+                }
+            }
+        }
+
+        class Creature {
+            constructor(x, y, angle, fAccel, fFric, fRes, fThresh, rAccel, rFric, rRes, rThresh) {
+                this.x = x;
+                this.y = y;
+                this.absAngle = angle;
+                this.fSpeed = 0;
+                this.fAccel = fAccel;
+                this.fFric = fFric;
+                this.fRes = fRes;
+                this.fThresh = fThresh;
+                this.rSpeed = 0;
+                this.rAccel = rAccel;
+                this.rFric = rFric;
+                this.rRes = rRes;
+                this.rThresh = rThresh;
+                this.children = [];
+                this.systems = [];
+            }
+
+            follow(x, y) {
+                var dist = ((this.x - x) ** 2 + (this.y - y) ** 2) ** 0.5;
+                var angle = Math.atan2(y - this.y, x - this.x);
+                var accel = this.fAccel;
+                if (this.systems.length > 0) {
+                    var sum = 0;
+                    for (var i = 0; i < this.systems.length; i++) {
+                        sum += this.systems[i].step == 0;
+                    }
+                    accel *= sum / this.systems.length;
+                }
+                this.fSpeed += accel * (dist > this.fThresh);
+                this.fSpeed *= 1 - this.fRes;
+                this.speed = Math.max(0, this.fSpeed - this.fFric);
+                var dif = this.absAngle - angle;
+                dif -= 2 * Math.PI * Math.floor(dif / (2 * Math.PI) + 1 / 2);
+                if (Math.abs(dif) > this.rThresh && dist > this.fThresh) {
+                    this.rSpeed -= this.rAccel * (2 * (dif > 0) - 1);
+                }
+                this.rSpeed *= 1 - this.rRes;
+                if (Math.abs(this.rSpeed) > this.rFric) {
+                    this.rSpeed -= this.rFric * (2 * (this.rSpeed > 0) - 1);
+                } else {
+                    this.rSpeed = 0;
+                }
+                this.absAngle += this.rSpeed;
+                this.absAngle -= 2 * Math.PI * Math.floor(this.absAngle / (2 * Math.PI) + 1 / 2);
+                this.x += this.speed * Math.cos(this.absAngle);
+                this.y += this.speed * Math.sin(this.absAngle);
+                this.absAngle += Math.PI;
+                for (var i = 0; i < this.children.length; i++) {
+                    this.children[i].follow(true, true);
+                }
+                for (var i = 0; i < this.systems.length; i++) {
+                    this.systems[i].update(x, y);
+                }
+                this.absAngle -= Math.PI;
+                this.draw(true);
+            }
+
+            draw(iter) {
+                var r = 4 * reptileSize;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, r, Math.PI / 4 + this.absAngle, 7 * Math.PI / 4 + this.absAngle);
+                ctx.moveTo(
+                    this.x + r * Math.cos(7 * Math.PI / 4 + this.absAngle),
+                    this.y + r * Math.sin(7 * Math.PI / 4 + this.absAngle)
+                );
+                ctx.lineTo(
+                    this.x + r * Math.cos(this.absAngle) * 2 ** 0.5,
+                    this.y + r * Math.sin(this.absAngle) * 2 ** 0.5
+                );
+                ctx.lineTo(
+                    this.x + r * Math.cos(Math.PI / 4 + this.absAngle),
+                    this.y + r * Math.sin(Math.PI / 4 + this.absAngle)
+                );
+                ctx.stroke();
+                if (iter) {
+                    for (var i = 0; i < this.children.length; i++) {
+                        this.children[i].draw(true);
+                    }
+                }
+            }
+        }
+
+        function setupReptile() {
+            var s = reptileSize;
+            critter = new Creature(
+                canvas.width / 2,
+                canvas.height / 2,
+                0,
+                s * 10,
+                s * 2,
+                0.5,
+                16,
+                0.5,
+                0.085,
+                0.5,
+                0.3
+            );
+            
+            var legNum = Math.floor(1 + Math.random() * 12);
+            var spinal = critter;
+            
+            // Neck
+            for (var i = 0; i < 6; i++) {
+                spinal = new Segment(spinal, s * 4, 0, 3.1415 * 2 / 3, 1.1);
+                for (var ii = -1; ii <= 1; ii += 2) {
+                    var node = new Segment(spinal, s * 3, ii, 0.1, 2);
+                    for (var iii = 0; iii < 3; iii++) {
+                        node = new Segment(node, s * 0.1, -ii * 0.1, 0.1, 2);
+                    }
+                }
+            }
+            
+            // Torso and legs
+            for (var i = 0; i < legNum; i++) {
+                if (i > 0) {
+                    for (var ii = 0; ii < 6; ii++) {
+                        spinal = new Segment(spinal, s * 4, 0, 1.571, 1.5);
+                        for (var iii = -1; iii <= 1; iii += 2) {
+                            var node = new Segment(spinal, s * 3, iii * 1.571, 0.1, 1.5);
+                            for (var iv = 0; iv < 3; iv++) {
+                                node = new Segment(node, s * 3, -iii * 0.3, 0.1, 2);
+                            }
+                        }
+                    }
+                }
+                
+                for (var ii = -1; ii <= 1; ii += 2) {
+                    var node = new Segment(spinal, s * 12, ii * 0.785, 0, 8);
+                    node = new Segment(node, s * 16, -ii * 0.785, 6.28, 1);
+                    node = new Segment(node, s * 16, ii * 1.571, 3.1415, 2);
+                    for (var iii = 0; iii < 4; iii++) {
+                        new Segment(node, s * 4, (iii / 3 - 0.5) * 1.571, 0.1, 4);
+                    }
+                    new LegSystem(node, 3, s * 12, critter, 4);
+                }
+            }
+            
+            // Tail
+            var tailLength = Math.floor(4 + Math.random() * legNum * 8);
+            for (var i = 0; i < tailLength; i++) {
+                spinal = new Segment(spinal, s * 4, 0, 3.1415 * 2 / 3, 1.1);
+                for (var ii = -1; ii <= 1; ii += 2) {
+                    var node = new Segment(spinal, s * 3, ii, 0.1, 2);
+                    for (var iii = 0; iii < 3; iii++) {
+                        node = new Segment(node, s * 3 * (tailLength - i) / tailLength, -ii * 0.1, 0.1, 2);
+                    }
+                }
+            }
+
+            ctx.strokeStyle = "white";
+            ctx.lineWidth = 2;
+            
+            gameInterval = setInterval(function() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                let targetX, targetY;
+                if (currentControlMode === 'joystick' && joystickActive) {
+                    const rect = canvas.getBoundingClientRect();
+                    targetX = joystickTarget.x - rect.left;
+                    targetY = joystickTarget.y - rect.top;
+                } else {
+                    targetX = Input.mouse.x;
+                    targetY = Input.mouse.y;
+                }
+                
+                critter.follow(targetX, targetY);
+            }, 33);
+        }
+    </script>
+</body>
+</html>
