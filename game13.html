@@ -875,6 +875,61 @@ textarea.form-control {
   }
 }
 
+/* Mobile Navigation */
+.mobile-nav {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 1rem;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+    z-index: 999;
+    display: none;
+}
+
+.mobile-nav.active {
+    transform: translateY(0);
+}
+
+.mobile-nav a {
+    display: block;
+    color: var(--white);
+    text-decoration: none;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: color 0.3s ease;
+}
+
+.mobile-nav a:hover {
+    color: var(--neon-blue);
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    
+    .mobile-menu {
+        display: flex;
+    }
+}
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem; /* Smaller on mobile */
+    }
+    
+    .hero-tagline {
+        font-size: 1.2rem; /* Smaller on mobile */
+    }
+    
+    .hero-content {
+        padding: 0 1rem; /* Better padding on mobile */
+    }
+}
+
     </style>
 </head>
 <body>
@@ -909,24 +964,15 @@ textarea.form-control {
 
     <!-- Hero Section -->
     <section class="hero" id="home">
-        <!-- Replace with your video URLs -->
-        <video class="hero-video desktop" autoplay muted loop>
-            <source src="YOUR_DESKTOP_VIDEO_URL.mp4" type="video/mp4">
-        </video>
-        <video class="hero-video mobile" autoplay muted loop>
-            <source src="YOUR_MOBILE_VIDEO_URL.mp4" type="video/mp4">
-        </video>
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <h1 class="hero-title">Sharp Kolors Photopoint</h1>
-            <p class="hero-tagline">Capture Every Moment with Perfection</p>
-            <div class="cta-buttons">
-                <a href="#services" class="cta-btn primary">View Services</a>
-                <a href="#contact" class="cta-btn secondary">Book a Shoot</a>
-            </div>
+    <div class="hero-content">
+        <h1 class="hero-title">Sharp Kolors Photopoint</h1>
+        <p class="hero-tagline">Capture Every Moment with Perfection</p>
+        <div class="cta-buttons">
+            <a href="#services" class="cta-btn primary">View Services</a>
+            <a href="#contact" class="cta-btn secondary">Book a Shoot</a>
         </div>
-    </section>
-
+    </div>
+</section>
     <!-- Services Section -->
     <section class="services" id="services">
         <h2 class="section-title fade-in">Our Services</h2>
