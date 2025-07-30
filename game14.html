@@ -525,47 +525,7 @@
         }
 
         /* Load More Section */
-        .load-more {
-            text-align: center;
-            padding: 4rem 0;
-            position: relative;
-            z-index: 10;
-        }
-
-        .load-more-btn {
-            background: var(--gradient-blue);
-            color: var(--white);
-            padding: 1rem 3rem;
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .load-more-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .load-more-btn:hover::before {
-            left: 100%;
-        }
-
-        .load-more-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(0, 212, 255, 0.4);
-            border-color: var(--neon-blue);
-        }
+        
 
         /* Lightbox Modal */
         .lightbox {
@@ -1023,45 +983,28 @@
     <nav id="navbar">
         <div class="nav-container">
             <div class="logo">Our Portfolio</div>
-            <!-- <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="services.html">Services</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="portfolio.html" class="active">Portfolio</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul> -->
-        </div>
-    </nav>
-
-    <!-- Page Header -->
-    <section class="page-header">
-        <div class="page-header-content">
             
-            <section class="portfolio-filters">
-            <div class="container">
-        <div class="filter-dropdown">
-            <button class="dropdown-toggle" id="dropdownToggle">
-                <span class="dropdown-text">All Work</span>
-                <i class="dropdown-arrow">&#9662;</i>
-            </button>
             
-            <div class="dropdown-menu" id="dropdownMenu">
-                <button class="filter-btn active" data-filter="all">All Work</button>
-                <button class="filter-btn" data-filter="wedding">Weddings</button>
-                <button class="filter-btn" data-filter="pre-wedding">Pre-Wedding</button>
-                <button class="filter-btn" data-filter="newborn">Newborn</button>
-                <button class="filter-btn" data-filter="baby-shower">Baby Shower</button>
-                <button class="filter-btn" data-filter="video">Videos</button>
-                <button class="filter-btn" data-filter="commercial">Commercial</button>
+            <!-- Filter dropdown integrated into navigation -->
+            <div class="filter-dropdown">
+                <button class="dropdown-toggle" id="dropdownToggle">
+                    <span class="dropdown-text">All Work</span>
+                    <i class="dropdown-arrow">&#9662;</i>
+                </button>
+                
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <button class="filter-btn active" data-filter="all">All Work</button>
+                    <button class="filter-btn" data-filter="wedding">Weddings</button>
+                    <button class="filter-btn" data-filter="pre-wedding">Pre-Wedding</button>
+                    <button class="filter-btn" data-filter="newborn">Newborn</button>
+                    <button class="filter-btn" data-filter="baby-shower">Baby Shower</button>
+                    <button class="filter-btn" data-filter="video">Videos</button>
+                    <button class="filter-btn" data-filter="commercial">Commercial</button>
+                </div>
             </div>
         </div>
-    </div>
-</section>
-
-            <p>Explore our collection of stunning photography and videography work</p>
-        </div>
-        
-    </section>
+    </nav>
+   
 
     <!-- Portfolio Filters -->
     <!-- <section class="portfolio-filters">
@@ -1079,7 +1022,10 @@
     </section> -->
 
     <!-- Portfolio Gallery -->
-    <section class="portfolio-gallery">
+    
+           
+        
+        
         <div class="container">
             <div class="portfolio-grid">
                 
@@ -1230,9 +1176,7 @@
             </div>
 
             <!-- Load More Section -->
-            <div class="load-more">
-                <button class="load-more-btn">Load More Projects</button>
-            </div>
+            
         </div>
     </section>
 
@@ -1448,10 +1392,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // Load More Functionality
-        document.querySelector('.load-more-btn').addEventListener('click', () => {
-            // Add your load more logic here
-            alert('Load more functionality - Add your additional portfolio items here');
-        });
+       
 
         // Add fadeInUp animation
         const style = document.createElement('style');
