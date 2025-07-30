@@ -940,7 +940,16 @@ textarea.form-control {
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(0, 212, 255, 0.2);
     z-index: 999;
-    display: none; /* Hidden by default on all screens */
+    display: none; /* Initially hidden */
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.mobile-nav.active {
+    display: block;
+    transform: translateY(0);
+    opacity: 1;
 }
 
 .mobile-nav a {
@@ -956,13 +965,27 @@ textarea.form-control {
 .mobile-nav a:hover {
     color: var(--neon-blue);
     background: rgba(0, 212, 255, 0.1);
+    padding-left: 2.5rem;
 }
 
 .mobile-nav a:last-child {
     border-bottom: none;
 }
 
-/* Show mobile nav on mobile devices */
+/* Animate hamburger menu */
+.mobile-menu.active span:nth-child(1) {
+    transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.mobile-menu.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu.active span:nth-child(3) {
+    transform: rotate(45deg) translate(-5px, -6px);
+}
+
+/* Mobile styles */
 @media (max-width: 768px) {
     .nav-links {
         display: none;
@@ -970,22 +993,15 @@ textarea.form-control {
     
     .mobile-menu {
         display: flex;
+        z-index: 1001;
     }
     
-    .mobile-nav {
-        display: block; /* Always show on mobile */
-        position: static; /* Change from fixed to static */
-        background: rgba(10, 10, 10, 0.9);
-        margin-top: 0;
-    }
-    
-    /* Adjust hero section to account for mobile nav */
-    .hero {
-        margin-top: 200px; /* Adjust this value based on your navbar + mobile nav height */
+    .mobile-menu span {
+        transition: all 0.3s ease;
     }
 }
 
-/* For larger screens, hide mobile nav completely */
+/* Hide mobile nav on desktop */
 @media (min-width: 769px) {
     .mobile-nav {
         display: none !important;
@@ -1217,6 +1233,12 @@ textarea.form-control {
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script>
+
+
+
+
+
+        
         // Initialize AOS (Animate On Scroll)
         AOS.init({
             duration: 1000,
@@ -1249,13 +1271,31 @@ textarea.form-control {
         });
 
         // Mobile menu toggle
-        const mobileMenu = document.querySelector('.mobile-menu');
-        const navLinks = document.querySelector('.nav-links');
+const mobileMenu = document.querySelector('.mobile-menu');
+const mobileNav = document.querySelector('.mobile-nav');
 
-        mobileMenu.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            mobileMenu.classList.toggle('active');
+if (mobileMenu && mobileNav) {
+    mobileMenu.addEventListener('click', () => {
+        mobileMenu.classList.toggle('active');
+        mobileNav.classList.toggle('active');
+    });
+
+    // Close mobile menu when clicking on a link
+    document.querySelectorAll('.mobile-nav a').forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            mobileNav.classList.remove('active');
         });
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!mobileMenu.contains(e.target) && !mobileNav.contains(e.target)) {
+            mobileMenu.classList.remove('active');
+            mobileNav.classList.remove('active');
+        }
+    });
+}
 
         // Parallax effect for hero section
         window.addEventListener('scroll', () => {
