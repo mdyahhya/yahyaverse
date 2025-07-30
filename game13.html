@@ -818,6 +818,42 @@ textarea.form-control {
   }
 }
 
+@media (max-width: 768px) {
+  .nav-links {
+    display: none !important;
+  }
+  .mobile-nav {
+    display: flex; /* show on mobile */
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    background: rgba(10, 10, 10, 0.9); /* matching navbar background */
+    padding: 1rem 0;
+    position: sticky;
+    top: 60px; /* height of navbar to not overlap */
+    z-index: 999;
+  }
+  .mobile-nav a {
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+  }
+  .mobile-nav a:hover {
+    background: var(--neon-blue);
+    color: var(--black);
+  }
+
+  /* Hide the hamburger icon unless you want to implement toggle */
+  .mobile-menu {
+    display: none;
+  }
+}
+
+
     </style>
 </head>
 <body>
@@ -834,15 +870,21 @@ textarea.form-control {
       <li><a href="portfolio.html">Portfolio</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
+    <div class="mobile-menu">
+      <!-- Optional hamburger toggler if you want -->
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
   </div>
 </nav>
+
 <div class="mobile-nav">
   <a href="#services">Services</a>
   <a href="#about">About</a>
   <a href="portfolio.html">Portfolio</a>
   <a href="#contact">Contact</a>
 </div>
-
 
     <!-- Hero Section -->
     <section class="hero" id="home">
