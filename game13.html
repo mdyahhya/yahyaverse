@@ -156,40 +156,17 @@ body {
     justify-content: center;
     text-align: center;
     overflow: hidden;
-    background: var(--gradient-primary);
+    background: linear-gradient(135deg, 
+        var(--gradient-primary) 0%, 
+        var(--neon-blue) 25%, 
+        var(--gold) 75%, 
+        var(--gradient-primary) 100%);
 }
 
-.hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: 
-        radial-gradient(2px 2px at 20px 30px, var(--neon-blue), transparent),
-        radial-gradient(2px 2px at 40px 70px, var(--gold), transparent),
-        radial-gradient(1px 1px at 90px 40px, var(--white), transparent),
-        radial-gradient(1px 1px at 130px 80px, var(--neon-blue), transparent),
-        radial-gradient(2px 2px at 160px 30px, var(--gold), transparent);
-    background-repeat: repeat;
-    background-size: 200px 100px;
-    animation: floatingDots 20s linear infinite;
-    opacity: 0.6;
-    z-index: 1;
-}
+/* Remove the animated dots pseudo-element */
+/* .hero::before - REMOVED */
 
-.hero::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: 
-        radial-gradient(ellipse at center, transparent 20%, rgba(10, 10, 10, 0.1) 50%, rgba(10, 10, 10, 0.3) 100%);
-    z-index: 1;
-}
+
 
 .hero-content {
     z-index: 10;
@@ -1016,6 +993,148 @@ textarea.form-control {
     }
 }
 
+/* ========== Floating Action Buttons (Icons Only) ========== */
+.floating-buttons {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 1000;
+}
+
+.floating-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    text-decoration: none;
+    font-size: 20px;
+    color: white;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.floating-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.floating-btn i {
+    font-size: 20px;
+    z-index: 2;
+    position: relative;
+}
+
+/* Hide text labels completely */
+.btn-text {
+    display: none;
+}
+
+/* WhatsApp Button Styling */
+.whatsapp-btn {
+    background: linear-gradient(45deg, #25D366, #128C7E);
+}
+
+.whatsapp-btn:hover {
+    background: linear-gradient(45deg, #128C7E, #25D366);
+}
+
+.whatsapp-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.whatsapp-btn:hover::before {
+    left: 100%;
+}
+
+/* Call Button Styling */
+.call-btn {
+    background: linear-gradient(45deg, var(--neon-blue), #007bff);
+}
+
+.call-btn:hover {
+    background: linear-gradient(45deg, #007bff, var(--neon-blue));
+}
+
+.call-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.call-btn:hover::before {
+    left: 100%;
+}
+
+/* Subtle Pulse Animation */
+@keyframes subtlePulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+}
+
+.floating-btn {
+    animation: subtlePulse 3s ease-in-out infinite;
+}
+
+/* ========== Mobile Responsive ========== */
+@media (max-width: 768px) {
+    .floating-buttons {
+        right: 15px;
+        bottom: 15px;
+        gap: 10px;
+    }
+    
+    .floating-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+    }
+    
+    .floating-btn i {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .floating-buttons {
+        right: 12px;
+        bottom: 12px;
+    }
+    
+    .floating-btn {
+        width: 42px;
+        height: 42px;
+        font-size: 16px;
+    }
+    
+    .floating-btn i {
+        font-size: 16px;
+    }
+}
+
+
     </style>
 </head>
 <body>
@@ -1040,6 +1159,27 @@ textarea.form-control {
     </div>
   </div>
 </nav>
+
+<!-- Floating Action Buttons -->
+<div class="floating-buttons">
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/919270378690?text=Hello%20Sharp%20Kolors%20Photopoint!%20I'm%20interested%20in%20your%20photography%20services." 
+       target="_blank" 
+       class="floating-btn whatsapp-btn" 
+       aria-label="WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+        <span class="btn-text">WhatsApp</span>
+    </a>
+    
+    <!-- Call Button -->
+    <a href="tel:+919270378690" 
+       class="floating-btn call-btn" 
+       aria-label="Call Now">
+        <i class="fas fa-phone"></i>
+        <span class="btn-text">Call Now</span>
+    </a>
+</div>
+
 
 <div class="mobile-nav">
   
@@ -1136,16 +1276,17 @@ textarea.form-control {
                 <div>
                     <h4>Phone</h4>
                     <!-- Make phone number clickable -->
-                    <p><a href="tel:+919307426215" class="contact-link">9270378690</a></p>
+                    <p><a href="tel:+919270378690" class="contact-link">9270378690</a></p>
                 </div>
             </div>
             <div class="contact-item">
                 <i class="fas fa-map-marker-alt"></i>
                 <div>
-                    <h4>Address</h4>
-                    <!-- Make address clickable for Google Maps -->
-                    <p><a href="https://www.google.com/maps/search/129,+Siddheshwar+Peth,+Roshan+Corner+Apartment,+in+front+of+Kamrunissa+School,+Solapur" target="_blank" class="contact-link">129, Siddheshwar Peth, Roshan Corner Apartment, in front of Kamrunissa School, Solapur</a></p>
-                </div>
+    <h4>Address</h4>
+    <!-- Make address clickable for Google Maps using your provided link -->
+    <p><a href="https://jsdl.in/RSL-XML1753870613" target="_blank" class="contact-link">129, Siddheshwar Peth, Roshan Corner Apartment, in front of Kamrunissa School, Solapur</a></p>
+</div>
+
             </div>
             <!-- <div class="contact-item">
                 <i class="fas fa-envelope"></i>
@@ -1161,7 +1302,7 @@ textarea.form-control {
                 <i class="fab fa-whatsapp"></i>
                 <div>
                     <h4>WhatsApp</h4>
-                    <p><a href="https://wa.me/919307426215?text=Hello%20Sharp%20Kolors%20Photopoint!%20I'm%20interested%20in%20your%20photography%20services." target="_blank" class="contact-link whatsapp-link">Chat with us on WhatsApp</a></p>
+                    <p><a href="https://wa.me/919270378690?text=Hello%20Sharp%20Kolors%20Photopoint!%20I'm%20interested%20in%20your%20photography%20services." target="_blank" class="contact-link whatsapp-link">Chat with us on WhatsApp</a></p>
                 </div>
             </div>
         </div>
@@ -1196,8 +1337,14 @@ textarea.form-control {
 </section>    
         <!-- Google Maps -->
         <div class="map-container fade-in" data-aos="fade-up">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3795.5468395058344!2d75.91048487522456!3d17.67961798324645!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc5db7b7a3c7c5b%3A0x7b9c3f8e5e7c5e7c!2sSiddheshwar%20Peth%2C%20Solapur%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1234567890123" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        </div>
+    <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30353.90639576929!2d75.90167!3d17.6868!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc5db9c5b7a7c5b%3A0x1234567890abcdef!2s129%20Siddheshwar%20Peth%2C%20Roshan%20Corner%20Apartment%2C%20Solapur%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1643723400000" 
+        allowfullscreen="" 
+        loading="lazy" 
+        referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+</div>
+
     </section>
 
     <!-- Footer -->
@@ -1378,7 +1525,7 @@ Here are my details:-
 Thank you`;
     
     // Your WhatsApp business number
-    const whatsappNumber = "919307426215";
+    const whatsappNumber = "919270378690";
     
     // Method 1: Simple URL encoding (replace special characters manually)
     let encodedMessage = whatsappMessage
@@ -1412,14 +1559,11 @@ function initiateCall() {
 // Google Maps Integration
 function openGoogleMaps() {
     // Option 1: Using coordinates (more accurate)
-    const latitude = "19.9975"; // Replace with your actual latitude
-    const longitude = "73.7898"; // Replace with your actual longitude
-    const googleMapsURL = `https://www.google.com/maps?q=${latitude},${longitude}`;
     
     // Option 2: Using address (alternative)
-    // const address = "Sharp Kolors Photopoint, Your Address Here";
-    // const googleMapsURL = `https://www.google.com/maps/search/${encodeURIComponent(address)}`;
-    
+    const address = "129, Siddheshwar Peth, Roshan Corner Apartment, in front of Kamrunissa School, Solapur";
+const googleMapsURL = `https://jsdl.in/RSL-XML1753870613`;
+
     window.open(googleMapsURL, '_blank');
 }
 
@@ -1482,10 +1626,10 @@ function openGoogleMaps() {
 
         // Direct WhatsApp function (for button click without form)
 function openWhatsApp() {
-    const whatsappNumber = "919307426215"; // Replace with your actual WhatsApp number
+    const whatsappNumber = "919270378690"; // Replace with your actual WhatsApp number
     const defaultMessage = "Hello Sharp Kolors Photopoint! I'm interested in your photography services. Please provide more details.";
     
-    const whatsappURL = `https://wa.me/${919307426215}?text=${encodeURIComponent(defaultMessage)}`;
+    const whatsappURL = `https://wa.me/${919270378690}?text=${encodeURIComponent(defaultMessage)}`;
     window.open(whatsappURL, '_blank');
 }
 
@@ -1505,7 +1649,7 @@ ${message}
 ---
 Sent from Sharp Kolors Photopoint website`;
 
-    const whatsappNumber = "919307426215"; // Your WhatsApp number
+    const whatsappNumber = "919270378690"; // Your WhatsApp number
     const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
     
     window.open(whatsappURL, '_blank');
