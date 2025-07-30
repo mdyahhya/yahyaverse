@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Sharp Kolors Photopoint</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-black: #0a0a0a;
+            --dark-blue: #1a1f4a;
+            --neon-blue: #00d4ff;
+            --gold: #ffd700;
+            --white: #ffffff;
+            --silver: #c0c0c0;
+            --gradient-blue: linear-gradient(135deg, #1a1f4a 0%, #2d3561 100%);
+            --gradient-primary: linear-gradient(135deg, #0a0a0a 0%, #1a1f4a 50%, #2d3561 100%);
+            --gradient-secondary: linear-gradient(45deg, #1a1f4a 0%, #0a0a0a 50%, #2d3561 100%);
+            --gradient-tertiary: linear-gradient(270deg, #2d3561 0%, #1a1f4a 50%, #0a0a0a 100%);
+            --gradient-quaternary: linear-gradient(225deg, #0a0a0a 0%, #2d3561 30%, #1a1f4a 100%);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--primary-black);
+            color: var(--white);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Animations */
+        @keyframes floatingDots {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-100px); }
+        }
+
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
+            100% { text-shadow: 0 0 40px rgba(0, 212, 255, 0.6); }
+        }
+
+        @keyframes glowText {
+            0% { text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+            100% { text-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            }
+            50% { 
+                box-shadow: 0 0 40px rgba(0, 212, 255, 0.6);
+            }
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(10, 10, 10, 0.95);
+            box-shadow: 0 2px 20px rgba(0, 212, 255, 0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--neon-blue), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--neon-blue);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--neon-blue);
+        }
+
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .mobile-menu span {
+            width: 25px;
+            height: 3px;
+            background: var(--white);
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Page Header */
+        .page-header {
+            height: 70vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            background: var(--gradient-primary);
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, var(--neon-blue), transparent),
+                radial-gradient(2px 2px at 40px 70px, var(--gold), transparent),
+                radial-gradient(1px 1px at 90px 40px, var(--white), transparent),
+                radial-gradient(1px 1px at 130px 80px, var(--neon-blue), transparent),
+                radial-gradient(2px 2px at 160px 30px, var(--gold), transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: floatingDots 20s linear infinite;
+            opacity: 0.6;
+            z-index: 1;
+        }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at center, transparent 20%, rgba(10, 10, 10, 0.1) 50%, rgba(10, 10, 10, 0.3) 100%);
+            z-index: 1;
+        }
+
+        .page-header-content {
+            z-index: 10;
+            max-width: 800px;
+            padding: 0 2rem;
+            position: relative;
+        }
+
+        .page-header h1 {
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--white), var(--neon-blue), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            color: var(--silver);
+            animation: glowText 2s ease-in-out infinite alternate;
+        }
+
+        /* Portfolio Filters */
+        .portfolio-filters {
+            padding: 4rem 2rem 2rem;
+            background: var(--gradient-secondary);
+            position: relative;
+        }
+
+        .portfolio-filters::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(1px 1px at 25px 25px, var(--neon-blue), transparent),
+                radial-gradient(1px 1px at 75px 75px, var(--gold), transparent),
+                radial-gradient(1px 1px at 125px 25px, var(--white), transparent);
+            background-size: 150px 100px;
+            background-repeat: repeat;
+            opacity: 0.3;
+            animation: floatingDots 25s linear infinite reverse;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            background: linear-gradient(45deg, var(--neon-blue), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Custom Dropdown */
+        .filter-dropdown-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+
+        .filter-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-btn {
+            background: var(--gradient-blue);
+            color: var(--white);
+            padding: 1rem 2rem;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            min-width: 200px;
+            justify-content: space-between;
+        }
+
+        .dropdown-btn:hover {
+            border-color: var(--neon-blue);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .dropdown-btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-btn.active i {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--gradient-blue);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            margin-top: 0.5rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .dropdown-content.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-item {
+            padding: 1rem 2rem;
+            color: var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--neon-blue);
+        }
+
+        .dropdown-item.active {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--gold);
+        }
+
+        /* Portfolio Gallery */
+        .portfolio-gallery {
+            padding: 4rem 2rem 8rem;
+            background: var(--gradient-tertiary);
+            position: relative;
+        }
+
+        .portfolio-gallery::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(1px 1px at 50px 50px, var(--neon-blue), transparent),
+                radial-gradient(2px 2px at 150px 100px, var(--gold), transparent);
+            background-size: 200px 150px;
+            background-repeat: repeat;
+            opacity: 0.2;
+            animation: floatingDots 30s linear infinite;
+            z-index: 1;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .portfolio-item {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            background: var(--gradient-blue);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            border: 2px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .portfolio-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(0, 212, 255, 0.0), rgba(255, 215, 0, 0.0));
+            transition: all 0.4s ease;
+            z-index: 2;
+        }
+
+        .portfolio-item:hover::before {
+            background: linear-gradient(45deg, rgba(0, 212, 255, 0.8), rgba(255, 215, 0, 0.6));
+        }
+
+        .portfolio-item:hover {
+            transform: translateY(-15px) scale(1.03);
+            border-color: var(--neon-blue);
+            box-shadow: 0 25px 50px rgba(0, 212, 255, 0.4);
+        }
+
+        .portfolio-media {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.4s ease;
+        }
+
+        .portfolio-item:hover .portfolio-media {
+            transform: scale(1.15);
+        }
+
+        .portfolio-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 3;
+        }
+
+        .portfolio-item:hover .portfolio-overlay {
+            opacity: 1;
+        }
+
+        .portfolio-overlay h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--white);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .portfolio-overlay p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .portfolio-category {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--gold);
+            color: var(--primary-black);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            z-index: 3;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .view-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid var(--white);
+            color: var(--white);
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .view-btn:hover {
+            background: var(--white);
+            color: var(--primary-black);
+            transform: translateY(-2px);
+        }
+
+        /* Video Items */
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 215, 0, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--primary-black);
+            transition: all 0.3s ease;
+            z-index: 4;
+            backdrop-filter: blur(10px);
+        }
+
+        .portfolio-item:hover .play-button {
+            transform: translate(-50%, -50%) scale(1.2);
+            background: var(--gold);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+        }
+
+        /* Load More Section */
+        .load-more {
+            text-align: center;
+            padding: 4rem 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        .load-more-btn {
+            background: var(--gradient-blue);
+            color: var(--white);
+            padding: 1rem 3rem;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .load-more-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .load-more-btn:hover::before {
+            left: 100%;
+        }
+
+        .load-more-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 212, 255, 0.4);
+            border-color: var(--neon-blue);
+        }
+
+        /* Lightbox Modal */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+        }
+
+        .lightbox.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        }
+
+        .lightbox img,
+        .lightbox video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            font-size: 2rem;
+            color: var(--white);
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .lightbox-close:hover {
+            background: var(--gold);
+            color: var(--primary-black);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--gradient-quaternary);
+            padding: 4rem 2rem 2rem;
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(1px 1px at 30px 30px, var(--neon-blue), transparent),
+                radial-gradient(1px 1px at 80px 80px, var(--gold), transparent);
+            background-size: 120px 120px;
+            background-repeat: repeat;
+            opacity: 0.2;
+            z-index: 1;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer-section h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--neon-blue), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-section p, 
+        .footer-section a {
+            color: var(--silver);
+            text-decoration: none;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--gold);
+            color: var(--primary-black);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0, 212, 255, 0.1);
+            color: var(--silver);
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: flex;
+            }
+
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .page-header p {
+                font-size: 1.1rem;
+            }
+
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .portfolio-item {
+                min-height: 250px;
+            }
+
+            .dropdown-btn {
+                min-width: 250px;
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .portfolio-filters {
+                padding: 3rem 1rem 2rem;
+            }
+
+            .portfolio-gallery {
+                padding: 3rem 1rem 6rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .portfolio-item {
+                min-height: 200px;
+            }
+
+            .dropdown-btn {
+                min-width: 200px;
+                padding: 0.8rem 1.5rem;
+            }
+        }
+
+        /* Hidden class for filtering */
+        .portfolio-item.hidden {
+            display: none;
+        }
+        /* Portfolio Filters */
+        .portfolio-filters {
+            padding: 4rem 0 2rem;
+            background: var(--secondary-black);
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .filter-btn {
+            padding: 0.8rem 2rem;
+            background: transparent;
+            color: var(--white);
+            border: 2px solid white;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .filter-btn:hover::before,
+        .filter-btn.active::before {
+            left: 0;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+    color: var(--accent-gold); /* Show text in accent color instead of transparent */
+    border-color: var(--accent-gold);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+}
+
+
+/* ========== Filter Dropdown ========== */
+/* ========== Filter Dropdown ========== */
+/* ========== Filter Menu ========== */
+/* ========== Filter Dropdown ========== */
+.filter-dropdown {
+    position: relative;
+    display: inline-block;
+    min-width: 250px;
+    margin: 2rem auto;
+    text-align: center;
+}
+
+.dropdown-toggle {
+    width: 100%;
+    padding: 1rem 2rem;
+    border: 2px solid var(--gold);
+    border-radius: 50px;
+    background: transparent;
+    color: var(--gold);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.dropdown-toggle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.dropdown-toggle:hover::before {
+    left: 100%;
+}
+
+.dropdown-toggle:hover {
+    color: var(--white);
+    background: var(--gradient-blue);
+    border-color: var(--neon-blue);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(0, 212, 255, 0.4);
+}
+
+.dropdown-text {
+    flex: 1;
+    text-align: left;
+}
+
+.dropdown-arrow {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+    margin-left: 1rem;
+}
+
+.dropdown-toggle.open .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(10, 10, 10, 0.98);
+    backdrop-filter: blur(20px);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+    overflow-y: auto;
+    max-height: 350px;
+    border: 2px solid var(--gold);
+}
+
+.dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* ========== Filter Buttons Inside Dropdown ========== */
+.dropdown-menu .filter-btn {
+    width: 100%;
+    padding: 1rem 2rem;
+    border: none;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 0;
+    background: transparent;
+    color: var(--gold);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: block;
+    position: relative;
+    overflow: hidden;
+    text-align: left;
+}
+
+.dropdown-menu .filter-btn:last-child {
+    border-bottom: none;
+    border-radius: 0 0 13px 13px;
+}
+
+.dropdown-menu .filter-btn:first-child {
+    border-radius: 13px 13px 0 0;
+}
+
+.dropdown-menu .filter-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.dropdown-menu .filter-btn:hover::before {
+    left: 100%;
+}
+
+.dropdown-menu .filter-btn:hover {
+    color: var(--white);
+    background: var(--gradient-blue);
+    transform: translateX(10px);
+    box-shadow: inset 5px 0 0 var(--neon-blue);
+}
+
+.dropdown-menu .filter-btn.active {
+    color: var(--white);
+    background: linear-gradient(45deg, var(--neon-blue), var(--gold));
+    transform: translateX(10px);
+    box-shadow: inset 5px 0 0 var(--gold);
+}
+
+/* ========== Mobile Responsive ========== */
+@media (max-width: 768px) {
+    .filter-dropdown {
+        width: 90%;
+        max-width: 300px;
+        margin: 1rem auto;
+    }
+    
+    .dropdown-toggle {
+        font-size: 1rem;
+        padding: 0.8rem 1.5rem;
+    }
+    
+    .dropdown-menu {
+        max-height: 250px;
+    }
+    
+    .dropdown-menu .filter-btn {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">Sharp Kolors Photopoint</div>
+            <!-- <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="portfolio.html" class="active">Portfolio</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul> -->
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="page-header-content">
+            <h1>Our Portfolio</h1>
+            <section class="portfolio-filters">
+    <div class="container">
+        <div class="filter-dropdown">
+            <button class="dropdown-toggle" id="dropdownToggle">
+                <span class="dropdown-text">All Work</span>
+                <i class="dropdown-arrow">&#9662;</i>
+            </button>
+            
+            <div class="dropdown-menu" id="dropdownMenu">
+                <button class="filter-btn active" data-filter="all">All Work</button>
+                <button class="filter-btn" data-filter="wedding">Weddings</button>
+                <button class="filter-btn" data-filter="pre-wedding">Pre-Wedding</button>
+                <button class="filter-btn" data-filter="newborn">Newborn</button>
+                <button class="filter-btn" data-filter="baby-shower">Baby Shower</button>
+                <button class="filter-btn" data-filter="video">Videos</button>
+                <button class="filter-btn" data-filter="commercial">Commercial</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+            <p>Explore our collection of stunning photography and videography work</p>
+        </div>
+        
+    </section>
+
+    <!-- Portfolio Filters -->
+    <!-- <section class="portfolio-filters">
+        <div class="container">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Work</button>
+                <button class="filter-btn" data-filter="wedding">Weddings</button>
+                <button class="filter-btn" data-filter="pre-wedding">Pre-Wedding</button>
+                <button class="filter-btn" data-filter="newborn">Newborn</button>
+                <button class="filter-btn" data-filter="baby-shower">Baby Shower</button>
+                <button class="filter-btn" data-filter="video">Videos</button>
+                <button class="filter-btn" data-filter="commercial">Commercial</button>
+            </div>
+        </div>
+    </section> -->
+
+    <!-- Portfolio Gallery -->
+    <section class="portfolio-gallery">
+        <div class="container">
+            <div class="portfolio-grid">
+                
+                <!-- Wedding Photography Items -->
+                <!-- Item 1 - ADD YOUR WEDDING IMAGE URL HERE -->
+                <div class="portfolio-item wedding" data-aos="fade-up" data-aos-delay="100">
+                    <div class="portfolio-category">Wedding</div>
+                    <img src="" alt="Wedding Photography" class="portfolio-media">
+                    <div class="portfolio-overlay">
+                        <h3>Elegant Wedding Ceremony</h3>
+                        <p>Beautiful moments captured during the sacred ceremony</p>
+                        <a href="#" class="view-btn">View Full Gallery</a>
+                    </div>
+                </div>
+
+                <!-- Item 2 - ADD YOUR WEDDING IMAGE URL HERE -->
+                <div class="portfolio-item wedding" data-aos="fade-up" data-aos-delay="200">
+                    <div class="portfolio-category">Wedding</div>
+                    <img src="" alt="Wedding Photography" class="portfolio-media">
+                    <div class="portfolio-overlay">
+                        <h3>Reception Celebrations</h3>
+                        <p>Joyful moments from the wedding reception</p>
+                        <a href="#" class="view-btn">View Full Gallery</a>
+                    </div>
+                </div>
+
+                <!-- Item 3 - ADD YOUR WEDDING IMAGE URL HERE -->
+                <div class="portfolio-item wedding" data-aos="fade-up" data-aos-delay="300">
+                    <div class="portfolio-category">Wedding</div>
+                    <img src="" alt="Wedding Photography" class="portfolio-media">
+                    <div class="portfolio-overlay">
+                        <h3>Bridal Portraits</h3>
+                        <p>Stunning bridal portrait session</p>
+                        <a href="#" class="view-btn">View Full Gallery</a>
+                    </div>
+                </div>
+
+                <!-- Pre-Wedding Photography Items -->
+                <!-- Item 4 - ADD YOUR PRE-WEDDING IMAGE URL HERE -->
+                <div class="portfolio-item pre-wedding" data-aos="fade-up" data-aos-delay="400">
+                    <div class="portfolio-category">Pre-Wedding</div>
+                    <img src="" alt="Pre-Wedding Photography" class="portfolio-media">
+                    <div class="portfolio-overlay">
+                        <h3>Romantic Pre-Wedding</h3>
+                        <p>Beautiful couple's photography session</p>
+                        <a href="#" class="view-btn">View Full Gallery</a>
+                    </div>
+                </div>
+
+                <!-- Item 5 - ADD YOUR PRE-WEDDING IMAGE URL HERE -->
+                <div class="portfolio-item pre-wedding" data-aos="fade-up" data-aos-delay="500">
+                    <div class="portfolio-category">Pre-Wedding</div>
+                    <img src="" alt="Pre-Wedding Photography" class="portfolio-media">
+                    <div class="portfolio-overlay">
+                        <h3>Outdoor Pre-Wedding</h3>
+                        <p>Natural outdoor couple photography</p>
+                        <a href="#" class="view-btn">View Full Gallery</a>
+                    </div>
+                </div>
+
+                <!-- Newborn Photography Items -->
+                <!-- Item 6 - ADD YOUR NEWBORN IMAGE URL HERE -->
+                <div class="portfolio-item newborn" data-aos="fade-up" data-aos-delay="600">
+                    <div class="portfolio-category">Newborn</div>
+                    <img src="" alt="Newborn Photography" class="portfolio-media">
+                    <div class="portfolio-overlay">
+                        <h3>Precious Newborn</h3>
+                        <p>Gentle newborn photography session</p>
+                        <a href="#" class="view-btn">View Full Gallery</a>
+                    </div>
+                </div>
+
+                <!-- Item 7 - ADD YOUR NEWBORN IMAGE URL HERE -->
+                <div class="portfolio-item newborn" data-aos="fade-up" data-aos-delay="700">
+                    <div class="portfolio-category">Newborn</div>
+                    <img src="" alt="Newborn Photography" class="portfolio-media">
+                    <div class="portfolio-overlay">
+                        <h3>Family with Newborn</h3>
+                        <p>Beautiful family portraits with newborn</p>
+                        <a href="#" class="view-btn">View Full Gallery</a>
+                    </div>
+                </div>
+
+                <!-- Baby Shower Photography Items -->
+                <!-- Item 8 - ADD YOUR BABY SHOWER IMAGE URL HERE -->
+                <div class="portfolio-item baby-shower" data-aos="fade-up" data-aos-delay="800">
+                    <div class="portfolio-category">Baby Shower</div>
+                    <img src="" alt="Baby Shower Photography" class="portfolio-media">
+                    <div class="portfolio-overlay">
+                        <h3>Maternity Celebration</h3>
+                        <p>Joyful baby shower celebration</p>
+                        <a href="#" class="view-btn">View Full Gallery</a>
+                    </div>
+                </div>
+
+                <!-- Item 9 - ADD YOUR BABY SHOWER IMAGE URL HERE -->
+                <div class="portfolio-item baby-shower" data-aos="fade-up" data-aos-delay="900">
+                    <div class="portfolio-category">Baby Shower</div>
+                    <img src="" alt="Baby Shower Photography" class="portfolio-media">
+                    <div class="portfolio-overlay">
+                        <h3>Maternity Portraits</h3>
+                        <p>Beautiful expecting mother portraits</p>
+                        <a href="#" class="view-btn">View Full Gallery</a>
+                    </div>
+                </div>
+
+                <!-- Video Items -->
+                <!-- Video Item 1 - ADD YOUR VIDEO THUMBNAIL URL HERE -->
+                <div class="portfolio-item video video-item" data-aos="fade-up" data-aos-delay="1000">
+                    <div class="portfolio-category">Video</div>
+                    <img src="" alt="Wedding Video" class="portfolio-media">
+                    <div class="play-button">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="portfolio-overlay">
+                        <h3>Cinematic Wedding Film</h3>
+                        <p>4K wedding videography with storytelling</p>
+                        <a href="#" class="view-btn">Watch Video</a>
+                    </div>
+                </div>
+
+                <!-- Video Item 2 - ADD YOUR VIDEO THUMBNAIL URL HERE -->
+                <div class="portfolio-item video video-item" data-aos="fade-up" data-aos-delay="1100">
+                    <div class="portfolio-category">Video</div>
+                    <img src="" alt="Commercial Video" class="portfolio-media">
+                    <div class="play-button">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="portfolio-overlay">
+                        <h3>Brand Commercial</h3>
+                        <p>Professional advertising film production</p>
+                        <a href="#" class="view-btn">Watch Video</a>
+                    </div>
+                </div>
+
+                <!-- Commercial Photography Items -->
+                <!-- Item 12 - ADD YOUR COMMERCIAL IMAGE URL HERE -->
+                <div class="portfolio-item commercial" data-aos="fade-up" data-aos-delay="1200">
+                    <div class="portfolio-category">Commercial</div>
+                    <img src="" alt="Commercial Photography" class="portfolio-media">
+                    <div class="portfolio-overlay">
+                        <h3>Product Photography</h3>
+                        <p>Professional product photography for brands</p>
+                        <a href="#" class="view-btn">View Full Gallery</a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Load More Section -->
+            <div class="load-more">
+                <button class="load-more-btn">Load More Projects</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lightbox Modal -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-close" onclick="closeLightbox()">&times;</div>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="">
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Sharp Kolors Photopoint</h3>
+                    <p>Capturing life's most beautiful moments through cinematic vision and artistic detail.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <p><a href="index.html">Home</a></p>
+                    <p><a href="services.html">Services</a></p>
+                    <p><a href="about.html">About</a></p>
+                    <p><a href="portfolio.html">Portfolio</a></p>
+                    <p><a href="contact.html">Contact</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <p><i class="fas fa-phone"></i> 9270378690</p>
+                    <p><i class="fas fa-map-marker-alt"></i> 129, Siddheshwar Peth, Roshan Corner Apartment, Solapur</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Sharp Kolors Photopoint. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+
+        // Dropdown functionality
+// Dropdown functionality
+// Dropdown functionality with content filtering
+// Filter menu functionality
+// Dropdown filter functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownToggle = document.getElementById('dropdownToggle');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    const dropdownText = document.querySelector('.dropdown-text');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const filterableItems = document.querySelectorAll('.portfolio-item');
+
+    // Ensure dropdown is initially closed
+    dropdownMenu.classList.remove('show');
+    dropdownToggle.classList.remove('open');
+
+    // Filter function
+    function filterItems(filterValue) {
+        filterableItems.forEach(item => {
+            const hasClass = item.classList.contains(filterValue);
+            const hasDataCategory = item.getAttribute('data-category') === filterValue;
+            
+            if (filterValue === 'all' || hasClass || hasDataCategory) {
+                item.style.display = 'block';
+                item.classList.add('fade-in');
+            } else {
+                item.style.display = 'none';
+                item.classList.remove('fade-in');
+            }
+        });
+    }
+
+    // Toggle dropdown
+    dropdownToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const isOpen = dropdownMenu.classList.contains('show');
+        
+        if (isOpen) {
+            dropdownMenu.classList.remove('show');
+            dropdownToggle.classList.remove('open');
+        } else {
+            dropdownMenu.classList.add('show');
+            dropdownToggle.classList.add('open');
+        }
+    });
+
+    // Handle filter button clicks
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Remove active class from all buttons
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            // Update dropdown button text
+            dropdownText.textContent = this.textContent;
+            
+            // Close dropdown
+            dropdownMenu.classList.remove('show');
+            dropdownToggle.classList.remove('open');
+            
+            // Get filter value and apply filtering
+            const filterValue = this.getAttribute('data-filter');
+            console.log('Filter selected:', filterValue);
+            
+            // Apply the filter
+            filterItems(filterValue);
+        });
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!dropdownToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+            dropdownMenu.classList.remove('show');
+            dropdownToggle.classList.remove('open');
+        }
+    });
+
+    // Prevent dropdown from closing when clicking inside the menu
+    dropdownMenu.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+});
+
+
+
+        // Navigation Scroll Effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+
+        // Portfolio Filter Functionality
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const portfolioItems = document.querySelectorAll('.portfolio-item');
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterButtons.forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                btn.classList.add('active');
+                
+                const filterValue = btn.getAttribute('data-filter');
+                
+                portfolioItems.forEach(item => {
+                    if (filterValue === 'all' || item.classList.contains(filterValue)) {
+                        item.style.display = 'block';
+                        item.style.animation = 'fadeInUp 0.6s ease forwards';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Lightbox Functionality
+        function openLightbox(src) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            
+            lightboxImg.src = src;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Add click event to portfolio items
+        portfolioItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const img = item.querySelector('img');
+                if (img && img.src) {
+                    openLightbox(img.src);
+                }
+            });
+        });
+
+        // Close lightbox on background click
+        document.getElementById('lightbox').addEventListener('click', (e) => {
+            if (e.target.id === 'lightbox') {
+                closeLightbox();
+            }
+        });
+
+        // Load More Functionality
+        document.querySelector('.load-more-btn').addEventListener('click', () => {
+            // Add your load more logic here
+            alert('Load more functionality - Add your additional portfolio items here');
+        });
+
+        // Add fadeInUp animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                0% { opacity: 0; transform: translateY(30px); }
+                100% { opacity: 1; transform: translateY(0); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
