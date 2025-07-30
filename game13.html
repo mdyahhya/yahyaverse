@@ -188,7 +188,7 @@ body {
     height: 100%;
     background: 
         radial-gradient(ellipse at center, transparent 20%, rgba(10, 10, 10, 0.1) 50%, rgba(10, 10, 10, 0.3) 100%);
-    z-index: 2;
+    z-index: 1;
 }
 
 .hero-content {
@@ -268,6 +268,27 @@ body {
 .cta-btn:hover::before {
     left: 100%;
 }
+
+@media (max-width: 768px) {
+  .cta-buttons {
+    flex-direction: column;     /* Stack buttons vertically */
+    gap: 1rem;                  /* Keep spacing between buttons */
+    width: 100%;                /* Full width container */
+    padding: 0 1rem;            /* Some horizontal padding on small screens */
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .cta-btn {
+    width: 100%;                /* Buttons fill the width */
+    max-width: 320px;           /* Optional max width for readability */
+    font-size: 1rem;            /* Slightly smaller font on mobile */
+    padding: 1rem 0;            /* Adjust padding to look balanced */
+    text-align: center;
+  }
+}
+
 
 /* Services Section - Constellation Pattern */
 .services {
@@ -818,6 +839,7 @@ textarea.form-control {
   }
 }
 
+
 @media (max-width: 768px) {
   .nav-links {
     display: none !important;
@@ -852,7 +874,6 @@ textarea.form-control {
     display: none;
   }
 }
-
 
     </style>
 </head>
