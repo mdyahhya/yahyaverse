@@ -794,11 +794,13 @@ textarea.form-control {
                 <li><a href="portfolio.html">Portfolio</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
-            <div class="mobile-menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+            <nav class="mobile-nav">
+    <a href="#services">Services</a>
+    <a href="#about">About</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="#contact">Contact</a>
+        </nav>
+
         </div>
     </nav>
 
@@ -821,7 +823,6 @@ textarea.form-control {
             </div>
         </div>
     </section>
-    <!-- Quick Actions for Mobile -->
 
     <!-- Services Section -->
     <section class="services" id="services">
@@ -871,39 +872,6 @@ textarea.form-control {
             </div>
         </div>
     </section>
-    <!-- Mobile Gallery Preview -->
-<section class="mobile-gallery" id="gallery-preview">
-    <div class="gallery-container">
-        <h2 class="section-title">Our Work</h2>
-        <div class="gallery-grid">
-            <div class="gallery-item">
-                <div class="placeholder-img wedding-img">
-                    <i class="fas fa-heart"></i>
-                    <span>Wedding</span>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <div class="placeholder-img pre-wedding-img">
-                    <i class="fas fa-camera-retro"></i>
-                    <span>Pre-Wedding</span>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <div class="placeholder-img film-img">
-                    <i class="fas fa-film"></i>
-                    <span>Films</span>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <div class="placeholder-img baby-img">
-                    <i class="fas fa-baby"></i>
-                    <span>Baby Shoot</span>
-                </div>
-            </div>
-        </div>
-        <a href="portfolio.html" class="view-all-btn">View Full Portfolio</a>
-    </div>
-</section>
 
     <!-- About Section -->
     <section class="about" id="about">
@@ -917,43 +885,6 @@ textarea.form-control {
             </p>
         </div>
     </section>
-
-    <!-- Why Choose Us -->
-<section class="why-choose-us" id="why-choose">
-    <div class="why-choose-container">
-        <h2 class="section-title">Why Choose Us?</h2>
-        <div class="features-grid">
-            <div class="feature-item">
-                <div class="feature-icon">
-                    <i class="fas fa-award"></i>
-                </div>
-                <h3>Professional Quality</h3>
-                <p>4K Ultra HD photography and videography</p>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon">
-                    <i class="fas fa-clock"></i>
-                </div>
-                <h3>Quick Delivery</h3>
-                <p>Fast editing and delivery of your precious moments</p>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon">
-                    <i class="fas fa-rupee-sign"></i>
-                </div>
-                <h3>Affordable Packages</h3>
-                <p>Best prices in Solapur for premium quality</p>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon">
-                    <i class="fas fa-users"></i>
-                </div>
-                <h3>Experienced Team</h3>
-                <p>Professional photographers with years of experience</p>
-            </div>
-        </div>
-    </div>
-</section>
 
     <!-- Contact Section -->
     <!-- Contact Section -->
@@ -1025,54 +956,6 @@ textarea.form-control {
         </form>
     </div>
 </section>    
-
-<!-- Testimonials -->
-<section class="testimonials" id="testimonials">
-    <div class="testimonials-container">
-        <h2 class="section-title">Happy Clients</h2>
-        <div class="testimonial-slider">
-            <div class="testimonial-item active">
-                <div class="stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                </div>
-                <p>"Amazing photography! They captured our wedding perfectly. Highly recommended!"</p>
-                <div class="client-name">- Priya & Rahul</div>
-            </div>
-            <div class="testimonial-item">
-                <div class="stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                </div>
-                <p>"Professional service and beautiful results. Our pre-wedding shoot was perfect!"</p>
-                <div class="client-name">- Anjali & Vikram</div>
-            </div>
-            <div class="testimonial-item">
-                <div class="stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                </div>
-                <p>"Excellent 4K video quality and fast delivery. Thank you Sharp Kolors!"</p>
-                <div class="client-name">- Suresh Family</div>
-            </div>
-        </div>
-        <div class="testimonial-dots">
-            <span class="dot active" onclick="currentSlide(1)"></span>
-            <span class="dot" onclick="currentSlide(2)"></span>
-            <span class="dot" onclick="currentSlide(3)"></span>
-        </div>
-    </div>
-</section>
-
         <!-- Google Maps -->
         <div class="map-container fade-in" data-aos="fade-up">
             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3795.5468395058344!2d75.91048487522456!3d17.67961798324645!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc5db7b7a3c7c5b%3A0x7b9c3f8e5e7c5e7c!2sSiddheshwar%20Peth%2C%20Solapur%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1234567890123" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
@@ -1111,13 +994,6 @@ textarea.form-control {
             <p>&copy; 2025 Sharp Kolors Photopoint. All rights reserved.</p>
         </div>
     </footer>
-
-    <!-- Floating WhatsApp Button -->
-<div class="whatsapp-float">
-    <a href="https://wa.me/919307426215?text=Hello%20Sharp%20Kolors%20Photopoint!%20I'm%20interested%20in%20your%20photography%20services." target="_blank">
-        <i class="fab fa-whatsapp"></i>
-    </a>
-</div>
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
