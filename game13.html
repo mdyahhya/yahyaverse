@@ -930,6 +930,76 @@ textarea.form-control {
     }
 }
 
+/* Mobile Navigation */
+.mobile-nav {
+    position: fixed;
+    top: 70px; /* Adjust based on your navbar height */
+    left: 0;
+    width: 100%;
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+    z-index: 999;
+    display: none; /* Hidden by default on all screens */
+}
+
+.mobile-nav a {
+    display: block;
+    color: var(--white);
+    text-decoration: none;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.mobile-nav a:hover {
+    color: var(--neon-blue);
+    background: rgba(0, 212, 255, 0.1);
+}
+
+.mobile-nav a:last-child {
+    border-bottom: none;
+}
+
+/* Show mobile nav on mobile devices */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    
+    .mobile-menu {
+        display: flex;
+    }
+    
+    .mobile-nav {
+        display: block; /* Always show on mobile */
+        position: static; /* Change from fixed to static */
+        background: rgba(10, 10, 10, 0.9);
+        margin-top: 0;
+    }
+    
+    /* Adjust hero section to account for mobile nav */
+    .hero {
+        margin-top: 200px; /* Adjust this value based on your navbar + mobile nav height */
+    }
+}
+
+/* For larger screens, hide mobile nav completely */
+@media (min-width: 769px) {
+    .mobile-nav {
+        display: none !important;
+    }
+    
+    .mobile-menu {
+        display: none;
+    }
+    
+    .nav-links {
+        display: flex;
+    }
+}
+
     </style>
 </head>
 <body>
