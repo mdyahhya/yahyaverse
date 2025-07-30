@@ -778,6 +778,46 @@ textarea.form-control {
     transform: translateY(0);
     transition: transform 0.1s ease-out;
 }
+
+
+/* Hide default nav links and show mobile-nav on mobile */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none !important;
+  }
+
+  .mobile-nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: center; /* You can use space-between/space-around if needed */
+    align-items: center;
+    gap: 16px;   /* space between links */
+    background: #fff; /* Optional: background color */
+    padding: 10px 0;
+    width: 100%;
+  }
+
+  .mobile-nav a {
+    text-decoration: none;
+    color: #333; /* Color of nav links */
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s;
+  }
+  .mobile-nav a:hover {
+    background: #ececec; /* Subtle hover effect */
+    color: #0077ff;
+  }
+}
+
+/* Optionally, hide .mobile-nav on desktop */
+@media (min-width: 769px) {
+  .mobile-nav {
+    display: none !important;
+  }
+}
+
     </style>
 </head>
 <body>
