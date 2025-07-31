@@ -136,6 +136,284 @@ setInterval(() => {
   self.registration.update();
 }, 30000);
 
+// Add these to your existing sw.js file
+
+// ========== ANONSHARE ADDITIONS ==========
+
+// Add AnonShare routes to your existing STATIC_CACHE_URLS array
+const ANONSHARE_CACHE_URLS = [
+  '/anonshare.html',  // or whatever you name the file
+  '/anonshare',       // if using routing
+];
+
+// Add to your existing cache URLs
+// STATIC_CACHE_URLS.push(...ANONSHARE_CACHE_URLS);
+
+// ========== BLUETOOTH FILE TRANSFER HANDLERS ==========
+
+// Handle Bluetooth-related background tasks
+self.addEventListener('sync', (event) => {
+  // Add this to your existing sync handler or create new one
+  if (event.tag === 'bluetooth-retry') {
+    console.log('[SW] Retrying Bluetooth connection...');
+    event.waitUntil(retryBluetoothConnection());
+  }
+  
+  if (event.tag === 'file-cleanup') {
+    console.log('[SW] Cleaning up temporary files...');
+    event.waitUntil(cleanupTempFiles());
+  }
+});
+
+// Push notification handler for file transfers
+self.addEventListener('push', (event) => {
+  // Add this to your existing push handler
+  if (event.data) {
+    const data = event.data.json();
+    
+    if (data.type === 'file-received') {
+      const options = {
+        body: `📁 ${data.filename} received via AnonShare`,
+        icon: '/icons/icon-192x192.png',
+        badge: '/icons/badge-72x72.png',
+        tag: 'anonshare-file',
+        requireInteraction: true,
+        data: { 
+          action: 'anonshare',
+          filename: data.filename,
+          size: data.size 
+        },
+        actions: [
+          {
+            action: 'download-file',
+            title: '⬇️ Download',
+            icon: '/icons/download.png'
+          },
+          {
+            action: 'delete-file',
+            title: '🗑️ Delete',
+            icon: '/icons/delete.png'
+          }
+        ],
+        vibrate: [200, 100, 200],
+        silent: false
+      };
+
+      event.waitUntil(
+        self.registration.showNotification('AnonShare - File Received', options)
+      );
+    }
+  }
+});
+
+// Enhanced notification click handler
+self.addEventListener('notificationclick', (event) => {
+  // Add this to your existing notification handler
+  event.notification.close();
+
+  if (event.notification.tag === 'anonshare-file') {
+    if (event.action === 'download-file') {
+      event.waitUntil(
+        clients.openWindow('/anonshare?action=download&file=' + event.notification.data.filename)
+      );
+    } else if (event.action === 'delete-file') {
+      event.waitUntil(deleteReceivedFile(event.notification.data.filename));
+    } else {
+      event.waitUntil(clients.openWindow('/anonshare'));
+    }
+  }
+});
+
+// ========== ANONSHARE SPECIFIC FUNCTIONS ==========
+
+// Bluetooth connection retry handler
+async function retryBluetoothConnection() {
+  try {
+    // Get stored connection attempts from IndexedDB
+    const db = await openAnonShareDB();
+    const failedConnections = await getFailedConnections(db);
+    
+    for (const connection of failedConnections) {
+      try {
+        // Attempt to reconnect
+        await attemptBluetoothReconnect(connection);
+        await removeFailedConnection(db, connection.id);
+      } catch (error) {
+        console.log('[SW] Retry failed for:', connection.deviceId);
+      }
+    }
+  } catch (error) {
+    console.error('[SW] Bluetooth retry failed:', error);
+  }
+}
+
+// Clean up temporary files
+async function cleanupTempFiles() {
+  try {
+    // Clear any temporary file data from IndexedDB
+    const db = await openAnonShareDB();
+    const transaction = db.transaction(['tempFiles'], 'readwrite');
+    const store = transaction.objectStore('tempFiles');
+    
+    // Delete files older than 1 hour
+    const cutoffTime = Date.now() - (60 * 60 * 1000);
+    const files = await getAllTempFiles(store);
+    
+    for (const file of files) {
+      if (file.timestamp < cutoffTime) {
+        await store.delete(file.id);
+        console.log('[SW] Cleaned up temp file:', file.name);
+      }
+    }
+  } catch (error) {
+    console.error('[SW] Cleanup failed:', error);
+  }
+}
+
+// Delete received file
+async function deleteReceivedFile(filename) {
+  try {
+    const db = await openAnonShareDB();
+    const transaction = db.transaction(['receivedFiles'], 'readwrite');
+    const store = transaction.objectStore('receivedFiles');
+    
+    // Find and delete the file
+    const files = await getAllReceivedFiles(store);
+    const fileToDelete = files.find(f => f.name === filename);
+    
+    if (fileToDelete) {
+      await store.delete(fileToDelete.id);
+      console.log('[SW] Deleted file:', filename);
+    }
+  } catch (error) {
+    console.error('[SW] File deletion failed:', error);
+  }
+}
+
+// ========== INDEXEDDB HELPERS ==========
+
+function openAnonShareDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('AnonShareDB', 1);
+    
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+    
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      
+      // Create object stores
+      if (!db.objectStoreNames.contains('tempFiles')) {
+        const tempStore = db.createObjectStore('tempFiles', { keyPath: 'id', autoIncrement: true });
+        tempStore.createIndex('timestamp', 'timestamp');
+      }
+      
+      if (!db.objectStoreNames.contains('receivedFiles')) {
+        const receivedStore = db.createObjectStore('receivedFiles', { keyPath: 'id', autoIncrement: true });
+        receivedStore.createIndex('name', 'name');
+      }
+      
+      if (!db.objectStoreNames.contains('failedConnections')) {
+        const connStore = db.createObjectStore('failedConnections', { keyPath: 'id', autoIncrement: true });
+        connStore.createIndex('deviceId', 'deviceId');
+      }
+    };
+  });
+}
+function getAllTempFiles(store) {
+  return new Promise((resolve, reject) => {
+    const request = store.getAll();
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+  });
+}
+
+function getAllReceivedFiles(store) {
+  return new Promise((resolve, reject) => {
+    const request = store.getAll();
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+  });
+}
+
+function getFailedConnections(db) {
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(['failedConnections'], 'readonly');
+    const store = transaction.objectStore('failedConnections');
+    const request = store.getAll();
+    
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+  });
+}
+
+function removeFailedConnection(db, connectionId) {
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(['failedConnections'], 'readwrite');
+    const store = transaction.objectStore('failedConnections');
+    const request = store.delete(connectionId);
+    
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve();
+  });
+}
+
+async function attemptBluetoothReconnect(connection) {
+  // This would contain actual Bluetooth reconnection logic
+  // Implementation depends on your specific needs
+  console.log('[SW] Attempting to reconnect to:', connection.deviceId);
+  throw new Error('Reconnection not implemented');
+}
+
+// ========== MESSAGE HANDLERS ==========
+
+// Add these to your existing message handler
+self.addEventListener('message', (event) => {
+  const { type, data } = event.data;
+
+  switch (type) {
+    case 'ANONSHARE_CACHE_FILE':
+      // Cache a received file temporarily
+      cacheReceivedFile(data.file, data.metadata);
+      break;
+      
+    case 'ANONSHARE_CLEANUP':
+      // Trigger immediate cleanup
+      cleanupTempFiles();
+      break;
+      
+    case 'ANONSHARE_RETRY_CONNECTION':
+      // Register background sync for retry
+      self.registration.sync.register('bluetooth-retry');
+      break;
+      
+    case 'ANONSHARE_SCHEDULE_CLEANUP':
+      // Schedule file cleanup
+      self.registration.sync.register('file-cleanup');
+      break;
+  }
+});
+
+async function cacheReceivedFile(file, metadata) {
+  try {
+    const db = await openAnonShareDB();
+    const transaction = db.transaction(['receivedFiles'], 'readwrite');
+    const store = transaction.objectStore('receivedFiles');
+    
+    await store.add({
+      name: metadata.filename,
+      size: metadata.size,
+      type: metadata.type,
+      data: file,
+      timestamp: Date.now(),
+      received: true
+    });
+    
+    console.log('[SW] Cached received file:', metadata.filename);
+  } catch (error) {
+    console.error('[SW] Failed to cache file:', error);
+  }
+}
 // Handle messages from main thread
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
