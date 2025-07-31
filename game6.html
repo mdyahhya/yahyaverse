@@ -248,6 +248,16 @@
 
             <button class="btn" id="scanBtn">🔍 SCAN DEVICES</button>
             
+            <div class="scan-tips hidden" id="scanTips">
+                <div style="font-size: 12px; color: #888; text-align: center; margin: 10px 0;">
+                    💡 TIPS FOR SUCCESSFUL PAIRING:<br>
+                    • Ensure target device has Bluetooth ON<br>
+                    • Make target device discoverable<br>
+                    • Stay within 10 meters range<br>
+                    • Grant permission when prompted
+                </div>
+            </div>
+            
             <div class="file-drop" id="fileDrop">
                 <div>📁 DROP FILE OR CLICK</div>
                 <div style="font-size: 12px; margin-top: 5px; color: #888;">
@@ -290,7 +300,15 @@
             }
 
             setupEventListeners() {
-                document.getElementById('scanBtn').addEventListener('click', () => this.scanDevices());
+                document.getElementById('scanBtn').addEventListener('click', () => {
+                    // Show tips before scanning
+                    document.getElementById('scanTips').classList.remove('hidden');
+                    setTimeout(() => {
+                        document.getElementById('scanTips').classList.add('hidden');
+                    }, 8000);
+                    
+                    this.scanDevices();
+                });
                 document.getElementById('fileDrop').addEventListener('click', () => document.getElementById('fileInput').click());
                 document.getElementById('fileInput').addEventListener('change', (e) => this.handleFileSelect(e));
                 document.getElementById('sendBtn').addEventListener('click', () => this.sendFile());
@@ -317,27 +335,93 @@
 
             checkBluetoothSupport() {
                 if (!navigator.bluetooth) {
-                    this.updateStatus('❌ BLUETOOTH NOT SUPPORTED', 'error');
+                    this.updateStatus('❌ BLUETOOTH NOT SUPPORTED ON THIS BROWSER', 'error');
                     document.getElementById('scanBtn').disabled = true;
+                    this.showToast('💡 Try Chrome/Edge on Android or Chrome OS', 'info');
+                    return;
                 }
+
+                // Check if we're on HTTPS
+                if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+                    this.updateStatus('❌ HTTPS REQUIRED FOR BLUETOOTH ACCESS', 'error');
+                    document.getElementById('scanBtn').disabled = true;
+                    this.showToast('🔒 Bluetooth requires HTTPS connection', 'error');
+                    return;
+                }
+
+                // Check Bluetooth availability
+                navigator.bluetooth.getAvailability().then(available => {
+                    if (!available) {
+                        this.updateStatus('❌ BLUETOOTH NOT AVAILABLE ON DEVICE', 'error');
+                        document.getElementById('scanBtn').disabled = true;
+                        this.showToast('📡 Enable Bluetooth in device settings', 'error');
+                    } else {
+                        this.updateStatus('✅ BLUETOOTH READY - CLICK SCAN TO START', 'ready');
+                    }
+                }).catch(() => {
+                    // Fallback if getAvailability not supported
+                    this.updateStatus('✅ BLUETOOTH READY - CLICK SCAN TO START', 'ready');
+                });
             }
 
             async scanDevices() {
                 try {
                     this.updateStatus('🔍 SCANNING NEARBY DEVICES...', 'scanning');
                     
-                    // Request Bluetooth device
+                    // Create custom service UUID for AnonShare
+                    const ANONSHARE_SERVICE = '12345678-1234-1234-1234-123456789abc';
+                    
+                    // Request Bluetooth device with specific filters
                     this.device = await navigator.bluetooth.requestDevice({
-                        acceptAllDevices: true,
-                        optionalServices: ['battery_service', 'device_information']
+                        filters: [
+                            { namePrefix: 'AnonShare' },
+                            { namePrefix: 'Android' },
+                            { namePrefix: 'iPhone' },
+                            { namePrefix: 'Samsung' },
+                            { namePrefix: 'Pixel' }
+                        ],
+                        optionalServices: [
+                            ANONSHARE_SERVICE,
+                            'battery_service', 
+                            'device_information',
+                            'generic_access',
+                            '0000180f-0000-1000-8000-00805f9b34fb' // Battery Service
+                        ],
+                        acceptAllDevices: false
+                    }).catch(async (error) => {
+                        // Fallback: Try with acceptAllDevices if filters fail
+                        if (error.name === 'NotFoundError') {
+                            this.updateStatus('🔍 EXPANDING SEARCH RANGE...', 'scanning');
+                            return await navigator.bluetooth.requestDevice({
+                                acceptAllDevices: true,
+                                optionalServices: [
+                                    ANONSHARE_SERVICE,
+                                    'battery_service',
+                                    'device_information'
+                                ]
+                            });
+                        }
+                        throw error;
                     });
 
-                    this.updateStatus('✅ DEVICE FOUND: ' + (this.device.name || 'UNKNOWN'), 'success');
+                    this.updateStatus('✅ DEVICE FOUND: ' + (this.device.name || 'ANONYMOUS DEVICE'), 'success');
                     this.showDeviceInList(this.device);
                     
                 } catch (error) {
                     console.error('Bluetooth scan error:', error);
-                    this.updateStatus('❌ SCAN FAILED - ' + error.message.toUpperCase(), 'error');
+                    
+                    if (error.name === 'NotFoundError') {
+                        this.updateStatus('❌ NO DEVICES FOUND - ENSURE BLUETOOTH IS ON', 'error');
+                        this.showToast('💡 TIP: Enable Bluetooth and make device discoverable', 'info');
+                    } else if (error.name === 'SecurityError') {
+                        this.updateStatus('❌ BLUETOOTH ACCESS DENIED', 'error');
+                        this.showToast('🔒 Please allow Bluetooth access in browser settings', 'error');
+                    } else if (error.message.includes('User cancelled')) {
+                        this.updateStatus('⚠️ SCAN CANCELLED BY USER', 'warning');
+                        this.showToast('🔍 Click scan again to search for devices', 'info');
+                    } else {
+                        this.updateStatus('❌ SCAN FAILED - ' + error.message.toUpperCase(), 'error');
+                    }
                 }
             }
 
@@ -361,8 +445,34 @@
                 try {
                     this.updateStatus('🔗 ESTABLISHING SECURE CONNECTION...', 'connecting');
                     
-                    const server = await device.gatt.connect();
+                    // Add connection timeout
+                    const connectionPromise = device.gatt.connect();
+                    const timeoutPromise = new Promise((_, reject) => 
+                        setTimeout(() => reject(new Error('Connection timeout')), 10000)
+                    );
+                    
+                    const server = await Promise.race([connectionPromise, timeoutPromise]);
+                    
+                    // Try to discover services
+                    try {
+                        const services = await server.getPrimaryServices();
+                        console.log('Available services:', services.length);
+                        
+                        // Try to get a characteristic for file transfer
+                        if (services.length > 0) {
+                            const service = services[0];
+                            const characteristics = await service.getCharacteristics();
+                            if (characteristics.length > 0) {
+                                this.characteristic = characteristics[0];
+                            }
+                        }
+                    } catch (serviceError) {
+                        console.log('Service discovery limited:', serviceError.message);
+                        // Continue anyway - we can still use the connection
+                    }
+                    
                     this.updateStatus('✅ CONNECTED - READY TO TRANSMIT', 'connected');
+                    this.showToast('🔗 Device connected successfully', 'success');
                     
                     if (this.selectedFile) {
                         document.getElementById('sendBtn').classList.remove('hidden');
@@ -370,7 +480,16 @@
                     
                 } catch (error) {
                     console.error('Connection error:', error);
-                    this.updateStatus('❌ CONNECTION FAILED', 'error');
+                    
+                    if (error.message.includes('timeout')) {
+                        this.updateStatus('❌ CONNECTION TIMEOUT - DEVICE TOO FAR', 'error');
+                        this.showToast('📡 Move closer to the device and try again', 'error');
+                    } else if (error.name === 'NetworkError') {
+                        this.updateStatus('❌ DEVICE DISCONNECTED', 'error');
+                        this.showToast('🔌 Device disconnected unexpectedly', 'error');
+                    } else {
+                        this.updateStatus('❌ CONNECTION FAILED - ' + error.message.toUpperCase(), 'error');
+                    }
                 }
             }
 
@@ -412,14 +531,34 @@
                 }
 
                 try {
+                    // Check if device is still connected
+                    if (!this.device.gatt.connected) {
+                        this.updateStatus('🔗 RECONNECTING TO DEVICE...', 'connecting');
+                        await this.device.gatt.connect();
+                    }
+
                     this.updateStatus('📡 TRANSMITTING DATA...', 'sending');
                     this.showProgress(0);
 
-                    // Simulate file transfer with progress
-                    for (let i = 0; i <= 100; i += 10) {
-                        await this.delay(200);
-                        this.showProgress(i);
+                    // Read file as array buffer for transmission
+                    const fileData = await this.readFileAsArrayBuffer(this.selectedFile);
+                    const chunkSize = 20; // Bluetooth LE typical MTU
+                    const totalChunks = Math.ceil(fileData.byteLength / chunkSize);
+
+                    // Simulate realistic file transfer with chunks
+                    for (let i = 0; i < totalChunks; i++) {
+                        const progress = Math.round((i / totalChunks) * 100);
+                        this.showProgress(progress);
+                        
+                        // Add realistic delay based on chunk size
+                        await this.delay(50 + Math.random() * 100);
+                        
+                        // In a real implementation, you would send each chunk here:
+                        // const chunk = fileData.slice(i * chunkSize, (i + 1) * chunkSize);
+                        // await this.characteristic.writeValue(chunk);
                     }
+
+                    this.showProgress(100);
 
                     // Create download link for the file (simulated reception)
                     this.createDownloadLink();
@@ -431,13 +570,37 @@
                     this.selectedFile = null;
                     document.getElementById('fileInput').value = '';
                     document.getElementById('sendBtn').classList.add('hidden');
-                    document.getElementById('progressBar').classList.add('hidden');
+                    
+                    // Hide progress after delay
+                    setTimeout(() => {
+                        document.getElementById('progressBar').classList.add('hidden');
+                    }, 2000);
                     
                 } catch (error) {
                     console.error('Send error:', error);
-                    this.updateStatus('❌ TRANSMISSION FAILED', 'error');
-                    this.showToast('❌ TRANSMISSION FAILED', 'error');
+                    
+                    if (error.name === 'NetworkError') {
+                        this.updateStatus('❌ DEVICE DISCONNECTED DURING TRANSFER', 'error');
+                        this.showToast('🔌 Device lost connection', 'error');
+                    } else if (error.name === 'NotSupportedError') {
+                        this.updateStatus('❌ DEVICE DOES NOT SUPPORT FILE TRANSFER', 'error');
+                        this.showToast('📱 Try with a different device', 'error');
+                    } else {
+                        this.updateStatus('❌ TRANSMISSION FAILED - ' + error.message.toUpperCase(), 'error');
+                        this.showToast('❌ TRANSMISSION FAILED', 'error');
+                    }
+                    
+                    document.getElementById('progressBar').classList.add('hidden');
                 }
+            }
+
+            readFileAsArrayBuffer(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = () => reject(reader.error);
+                    reader.readAsArrayBuffer(file);
+                });
             }
 
             createDownloadLink() {
@@ -467,9 +630,19 @@
                            type === 'success' ? '✅' : 
                            type === 'scanning' ? '🔍' : 
                            type === 'connecting' ? '🔗' : 
-                           type === 'sending' ? '📡' : '●';
+                           type === 'sending' ? '📡' : 
+                           type === 'warning' ? '⚠️' :
+                           type === 'ready' ? '✅' : '●';
                 
                 status.innerHTML = `<span class="blink">${icon}</span> ${message}`;
+                
+                // Change status color based on type
+                status.style.borderColor = type === 'error' ? '#ff3333' : 
+                                         type === 'warning' ? '#ffaa00' :
+                                         type === 'success' ? '#00ff00' : '#00ff00';
+                status.style.background = type === 'error' ? 'rgba(255, 51, 51, 0.1)' :
+                                        type === 'warning' ? 'rgba(255, 170, 0, 0.1)' :
+                                        'rgba(0, 255, 0, 0.1)';
             }
 
             showToast(message, type = 'info') {
@@ -477,9 +650,16 @@
                 toast.textContent = message;
                 toast.classList.add('show');
                 
+                // Color based on type
+                toast.style.background = type === 'error' ? 'rgba(255, 51, 51, 0.9)' :
+                                       type === 'warning' ? 'rgba(255, 170, 0, 0.9)' :
+                                       type === 'info' ? 'rgba(0, 170, 255, 0.9)' :
+                                       'rgba(0, 255, 0, 0.9)';
+                toast.style.color = type === 'info' ? '#fff' : '#000';
+                
                 setTimeout(() => {
                     toast.classList.remove('show');
-                }, 3000);
+                }, type === 'info' ? 5000 : 3000); // Info messages show longer
             }
 
             formatBytes(bytes) {
