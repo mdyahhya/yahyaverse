@@ -60,4 +60,113 @@
       "purpose": "any maskable"
     }
   ]
+
+
+  "shortcuts": [
+    {
+      "name": "AnonShare - Quick Scan",
+      "short_name": "Quick Scan",
+      "description": "Quickly scan for nearby Bluetooth devices",
+      "url": "/anonshare?action=scan",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><rect fill='%23000'/><text x='48' y='60' font-size='48' text-anchor='middle' fill='%2300ff00'>🔍</text></svg>",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "AnonShare - Send File",
+      "short_name": "Send File",
+      "description": "Send files anonymously via Bluetooth",
+      "url": "/anonshare?action=send",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><rect fill='%23000'/><text x='48' y='60' font-size='48' text-anchor='middle' fill='%2300ff00'>📡</text></svg>",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+
+  "protocol_handlers": [
+    {
+      "protocol": "bluetooth",
+      "url": "/anonshare?protocol=%s"
+    }
+  ],
+
+  "file_handlers": [
+    {
+      "action": "/anonshare?action=share",
+      "accept": {
+        "application/pdf": [".pdf"],
+        "image/*": [".jpg", ".jpeg", ".png", ".gif", ".webp"],
+        "text/plain": [".txt"],
+        "application/zip": [".zip"],
+        "application/x-zip-compressed": [".zip"]
+      }
+    }
+  ],
+
+  "_categories_addition": "Add 'security' and 'utilities' to your existing categories array",
+  "categories": ["security", "utilities"],
+
+  "_share_target_addition": "Add this share_target to enable sharing files to AnonShare",
+  "share_target": {
+    "action": "/anonshare?share-target",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "files": [
+        {
+          "name": "file",
+          "accept": ["application/pdf", "image/*", "text/plain", "application/zip"]
+        }
+      ]
+    }
+  },
+
+  "_permissions_addition": "Add these permissions if not already present",
+  "permissions": [
+    "bluetooth",
+    "notifications",
+    "background-sync"
+  ],
+
+  "_additional_icons": "Add these AnonShare-specific icons to your icons array",
+  "anonshare_icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 72 72'><rect width='72' height='72' fill='%23000'/><text x='36' y='45' font-size='36' text-anchor='middle' fill='%2300ff00'>📡</text></svg>",
+      "sizes": "72x72",
+      "type": "image/svg+xml",
+      "purpose": "badge"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><rect width='96' height='96' fill='%23000'/><circle cx='48' cy='48' r='40' fill='none' stroke='%2300ff00' stroke-width='2'/><text x='48' y='58' font-size='32' text-anchor='middle' fill='%2300ff00'>⚡</text></svg>",
+      "sizes": "96x96",
+      "type": "image/svg+xml",
+      "purpose": "monochrome"
+    }
+  ],
+
+  "_screenshots_addition": "Add AnonShare screenshots to your existing screenshots array",
+  "anonshare_screenshots": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 375 812'><rect width='375' height='812' fill='%23000'/><rect x='20' y='100' width='335' height='200' fill='none' stroke='%2300ff00' stroke-width='1'/><text x='187' y='160' font-size='16' text-anchor='middle' fill='%2300ff00'>ANONSHARE</text><text x='187' y='180' font-size='12' text-anchor='middle' fill='%23888'>SECURE • ANONYMOUS • UNTRACEABLE</text><rect x='40' y='220' width='295' height='40' fill='%23001100' stroke='%2300ff00' stroke-width='1'/><text x='187' y='245' font-size='14' text-anchor='middle' fill='%2300ff00'>🔍 SCAN DEVICES</text></svg>",
+      "sizes": "375x812",
+      "type": "image/svg+xml",
+      "form_factor": "narrow",
+      "label": "AnonShare - Secure File Transfer"
+    }
+  ],
+
+  "_related_applications": "Optional: Add related applications",
+  "related_applications": [
+    {
+      "platform": "web",
+      "url": "/anonshare",
+      "id": "anonshare-module"
+    }
+  ]
 }
