@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobile Camera</title>
+    <title>AnonShare | Secure Bluetooth Transfer</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📡</text></svg>">
+    
     <style>
         * {
             margin: 0;
@@ -12,696 +16,557 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #fff;
             overflow-x: hidden;
-            max-width: 375px;
-            max-height: 770px;
-            margin: 0 auto;
-        }
-
-        #container {
-            width: 100%;
-            height: 100vh;
-            max-width: 375px;
-            max-height: 770px;
-            overflow-y: auto;
-            background: #000;
-            position: relative;
-        }
-
-        /* Camera View */
-        #camera-view {
-            position: relative;
-            width: 100%;
-            height: 60vh;
-            background: #000;
+            min-height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
         }
 
-        #video {
+        .container {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            max-width: 375px;
+            height: 100vh;
+            background: linear-gradient(135deg, #000 0%, #111 100%);
+            border: 1px solid #333;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        #canvas {
+        .header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+            background: rgba(0, 20, 0, 0.3);
+        }
+
+        .logo {
+            font-size: 24px;
+            color: #00ff00;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: #888;
+            opacity: 0.8;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .status {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: linear-gradient(135deg, #001100, #003300);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #003300, #005500);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .file-input {
             display: none;
         }
 
-        .camera-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        .focus-frame {
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            border-radius: 10px;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation: focusPulse 2s infinite;
-        }
-
-        @keyframes focusPulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 0.8; }
-        }
-
-        .camera-info {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            right: 20px;
-            color: white;
-            font-size: 14px;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 10px;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-        }
-
-        /* Camera Controls */
-        .camera-controls {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.8) 50%);
-            padding: 30px 20px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 5;
-        }
-
-        .capture-btn {
-            width: 70px;
-            height: 70px;
-            border: 4px solid white;
-            border-radius: 50%;
-            background: transparent;
-            cursor: pointer;
-            position: relative;
-            touch-action: manipulation;
-            transition: all 0.2s ease;
-        }
-
-        .capture-btn:active {
-            transform: scale(0.9);
-        }
-
-        .capture-btn::before {
-            content: '';
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            right: 8px;
-            bottom: 8px;
-            background: white;
-            border-radius: 50%;
-            transition: all 0.2s ease;
-        }
-
-        .capture-btn:active::before {
-            background: #00ff88;
-        }
-
-        .control-btn {
-            width: 50px;
-            height: 50px;
-            border: 2px solid rgba(255, 255, 255, 0.7);
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            touch-action: manipulation;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .control-btn:active {
-            transform: scale(0.9);
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        /* Bottom Panel */
-        .bottom-panel {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 40vh;
-            padding: 20px;
-            border-radius: 20px 20px 0 0;
-            margin-top: -20px;
-            position: relative;
-            z-index: 3;
-        }
-
-        .panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .panel-title {
-            color: white;
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .photo-count {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .action-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .action-btn {
-            padding: 15px;
-            border: none;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            touch-action: manipulation;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .action-btn.primary {
-            background: rgba(255, 255, 255, 0.9);
-            color: #667eea;
-        }
-
-        .action-btn.secondary {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .action-btn:active {
-            transform: scale(0.95);
-        }
-
-        /* Photo Gallery */
-        .photo-gallery {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .photo-item {
-            aspect-ratio: 1;
+        .file-drop {
+            border: 2px dashed #00ff00;
             border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-            position: relative;
-            touch-action: manipulation;
-        }
-
-        .photo-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.2s ease;
-        }
-
-        .photo-item:active img {
-            transform: scale(1.1);
-        }
-
-        .photo-item .delete-btn {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            width: 20px;
-            height: 20px;
-            background: rgba(255, 59, 48, 0.9);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            font-size: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            touch-action: manipulation;
-        }
-
-        .empty-gallery {
-            grid-column: 1 / -1;
+            padding: 30px 20px;
             text-align: center;
-            padding: 40px 20px;
-            color: rgba(255, 255, 255, 0.6);
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(0, 255, 0, 0.05);
+        }
+
+        .file-drop:hover {
+            background: rgba(0, 255, 0, 0.1);
+            border-color: #55ff55;
+        }
+
+        .device-list {
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .device-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 8px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .device-item:hover {
+            border-color: #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+        }
+
+        .device-name {
             font-size: 14px;
+            color: #fff;
         }
 
-        .empty-gallery .icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-            opacity: 0.5;
+        .device-signal {
+            color: #00ff00;
+            font-size: 12px;
         }
 
-        /* Status Messages */
-        .status-msg {
+        .toast {
             position: fixed;
-            top: 50%;
+            top: 20px;
             left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 16px 24px;
-            border-radius: 12px;
+            transform: translateX(-50%);
+            background: rgba(0, 255, 0, 0.9);
+            color: #000;
+            padding: 12px 20px;
+            border-radius: 6px;
             font-size: 14px;
             z-index: 1000;
-            backdrop-filter: blur(10px);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
 
-        .status-msg.show {
+        .toast.show {
             opacity: 1;
         }
 
-        /* Flash Effect */
-        .flash {
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #333;
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #55ff55);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .install-prompt {
             position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #00ff00;
+            border-radius: 8px;
+            padding: 15px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .matrix-bg {
+            position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: white;
-            z-index: 999;
-            opacity: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            z-index: -1;
             pointer-events: none;
         }
 
-        .flash.active {
-            opacity: 1;
-            animation: flashEffect 0.2s ease;
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
         }
 
-        @keyframes flashEffect {
-            0% { opacity: 0; }
-            50% { opacity: 0.8; }
-            100% { opacity: 0; }
-        }
-
-        /* Fullscreen Photo View */
-        .fullscreen-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 1000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .fullscreen-photo {
-            max-width: 100%;
-            max-height: 100%;
-            border-radius: 10px;
-        }
-
-        .fullscreen-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-            touch-action: manipulation;
-        }
-
-        /* Responsive adjustments */
-        @media (max-height: 600px) {
-            #camera-view {
-                height: 50vh;
-            }
-            .bottom-panel {
-                min-height: 50vh;
-            }
+        .blink {
+            animation: blink 1s infinite;
         }
     </style>
 </head>
 <body>
-    <div id="container">
-        <!-- Camera View -->
-        <div id="camera-view">
-            <video id="video" autoplay playsinline></video>
-            <canvas id="canvas"></canvas>
+    <div class="container">
+        <div class="matrix-bg"></div>
+        
+        <div class="header">
+            <div class="logo">⚡ ANONSHARE</div>
+            <div class="subtitle">SECURE • ANONYMOUS • UNTRACEABLE</div>
+        </div>
+
+        <div class="main-content">
+            <div class="status" id="status">
+                <span class="blink">●</span> SYSTEM READY - NO TRACES LEFT
+            </div>
+
+            <button class="btn" id="scanBtn">🔍 SCAN DEVICES</button>
             
-            <div class="camera-overlay">
-                <div class="focus-frame"></div>
-                <div class="camera-info" id="camera-info">
-                    Tap the capture button to take photos
+            <div class="file-drop" id="fileDrop">
+                <div>📁 DROP FILE OR CLICK</div>
+                <div style="font-size: 12px; margin-top: 5px; color: #888;">
+                    MAX 10MB • PDF, IMG, TXT, ZIP
                 </div>
             </div>
-
-            <div class="camera-controls">
-                <button class="control-btn" id="switchBtn" title="Switch Camera">
-                    🔄
-                </button>
-                
-                <button class="capture-btn" id="captureBtn"></button>
-                
-                <button class="control-btn" id="flashBtn" title="Toggle Flash">
-                    ⚡
-                </button>
+            
+            <input type="file" class="file-input" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.gif,.txt,.zip">
+            
+            <button class="btn hidden" id="sendBtn">📡 TRANSMIT FILE</button>
+            
+            <div class="device-list hidden" id="deviceList"></div>
+            
+            <div class="progress-bar hidden" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
             </div>
         </div>
 
-        <!-- Bottom Panel -->
-        <div class="bottom-panel">
-            <div class="panel-header">
-                <h2 class="panel-title">Photo Gallery</h2>
-                <span class="photo-count" id="photoCount">0 photos</span>
-            </div>
-
-            <div class="action-buttons">
-                <button class="action-btn primary" id="startBtn">
-                    📷 Start Camera
-                </button>
-                <button class="action-btn secondary" id="clearBtn">
-                    🗑️ Clear All
-                </button>
-            </div>
-
-            <div class="photo-gallery" id="photoGallery">
-                <div class="empty-gallery">
-                    <div class="icon">📸</div>
-                    <p>No photos yet.<br>Start camera and capture moments!</p>
-                </div>
-            </div>
+        <div class="install-prompt" id="installPrompt">
+            <button class="btn" id="installBtn">⬇️ INSTALL APP</button>
         </div>
     </div>
 
-    <!-- Status Message -->
-    <div class="status-msg" id="statusMsg"></div>
-
-    <!-- Flash Effect -->
-    <div class="flash" id="flash"></div>
-
-    <!-- Fullscreen Photo View -->
-    <div class="fullscreen-overlay" id="fullscreenOverlay">
-        <img class="fullscreen-photo" id="fullscreenPhoto" alt="Full size photo">
-        <button class="fullscreen-close" id="fullscreenClose">×</button>
-    </div>
+    <div class="toast" id="toast"></div>
 
     <script>
-        class MobileCameraApp {
+        class AnonShare {
             constructor() {
-                this.video = document.getElementById('video');
-                this.canvas = document.getElementById('canvas');
-                this.ctx = this.canvas.getContext('2d');
-                
-                // Store photos in memory during session
-                // Note: In a real app with localStorage, you would use:
-                // this.photos = JSON.parse(localStorage.getItem('cameraPhotos') || '[]');
-                this.photos = [];
-                
-                this.isRunning = false;
-                this.currentFacingMode = 'environment';
-                this.flashEnabled = false;
-                
+                this.device = null;
+                this.characteristic = null;
+                this.selectedFile = null;
+                this.deferredPrompt = null;
+                this.init();
+            }
+
+            init() {
                 this.setupEventListeners();
-                this.updatePhotoCount();
-                this.renderGallery();
+                this.checkBluetoothSupport();
+                this.setupPWA();
             }
 
             setupEventListeners() {
-                document.getElementById('startBtn').addEventListener('click', () => this.toggleCamera());
-                document.getElementById('captureBtn').addEventListener('click', () => this.capturePhoto());
-                document.getElementById('switchBtn').addEventListener('click', () => this.switchCamera());
-                document.getElementById('flashBtn').addEventListener('click', () => this.toggleFlash());
-                document.getElementById('clearBtn').addEventListener('click', () => this.clearAllPhotos());
-                document.getElementById('fullscreenClose').addEventListener('click', () => this.closeFullscreen());
+                document.getElementById('scanBtn').addEventListener('click', () => this.scanDevices());
+                document.getElementById('fileDrop').addEventListener('click', () => document.getElementById('fileInput').click());
+                document.getElementById('fileInput').addEventListener('change', (e) => this.handleFileSelect(e));
+                document.getElementById('sendBtn').addEventListener('click', () => this.sendFile());
+                document.getElementById('installBtn').addEventListener('click', () => this.installApp());
 
-                // Touch events for mobile optimization
-                document.addEventListener('touchstart', this.handleTouch.bind(this), { passive: false });
-                
-                // Prevent zoom on double tap
-                document.addEventListener('touchend', (e) => {
+                // Drag and drop
+                const dropZone = document.getElementById('fileDrop');
+                dropZone.addEventListener('dragover', (e) => {
                     e.preventDefault();
-                }, { passive: false });
+                    dropZone.style.background = 'rgba(0, 255, 0, 0.2)';
+                });
+                dropZone.addEventListener('dragleave', () => {
+                    dropZone.style.background = 'rgba(0, 255, 0, 0.05)';
+                });
+                dropZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropZone.style.background = 'rgba(0, 255, 0, 0.05)';
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        this.processFile(files[0]);
+                    }
+                });
             }
 
-            handleTouch(event) {
-                // Prevent default zoom behavior
-                if (event.touches.length > 1) {
-                    event.preventDefault();
+            checkBluetoothSupport() {
+                if (!navigator.bluetooth) {
+                    this.updateStatus('❌ BLUETOOTH NOT SUPPORTED', 'error');
+                    document.getElementById('scanBtn').disabled = true;
                 }
             }
 
-            async toggleCamera() {
-                if (!this.isRunning) {
-                    await this.startCamera();
-                } else {
-                    this.stopCamera();
-                }
-            }
-
-            async startCamera() {
+            async scanDevices() {
                 try {
-                    this.showStatus('Starting camera...');
+                    this.updateStatus('🔍 SCANNING NEARBY DEVICES...', 'scanning');
                     
-                    const constraints = {
-                        video: {
-                            facingMode: this.currentFacingMode,
-                            width: { ideal: 375 },
-                            height: { ideal: 600 }
-                        }
-                    };
+                    // Request Bluetooth device
+                    this.device = await navigator.bluetooth.requestDevice({
+                        acceptAllDevices: true,
+                        optionalServices: ['battery_service', 'device_information']
+                    });
 
-                    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-                    this.video.srcObject = stream;
+                    this.updateStatus('✅ DEVICE FOUND: ' + (this.device.name || 'UNKNOWN'), 'success');
+                    this.showDeviceInList(this.device);
                     
-                    this.video.onloadedmetadata = () => {
-                        this.canvas.width = this.video.videoWidth;
-                        this.canvas.height = this.video.videoHeight;
-                        this.isRunning = true;
-                        
-                        document.getElementById('startBtn').innerHTML = '⏹️ Stop Camera';
-                        document.getElementById('camera-info').textContent = 'Camera ready - Tap to capture!';
-                        this.showStatus('Camera started successfully!');
-                    };
                 } catch (error) {
-                    console.error('Camera error:', error);
-                    this.showStatus('Camera access denied or unavailable');
-                    document.getElementById('camera-info').textContent = 'Camera access denied';
+                    console.error('Bluetooth scan error:', error);
+                    this.updateStatus('❌ SCAN FAILED - ' + error.message.toUpperCase(), 'error');
                 }
             }
 
-            stopCamera() {
-                if (this.video.srcObject) {
-                    this.video.srcObject.getTracks().forEach(track => track.stop());
-                    this.video.srcObject = null;
-                }
-                this.isRunning = false;
-                document.getElementById('startBtn').innerHTML = '📷 Start Camera';
-                document.getElementById('camera-info').textContent = 'Camera stopped';
-                this.showStatus('Camera stopped');
-            }
-
-            async switchCamera() {
-                if (this.isRunning) {
-                    this.stopCamera();
-                    this.currentFacingMode = this.currentFacingMode === 'environment' ? 'user' : 'environment';
-                    setTimeout(() => this.startCamera(), 500);
-                    this.showStatus(`Switched to ${this.currentFacingMode === 'environment' ? 'back' : 'front'} camera`);
-                }
-            }
-
-            toggleFlash() {
-                this.flashEnabled = !this.flashEnabled;
-                const flashBtn = document.getElementById('flashBtn');
-                flashBtn.style.background = this.flashEnabled ? 
-                    'rgba(255, 255, 0, 0.3)' : 'rgba(255, 255, 255, 0.1)';
-                this.showStatus(`Flash ${this.flashEnabled ? 'enabled' : 'disabled'}`);
-            }
-
-            capturePhoto() {
-                if (!this.isRunning) {
-                    this.showStatus('Please start camera first');
-                    return;
-                }
-
-                // Flash effect
-                if (this.flashEnabled) {
-                    this.triggerFlash();
-                }
-
-                // Capture photo
-                this.ctx.drawImage(this.video, 0, 0);
-                const photoData = this.canvas.toDataURL('image/jpeg', 0.8);
+            showDeviceInList(device) {
+                const deviceList = document.getElementById('deviceList');
+                deviceList.classList.remove('hidden');
                 
-                const photo = {
-                    id: Date.now(),
-                    data: photoData,
-                    timestamp: new Date().toLocaleString(),
-                    size: Math.round(photoData.length * 0.75 / 1024) // Approximate KB
-                };
-
-                this.photos.unshift(photo); // Add to beginning
+                const deviceItem = document.createElement('div');
+                deviceItem.className = 'device-item';
+                deviceItem.innerHTML = `
+                    <div class="device-name">${device.name || 'ANONYMOUS DEVICE'}</div>
+                    <div class="device-signal">READY</div>
+                `;
+                deviceItem.addEventListener('click', () => this.connectToDevice(device));
                 
-                // In a real app with localStorage:
-                // localStorage.setItem('cameraPhotos', JSON.stringify(this.photos));
-                
-                this.updatePhotoCount();
-                this.renderGallery();
-                this.showStatus(`Photo captured! (${photo.size}KB)`);
-                
-                // Vibrate if supported
-                if (navigator.vibrate) {
-                    navigator.vibrate(50);
-                }
+                deviceList.innerHTML = '';
+                deviceList.appendChild(deviceItem);
             }
 
-            triggerFlash() {
-                const flash = document.getElementById('flash');
-                flash.classList.add('active');
-                setTimeout(() => flash.classList.remove('active'), 200);
-            }
-
-            deletePhoto(photoId) {
-                this.photos = this.photos.filter(photo => photo.id !== photoId);
-                
-                // In a real app with localStorage:
-                // localStorage.setItem('cameraPhotos', JSON.stringify(this.photos));
-                
-                this.updatePhotoCount();
-                this.renderGallery();
-                this.showStatus('Photo deleted');
-            }
-
-            clearAllPhotos() {
-                if (this.photos.length === 0) {
-                    this.showStatus('No photos to clear');
-                    return;
-                }
-
-                if (confirm(`Delete all ${this.photos.length} photos?`)) {
-                    this.photos = [];
+            async connectToDevice(device) {
+                try {
+                    this.updateStatus('🔗 ESTABLISHING SECURE CONNECTION...', 'connecting');
                     
-                    // In a real app with localStorage:
-                    // localStorage.removeItem('cameraPhotos');
+                    const server = await device.gatt.connect();
+                    this.updateStatus('✅ CONNECTED - READY TO TRANSMIT', 'connected');
                     
-                    this.updatePhotoCount();
-                    this.renderGallery();
-                    this.showStatus('All photos cleared');
+                    if (this.selectedFile) {
+                        document.getElementById('sendBtn').classList.remove('hidden');
+                    }
+                    
+                } catch (error) {
+                    console.error('Connection error:', error);
+                    this.updateStatus('❌ CONNECTION FAILED', 'error');
                 }
             }
 
-            updatePhotoCount() {
-                const count = this.photos.length;
-                document.getElementById('photoCount').textContent = 
-                    `${count} photo${count !== 1 ? 's' : ''}`;
+            handleFileSelect(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    this.processFile(file);
+                }
             }
 
-            renderGallery() {
-                const gallery = document.getElementById('photoGallery');
-                
-                if (this.photos.length === 0) {
-                    gallery.innerHTML = `
-                        <div class="empty-gallery">
-                            <div class="icon">📸</div>
-                            <p>No photos yet.<br>Start camera and capture moments!</p>
-                        </div>
-                    `;
+            processFile(file) {
+                // Check file size (10MB limit)
+                if (file.size > 10 * 1024 * 1024) {
+                    this.showToast('❌ FILE TOO LARGE (MAX 10MB)', 'error');
                     return;
                 }
 
-                gallery.innerHTML = this.photos.map(photo => `
-                    <div class="photo-item">
-                        <img src="${photo.data}" alt="Photo ${photo.id}" 
-                             onclick="cameraApp.showFullscreen('${photo.data}')">
-                        <button class="delete-btn" onclick="cameraApp.deletePhoto(${photo.id})" 
-                                title="Delete photo">×</button>
-                    </div>
-                `).join('');
+                // Check file type
+                const allowedTypes = ['.pdf', '.jpg', '.jpeg', '.png', '.gif', '.txt', '.zip'];
+                const fileExt = '.' + file.name.split('.').pop().toLowerCase();
+                
+                if (!allowedTypes.includes(fileExt)) {
+                    this.showToast('❌ UNSUPPORTED FILE TYPE', 'error');
+                    return;
+                }
+
+                this.selectedFile = file;
+                this.updateStatus(`📁 FILE LOADED: ${file.name.toUpperCase()} (${this.formatBytes(file.size)})`, 'file-ready');
+                
+                if (this.device && this.device.gatt.connected) {
+                    document.getElementById('sendBtn').classList.remove('hidden');
+                }
             }
 
-            showFullscreen(photoData) {
-                document.getElementById('fullscreenPhoto').src = photoData;
-                document.getElementById('fullscreenOverlay').style.display = 'flex';
+            async sendFile() {
+                if (!this.selectedFile || !this.device) {
+                    this.showToast('❌ NO FILE OR DEVICE SELECTED', 'error');
+                    return;
+                }
+
+                try {
+                    this.updateStatus('📡 TRANSMITTING DATA...', 'sending');
+                    this.showProgress(0);
+
+                    // Simulate file transfer with progress
+                    for (let i = 0; i <= 100; i += 10) {
+                        await this.delay(200);
+                        this.showProgress(i);
+                    }
+
+                    // Create download link for the file (simulated reception)
+                    this.createDownloadLink();
+                    
+                    this.updateStatus('✅ TRANSMISSION COMPLETE - FILE DELETED FROM MEMORY', 'success');
+                    this.showToast('📡 FILE TRANSMITTED SUCCESSFULLY', 'success');
+                    
+                    // Clean up
+                    this.selectedFile = null;
+                    document.getElementById('fileInput').value = '';
+                    document.getElementById('sendBtn').classList.add('hidden');
+                    document.getElementById('progressBar').classList.add('hidden');
+                    
+                } catch (error) {
+                    console.error('Send error:', error);
+                    this.updateStatus('❌ TRANSMISSION FAILED', 'error');
+                    this.showToast('❌ TRANSMISSION FAILED', 'error');
+                }
             }
 
-            closeFullscreen() {
-                document.getElementById('fullscreenOverlay').style.display = 'none';
+            createDownloadLink() {
+                if (!this.selectedFile) return;
+                
+                const url = URL.createObjectURL(this.selectedFile);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = this.selectedFile.name;
+                a.click();
+                
+                // Clean up the URL
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
             }
 
-            showStatus(message) {
-                const statusMsg = document.getElementById('statusMsg');
-                statusMsg.textContent = message;
-                statusMsg.classList.add('show');
+            showProgress(percent) {
+                const progressBar = document.getElementById('progressBar');
+                const progressFill = document.getElementById('progressFill');
+                
+                progressBar.classList.remove('hidden');
+                progressFill.style.width = percent + '%';
+            }
+
+            updateStatus(message, type = 'info') {
+                const status = document.getElementById('status');
+                const icon = type === 'error' ? '❌' : 
+                           type === 'success' ? '✅' : 
+                           type === 'scanning' ? '🔍' : 
+                           type === 'connecting' ? '🔗' : 
+                           type === 'sending' ? '📡' : '●';
+                
+                status.innerHTML = `<span class="blink">${icon}</span> ${message}`;
+            }
+
+            showToast(message, type = 'info') {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.classList.add('show');
                 
                 setTimeout(() => {
-                    statusMsg.classList.remove('show');
-                }, 2000);
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+
+            formatBytes(bytes) {
+                if (bytes === 0) return '0 B';
+                const k = 1024;
+                const sizes = ['B', 'KB', 'MB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            setupPWA() {
+                // Register service worker
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then(() => console.log('SW registered'))
+                        .catch(err => console.log('SW registration failed'));
+                }
+
+                // PWA install prompt
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    this.deferredPrompt = e;
+                    document.getElementById('installPrompt').style.display = 'block';
+                });
+            }
+
+            async installApp() {
+                if (this.deferredPrompt) {
+                    this.deferredPrompt.prompt();
+                    const result = await this.deferredPrompt.userChoice;
+                    
+                    if (result.outcome === 'accepted') {
+                        this.showToast('✅ APP INSTALLED SUCCESSFULLY', 'success');
+                    }
+                    
+                    this.deferredPrompt = null;
+                    document.getElementById('installPrompt').style.display = 'none';
+                }
             }
         }
 
-        // Initialize the app
-        let cameraApp;
-        window.addEventListener('load', () => {
-            cameraApp = new MobileCameraApp();
+        // Initialize app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new AnonShare();
         });
 
-        // Prevent zoom and scroll issues
-        document.addEventListener('touchmove', function(event) {
-            if (event.scale !== 1) {
-                event.preventDefault();
-            }
-        }, { passive: false });
+        // Matrix rain effect
+        function createMatrixEffect() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const matrixBg = document.querySelector('.matrix-bg');
+            
+            canvas.width = 375;
+            canvas.height = window.innerHeight;
+            matrixBg.appendChild(canvas);
 
-        // Handle orientation changes
-        window.addEventListener('orientationchange', () => {
-            setTimeout(() => {
-                if (cameraApp && cameraApp.isRunning) {
-                    cameraApp.canvas.width = cameraApp.video.videoWidth;
-                    cameraApp.canvas.height = cameraApp.video.videoHeight;
+            const chars = '01';
+            const fontSize = 14;
+            const columns = canvas.width / fontSize;
+            const drops = Array(Math.floor(columns)).fill(1);
+
+            function draw() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#00ff00';
+                ctx.font = fontSize + 'px monospace';
+
+                for (let i = 0; i < drops.length; i++) {
+                    const text = chars[Math.floor(Math.random() * chars.length)];
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                    
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
                 }
-            }, 500);
-        });
+            }
+
+            setInterval(draw, 100);
+        }
+
+        setTimeout(createMatrixEffect, 1000);
     </script>
 </body>
 </html>
