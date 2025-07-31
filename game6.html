@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnonShare | Secure Bluetooth Transfer</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#000000">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📡</text></svg>">
+    <title>SleepCraft - AI-Powered Sleep Induction Platform</title>
+    <meta name="description" content="Stop overthinking and fall asleep faster with scientifically-proven techniques">
+    <meta name="theme-color" content="#1a1a2e">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlNsZWVwQ3JhZnQgLSBBSS1Qb3dlcmVkIFNsZWVwIEluZHVjdGlvbiBQbGF0Zm9ybSIsCiAgInNob3J0X25hbWUiOiAiU2xlZXBDcmFmdCIsCiAgImRlc2NyaXB0aW9uIjogIlN0b3Agb3ZlcnRoaW5raW5nIGFuZCBmYWxsIGFzbGVlcCBmYXN0ZXIgd2l0aCBzY2llbnRpZmljYWxseS1wcm92ZW4gdGVjaG5pcXVlcyIsCiAgInN0YXJ0X3VybCI6ICIvIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMWExYTJlIiwKICAidGhlbWVfY29sb3IiOiAiIzFhMWEyZSIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjNhV1IwYUQwaU1USTRJaUJvWldsbmFIUTlJakV5T0NJZ2RtbGxkMEp2ZUQwaU1DQXdJREV5T0NBeU9EaDBhaUJtYVd4c1BTSWpORFF6T0RVNElpQjRiV3h1Y3owaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNQzl6ZG1jaVBnbzhjR0YwYUNCa1BTSk5OalF1TURFZ01qUXVNVEZETmpRdU1ERWdNVEE0TGpVeElEUTVMalJvTFRVMUxqVnNMUzR4TFRFeUxqUjJMUzR4VERNdU5qSTFNREZNTkRNdU5qSTFNREZNTlRVdU9EQXlNekZjT0RVdU9EQXlNekZjT0RVZ056Y2dSRE0yTGpVZ09EQTNNRE16UXpNMkxqVWdORE00TFEweUxqazFJRGd5TGprNElGa3dJRGcwTGpWM0xUSTJSaUEzTVM0ek0wRXlNUzQ1TkNBeU1TNDVOQ0F3SURFZ01DMHlOaTRpTDBqNHdXa3JWNFwiLAogICAgICAic2l6ZXMiOiAiMTI4eDEyOCIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiCiAgICB9CiAgXSwKICAibGFuZyI6ICJlbiIsCiAgImRpciI6ICJsdHIiLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIsCiAgImNhdGVnb3JpZXMiOiBbImhlYWx0aCIsICJ3ZWxsbmVzcyIsICJsaWZlc3R5bGUiXQp9">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAyODh0aCIgZmlsbD0iIzQ0Mzg1OCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGVDZ1BpcGVzIGQ9Ik02NC4wMSAyNC4xMUM2NC4wMSAxMDguNTEgNDkuNGgtNTUuNWwtLjEtMTIuNHYtLjFMM1o2MjUwMUw0My42MjUwMUw1NS44MDIzMWM4NS44MDIzMWM4NSA3NyBEMzYuNSA4MDcwMzNDMzYuNSA0MzgtMi45NSA4Mi45OFkwIDg0LjV3LTI2Ri43MS4zM0EyMS45NCAyMS45NCAwIDEgMC0yNi4iLz48L3N2Zz4=">
     
     <style>
         * {
@@ -16,737 +17,2147 @@
         }
 
         body {
-            font-family: 'Courier New', monospace;
-            background: #000;
-            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #b0c4de;
             overflow-x: hidden;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
         .container {
-            width: 100%;
             max-width: 375px;
-            height: 100vh;
-            background: linear-gradient(135deg, #000 0%, #111 100%);
-            border: 1px solid #333;
+            margin: 0 auto;
+            min-height: 100vh;
             position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
         }
 
         .header {
-            padding: 20px;
             text-align: center;
-            border-bottom: 1px solid #333;
-            background: rgba(0, 20, 0, 0.3);
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .logo {
-            font-size: 24px;
-            color: #00ff00;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px #00ff00;
+        .header h1 {
+            color: #87ceeb;
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 10px rgba(135, 206, 235, 0.3);
         }
 
-        .subtitle {
-            font-size: 12px;
+        .header .subtitle {
             color: #888;
-            opacity: 0.8;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
         }
 
-        .main-content {
-            flex: 1;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        .header .tagline {
+            color: #b0c4de;
+            font-size: 0.9rem;
+            font-style: italic;
         }
 
-        .status {
-            background: rgba(0, 255, 0, 0.1);
-            border: 1px solid #00ff00;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 30px;
+        .install-banner {
+            background: linear-gradient(45deg, #87ceeb, #4169e1);
+            color: white;
+            padding: 12px;
             text-align: center;
-            width: 100%;
-            font-size: 14px;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            background: linear-gradient(135deg, #001100, #003300);
-            border: 1px solid #00ff00;
-            color: #00ff00;
-            border-radius: 8px;
             cursor: pointer;
-            font-family: inherit;
-            font-size: 16px;
             transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn:hover {
-            background: linear-gradient(135deg, #003300, #005500);
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .file-input {
             display: none;
         }
 
-        .file-drop {
-            border: 2px dashed #00ff00;
-            border-radius: 8px;
-            padding: 30px 20px;
-            text-align: center;
-            margin: 20px 0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: rgba(0, 255, 0, 0.05);
+        .install-banner:hover {
+            background: linear-gradient(45deg, #4169e1, #87ceeb);
         }
 
-        .file-drop:hover {
-            background: rgba(0, 255, 0, 0.1);
-            border-color: #55ff55;
+        .install-banner.show {
+            display: block;
         }
 
-        .device-list {
-            width: 100%;
-            margin: 20px 0;
-        }
-
-        .device-item {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid #333;
-            border-radius: 6px;
-            padding: 12px;
-            margin: 8px 0;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .navigation {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            margin: 15px;
+            overflow: hidden;
         }
 
-        .device-item:hover {
-            border-color: #00ff00;
-            background: rgba(0, 255, 0, 0.1);
+        .nav-btn {
+            flex: 1;
+            padding: 12px 8px;
+            background: transparent;
+            border: none;
+            color: #b0c4de;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+            text-align: center;
         }
 
-        .device-name {
-            font-size: 14px;
-            color: #fff;
+        .nav-btn.active {
+            background: linear-gradient(45deg, #87ceeb, #4169e1);
+            color: white;
+            box-shadow: 0 4px 15px rgba(135, 206, 235, 0.3);
         }
 
-        .device-signal {
-            color: #00ff00;
-            font-size: 12px;
+        .section {
+            display: none;
+            padding: 20px;
+            animation: fadeIn 0.5s ease-in-out;
         }
 
-        .toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 255, 0, 0.9);
-            color: #000;
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(135, 206, 235, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(135, 206, 235, 0.2);
+        }
+
+        .feature-card h3 {
+            color: #87ceeb;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .control-group {
+            margin: 15px 0;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #b0c4de;
+            font-size: 0.9rem;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #87ceeb;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(135, 206, 235, 0.4);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #87ceeb, #4169e1);
+            color: white;
+            border: none;
             padding: 12px 20px;
-            border-radius: 6px;
-            font-size: 14px;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            margin: 5px;
         }
 
-        .toast.show {
-            opacity: 1;
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(135, 206, 235, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn.stop {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+        }
+
+        .visual-area {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            height: 200px;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .moving-dot {
+            width: 20px;
+            height: 20px;
+            background: #87ceeb;
+            border-radius: 50%;
+            position: absolute;
+            box-shadow: 0 0 20px rgba(135, 206, 235, 0.6);
+            transition: all 0.1s ease-out;
+        }
+
+        .infinity-path {
+            position: absolute;
+            width: 150px;
+            height: 75px;
+            border: 2px dashed rgba(135, 206, 235, 0.3);
+            border-radius: 50px;
+        }
+
+        .game-area {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            min-height: 250px;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .star {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #87ceeb;
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .stats-card {
+            background: rgba(135, 206, 235, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            color: #87ceeb;
+            font-weight: bold;
+        }
+
+        .stats-label {
+            color: #b0c4de;
+            font-size: 0.9rem;
+            margin-top: 5px;
         }
 
         .progress-bar {
             width: 100%;
-            height: 4px;
-            background: #333;
-            border-radius: 2px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
             overflow: hidden;
             margin: 10px 0;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #00ff00, #55ff55);
+            background: linear-gradient(90deg, #87ceeb, #4169e1);
             width: 0%;
             transition: width 0.3s ease;
         }
 
-        .install-prompt {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.9);
-            border: 1px solid #00ff00;
-            border-radius: 8px;
-            padding: 15px;
+        .audio-upload {
+            border: 2px dashed rgba(135, 206, 235, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 15px 0;
+        }
+
+        .audio-upload:hover {
+            border-color: #87ceeb;
+            background: rgba(135, 206, 235, 0.05);
+        }
+
+        .audio-upload input {
             display: none;
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(135, 206, 235, 0.8), rgba(135, 206, 235, 0.3));
+            cursor: pointer;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .maze-dot {
+            width: 10px;
+            height: 10px;
+            background: #87ceeb;
+            border-radius: 50%;
+            position: absolute;
+            box-shadow: 0 0 10px rgba(135, 206, 235, 0.6);
+            transition: all 0.2s ease;
+        }
+
+        .maze-wall {
+            position: absolute;
+            background: rgba(135, 206, 235, 0.2);
+            border-radius: 2px;
+        }
+
+        .object-item {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(45deg, #87ceeb, #4169e1);
+            border-radius: 8px;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .object-item:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(135, 206, 235, 0.4);
+        }
+
+        .object-item.dragging {
+            cursor: grabbing;
+            transform: scale(1.2);
             z-index: 1000;
         }
 
-        .hidden {
-            display: none !important;
-        }
-
-        .matrix-bg {
+        .drop-zone {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.1;
-            z-index: -1;
-            pointer-events: none;
+            border: 2px dashed rgba(135, 206, 235, 0.3);
+            border-radius: 10px;
+            background: rgba(135, 206, 235, 0.05);
         }
 
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0.3; }
+        .drop-zone.highlight {
+            border-color: #87ceeb;
+            background: rgba(135, 206, 235, 0.2);
         }
 
-        .blink {
-            animation: blink 1s infinite;
+        @media (max-width: 320px) {
+            .container {
+                max-width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .nav-btn {
+                font-size: 0.7rem;
+                padding: 10px 6px;
+            }
+        }
+
+        .breathing-guide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 150px;
+            margin: 20px 0;
+        }
+
+        .breathing-circle {
+            width: 100px;
+            height: 100px;
+            border: 3px solid #87ceeb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 4s ease-in-out;
+        }
+
+        .breathing-circle.inhale {
+            transform: scale(1.5);
+            border-color: #4169e1;
+        }
+
+        .breathing-circle.exhale {
+            transform: scale(0.8);
+            border-color: #87ceeb;
+        }
+
+        .timer-display {
+            font-size: 1.5rem;
+            color: #87ceeb;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .achievement-badge {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #1a1a2e;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 5px;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .offline-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #ff6b6b;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            display: none;
+        }
+
+        .offline-indicator.show {
+            display: block;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="matrix-bg"></div>
+        <div class="install-banner" id="installBanner">
+            <strong>📱 Install SleepCraft</strong> - Add to home screen for better experience
+        </div>
         
-        <div class="header">
-            <div class="logo">⚡ ANONSHARE</div>
-            <div class="subtitle">SECURE • ANONYMOUS • UNTRACEABLE</div>
+        <div class="offline-indicator" id="offlineIndicator">
+            📡 Offline Mode
         </div>
 
-        <div class="main-content">
-            <div class="status" id="status">
-                <span class="blink">●</span> SYSTEM READY - NO TRACES LEFT
+        <header class="header">
+            <h1>🌙 SleepCraft</h1>
+            <div class="subtitle">By Continental Group</div>
+            <div class="tagline">Sleep Deeper, Think Clearer, Live Better</div>
+        </header>
+
+        <nav class="navigation">
+            <button class="nav-btn active" data-section="techniques">🧠 Techniques</button>
+            <button class="nav-btn" data-section="eyepatterns">👁️ Eye Patterns</button>
+            <button class="nav-btn" data-section="games">🎮 Games</button>
+            <button class="nav-btn" data-section="stats">📊 Stats</button>
+        </nav>
+
+        <!-- Techniques Section -->
+        <section id="techniques" class="section active">
+            <div class="feature-card">
+                <h3>🎵 Bilateral Audio Stimulation</h3>
+                <div class="control-group">
+                    <label>Interval (seconds): <span id="audioInterval">60</span></label>
+                    <input type="range" class="slider" id="audioIntervalSlider" min="30" max="90" value="60">
+                </div>
+                <div class="control-group">
+                    <label>Volume: <span id="audioVolume">50</span>%</label>
+                    <input type="range" class="slider" id="audioVolumeSlider" min="0" max="100" value="50">
+                </div>
+                <div class="control-group">
+                    <label>Frequency: <span id="audioFreq">440</span>Hz</label>
+                    <input type="range" class="slider" id="audioFreqSlider" min="200" max="800" value="440">
+                </div>
+                <button class="btn" id="startAudio">Start Audio</button>
+                <button class="btn stop" id="stopAudio" style="display:none;">Stop Audio</button>
+                
+                <div class="audio-upload" id="audioUpload">
+                    <div>📁 Upload Custom Audio Files</div>
+                    <div style="font-size: 0.8rem; color: #888; margin-top: 5px;">Binaural beats, white noise, nature sounds</div>
+                    <input type="file" id="audioFile" accept="audio/*" multiple>
+                </div>
+                <div id="audioList"></div>
             </div>
 
-            <button class="btn" id="scanBtn">🔍 SCAN DEVICES</button>
-            
-            <div class="scan-tips hidden" id="scanTips">
-                <div style="font-size: 12px; color: #888; text-align: center; margin: 10px 0;">
-                    💡 TIPS FOR SUCCESSFUL PAIRING:<br>
-                    • Ensure target device has Bluetooth ON<br>
-                    • Make target device discoverable<br>
-                    • Stay within 10 meters range<br>
-                    • Grant permission when prompted
+            <div class="feature-card">
+                <h3>👀 Bilateral Visual Stimulation</h3>
+                <div class="control-group">
+                    <label>Speed: <span id="visualSpeed">50</span>%</label>
+                    <input type="range" class="slider" id="visualSpeedSlider" min="10" max="100" value="50">
+                </div>
+                <div class="control-group">
+                    <label>Size: <span id="dotSize">20</span>px</label>
+                    <input type="range" class="slider" id="dotSizeSlider" min="10" max="40" value="20">
+                </div>
+                <div class="visual-area" id="visualArea">
+                    <div class="moving-dot" id="movingDot"></div>
+                </div>
+                <button class="btn" id="startVisual">Start Visual</button>
+                <button class="btn stop" id="stopVisual" style="display:none;">Stop Visual</button>
+            </div>
+
+            <div class="feature-card">
+                <h3>📳 Bilateral Haptic Feedback</h3>
+                <div class="control-group">
+                    <label>Pattern Interval: <span id="hapticInterval">2</span>s</label>
+                    <input type="range" class="slider" id="hapticIntervalSlider" min="1" max="5" value="2">
+                </div>
+                <div class="control-group">
+                    <label>Intensity: <span id="hapticIntensity">200</span>ms</label>
+                    <input type="range" class="slider" id="hapticIntensitySlider" min="100" max="500" value="200">
+                </div>
+                <button class="btn" id="startHaptic">Start Haptic</button>
+                <button class="btn stop" id="stopHaptic" style="display:none;">Stop Haptic</button>
+            </div>
+
+            <div class="feature-card">
+                <h3>🫁 Breathing Guide</h3>
+                <div class="breathing-guide">
+                    <div class="breathing-circle" id="breathingCircle">
+                        <span id="breathingText">Ready</span>
+                    </div>
+                </div>
+                <div class="timer-display" id="breathingTimer">4-7-8 Pattern</div>
+                <button class="btn" id="startBreathing">Start Breathing</button>
+                <button class="btn stop" id="stopBreathing" style="display:none;">Stop Breathing</button>
+            </div>
+        </section>
+
+        <!-- Eye Patterns Section -->
+        <section id="eyepatterns" class="section">
+            <div class="feature-card">
+                <h3>∞ Figure-8 Tracking</h3>
+                <div class="control-group">
+                    <label>Speed: <span id="figure8Speed">30</span>%</label>
+                    <input type="range" class="slider" id="figure8SpeedSlider" min="10" max="60" value="30">
+                </div>
+                <div class="visual-area" id="figure8Area">
+                    <div class="infinity-path" id="infinityPath"></div>
+                    <div class="moving-dot" id="figure8Dot"></div>
+                </div>
+                <button class="btn" id="startFigure8">Start Figure-8</button>
+                <button class="btn stop" id="stopFigure8" style="display:none;">Stop Figure-8</button>
+            </div>
+
+            <div class="feature-card">
+                <h3>👁️ Deliberate Blinking Guide</h3>
+                <div class="control-group">
+                    <label>Closed Duration: <span id="blinkClosed">4</span>s</label>
+                    <input type="range" class="slider" id="blinkClosedSlider" min="2" max="8" value="4">
+                </div>
+                <div class="control-group">
+                    <label>Open Duration: <span id="blinkOpen">2</span>s</label>
+                    <input type="range" class="slider" id="blinkOpenSlider" min="1" max="4" value="2">
+                </div>
+                <div class="timer-display" id="blinkTimer">Ready to Start</div>
+                <div class="visual-area" id="blinkArea">
+                    <div style="font-size: 3rem;" id="blinkIndicator">👁️</div>
+                </div>
+                <button class="btn" id="startBlink">Start Blinking</button>
+                <button class="btn stop" id="stopBlink" style="display:none;">Stop Blinking</button>
+            </div>
+
+            <div class="feature-card">
+                <h3>↔️ Side-to-Side Tracking</h3>
+                <div class="control-group">
+                    <label>Speed: <span id="pendulumSpeed">25</span>%</label>
+                    <input type="range" class="slider" id="pendulumSpeedSlider" min="10" max="50" value="25">
+                </div>
+                <div class="visual-area" id="pendulumArea">
+                    <div class="moving-dot" id="pendulumDot"></div>
+                </div>
+                <button class="btn" id="startPendulum">Start Pendulum</button>
+                <button class="btn stop" id="stopPendulum" style="display:none;">Stop Pendulum</button>
+            </div>
+
+            <div class="feature-card">
+                <h3>🔍 Focus Shifting Exercise</h3>
+                <div class="visual-area" id="focusArea">
+                    <div id="focusNear" style="font-size: 2rem; position: absolute; left: 50%; top: 30%; transform: translateX(-50%);">👆</div>
+                    <div id="focusFar" style="font-size: 1rem; position: absolute; left: 50%; top: 70%; transform: translateX(-50%); opacity: 0.5;">🌄</div>
+                </div>
+                <div class="timer-display" id="focusTimer">Look Near → Far → Near</div>
+                <button class="btn" id="startFocus">Start Focus Shift</button>
+                <button class="btn stop" id="stopFocus" style="display:none;">Stop Focus Shift</button>
+            </div>
+        </section>
+
+        <!-- Games Section -->
+        <section id="games" class="section">
+            <div class="feature-card">
+                <h3>🌟 Star Counter</h3>
+                <div class="game-area" id="starArea">
+                    <div style="text-align: center; color: #87ceeb;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">Count: <span id="starCount">0</span></div>
+                        <div style="font-size: 1rem;">Click the shooting stars</div>
+                    </div>
+                </div>
+                <button class="btn" id="startStars">Start Star Counter</button>
+                <button class="btn stop" id="stopStars" style="display:none;">Stop Stars</button>
+            </div>
+
+            <div class="feature-card">
+                <h3>🫧 Breath Bubbles Pop</h3>
+                <div class="control-group">
+                    <label>Bubble Speed: <span id="bubbleSpeed">50</span>%</label>
+                    <input type="range" class="slider" id="bubbleSpeedSlider" min="20" max="80" value="50">
+                </div>
+                <div class="game-area" id="bubbleArea">
+                    <div style="text-align: center; color: #87ceeb;">
+                        <div style="font-size: 1.5rem; margin-bottom: 10px;">Popped: <span id="bubbleCount">0</span></div>
+                        <div style="font-size: 1rem;">Pop bubbles while breathing</div>
+                    </div>
+                </div>
+                <button class="btn" id="startBubbles">Start Bubbles</button>
+                <button class="btn stop" id="stopBubbles" style="display:none;">Stop Bubbles</button>
+            </div>
+
+            <div class="feature-card">
+                <h3>🧩 Mind Maze Navigator</h3>
+                <div class="game-area" id="mazeArea">
+                    <div style="text-align: center; color: #87ceeb; margin-bottom: 15px;">
+                        <div style="font-size: 1.2rem;">Navigate with touch/mouse</div>
+                    </div>
+                    <div class="maze-dot" id="mazeDot"></div>
+                </div>
+                <button class="btn" id="startMaze">Start Maze</button>
+                <button class="btn stop" id="stopMaze" style="display:none;">Stop Maze</button>
+            </div>
+
+            <div class="feature-card">
+                <h3>🏠 Memory Palace Cleaner</h3>
+                <div class="game-area" id="palaceArea">
+                    <div style="text-align: center; color: #87ceeb; margin-bottom: 10px;">
+                        <div style="font-size: 1.2rem;">Organized: <span id="organizedCount">0</span>/5</div>
+                        <div style="font-size: 0.9rem;">Drag objects to their places</div>
+                    </div>
+                </div>
+                <button class="btn" id="startPalace">Start Palace</button>
+                <button class="btn stop" id="stopPalace" style="display:none;">Stop Palace</button>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section id="stats" class="section">
+            <div class="feature-card">
+                <h3>📈 Your Sleep Journey</h3>
+                <div class="stats-card">
+                    <div class="stats-number" id="totalSessions">0</div>
+                    <div class="stats-label">Total Sessions</div>
+                </div>
+                <div class="stats-card">
+                    <div class="stats-number" id="avgSleepTime">--</div>
+                    <div class="stats-label">Avg Sleep Time (min)</div>
+                </div>
+                <div class="stats-card">
+                    <div class="stats-number" id="streakDays">0</div>
+                    <div class="stats-label">Current Streak (days)</div>
                 </div>
             </div>
-            
-            <div class="file-drop" id="fileDrop">
-                <div>📁 DROP FILE OR CLICK</div>
-                <div style="font-size: 12px; margin-top: 5px; color: #888;">
-                    MAX 10MB • PDF, IMG, TXT, ZIP
+
+            <div class="feature-card">
+                <h3>🏆 Achievements</h3>
+                <div id="achievementsList">
+                    <div style="text-align: center; color: #888; padding: 20px;">
+                        Start using techniques to unlock achievements!
+                    </div>
                 </div>
             </div>
-            
-            <input type="file" class="file-input" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.gif,.txt,.zip">
-            
-            <button class="btn hidden" id="sendBtn">📡 TRANSMIT FILE</button>
-            
-            <div class="device-list hidden" id="deviceList"></div>
-            
-            <div class="progress-bar hidden" id="progressBar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-        </div>
 
-        <div class="install-prompt" id="installPrompt">
-            <button class="btn" id="installBtn">⬇️ INSTALL APP</button>
-        </div>
+            <div class="feature-card">
+                <h3>📊 Technique Effectiveness</h3>
+                <div id="effectivenessChart">
+                    <div class="control-group">
+                        <label>Audio Stimulation</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="audioProgress" style="width: 0%"></div>
+                        </div>
+                        <div style="font-size: 0.8rem; color: #888;">Used: <span id="audioUsage">0</span> times</div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>Visual Stimulation</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="visualProgress" style="width: 0%"></div>
+                        </div>
+                        <div style="font-size: 0.8rem; color: #888;">Used: <span id="visualUsage">0</span> times</div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>Eye Patterns</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="eyeProgress" style="width: 0%"></div>
+                        </div>
+                        <div style="font-size: 0.8rem; color: #888;">Used: <span id="eyeUsage">0</span> times</div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>Games</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="gamesProgress" style="width: 0%"></div>
+                        </div>
+                        <div style="font-size: 0.8rem; color: #888;">Used: <span id="gamesUsage">0</span> times</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <h3>⚙️ Settings & Data</h3>
+                <button class="btn" id="exportData">Export Data</button>
+                <button class="btn" id="resetData" style="background: linear-gradient(45deg, #ff6b6b, #ee5a52);">Reset All Data</button>
+                <div style="margin-top: 15px; font-size: 0.8rem; color: #888;">
+                    All data is stored locally on your device for privacy
+                </div>
+            </div>
+        </section>
     </div>
 
-    <div class="toast" id="toast"></div>
-
     <script>
-        class AnonShare {
-            constructor() {
-                this.device = null;
-                this.characteristic = null;
-                this.selectedFile = null;
-                this.deferredPrompt = null;
-                this.init();
-            }
+        // PWA Installation and Service Worker
+        let deferredPrompt;
+        let isInstalled = false;
 
-            init() {
-                this.setupEventListeners();
-                this.checkBluetoothSupport();
-                this.setupPWA();
-            }
-
-            setupEventListeners() {
-                document.getElementById('scanBtn').addEventListener('click', () => {
-                    // Show tips before scanning
-                    document.getElementById('scanTips').classList.remove('hidden');
-                    setTimeout(() => {
-                        document.getElementById('scanTips').classList.add('hidden');
-                    }, 8000);
-                    
-                    this.scanDevices();
-                });
-                document.getElementById('fileDrop').addEventListener('click', () => document.getElementById('fileInput').click());
-                document.getElementById('fileInput').addEventListener('change', (e) => this.handleFileSelect(e));
-                document.getElementById('sendBtn').addEventListener('click', () => this.sendFile());
-                document.getElementById('installBtn').addEventListener('click', () => this.installApp());
-
-                // Drag and drop
-                const dropZone = document.getElementById('fileDrop');
-                dropZone.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    dropZone.style.background = 'rgba(0, 255, 0, 0.2)';
-                });
-                dropZone.addEventListener('dragleave', () => {
-                    dropZone.style.background = 'rgba(0, 255, 0, 0.05)';
-                });
-                dropZone.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    dropZone.style.background = 'rgba(0, 255, 0, 0.05)';
-                    const files = e.dataTransfer.files;
-                    if (files.length > 0) {
-                        this.processFile(files[0]);
-                    }
-                });
-            }
-
-            checkBluetoothSupport() {
-                if (!navigator.bluetooth) {
-                    this.updateStatus('❌ BLUETOOTH NOT SUPPORTED ON THIS BROWSER', 'error');
-                    document.getElementById('scanBtn').disabled = true;
-                    this.showToast('💡 Try Chrome/Edge on Android or Chrome OS', 'info');
-                    return;
-                }
-
-                // Check if we're on HTTPS
-                if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-                    this.updateStatus('❌ HTTPS REQUIRED FOR BLUETOOTH ACCESS', 'error');
-                    document.getElementById('scanBtn').disabled = true;
-                    this.showToast('🔒 Bluetooth requires HTTPS connection', 'error');
-                    return;
-                }
-
-                // Check Bluetooth availability
-                navigator.bluetooth.getAvailability().then(available => {
-                    if (!available) {
-                        this.updateStatus('❌ BLUETOOTH NOT AVAILABLE ON DEVICE', 'error');
-                        document.getElementById('scanBtn').disabled = true;
-                        this.showToast('📡 Enable Bluetooth in device settings', 'error');
-                    } else {
-                        this.updateStatus('✅ BLUETOOTH READY - CLICK SCAN TO START', 'ready');
-                    }
-                }).catch(() => {
-                    // Fallback if getAvailability not supported
-                    this.updateStatus('✅ BLUETOOTH READY - CLICK SCAN TO START', 'ready');
-                });
-            }
-
-            async scanDevices() {
-                try {
-                    this.updateStatus('🔍 SCANNING NEARBY DEVICES...', 'scanning');
-                    
-                    // Create custom service UUID for AnonShare
-                    const ANONSHARE_SERVICE = '12345678-1234-1234-1234-123456789abc';
-                    
-                    // Request Bluetooth device with specific filters
-                    this.device = await navigator.bluetooth.requestDevice({
-                        filters: [
-                            { namePrefix: 'AnonShare' },
-                            { namePrefix: 'Android' },
-                            { namePrefix: 'iPhone' },
-                            { namePrefix: 'Samsung' },
-                            { namePrefix: 'Pixel' }
-                        ],
-                        optionalServices: [
-                            ANONSHARE_SERVICE,
-                            'battery_service', 
-                            'device_information',
-                            'generic_access',
-                            '0000180f-0000-1000-8000-00805f9b34fb' // Battery Service
-                        ],
-                        acceptAllDevices: false
-                    }).catch(async (error) => {
-                        // Fallback: Try with acceptAllDevices if filters fail
-                        if (error.name === 'NotFoundError') {
-                            this.updateStatus('🔍 EXPANDING SEARCH RANGE...', 'scanning');
-                            return await navigator.bluetooth.requestDevice({
-                                acceptAllDevices: true,
-                                optionalServices: [
-                                    ANONSHARE_SERVICE,
-                                    'battery_service',
-                                    'device_information'
-                                ]
-                            });
-                        }
-                        throw error;
-                    });
-
-                    this.updateStatus('✅ DEVICE FOUND: ' + (this.device.name || 'ANONYMOUS DEVICE'), 'success');
-                    this.showDeviceInList(this.device);
-                    
-                } catch (error) {
-                    console.error('Bluetooth scan error:', error);
-                    
-                    if (error.name === 'NotFoundError') {
-                        this.updateStatus('❌ NO DEVICES FOUND - ENSURE BLUETOOTH IS ON', 'error');
-                        this.showToast('💡 TIP: Enable Bluetooth and make device discoverable', 'info');
-                    } else if (error.name === 'SecurityError') {
-                        this.updateStatus('❌ BLUETOOTH ACCESS DENIED', 'error');
-                        this.showToast('🔒 Please allow Bluetooth access in browser settings', 'error');
-                    } else if (error.message.includes('User cancelled')) {
-                        this.updateStatus('⚠️ SCAN CANCELLED BY USER', 'warning');
-                        this.showToast('🔍 Click scan again to search for devices', 'info');
-                    } else {
-                        this.updateStatus('❌ SCAN FAILED - ' + error.message.toUpperCase(), 'error');
-                    }
-                }
-            }
-
-            showDeviceInList(device) {
-                const deviceList = document.getElementById('deviceList');
-                deviceList.classList.remove('hidden');
-                
-                const deviceItem = document.createElement('div');
-                deviceItem.className = 'device-item';
-                deviceItem.innerHTML = `
-                    <div class="device-name">${device.name || 'ANONYMOUS DEVICE'}</div>
-                    <div class="device-signal">READY</div>
-                `;
-                deviceItem.addEventListener('click', () => this.connectToDevice(device));
-                
-                deviceList.innerHTML = '';
-                deviceList.appendChild(deviceItem);
-            }
-
-            async connectToDevice(device) {
-                try {
-                    this.updateStatus('🔗 ESTABLISHING SECURE CONNECTION...', 'connecting');
-                    
-                    // Add connection timeout
-                    const connectionPromise = device.gatt.connect();
-                    const timeoutPromise = new Promise((_, reject) => 
-                        setTimeout(() => reject(new Error('Connection timeout')), 10000)
-                    );
-                    
-                    const server = await Promise.race([connectionPromise, timeoutPromise]);
-                    
-                    // Try to discover services
-                    try {
-                        const services = await server.getPrimaryServices();
-                        console.log('Available services:', services.length);
-                        
-                        // Try to get a characteristic for file transfer
-                        if (services.length > 0) {
-                            const service = services[0];
-                            const characteristics = await service.getCharacteristics();
-                            if (characteristics.length > 0) {
-                                this.characteristic = characteristics[0];
-                            }
-                        }
-                    } catch (serviceError) {
-                        console.log('Service discovery limited:', serviceError.message);
-                        // Continue anyway - we can still use the connection
-                    }
-                    
-                    this.updateStatus('✅ CONNECTED - READY TO TRANSMIT', 'connected');
-                    this.showToast('🔗 Device connected successfully', 'success');
-                    
-                    if (this.selectedFile) {
-                        document.getElementById('sendBtn').classList.remove('hidden');
-                    }
-                    
-                } catch (error) {
-                    console.error('Connection error:', error);
-                    
-                    if (error.message.includes('timeout')) {
-                        this.updateStatus('❌ CONNECTION TIMEOUT - DEVICE TOO FAR', 'error');
-                        this.showToast('📡 Move closer to the device and try again', 'error');
-                    } else if (error.name === 'NetworkError') {
-                        this.updateStatus('❌ DEVICE DISCONNECTED', 'error');
-                        this.showToast('🔌 Device disconnected unexpectedly', 'error');
-                    } else {
-                        this.updateStatus('❌ CONNECTION FAILED - ' + error.message.toUpperCase(), 'error');
-                    }
-                }
-            }
-
-            handleFileSelect(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    this.processFile(file);
-                }
-            }
-
-            processFile(file) {
-                // Check file size (10MB limit)
-                if (file.size > 10 * 1024 * 1024) {
-                    this.showToast('❌ FILE TOO LARGE (MAX 10MB)', 'error');
-                    return;
-                }
-
-                // Check file type
-                const allowedTypes = ['.pdf', '.jpg', '.jpeg', '.png', '.gif', '.txt', '.zip'];
-                const fileExt = '.' + file.name.split('.').pop().toLowerCase();
-                
-                if (!allowedTypes.includes(fileExt)) {
-                    this.showToast('❌ UNSUPPORTED FILE TYPE', 'error');
-                    return;
-                }
-
-                this.selectedFile = file;
-                this.updateStatus(`📁 FILE LOADED: ${file.name.toUpperCase()} (${this.formatBytes(file.size)})`, 'file-ready');
-                
-                if (this.device && this.device.gatt.connected) {
-                    document.getElementById('sendBtn').classList.remove('hidden');
-                }
-            }
-
-            async sendFile() {
-                if (!this.selectedFile || !this.device) {
-                    this.showToast('❌ NO FILE OR DEVICE SELECTED', 'error');
-                    return;
-                }
-
-                try {
-                    // Check if device is still connected
-                    if (!this.device.gatt.connected) {
-                        this.updateStatus('🔗 RECONNECTING TO DEVICE...', 'connecting');
-                        await this.device.gatt.connect();
-                    }
-
-                    this.updateStatus('📡 TRANSMITTING DATA...', 'sending');
-                    this.showProgress(0);
-
-                    // Read file as array buffer for transmission
-                    const fileData = await this.readFileAsArrayBuffer(this.selectedFile);
-                    const chunkSize = 20; // Bluetooth LE typical MTU
-                    const totalChunks = Math.ceil(fileData.byteLength / chunkSize);
-
-                    // Simulate realistic file transfer with chunks
-                    for (let i = 0; i < totalChunks; i++) {
-                        const progress = Math.round((i / totalChunks) * 100);
-                        this.showProgress(progress);
-                        
-                        // Add realistic delay based on chunk size
-                        await this.delay(50 + Math.random() * 100);
-                        
-                        // In a real implementation, you would send each chunk here:
-                        // const chunk = fileData.slice(i * chunkSize, (i + 1) * chunkSize);
-                        // await this.characteristic.writeValue(chunk);
-                    }
-
-                    this.showProgress(100);
-
-                    // Create download link for the file (simulated reception)
-                    this.createDownloadLink();
-                    
-                    this.updateStatus('✅ TRANSMISSION COMPLETE - FILE DELETED FROM MEMORY', 'success');
-                    this.showToast('📡 FILE TRANSMITTED SUCCESSFULLY', 'success');
-                    
-                    // Clean up
-                    this.selectedFile = null;
-                    document.getElementById('fileInput').value = '';
-                    document.getElementById('sendBtn').classList.add('hidden');
-                    
-                    // Hide progress after delay
-                    setTimeout(() => {
-                        document.getElementById('progressBar').classList.add('hidden');
-                    }, 2000);
-                    
-                } catch (error) {
-                    console.error('Send error:', error);
-                    
-                    if (error.name === 'NetworkError') {
-                        this.updateStatus('❌ DEVICE DISCONNECTED DURING TRANSFER', 'error');
-                        this.showToast('🔌 Device lost connection', 'error');
-                    } else if (error.name === 'NotSupportedError') {
-                        this.updateStatus('❌ DEVICE DOES NOT SUPPORT FILE TRANSFER', 'error');
-                        this.showToast('📱 Try with a different device', 'error');
-                    } else {
-                        this.updateStatus('❌ TRANSMISSION FAILED - ' + error.message.toUpperCase(), 'error');
-                        this.showToast('❌ TRANSMISSION FAILED', 'error');
-                    }
-                    
-                    document.getElementById('progressBar').classList.add('hidden');
-                }
-            }
-
-            readFileAsArrayBuffer(file) {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onload = () => resolve(reader.result);
-                    reader.onerror = () => reject(reader.error);
-                    reader.readAsArrayBuffer(file);
-                });
-            }
-
-            createDownloadLink() {
-                if (!this.selectedFile) return;
-                
-                const url = URL.createObjectURL(this.selectedFile);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = this.selectedFile.name;
-                a.click();
-                
-                // Clean up the URL
-                setTimeout(() => URL.revokeObjectURL(url), 1000);
-            }
-
-            showProgress(percent) {
-                const progressBar = document.getElementById('progressBar');
-                const progressFill = document.getElementById('progressFill');
-                
-                progressBar.classList.remove('hidden');
-                progressFill.style.width = percent + '%';
-            }
-
-            updateStatus(message, type = 'info') {
-                const status = document.getElementById('status');
-                const icon = type === 'error' ? '❌' : 
-                           type === 'success' ? '✅' : 
-                           type === 'scanning' ? '🔍' : 
-                           type === 'connecting' ? '🔗' : 
-                           type === 'sending' ? '📡' : 
-                           type === 'warning' ? '⚠️' :
-                           type === 'ready' ? '✅' : '●';
-                
-                status.innerHTML = `<span class="blink">${icon}</span> ${message}`;
-                
-                // Change status color based on type
-                status.style.borderColor = type === 'error' ? '#ff3333' : 
-                                         type === 'warning' ? '#ffaa00' :
-                                         type === 'success' ? '#00ff00' : '#00ff00';
-                status.style.background = type === 'error' ? 'rgba(255, 51, 51, 0.1)' :
-                                        type === 'warning' ? 'rgba(255, 170, 0, 0.1)' :
-                                        'rgba(0, 255, 0, 0.1)';
-            }
-
-            showToast(message, type = 'info') {
-                const toast = document.getElementById('toast');
-                toast.textContent = message;
-                toast.classList.add('show');
-                
-                // Color based on type
-                toast.style.background = type === 'error' ? 'rgba(255, 51, 51, 0.9)' :
-                                       type === 'warning' ? 'rgba(255, 170, 0, 0.9)' :
-                                       type === 'info' ? 'rgba(0, 170, 255, 0.9)' :
-                                       'rgba(0, 255, 0, 0.9)';
-                toast.style.color = type === 'info' ? '#fff' : '#000';
-                
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, type === 'info' ? 5000 : 3000); // Info messages show longer
-            }
-
-            formatBytes(bytes) {
-                if (bytes === 0) return '0 B';
-                const k = 1024;
-                const sizes = ['B', 'KB', 'MB'];
-                const i = Math.floor(Math.log(bytes) / Math.log(k));
-                return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
-            }
-
-            delay(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            }
-
-            setupPWA() {
-                // Register service worker
-                if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.register('/sw.js')
-                        .then(() => console.log('SW registered'))
-                        .catch(err => console.log('SW registration failed'));
-                }
-
-                // PWA install prompt
-                window.addEventListener('beforeinstallprompt', (e) => {
-                    e.preventDefault();
-                    this.deferredPrompt = e;
-                    document.getElementById('installPrompt').style.display = 'block';
-                });
-            }
-
-            async installApp() {
-                if (this.deferredPrompt) {
-                    this.deferredPrompt.prompt();
-                    const result = await this.deferredPrompt.userChoice;
-                    
-                    if (result.outcome === 'accepted') {
-                        this.showToast('✅ APP INSTALLED SUCCESSFULLY', 'success');
-                    }
-                    
-                    this.deferredPrompt = null;
-                    document.getElementById('installPrompt').style.display = 'none';
-                }
+        // Check if app is already installed
+        function checkIfInstalled() {
+            if (window.matchMedia('(display-mode: standalone)').matches || 
+                window.navigator.standalone === true) {
+                isInstalled = true;
+                document.getElementById('installBanner').style.display = 'none';
             }
         }
 
-        // Initialize app when DOM is loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            new AnonShare();
+        // PWA Installation
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (!isInstalled) {
+                document.getElementById('installBanner').classList.add('show');
+            }
         });
 
-        // Matrix rain effect
-        function createMatrixEffect() {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const matrixBg = document.querySelector('.matrix-bg');
-            
-            canvas.width = 375;
-            canvas.height = window.innerHeight;
-            matrixBg.appendChild(canvas);
+        document.getElementById('installBanner').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    document.getElementById('installBanner').classList.remove('show');
+                    isInstalled = true;
+                }
+                deferredPrompt = null;
+            }
+        });
 
-            const chars = '01';
-            const fontSize = 14;
-            const columns = canvas.width / fontSize;
-            const drops = Array(Math.floor(columns)).fill(1);
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('data:application/javascript;base64,' + btoa(`
+                const CACHE_NAME = 'sleepcraft-v1';
+                const urlsToCache = [
+                    '/',
+                    '/manifest.json'
+                ];
 
-            function draw() {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                self.addEventListener('install', (event) => {
+                    event.waitUntil(
+                        caches.open(CACHE_NAME)
+                            .then((cache) => cache.addAll(urlsToCache))
+                    );
+                });
+
+                self.addEventListener('fetch', (event) => {
+                    event.respondWith(
+                        caches.match(event.request)
+                            .then((response) => {
+                                if (response) {
+                                    return response;
+                                }
+                                return fetch(event.request);
+                            })
+                    );
+                });
+
+                self.addEventListener('activate', (event) => {
+                    event.waitUntil(
+                        caches.keys().then((cacheNames) => {
+                            return Promise.all(
+                                cacheNames.map((cacheName) => {
+                                    if (cacheName !== CACHE_NAME) {
+                                        return caches.delete(cacheName);
+                                    }
+                                })
+                            );
+                        })
+                    );
+                });
+            `))
+            .then(() => console.log('Service Worker registered'))
+            .catch((err) => console.log('Service Worker registration failed'));
+        }
+
+        // Offline Detection
+        function updateOnlineStatus() {
+            const indicator = document.getElementById('offlineIndicator');
+            if (navigator.onLine) {
+                indicator.classList.remove('show');
+            } else {
+                indicator.classList.add('show');
+            }
+        }
+
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+
+        // Initialize app
+        checkIfInstalled();
+        updateOnlineStatus();
+
+        // Navigation System
+        const navBtns = document.querySelectorAll('.nav-btn');
+        const sections = document.querySelectorAll('.section');
+
+        navBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetSection = btn.dataset.section;
                 
-                ctx.fillStyle = '#00ff00';
-                ctx.font = fontSize + 'px monospace';
+                // Update active nav button
+                navBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Update active section
+                sections.forEach(s => s.classList.remove('active'));
+                document.getElementById(targetSection).classList.add('active');
+                
+                // Save current section
+                localStorage.setItem('currentSection', targetSection);
+            });
+        });
 
-                for (let i = 0; i < drops.length; i++) {
-                    const text = chars[Math.floor(Math.random() * chars.length)];
-                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                    
-                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                        drops[i] = 0;
+        // Restore last section
+        const lastSection = localStorage.getItem('currentSection');
+        if (lastSection) {
+            document.querySelector(`[data-section="${lastSection}"]`)?.click();
+        }
+
+        // Data Management
+        class SleepCraftData {
+            constructor() {
+                this.data = this.loadData();
+            }
+
+            loadData() {
+                const saved = localStorage.getItem('sleepcraft-data');
+                return saved ? JSON.parse(saved) : {
+                    sessions: [],
+                    stats: {
+                        totalSessions: 0,
+                        averageSleepTime: 0,
+                        currentStreak: 0,
+                        lastSessionDate: null
+                    },
+                    usage: {
+                        audio: 0,
+                        visual: 0,
+                        eye: 0,
+                        games: 0
+                    },
+                    settings: {
+                        audioInterval: 60,
+                        audioVolume: 50,
+                        audioFreq: 440,
+                        visualSpeed: 50,
+                        dotSize: 20
+                    },
+                    achievements: []
+                };
+            }
+
+            saveData() {
+                localStorage.setItem('sleepcraft-data', JSON.stringify(this.data));
+            }
+
+            addSession(technique, duration) {
+                const session = {
+                    date: new Date().toISOString(),
+                    technique,
+                    duration,
+                    success: duration > 300 // 5+ minutes considered successful
+                };
+                
+                this.data.sessions.push(session);
+                this.data.stats.totalSessions++;
+                this.data.usage[technique]++;
+                
+                this.updateStats();
+                this.checkAchievements();
+                this.saveData();
+                this.updateUI();
+            }
+
+            updateStats() {
+                const recent = this.data.sessions.slice(-10);
+                if (recent.length > 0) {
+                    const avgTime = recent.reduce((sum, s) => sum + s.duration, 0) / recent.length;
+                    this.data.stats.averageSleepTime = Math.round(avgTime / 60);
+                }
+                
+                // Calculate streak
+                const today = new Date().toDateString();
+                const lastSession = this.data.sessions[this.data.sessions.length - 1];
+                if (lastSession && new Date(lastSession.date).toDateString() === today) {
+                    if (this.data.stats.lastSessionDate !== today) {
+                        this.data.stats.currentStreak++;
+                        this.data.stats.lastSessionDate = today;
                     }
-                    drops[i]++;
                 }
             }
 
-            setInterval(draw, 100);
+            checkAchievements() {
+                const achievements = [
+                    { id: 'first-session', name: '🌟 First Night', condition: () => this.data.stats.totalSessions >= 1 },
+                    { id: 'week-streak', name: '🔥 Week Warrior', condition: () => this.data.stats.currentStreak >= 7 },
+                    { id: 'technique-master', name: '🧠 Technique Master', condition: () => Object.values(this.data.usage).every(v => v >= 5) },
+                    { id: 'quick-sleeper', name: '⚡ Quick Sleeper', condition: () => this.data.stats.averageSleepTime <= 10 },
+                    { id: 'consistency-king', name: '👑 Consistency King', condition: () => this.data.stats.currentStreak >= 30 }
+                ];
+
+                achievements.forEach(achievement => {
+                    if (!this.data.achievements.includes(achievement.id) && achievement.condition()) {
+                        this.data.achievements.push(achievement.id);
+                        this.showAchievement(achievement.name);
+                    }
+                });
+            }
+
+            showAchievement(name) {
+                // Create achievement notification
+                const notification = document.createElement('div');
+                notification.className = 'achievement-badge';
+                notification.textContent = `🎉 ${name}`;
+                notification.style.position = 'fixed';
+                notification.style.top = '50px';
+                notification.style.left = '50%';
+                notification.style.transform = 'translateX(-50%)';
+                notification.style.zIndex = '1000';
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+                
+                // Haptic feedback if available
+                if (navigator.vibrate) {
+                    navigator.vibrate([100, 50, 100]);
+                }
+            }
+
+            updateUI() {
+                // Update stats display
+                document.getElementById('totalSessions').textContent = this.data.stats.totalSessions;
+                document.getElementById('avgSleepTime').textContent = this.data.stats.averageSleepTime || '--';
+                document.getElementById('streakDays').textContent = this.data.stats.currentStreak;
+                
+                // Update usage stats
+                document.getElementById('audioUsage').textContent = this.data.usage.audio;
+                document.getElementById('visualUsage').textContent = this.data.usage.visual;
+                document.getElementById('eyeUsage').textContent = this.data.usage.eye;
+                document.getElementById('gamesUsage').textContent = this.data.usage.games;
+                
+                // Update progress bars
+                const maxUsage = Math.max(...Object.values(this.data.usage), 1);
+                document.getElementById('audioProgress').style.width = `${(this.data.usage.audio / maxUsage) * 100}%`;
+                document.getElementById('visualProgress').style.width = `${(this.data.usage.visual / maxUsage) * 100}%`;
+                document.getElementById('eyeProgress').style.width = `${(this.data.usage.eye / maxUsage) * 100}%`;
+                document.getElementById('gamesProgress').style.width = `${(this.data.usage.games / maxUsage) * 100}%`;
+                
+                // Update achievements
+                this.updateAchievements();
+            }
+
+            updateAchievements() {
+                const achievementsList = document.getElementById('achievementsList');
+                if (this.data.achievements.length === 0) {
+                    achievementsList.innerHTML = '<div style="text-align: center; color: #888; padding: 20px;">Start using techniques to unlock achievements!</div>';
+                } else {
+                    const achievementNames = {
+                        'first-session': '🌟 First Night',
+                        'week-streak': '🔥 Week Warrior',
+                        'technique-master': '🧠 Technique Master',
+                        'quick-sleeper': '⚡ Quick Sleeper',
+                        'consistency-king': '👑 Consistency King'
+                    };
+                    
+                    achievementsList.innerHTML = this.data.achievements
+                        .map(id => `<div class="achievement-badge">${achievementNames[id]}</div>`)
+                        .join('');
+                }
+            }
+
+            exportData() {
+                const dataStr = JSON.stringify(this.data, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `sleepcraft-data-${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+                
+                URL.revokeObjectURL(url);
+            }
+
+            resetData() {
+                if (confirm('Are you sure you want to reset all data? This cannot be undone.')) {
+                    localStorage.removeItem('sleepcraft-data');
+                    this.data = this.loadData();
+                    this.updateUI();
+                }
+            }
         }
 
-        setTimeout(createMatrixEffect, 1000);
+        // Initialize data management
+        const sleepData = new SleepCraftData();
+        sleepData.updateUI();
+
+        // Audio Context and Web Audio API
+        let audioContext;
+        let oscillator;
+        let gainNode;
+        let audioInterval;
+        let isAudioPlaying = false;
+
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function startBilateralAudio() {
+            initAudioContext();
+            
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            
+            const interval = parseInt(document.getElementById('audioInterval').textContent) * 1000;
+            const volume = parseInt(document.getElementById('audioVolume').textContent) / 100;
+            const frequency = parseInt(document.getElementById('audioFreq').textContent);
+            
+            let isLeft = true;
+            
+            function playBeep() {
+                oscillator = audioContext.createOscillator();
+                gainNode = audioContext.createGain();
+                const panNode = audioContext.createStereoPanner();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(panNode);
+                panNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = frequency;
+                gainNode.gain.value = volume * 0.1;
+                panNode.pan.value = isLeft ? -0.8 : 0.8;
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.1);
+                
+                isLeft = !isLeft;
+            }
+            
+            playBeep(); // Initial beep
+            audioInterval = setInterval(playBeep, interval);
+            isAudioPlaying = true;
+            
+            document.getElementById('startAudio').style.display = 'none';
+            document.getElementById('stopAudio').style.display = 'inline-block';
+            
+            // Track usage
+            const startTime = Date.now();
+            setTimeout(() => {
+                if (isAudioPlaying) {
+                    sleepData.addSession('audio', Date.now() - startTime);
+                }
+            }, 30000); // Track after 30 seconds
+        }
+
+        function stopBilateralAudio() {
+            if (audioInterval) {
+                clearInterval(audioInterval);
+                audioInterval = null;
+            }
+            if (oscillator) {
+                oscillator.stop();
+                oscillator = null;
+            }
+            isAudioPlaying = false;
+            
+            document.getElementById('startAudio').style.display = 'inline-block';
+            document.getElementById('stopAudio').style.display = 'none';
+        }
+
+        // Visual Stimulation
+        let visualAnimation;
+        let isVisualActive = false;
+
+        function startVisualStimulation() {
+            const dot = document.getElementById('movingDot');
+            const area = document.getElementById('visualArea');
+            const speed = 100 - parseInt(document.getElementById('visualSpeed').textContent);
+            const size = parseInt(document.getElementById('dotSize').textContent);
+            
+            dot.style.width = size + 'px';
+            dot.style.height = size + 'px';
+            
+            let direction = 1;
+            let position = 0;
+            const maxPosition = area.clientWidth - size;
+            
+            function animate() {
+                if (!isVisualActive) return;
+                
+                position += direction * 2;
+                
+                if (position >= maxPosition || position <= 0) {
+                    direction *= -1;
+                }
+                
+                dot.style.left = position + 'px';
+                dot.style.top = '50%';
+                dot.style.transform = 'translateY(-50%)';
+                
+                visualAnimation = setTimeout(animate, speed);
+            }
+            
+            isVisualActive = true;
+            animate();
+            
+            document.getElementById('startVisual').style.display = 'none';
+            document.getElementById('stopVisual').style.display = 'inline-block';
+            
+            // Track usage
+            const startTime = Date.now();
+            setTimeout(() => {
+                if (isVisualActive) {
+                    sleepData.addSession('visual', Date.now() - startTime);
+                }
+            }, 30000);
+        }
+
+        function stopVisualStimulation() {
+            isVisualActive = false;
+            if (visualAnimation) {
+                clearTimeout(visualAnimation);
+                visualAnimation = null;
+            }
+            
+            document.getElementById('startVisual').style.display = 'inline-block';
+            document.getElementById('stopVisual').style.display = 'none';
+        }
+
+        // Haptic Feedback
+        let hapticInterval;
+        let isHapticActive = false;
+
+        function startHapticFeedback() {
+            if (!navigator.vibrate) {
+                alert('Haptic feedback not supported on this device');
+                return;
+            }
+            
+            const interval = parseInt(document.getElementById('hapticInterval').textContent) * 1000;
+            const intensity = parseInt(document.getElementById('hapticIntensity').textContent);
+            
+            let isLeft = true;
+            
+            function vibrate() {
+                // Simulate left/right with different patterns
+                const pattern = isLeft ? [intensity, 100] : [100, intensity];
+                navigator.vibrate(pattern);
+                isLeft = !isLeft;
+            }
+            
+            vibrate();
+            hapticInterval = setInterval(vibrate, interval);
+            isHapticActive = true;
+            
+            document.getElementById('startHaptic').style.display = 'none';
+            document.getElementById('stopHaptic').style.display = 'inline-block';
+        }
+
+        function stopHapticFeedback() {
+            if (hapticInterval) {
+                clearInterval(hapticInterval);
+                hapticInterval = null;
+            }
+            navigator.vibrate(0);
+            isHapticActive = false;
+            
+            document.getElementById('startHaptic').style.display = 'inline-block';
+            document.getElementById('stopHaptic').style.display = 'none';
+        }
+
+        // Breathing Guide
+        let breathingInterval;
+        let isBreathingActive = false;
+        let breathingPhase = 0; // 0: inhale, 1: hold, 2: exhale
+
+        function startBreathingGuide() {
+            const circle = document.getElementById('breathingCircle');
+            const text = document.getElementById('breathingText');
+            const timer = document.getElementById('breathingTimer');
+            
+            const phases = [
+                { name: 'Inhale', duration: 4, class: 'inhale' },
+                { name: 'Hold', duration: 7, class: 'inhale' },
+                { name: 'Exhale', duration: 8, class: 'exhale' }
+            ];
+            
+            let currentPhase = 0;
+            let countdown = phases[0].duration;
+            
+            function updateBreathing() {
+                if (!isBreathingActive) return;
+                
+                const phase = phases[currentPhase];
+                text.textContent = `${phase.name} ${countdown}`;
+                timer.textContent = `4-7-8 Pattern - ${phase.name}`;
+                
+                circle.className = `breathing-circle ${phase.class}`;
+                
+                countdown--;
+                
+                if (countdown < 0) {
+                    currentPhase = (currentPhase + 1) % phases.length;
+                    countdown = phases[currentPhase].duration;
+                }
+            }
+            
+            isBreathingActive = true;
+            updateBreathing();
+            breathingInterval = setInterval(updateBreathing, 1000);
+            
+            document.getElementById('startBreathing').style.display = 'none';
+            document.getElementById('stopBreathing').style.display = 'inline-block';
+        }
+
+        function stopBreathingGuide() {
+            isBreathingActive = false;
+            if (breathingInterval) {
+                clearInterval(breathingInterval);
+                breathingInterval = null;
+            }
+            
+            const circle = document.getElementById('breathingCircle');
+            const text = document.getElementById('breathingText');
+            const timer = document.getElementById('breathingTimer');
+            
+            circle.className = 'breathing-circle';
+            text.textContent = 'Ready';
+            timer.textContent = '4-7-8 Pattern';
+            
+            document.getElementById('startBreathing').style.display = 'inline-block';
+            document.getElementById('stopBreathing').style.display = 'none';
+        }
+
+        // Figure-8 Eye Pattern
+        let figure8Animation;
+        let isFigure8Active = false;
+
+        function startFigure8() {
+            const dot = document.getElementById('figure8Dot');
+            const speed = 100 - parseInt(document.getElementById('figure8Speed').textContent);
+            
+            let angle = 0;
+            const centerX = 150;
+            const centerY = 100;
+            const radiusX = 60;
+            const radiusY = 30;
+            
+            function animate() {
+                if (!isFigure8Active) return;
+                
+                // Figure-8 (infinity) formula
+                const x = centerX + radiusX * Math.cos(angle);
+                const y = centerY + radiusY * Math.sin(2 * angle);
+                
+                dot.style.left = x + 'px';
+                dot.style.top = y + 'px';
+                
+                angle += 0.05;
+                if (angle > Math.PI * 2) angle = 0;
+                
+                figure8Animation = setTimeout(animate, speed);
+            }
+            
+            isFigure8Active = true;
+            animate();
+            
+            document.getElementById('startFigure8').style.display = 'none';
+            document.getElementById('stopFigure8').style.display = 'inline-block';
+            
+            // Track usage
+            const startTime = Date.now();
+            setTimeout(() => {
+                if (isFigure8Active) {
+                    sleepData.addSession('eye', Date.now() - startTime);
+                }
+            }, 30000);
+        }
+
+        function stopFigure8() {
+            isFigure8Active = false;
+            if (figure8Animation) {
+                clearTimeout(figure8Animation);
+                figure8Animation = null;
+            }
+            
+            document.getElementById('startFigure8').style.display = 'inline-block';
+            document.getElementById('stopFigure8').style.display = 'none';
+        }
+
+        // Blinking Guide
+        let blinkInterval;
+        let isBlinkActive = false;
+
+        function startBlinkingGuide() {
+            const indicator = document.getElementById('blinkIndicator');
+            const timer = document.getElementById('blinkTimer');
+            const closedTime = parseInt(document.getElementById('blinkClosed').textContent);
+            const openTime = parseInt(document.getElementById('blinkOpen').textContent);
+            
+            let isEyesClosed = false;
+            let countdown = closedTime;
+            
+            function updateBlink() {
+                if (!isBlinkActive) return;
+                
+                if (isEyesClosed) {
+                    indicator.textContent = '—';
+                    timer.textContent = `Eyes Closed: ${countdown}s`;
+                } else {
+                    indicator.textContent = '👁️';
+                    timer.textContent = `Eyes Open: ${countdown}s`;
+                }
+                
+                countdown--;
+                
+                if (countdown < 0) {
+                    isEyesClosed = !isEyesClosed;
+                    countdown = isEyesClosed ? closedTime : openTime;
+                }
+            }
+            
+            isBlinkActive = true;
+            updateBlink();
+            blinkInterval = setInterval(updateBlink, 1000);
+            
+            document.getElementById('startBlink').style.display = 'none';
+            document.getElementById('stopBlink').style.display = 'inline-block';
+        }
+
+        function stopBlinkingGuide() {
+            isBlinkActive = false;
+            if (blinkInterval) {
+                clearInterval(blinkInterval);
+                blinkInterval = null;
+            }
+            
+            document.getElementById('blinkIndicator').textContent = '👁️';
+            document.getElementById('blinkTimer').textContent = 'Ready to Start';
+            
+            document.getElementById('startBlink').style.display = 'inline-block';
+            document.getElementById('stopBlink').style.display = 'none';
+        }
+
+        // Pendulum Eye Tracking
+        let pendulumAnimation;
+        let isPendulumActive = false;
+
+        function startPendulum() {
+            const dot = document.getElementById('pendulumDot');
+            const area = document.getElementById('pendulumArea');
+            const speed = 100 - parseInt(document.getElementById('pendulumSpeed').textContent);
+            
+            let angle = 0;
+            const centerX = area.clientWidth / 2;
+            const centerY = area.clientHeight / 2;
+            const radius = area.clientWidth * 0.4;
+            
+            function animate() {
+                if (!isPendulumActive) return;
+                
+                const x = centerX + radius * Math.sin(angle);
+                const y = centerY;
+                
+                dot.style.left = x + 'px';
+                dot.style.top = y + 'px';
+                
+                angle += 0.02;
+                
+                pendulumAnimation = setTimeout(animate, speed);
+            }
+            
+            isPendulumActive = true;
+            animate();
+            
+            document.getElementById('startPendulum').style.display = 'none';
+            document.getElementById('stopPendulum').style.display = 'inline-block';
+        }
+
+        function stopPendulum() {
+            isPendulumActive = false;
+            if (pendulumAnimation) {
+                clearTimeout(pendulumAnimation);
+                pendulumAnimation = null;
+            }
+            
+            document.getElementById('startPendulum').style.display = 'inline-block';
+            document.getElementById('stopPendulum').style.display = 'none';
+        }
+
+        // Focus Shifting Exercise
+        let focusInterval;
+        let isFocusActive = false;
+
+        function startFocusShift() {
+            const near = document.getElementById('focusNear');
+            const far = document.getElementById('focusFar');
+            const timer = document.getElementById('focusTimer');
+            
+            let phase = 0; // 0: near, 1: far, 2: near
+            let countdown = 3;
+            
+            const phases = ['Look at finger (near)', 'Look at horizon (far)', 'Look at finger (near)'];
+            
+            function updateFocus() {
+                if (!isFocusActive) return;
+                
+                timer.textContent = `${phases[phase]} - ${countdown}s`;
+                
+                if (phase === 0 || phase === 2) {
+                    near.style.opacity = '1';
+                    far.style.opacity = '0.3';
+                } else {
+                    near.style.opacity = '0.3';
+                    far.style.opacity = '1';
+                }
+                
+                countdown--;
+                
+                if (countdown < 0) {
+                    phase = (phase + 1) % 3;
+                    countdown = 3;
+                }
+            }
+            
+            isFocusActive = true;
+            updateFocus();
+            focusInterval = setInterval(updateFocus, 1000);
+            
+            document.getElementById('startFocus').style.display = 'none';
+            document.getElementById('stopFocus').style.display = 'inline-block';
+        }
+
+        function stopFocusShift() {
+            isFocusActive = false;
+            if (focusInterval) {
+                clearInterval(focusInterval);
+                focusInterval = null;
+            }
+            
+            document.getElementById('focusNear').style.opacity = '1';
+            document.getElementById('focusFar').style.opacity = '0.5';
+            document.getElementById('focusTimer').textContent = 'Look Near → Far → Near';
+            
+            document.getElementById('startFocus').style.display = 'inline-block';
+            document.getElementById('stopFocus').style.display = 'none';
+        }
+
+        // Star Counter Game
+        let starInterval;
+        let isStarsActive = false;
+        let starCount = 0;
+
+        function createStar() {
+            const area = document.getElementById('starArea');
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * (area.clientWidth - 10) + 'px';
+            star.style.top = Math.random() * (area.clientHeight - 50) + 50 + 'px';
+            star.style.animationDelay = Math.random() * 2 + 's';
+            
+            star.addEventListener('click', () => {
+                starCount++;
+                document.getElementById('starCount').textContent = starCount;
+                star.remove();
+                
+                // Haptic feedback
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+            });
+            
+            area.appendChild(star);
+            
+            // Remove star after 5 seconds
+            setTimeout(() => {
+                if (star.parentNode) {
+                    star.remove();
+                }
+            }, 5000);
+        }
+
+        function startStarCounter() {
+            starCount = 0;
+            document.getElementById('starCount').textContent = starCount;
+            
+            // Clear existing stars
+            const area = document.getElementById('starArea');
+            area.querySelectorAll('.star').forEach(star => star.remove());
+            
+            isStarsActive = true;
+            
+            function spawnStar() {
+                if (!isStarsActive) return;
+                createStar();
+                
+                // Gradually decrease frequency
+                const nextDelay = Math.random() * 3000 + 1000;
+                starInterval = setTimeout(spawnStar, nextDelay);
+            }
+            
+            spawnStar();
+            
+            document.getElementById('startStars').style.display = 'none';
+            document.getElementById('stopStars').style.display = 'inline-block';
+            
+            // Track usage
+            const startTime = Date.now();
+            setTimeout(() => {
+                if (isStarsActive) {
+                    sleepData.addSession('games', Date.now() - startTime);
+                }
+            }, 30000);
+        }
+
+        function stopStarCounter() {
+            isStarsActive = false;
+            if (starInterval) {
+                clearTimeout(starInterval);
+                starInterval = null;
+            }
+            
+            // Clear all stars
+            const area = document.getElementById('starArea');
+            area.querySelectorAll('.star').forEach(star => star.remove());
+            
+            document.getElementById('startStars').style.display = 'inline-block';
+            document.getElementById('stopStars').style.display = 'none';
+        }
+
+        // Bubble Pop Game
+        let bubbleInterval;
+        let isBubblesActive = false;
+        let bubbleCount = 0;
+
+        function createBubble() {
+            const area = document.getElementById('bubbleArea');
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            
+            const size = Math.random() * 40 + 20;
+            bubble.style.width = size + 'px';
+            bubble.style.height = size + 'px';
+            bubble.style.left = Math.random() * (area.clientWidth - size) + 'px';
+            bubble.style.top = Math.random() * (area.clientHeight - 100) + 80 + 'px';
+            
+            bubble.addEventListener('click', () => {
+                bubbleCount++;
+                document.getElementById('bubbleCount').textContent = bubbleCount;
+                
+                // Pop animation
+                bubble.style.transform = 'scale(1.5)';
+                bubble.style.opacity = '0';
+                
+                setTimeout(() => bubble.remove(), 300);
+                
+                // Haptic feedback
+                if (navigator.vibrate) {
+                    navigator.vibrate(30);
+                }
+            });
+            
+            area.appendChild(bubble);
+            
+            // Remove bubble after 8 seconds
+            setTimeout(() => {
+                if (bubble.parentNode) {
+                    bubble.remove();
+                }
+            }, 8000);
+        }
+
+        function startBubbleGame() {
+            bubbleCount = 0;
+            document.getElementById('bubbleCount').textContent = bubbleCount;
+            
+            // Clear existing bubbles
+            const area = document.getElementById('bubbleArea');
+            area.querySelectorAll('.bubble').forEach(bubble => bubble.remove());
+            
+            isBubblesActive = true;
+            const speed = parseInt(document.getElementById('bubbleSpeed').textContent);
+            const interval = 3000 - (speed * 20); // Faster speed = shorter interval
+            
+            function spawnBubble() {
+                if (!isBubblesActive) return;
+                createBubble();
+                bubbleInterval = setTimeout(spawnBubble, interval);
+            }
+            
+            spawnBubble();
+            
+            document.getElementById('startBubbles').style.display = 'none';
+            document.getElementById('stopBubbles').style.display = 'inline-block';
+        }
+
+        function stopBubbleGame() {
+            isBubblesActive = false;
+            if (bubbleInterval) {
+                clearTimeout(bubbleInterval);
+                bubbleInterval = null;
+            }
+            
+            // Clear all bubbles
+            const area = document.getElementById('bubbleArea');
+            area.querySelectorAll('.bubble').forEach(bubble => bubble.remove());
+            
+            document.getElementById('startBubbles').style.display = 'inline-block';
+            document.getElementById('stopBubbles').style.display = 'none';
+        }
+
+        // Mind Maze Game
+        let isMazeActive = false;
+        let mazeWalls = [];
+
+        function createMaze() {
+            const area = document.getElementById('mazeArea');
+            const dot = document.getElementById('mazeDot');
+            
+            // Clear existing walls
+            area.querySelectorAll('.maze-wall').forEach(wall => wall.remove());
+            mazeWalls = [];
+            
+            // Create simple maze walls
+            const walls = [
+                { x: 50, y: 50, width: 100, height: 10 },
+                { x: 200, y: 100, width: 10, height: 80 },
+                { x: 100, y: 150, width: 80, height: 10 },
+                { x: 250, y: 180, width: 60, height: 10 }
+            ];
+            
+            walls.forEach(wall => {
+                const wallElement = document.createElement('div');
+                wallElement.className = 'maze-wall';
+                wallElement.style.left = wall.x + 'px';
+                wallElement.style.top = wall.y + 'px';
+                wallElement.style.width = wall.width + 'px';
+                wallElement.style.height = wall.height + 'px';
+                area.appendChild(wallElement);
+                mazeWalls.push(wall);
+            });
+            
+            // Position dot at start
+            dot.style.left = '20px';
+            dot.style.top = '20px';
+        }
+
+        function startMaze() {
+            createMaze();
+            isMazeActive = true;
+            
+            const area = document.getElementById('mazeArea');
+            const dot = document.getElementById('mazeDot');
+            
+            let isDragging = false;
+            let startX, startY;
+            
+            function handleStart(e) {
+                isDragging = true;
+                const touch = e.touches ? e.touches[0] : e;
+                startX = touch.clientX;
+                startY = touch.clientY;
+                e.preventDefault();
+            }
+            
+            function handleMove(e) {
+                if (!isDragging || !isMazeActive) return;
+                
+                const touch = e.touches ? e.touches[0] : e;
+                const deltaX = touch.clientX - startX;
+                const deltaY = touch.clientY - startY;
+                
+                const rect = area.getBoundingClientRect();
+                let newX = parseInt(dot.style.left) + deltaX;
+                let newY = parseInt(dot.style.top) + deltaY;
+                
+                // Boundary checking
+                newX = Math.max(0, Math.min(newX, area.clientWidth - 10));
+                newY = Math.max(0, Math.min(newY, area.clientHeight - 10));
+                
+                // Simple collision detection (basic implementation)
+                let collision = false;
+                for (let wall of mazeWalls) {
+                    if (newX < wall.x + wall.width && newX + 10 > wall.x &&
+                        newY < wall.y + wall.height && newY + 10 > wall.y) {
+                        collision = true;
+                        break;
+                    }
+                }
+                
+                if (!collision) {
+                    dot.style.left = newX + 'px';
+                    dot.style.top = newY + 'px';
+                }
+                
+                startX = touch.clientX;
+                startY = touch.clientY;
+                e.preventDefault();
+            }
+            
+            function handleEnd() {
+                isDragging = false;
+            }
+            
+            // Touch events
+            area.addEventListener('touchstart', handleStart);
+            area.addEventListener('touchmove', handleMove);
+            area.addEventListener('touchend', handleEnd);
+            
+            // Mouse events
+            area.addEventListener('mousedown', handleStart);
+            area.addEventListener('mousemove', handleMove);
+            area.addEventListener('mouseup', handleEnd);
+            
+            document.getElementById('startMaze').style.display = 'none';
+            document.getElementById('stopMaze').style.display = 'inline-block';
+        }
+
+        function stopMaze() {
+            isMazeActive = false;
+            
+            const area = document.getElementById('mazeArea');
+            // Remove event listeners by cloning the element
+            const newArea = area.cloneNode(true);
+            area.parentNode.replaceChild(newArea, area);
+            
+            document.getElementById('startMaze').style.display = 'inline-block';
+            document.getElementById('stopMaze').style.display = 'none';
+        }
+
+        // Memory Palace Game
+        let isPalaceActive = false;
+        let organizedCount = 0;
+
+        function createPalaceObjects() {
+            const area = document.getElementById('palaceArea');
+            const objects = ['📚', '🖼️', '🕯️', '🌱', '⏰'];
+            
+            // Clear existing objects
+            area.querySelectorAll('.object-item, .drop-zone').forEach(el => el.remove());
+            
+            // Create drop zones
+            const zones = [
+                { x: 20, y: 120, width: 50, height: 50 },
+                { x: 80, y: 120, width: 50, height: 50 },
+                { x: 140, y: 120, width: 50, height: 50 },
+                { x: 200, y: 120, width: 50, height: 50 },
+                { x: 260, y: 120, width: 50, height: 50 }
+            ];
+            
+            zones.forEach((zone, index) => {
+                const dropZone = document.createElement('div');
+                dropZone.className = 'drop-zone';
+                dropZone.style.left = zone.x + 'px';
+                dropZone.style.top = zone.y + 'px';
+                dropZone.style.width = zone.width + 'px';
+                dropZone.style.height = zone.height + 'px';
+                dropZone.dataset.index = index;
+                area.appendChild(dropZone);
+            });
+            
+            // Create scattered objects
+            objects.forEach((emoji, index) => {
+                const obj = document.createElement('div');
+                obj.className = 'object-item';
+                obj.textContent = emoji;
+                obj.dataset.correctIndex = index;
+                
+                // Random position in upper area
+                obj.style.left = Math.random() * (area.clientWidth - 30) + 'px';
+                obj.style.top = Math.random() * 60 + 'px';
+                
+                area.appendChild(obj);
+            });
+            
+            organizedCount = 0;
+            document.getElementById('organizedCount').textContent = organizedCount;
+        }
+
+        function startPalaceGame() {
+            createPalaceObjects();
+            isPalaceActive = true;
+            
+            const area = document.getElementById('palaceArea');
+            let draggedElement = null;
+            let offset = { x: 0, y: 0 };
+            
+            function handleObjectStart(e) {
+                if (!e.target.classList.contains('object-item')) return;
+                
+                draggedElement = e.target;
+                draggedElement.classList.add('dragging');
+                
+                const touch = e.touches ? e.touches[0] : e;
+                const rect = draggedElement.getBoundingClientRect();
+                offset.x = touch.clientX - rect.left;
+                offset.y = touch.clientY - rect.top;
+                
+                e.preventDefault();
+            }
+            
+            function handleObjectMove(e) {
+                if (!draggedElement || !isPalaceActive) return;
+                
+                const touch = e.touches ? e.touches[0] : e;
+                const areaRect = area.getBoundingClientRect();
+                
+                let newX = touch.clientX - areaRect.left - offset.x;
+                let newY = touch.clientY - areaRect.top - offset.y;
+                
+                newX = Math.max(0, Math.min(newX, area.clientWidth - 30));
+                newY = Math.max(0, Math.min(newY, area.clientHeight - 30));
+                
+                draggedElement.style.left = newX + 'px';
+                draggedElement.style.top = newY + 'px';
+                
+                // Highlight drop zones
+                area.querySelectorAll('.drop-zone').forEach(zone => {
+                    const zoneRect = zone.getBoundingClientRect();
+                    const objRect = draggedElement.getBoundingClientRect();
+                    
+                    if (objRect.left < zoneRect.right && objRect.right > zoneRect.left &&
+                        objRect.top < zoneRect.bottom && objRect.bottom > zoneRect.top) {
+                        zone.classList.add('highlight');
+                    } else {
+                        zone.classList.remove('highlight');
+                    }
+                });
+                
+                e.preventDefault();
+            }
+            
+            function handleObjectEnd(e) {
+                if (!draggedElement) return;
+                
+                const objRect = draggedElement.getBoundingClientRect();
+                let dropped = false;
+                
+                area.querySelectorAll('.drop-zone').forEach(zone => {
+                    const zoneRect = zone.getBoundingClientRect();
+                    
+                    if (objRect.left < zoneRect.right && objRect.right > zoneRect.left &&
+                        objRect.top < zoneRect.bottom && objRect.bottom > zoneRect.top) {
+                        
+                        const correctIndex = parseInt(draggedElement.dataset.correctIndex);
+                        const zoneIndex = parseInt(zone.dataset.index);
+                        
+                        if (correctIndex === zoneIndex) {
+                            // Correct placement
+                            const zoneRect = zone.getBoundingClientRect();
+                            const areaRect = area.getBoundingClientRect();
+                            
+                            draggedElement.style.left = (zoneRect.left - areaRect.left + 10) + 'px';
+                            draggedElement.style.top = (zoneRect.top - areaRect.top + 10) + 'px';
+                            draggedElement.style.pointerEvents = 'none';
+                            
+                            organizedCount++;
+                            document.getElementById('organizedCount').textContent = organizedCount;
+                            
+                            // Haptic feedback
+                            if (navigator.vibrate) {
+                                navigator.vibrate(100);
+                            }
+                            
+                            dropped = true;
+                        }
+                    }
+                    
+                    zone.classList.remove('highlight');
+                });
+                
+                draggedElement.classList.remove('dragging');
+                draggedElement = null;
+                
+                // Check if game completed
+                if (organizedCount === 5) {
+                    setTimeout(() => {
+                        alert('🎉 Memory Palace Organized! Well done!');
+                    }, 500);
+                }
+            }
+            
+            // Event listeners
+            area.addEventListener('touchstart', handleObjectStart);
+            area.addEventListener('touchmove', handleObjectMove);
+            area.addEventListener('touchend', handleObjectEnd);
+            
+            area.addEventListener('mousedown', handleObjectStart);
+            area.addEventListener('mousemove', handleObjectMove);
+            area.addEventListener('mouseup', handleObjectEnd);
+            
+            document.getElementById('startPalace').style.display = 'none';
+            document.getElementById('stopPalace').style.display = 'inline-block';
+        }
+
+        function stopPalaceGame() {
+            isPalaceActive = false;
+            
+            const area = document.getElementById('palaceArea');
+            // Remove event listeners by cloning
+            const newArea = area.cloneNode(true);
+            area.parentNode.replaceChild(newArea, area);
+            
+            document.getElementById('startPalace').style.display = 'inline-block';
+            document.getElementById('stopPalace').style.display = 'none';
+        }
+
+        // Audio File Handling
+        function setupAudioUpload() {
+            const uploadArea = document.getElementById('audioUpload');
+            const fileInput = document.getElementById('audioFile');
+            const audioList = document.getElementById('audioList');
+            
+            uploadArea.addEventListener('click', () => fileInput.click());
+            
+            fileInput.addEventListener('change', (e) => {
+                const files = e.target.files;
+                for (let file of files) {
+                    if (file.type.startsWith('audio/')) {
+                        addAudioFile(file);
+                    }
+                }
+            });
+            
+            function addAudioFile(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const audioData = e.target.result;
+                    const audioFiles = JSON.parse(localStorage.getItem('sleepcraft-audio') || '[]');
+                    
+                    audioFiles.push({
+                        name: file.name,
+                        data: audioData,
+                        type: file.type
+                    });
+                    
+                    localStorage.setItem('sleepcraft-audio', JSON.stringify(audioFiles));
+                    displayAudioFiles();
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            function displayAudioFiles() {
+                const audioFiles = JSON.parse(localStorage.getItem('sleepcraft-audio') || '[]');
+                
+                if (audioFiles.length === 0) {
+                    audioList.innerHTML = '';
+                    return;
+                }
+                
+                audioList.innerHTML = audioFiles.map((file, index) => `
+                    <div style="background: rgba(255,255,255,0.05); padding: 10px; margin: 5px 0; border-radius: 8px; display: flex; justify-content: between; align-items: center;">
+                        <span>${file.name}</span>
+                        <div>
+                            <button class="btn" style="padding: 5px 10px; margin: 0 2px;" onclick="playAudioFile(${index})">▶️</button>
+                            <button class="btn" style="padding: 5px 10px; margin: 0 2px; background: #ff6b6b;" onclick="removeAudioFile(${index})">🗑️</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // Initial display
+            displayAudioFiles();
+        }
+
+        function playAudioFile(index) {
+            const audioFiles = JSON.parse(localStorage.getItem('sleepcraft-audio') || '[]');
+            if (audioFiles[index]) {
+                const audio = new Audio(audioFiles[index].data);
+                audio.play();
+            }
+        }
+
+        function removeAudioFile(index) {
+            const audioFiles = JSON.parse(localStorage.getItem('sleepcraft-audio') || '[]');
+            audioFiles.splice(index, 1);
+            localStorage.setItem('sleepcraft-audio', JSON.stringify(audioFiles));
+            setupAudioUpload(); // Refresh display
+        }
+
+        // Slider Controls
+        function setupSliders() {
+            const sliders = [
+                { id: 'audioIntervalSlider', display: 'audioInterval' },
+                { id: 'audioVolumeSlider', display: 'audioVolume' },
+                { id: 'audioFreqSlider', display: 'audioFreq' },
+                { id: 'visualSpeedSlider', display: 'visualSpeed' },
+                { id: 'dotSizeSlider', display: 'dotSize' },
+                { id: 'hapticIntervalSlider', display: 'hapticInterval' },
+                { id: 'hapticIntensitySlider', display: 'hapticIntensity' },
+                { id: 'figure8SpeedSlider', display: 'figure8Speed' },
+                { id: 'blinkClosedSlider', display: 'blinkClosed' },
+                { id: 'blinkOpenSlider', display: 'blinkOpen' },
+                { id: 'pendulumSpeedSlider', display: 'pendulumSpeed' },
+                { id: 'bubbleSpeedSlider', display: 'bubbleSpeed' }
+            ];
+            
+            sliders.forEach(slider => {
+                const element = document.getElementById(slider.id);
+                const display = document.getElementById(slider.display);
+                
+                if (element && display) {
+                    element.addEventListener('input', (e) => {
+                        display.textContent = e.target.value;
+                        
+                        // Save setting
+                        sleepData.data.settings[slider.id] = e.target.value;
+                        sleepData.saveData();
+                    });
+                    
+                    // Load saved setting
+                    if (sleepData.data.settings[slider.id]) {
+                        element.value = sleepData.data.settings[slider.id];
+                        display.textContent = sleepData.data.settings[slider.id];
+                    }
+                }
+            });
+        }
+
+        // Event Listeners
+        document.getElementById('startAudio').addEventListener('click', startBilateralAudio);
+        document.getElementById('stopAudio').addEventListener('click', stopBilateralAudio);
+        
+        document.getElementById('startVisual').addEventListener('click', startVisualStimulation);
+        document.getElementById('stopVisual').addEventListener('click', stopVisualStimulation);
+        
+        document.getElementById('startHaptic').addEventListener('click', startHapticFeedback);
+        document.getElementById('stopHaptic').addEventListener('click', stopHapticFeedback);
+        
+        document.getElementById('startBreathing').addEventListener('click', startBreathingGuide);
+        document.getElementById('stopBreathing').addEventListener('click', stopBreathingGuide);
+        
+        document.getElementById('startFigure8').addEventListener('click', startFigure8);
+        document.getElementById('stopFigure8').addEventListener('click', stopFigure8);
+        
+        document.getElementById('startBlink').addEventListener('click', startBlinkingGuide);
+        document.getElementById('stopBlink').addEventListener('click', stopBlinkingGuide);
+        
+        document.getElementById('startPendulum').addEventListener('click', startPendulum);
+        document.getElementById('stopPendulum').addEventListener('click', stopPendulum);
+        
+        document.getElementById('startFocus').addEventListener('click', startFocusShift);
+        document.getElementById('stopFocus').addEventListener('click', stopFocusShift);
+        
+        document.getElementById('startStars').addEventListener('click', startStarCounter);
+        document.getElementById('stopStars').addEventListener('click', stopStarCounter);
+        
+        document.getElementById('startBubbles').addEventListener('click', startBubbleGame);
+        document.getElementById('stopBubbles').addEventListener('click', stopBubbleGame);
+        
+        document.getElementById('startMaze').addEventListener('click', startMaze);
+        document.getElementById('stopMaze').addEventListener('click', stopMaze);
+        
+        document.getElementById('startPalace').addEventListener('click', startPalaceGame);
+        document.getElementById('stopPalace').addEventListener('click', stopPalaceGame);
+        
+        document.getElementById('exportData').addEventListener('click', () => sleepData.exportData());
+        document.getElementById('resetData').addEventListener('click', () => sleepData.resetData());
+
+        // Initialize everything
+        setupSliders();
+        setupAudioUpload();
+        
+        // Prevent screen sleep during active sessions
+        let wakeLock = null;
+        
+        async function requestWakeLock() {
+            try {
+                wakeLock = await navigator.wakeLock.request('screen');
+            } catch (err) {
+                console.log('Wake lock not supported');
+            }
+        }
+        
+        function releaseWakeLock() {
+            if (wakeLock) {
+                wakeLock.release();
+                wakeLock = null;
+            }
+        }
+        
+        // Request wake lock when any technique starts
+        document.querySelectorAll('.btn:not(.stop)').forEach(btn => {
+            btn.addEventListener('click', requestWakeLock);
+        });
+        
+        // Release wake lock when techniques stop
+        document.querySelectorAll('.btn.stop').forEach(btn => {
+            btn.addEventListener('click', releaseWakeLock);
+        });
+        
+        // Auto-save progress every minute
+        setInterval(() => {
+            sleepData.saveData();
+        }, 60000);
+        
+        // Show welcome message for first-time users
+        if (sleepData.data.stats.totalSessions === 0) {
+            setTimeout(() => {
+                alert('Welcome to SleepCraft! 🌙\n\nThis app uses scientifically-proven techniques to help you fall asleep faster. Start with any technique that appeals to you.\n\nTip: Use headphones for the best bilateral audio experience!');
+            }, 1000);
+        }
+        
+        console.log('🌙 SleepCraft initialized successfully!');
     </script>
 </body>
 </html>
