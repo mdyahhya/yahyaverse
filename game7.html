@@ -319,10 +319,10 @@
 
     <script>
         const qaPairs = {
-            "hi": "Hello! How can I assist you today?",
+            "hi": "Hi Boss! How can I assist you today?",
             "hello": "Hello! How can I assist you today?",
             "how are you": "I am fully operational and here to help.",
-            "who made you": "I was developed by a brilliant coder.",
+            "who made you": "I was developed by Mister Yahya",
             "what's your name": "I'm JARVIS, your personal assistant.",
             "tell me a joke": "Why do programmers prefer dark mode? Because light attracts bugs!",
             "what can you do": "I can talk, respond, simulate futuristic AI behavior, and help you open apps.",
@@ -506,9 +506,43 @@
             if ('speechSynthesis' in window && !isSpeaking) {
                 isSpeaking = true;
                 const utterance = new SpeechSynthesisUtterance(text);
-                utterance.rate = 0.9;
-                utterance.pitch = 1.1;
-                utterance.volume = 0.8;
+                
+                // Configure for male voice
+                utterance.rate = 0.85;
+                utterance.pitch = 0.8; // Lower pitch for male voice
+                utterance.volume = 0.9;
+                
+                // Try to find a male voice
+                const voices = speechSynthesis.getVoices();
+                let maleVoice = null;
+                
+                // Look for male voices (common male voice names)
+                for (let voice of voices) {
+                    const voiceName = voice.name.toLowerCase();
+                    if (voiceName.includes('male') || 
+                        voiceName.includes('david') || 
+                        voiceName.includes('mark') || 
+                        voiceName.includes('alex') ||
+                        voiceName.includes('paul') ||
+                        voiceName.includes('daniel') ||
+                        voiceName.includes('tom') ||
+                        voiceName.includes('aaron') ||
+                        voiceName.includes('microsoft david') ||
+                        voiceName.includes('google us english male') ||
+                        (voice.lang.startsWith('en') && !voiceName.includes('female') && !voiceName.includes('samantha') && !voiceName.includes('susan') && !voiceName.includes('victoria'))) {
+                        maleVoice = voice;
+                        break;
+                    }
+                }
+                
+                // If no specific male voice found, use default but with male characteristics
+                if (maleVoice) {
+                    utterance.voice = maleVoice;
+                } else {
+                    // Use lower pitch and slower rate for more masculine sound
+                    utterance.pitch = 0.7;
+                    utterance.rate = 0.8;
+                }
                 
                 // Show voice visualizer
                 document.getElementById('voiceVisualizer').classList.add('active');
@@ -546,6 +580,17 @@
             // Auto-scroll to bottom
             const chatContainer = document.getElementById('chatContainer');
             chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            // Load voices when available
+            if ('speechSynthesis' in window) {
+                speechSynthesis.onvoiceschanged = () => {
+                    // Voices are now loaded and available
+                    console.log('Available voices:', speechSynthesis.getVoices().map(v => v.name));
+                };
+                
+                // Trigger voices loading
+                speechSynthesis.getVoices();
+            }
         });
     </script>
 </body>
