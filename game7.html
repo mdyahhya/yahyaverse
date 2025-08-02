@@ -507,33 +507,31 @@
                 isSpeaking = true;
                 const utterance = new SpeechSynthesisUtterance(text);
                 
-                // Configure for deep, manly AI voice
-                utterance.rate = 1.0; // Normal-fast speed for efficiency
-                utterance.pitch = 0.4; // VERY LOW pitch for deep masculine voice
-                utterance.volume = 1.0; // Full volume for commanding presence
+                // Configure for natural male voice
+                utterance.rate = 1.0; // Normal speaking speed
+                utterance.pitch = 0.8; // Natural male pitch - not too low, not too high
+                utterance.volume = 0.9; // Comfortable volume
                 
-                // Try to find the most masculine male voice
+                // Try to find the most natural male voice
                 const voices = speechSynthesis.getVoices();
                 let maleVoice = null;
                 
-                // Priority order for MALE voices only
-                const maleVoiceNames = [
+                // Priority order for NATURAL male voices
+                const naturalMaleVoices = [
+                    'alex', // Usually very natural sounding
                     'microsoft david',
-                    'alex',
+                    'google us english male',
                     'daniel',
                     'microsoft mark',
-                    'google us english male',
-                    'google uk english male',
                     'tom',
                     'aaron',
                     'paul',
                     'david',
-                    'mark',
-                    'male'
+                    'mark'
                 ];
                 
-                // Look for explicitly male voices first
-                for (let maleName of maleVoiceNames) {
+                // Look for natural-sounding male voices
+                for (let maleName of naturalMaleVoices) {
                     for (let voice of voices) {
                         const voiceName = voice.name.toLowerCase();
                         if (voiceName.includes(maleName) && 
@@ -546,9 +544,9 @@
                     if (maleVoice) break;
                 }
                 
-                // Extra filtering to avoid any female voices
+                // Avoid female voices completely
                 if (!maleVoice) {
-                    const femaleNames = ['samantha', 'susan', 'victoria', 'karen', 'moira', 'zira', 'cortana', 'siri', 'female', 'woman', 'girl', 'lady'];
+                    const femaleNames = ['samantha', 'susan', 'victoria', 'karen', 'moira', 'zira', 'cortana', 'siri', 'female', 'woman', 'girl', 'lady', 'helena', 'anna', 'emma'];
                     for (let voice of voices) {
                         const voiceName = voice.name.toLowerCase();
                         let isFemale = false;
@@ -571,15 +569,15 @@
                 
                 if (maleVoice) {
                     utterance.voice = maleVoice;
-                    console.log('Using MALE voice:', maleVoice.name);
+                    console.log('Using natural MALE voice:', maleVoice.name);
                 } else {
-                    // Force masculine settings if no male voice found
-                    utterance.pitch = 0.3; // EXTREMELY low for deep male voice
-                    utterance.rate = 0.9;  // Slightly slower for authority
-                    console.log('Using default voice with DEEP masculine settings');
+                    // Natural male settings if no specific voice found
+                    utterance.pitch = 0.85; // Natural male range
+                    utterance.rate = 0.95;  // Slightly slower for clarity
+                    console.log('Using default voice with natural male settings');
                 }
                 
-                // Clean text delivery
+                // Clean, natural text delivery
                 utterance.text = text;
                 
                 // Show voice visualizer
@@ -632,4 +630,4 @@
         });
     </script>
 </body>
-    </html>
+</html>
