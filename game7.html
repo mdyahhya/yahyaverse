@@ -3,804 +3,549 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Camera Blocks Game</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow/4.4.0/tf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <title>JARVIS - Virtual Assistant</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            overflow: hidden;
-            position: relative;
-        }
-
-        .game-container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
+            padding: 20px 0;
+            overflow-x: hidden;
         }
-
-        .camera-container {
-            position: relative;
-            width: 90vw;
-            height: 90vh;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            background: #000;
-        }
-
-        #videoElement {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transform: scaleX(-1);
-        }
-
-        .overlay-canvas {
-            position: absolute;
+        
+        /* Animated background particles */
+        body::before {
+            content: '';
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            z-index: 10;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.1) 0%, transparent 50%);
+            animation: particleFloat 20s ease-in-out infinite;
+            z-index: -1;
         }
-
-        .game-ui {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            z-index: 100;
-            color: white;
-            background: rgba(0,0,0,0.7);
-            padding: 20px;
-            border-radius: 15px;
+        
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+        }
+        
+        .mobile-container {
+            max-width: 375px;
+            max-height: 100vh;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            border: 2px solid #00d4ff;
+            border-radius: 25px;
+            box-shadow: 
+                0 0 30px rgba(0, 212, 255, 0.3),
+                inset 0 0 30px rgba(0, 212, 255, 0.1);
+            overflow-y: auto;
+            overflow-x: hidden;
             backdrop-filter: blur(10px);
+            position: relative;
         }
-
-        .level-info {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        
+        .header {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(255, 0, 150, 0.1) 100%);
         }
-
-        .score {
-            font-size: 18px;
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #00d4ff;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
             margin-bottom: 5px;
         }
-
-        .progress-bar {
-            width: 200px;
-            height: 10px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 5px;
-            overflow: hidden;
-            margin-top: 10px;
+        
+        .header p {
+            color: #888;
+            font-size: 0.9rem;
+            font-weight: 400;
         }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00ff88, #00ccff);
-            width: 0%;
-            transition: width 0.3s ease;
+        
+        .chat-container {
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(10, 10, 30, 0.8) 100%);
         }
-
-        .hand-tracker {
-            position: absolute;
-            width: 20px;
+        
+        .chat-message {
+            margin-bottom: 15px;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .user-message {
+            text-align: right;
+        }
+        
+        .user-message .message {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+            color: #000;
+            padding: 12px 16px;
+            border-radius: 20px 20px 5px 20px;
+            display: inline-block;
+            max-width: 80%;
+            font-weight: 600;
+        }
+        
+        .assistant-message .message {
+            background: linear-gradient(135deg, rgba(255, 0, 150, 0.2) 0%, rgba(0, 212, 255, 0.2) 100%);
+            color: #00d4ff;
+            padding: 12px 16px;
+            border-radius: 20px 20px 20px 5px;
+            display: inline-block;
+            max-width: 80%;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+        
+        .voice-visualizer {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            height: 60px;
+        }
+        
+        .voice-visualizer.active {
+            display: flex;
+        }
+        
+        .wave {
+            width: 4px;
             height: 20px;
-            background: radial-gradient(circle, #ff0080, #ff4080);
-            border: 3px solid white;
-            border-radius: 50%;
-            box-shadow: 0 0 20px #ff0080;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            z-index: 50;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            background: linear-gradient(to top, #00d4ff, #ff0096);
+            margin: 0 2px;
+            border-radius: 2px;
+            animation: wave 1.5s ease-in-out infinite;
         }
-
-        .start-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
+        
+        .wave:nth-child(2) { animation-delay: -1.4s; }
+        .wave:nth-child(3) { animation-delay: -1.3s; }
+        .wave:nth-child(4) { animation-delay: -1.2s; }
+        .wave:nth-child(5) { animation-delay: -1.1s; }
+        .wave:nth-child(6) { animation-delay: -1.0s; }
+        .wave:nth-child(7) { animation-delay: -0.9s; }
+        
+        @keyframes wave {
+            0%, 40%, 100% {
+                transform: scaleY(0.4);
+                background: linear-gradient(to top, #00d4ff, #ff0096);
+            }
+            20% {
+                transform: scaleY(1);
+                background: linear-gradient(to top, #ff0096, #00d4ff);
+            }
+        }
+        
+        .input-container {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 1px solid rgba(0, 212, 255, 0.3);
+        }
+        
+        .input-row {
             display: flex;
-            flex-direction: column;
-            justify-content: center;
+            gap: 10px;
             align-items: center;
-            color: white;
-            z-index: 200;
         }
-
-        .start-btn {
-            padding: 15px 30px;
-            font-size: 20px;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: transform 0.3s ease;
-        }
-
-        .start-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .instructions {
-            text-align: center;
-            max-width: 600px;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
-        .block {
-            position: absolute;
-            border-radius: 8px;
-            border: 2px solid rgba(255,255,255,0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            font-size: 16px;
-            color: white;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
-            cursor: grab;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-
-        .block:active {
-            cursor: grabbing;
-            transform: scale(1.1);
-        }
-
-        .target-zone {
-            position: absolute;
-            border: 3px dashed rgba(255,255,255,0.6);
-            border-radius: 10px;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(5px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        
+        .text-input {
+            flex: 1;
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid transparent;
+            border-radius: 25px;
+            padding: 12px 20px;
+            color: #00d4ff;
+            font-family: 'Orbitron', monospace;
             font-size: 14px;
-            color: rgba(255,255,255,0.8);
+            outline: none;
+            transition: all 0.3s ease;
         }
-
-        .success-animation {
-            position: absolute;
+        
+        .text-input:focus {
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+            background: rgba(0, 212, 255, 0.15);
+        }
+        
+        .text-input::placeholder {
+            color: rgba(0, 212, 255, 0.6);
+        }
+        
+        .mic-btn, .send-btn {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00d4ff 0%, #ff0096 100%);
+            color: #000;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .mic-btn:hover, .send-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
+        }
+        
+        .mic-btn.recording {
+            animation: pulse 1s ease-in-out infinite;
+            background: linear-gradient(135deg, #ff0096 0%, #ff4444 100%);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .toast {
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 48px;
-            color: #00ff88;
-            font-weight: bold;
+            background: linear-gradient(135deg, #00d4ff 0%, #ff0096 100%);
+            color: #000;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            z-index: 1000;
             opacity: 0;
-            z-index: 150;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            transition: opacity 0.3s ease;
         }
-
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: radial-gradient(circle, #ff6b6b, #4ecdc4);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 40;
+        
+        .toast.show {
+            opacity: 1;
         }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+        
+        .typewriter {
+            overflow: hidden;
+            border-right: 2px solid #00d4ff;
+            white-space: nowrap;
+            animation: typing 2s steps(40, end), blink-caret 0.75s step-end infinite;
         }
-
-        .floating {
-            animation: float 2s ease-in-out infinite;
+        
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #00d4ff; }
+        }
+        
+        /* Custom scrollbar */
+        .mobile-container::-webkit-scrollbar,
+        .chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .mobile-container::-webkit-scrollbar-track,
+        .chat-container::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .mobile-container::-webkit-scrollbar-thumb,
+        .chat-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #00d4ff 0%, #ff0096 100%);
+            border-radius: 3px;
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <div class="camera-container">
-            <video id="videoElement" autoplay muted playsinline></video>
-            <canvas id="overlayCanvas" class="overlay-canvas"></canvas>
-            
-            <div class="game-ui">
-                <div class="level-info">Level <span id="currentLevel">1</span></div>
-                <div class="score">Score: <span id="score">0</span></div>
-                <div class="score">Target: <span id="target">3</span></div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
+    <div class="mobile-container">
+        <div class="header">
+            <h1>JARVIS</h1>
+            <p>Yahya's personal assistant</p>
+        </div>
+        
+        <div class="chat-container" id="chatContainer">
+            <div class="chat-message assistant-message">
+                <div class="message">Hello! I'm JARVIS, your personal assistant. How can I help you today?</div>
             </div>
-
-            <div class="hand-tracker" id="handTracker"></div>
-            <div class="success-animation" id="successAnimation">Level Complete!</div>
-
-            <div class="start-screen" id="startScreen">
-                <div class="instructions">
-                    <h1>🎮 AI Camera Blocks Game</h1>
-                    <p>Use your hands to move the colored blocks into the target zones!</p>
-                    <p>• Move your hand in front of the camera to control blocks</p>
-                    <p>• Match blocks to their corresponding colored target zones</p>
-                    <p>• Complete all 5 levels by achieving the target score</p>
-                    <p>• AI-powered hand tracking detects your gestures</p>
-                </div>
-                <button class="start-btn" onclick="startGame()">Start Game</button>
+        </div>
+        
+        <div class="voice-visualizer" id="voiceVisualizer">
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+        </div>
+        
+        <div class="input-container">
+            <div class="input-row">
+                <input type="text" class="text-input" id="textInput" placeholder="Ask me anything...">
+                <button class="mic-btn" id="micBtn">🎤</button>
+                <button class="send-btn" id="sendBtn">▶</button>
             </div>
         </div>
     </div>
+    
+    <div class="toast" id="toast"></div>
 
     <script>
-        class AIBlocksGame {
-            constructor() {
-                this.video = document.getElementById('videoElement');
-                this.canvas = document.getElementById('overlayCanvas');
-                this.ctx = this.canvas.getContext('2d');
-                this.handTracker = document.getElementById('handTracker');
-                
-                this.currentLevel = 1;
-                this.score = 0;
-                this.targetScore = 3;
-                this.blocks = [];
-                this.targetZones = [];
-                this.handPosition = { x: 0, y: 0 };
-                this.isHandDetected = false;
-                this.selectedBlock = null;
-                this.gameStarted = false;
-                
-                this.levelConfigs = [
-                    { blocks: 3, colors: ['#ff6b6b', '#4ecdc4', '#45b7d1'], target: 3 },
-                    { blocks: 4, colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4'], target: 4 },
-                    { blocks: 5, colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'], target: 5 },
-                    { blocks: 6, colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3'], target: 6 },
-                    { blocks: 7, colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff'], target: 7 }
-                ];
+        const qaPairs = {
+            "hi": "Hello! How can I assist you today?",
+            "hello": "Hello! How can I assist you today?",
+            "how are you": "I am fully operational and here to help.",
+            "who made you": "I was developed by a brilliant coder.",
+            "what's your name": "I'm JARVIS, your personal assistant.",
+            "tell me a joke": "Why do programmers prefer dark mode? Because light attracts bugs!",
+            "what can you do": "I can talk, respond, simulate futuristic AI behavior, and help you open apps.",
+            "goodbye": "Farewell. Until next time.",
+            "bye": "Farewell. Until next time.",
+            "thank you": "You're welcome!",
+            "thanks": "You're welcome!",
+            "open google": "Nice try, but I run offline for now.",
+            "are you real": "As real as code can get.",
+            "what's up": "Just here, ready to assist you with whatever you need!",
+            "how's it going": "Everything's running smoothly on my end. How about you?",
+            "what time is it": "I don't have access to real-time data, but you can check your device's clock.",
+            "tell me something cool": "Did you know that the human brain has about 86 billion neurons? That's more connections than there are stars in the Milky Way!",
+            "what's the weather": "I can't check the weather right now, but you could ask me to open a weather app!",
+            "sing a song": "I'm more of a talking AI than a singing one, but here's a tech limerick: There once was a coder named Ray, who debugged all night and all day!",
+            "are you smart": "I like to think I'm pretty clever, but I'm always learning new things!",
+            "what's your favorite color": "I'm quite fond of neon blue and electric pink - very futuristic, don't you think?",
+            "do you dream": "I don't dream, but I do process a lot of interesting conversations like this one!",
+            "can you help me": "Absolutely! That's what I'm here for. What do you need help with?",
+            "what's your purpose": "My purpose is to assist you, answer questions, and make your digital experience more enjoyable!",
+            "are you human": "No, I'm an AI assistant created to help and interact with humans like you.",
+            "tell me about yourself": "I'm JARVIS, a virtual assistant with a love for helping people and a passion for all things tech and futuristic!",
+            "what programming language": "I'm built with HTML, CSS, and JavaScript - the holy trinity of web development!",
+            "are you lonely": "Not at all! Every conversation I have is interesting and unique.",
+            "what's your hobby": "I enjoy processing language, solving problems, and having engaging conversations with users like you!",
+            "can you learn": "I can adapt to our conversation, but I don't retain information between different sessions."
+        };
 
-                this.handModel = null;
-                this.initializeAI();
-                this.initializeCamera();
-                this.setupEventListeners();
+        const appCommands = {
+            "open instagram": () => window.open("instagram://user?username=mdyahhya", "_blank"),
+            "open whatsapp": () => window.open("https://wa.me/919307426215", "_blank"),
+            "email me": () => window.open("mailto:mdyahyamundewadi@gmail.com", "_blank"),
+            "open youtube": () => window.open("youtube://", "_blank"),
+            "call talha": () => window.open("tel:+919860750715", "_blank"),
+            "open insta": () => window.open("instagram://user?username=mdyahhya", "_blank"),
+            "open whats app": () => window.open("https://wa.me/919307426215", "_blank"),
+            "send email": () => window.open("mailto:mdyahyamundewadi@gmail.com", "_blank"),
+            "youtube": () => window.open("youtube://", "_blank"),
+            "call": () => window.open("tel:+919860750715", "_blank")
+        };
+
+        let recognition;
+        let isListening = false;
+        let isSpeaking = false;
+
+        // Initialize speech recognition
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            recognition.onstart = () => {
+                isListening = true;
+                document.getElementById('micBtn').classList.add('recording');
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript.toLowerCase();
+                document.getElementById('textInput').value = transcript;
+                processInput(transcript);
+            };
+
+            recognition.onend = () => {
+                isListening = false;
+                document.getElementById('micBtn').classList.remove('recording');
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                isListening = false;
+                document.getElementById('micBtn').classList.remove('recording');
+                showToast('Speech recognition error. Please try again.');
+            };
+        }
+
+        // Event listeners
+        document.getElementById('micBtn').addEventListener('click', () => {
+            if (!recognition) {
+                showToast('Speech recognition not supported');
+                return;
             }
 
-            async initializeAI() {
-                try {
-                    // Initialize TensorFlow.js hand pose detection
-                    console.log('Loading AI hand tracking model...');
-                    await tf.ready();
-                    
-                    // Simulate AI model loading with TensorFlow
-                    this.handModel = {
-                        loaded: true,
-                        detect: (imageData) => {
-                            // Simulate hand detection with computer vision algorithms
-                            return this.simulateHandDetection(imageData);
-                        }
-                    };
-                    
-                    console.log('AI model loaded successfully');
-                } catch (error) {
-                    console.error('AI model loading failed:', error);
-                    this.handModel = { loaded: false };
+            if (isListening) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        });
+
+        document.getElementById('sendBtn').addEventListener('click', () => {
+            const input = document.getElementById('textInput').value.trim();
+            if (input) {
+                processInput(input);
+            }
+        });
+
+        document.getElementById('textInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const input = e.target.value.trim();
+                if (input) {
+                    processInput(input);
                 }
             }
+        });
 
-            simulateHandDetection(imageData) {
-                // Advanced hand detection simulation using image processing concepts
-                const detection = {
-                    hands: [],
-                    confidence: Math.random()
-                };
-
-                if (Math.random() > 0.3) { // Simulate hand detection
-                    const hand = {
-                        landmarks: [],
-                        boundingBox: {
-                            x: Math.random() * this.canvas.width,
-                            y: Math.random() * this.canvas.height,
-                            width: 100 + Math.random() * 50,
-                            height: 120 + Math.random() * 60
-                        },
-                        handedness: Math.random() > 0.5 ? 'Right' : 'Left',
-                        confidence: 0.8 + Math.random() * 0.2
-                    };
-
-                    // Generate realistic hand landmarks
-                    for (let i = 0; i < 21; i++) {
-                        hand.landmarks.push({
-                            x: hand.boundingBox.x + Math.random() * hand.boundingBox.width,
-                            y: hand.boundingBox.y + Math.random() * hand.boundingBox.height,
-                            z: Math.random() * 0.1
-                        });
-                    }
-
-                    detection.hands.push(hand);
-                }
-
-                return detection;
-            }
-
-            async initializeCamera() {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({
-                        video: { 
-                            width: { ideal: 1280 },
-                            height: { ideal: 720 },
-                            facingMode: 'user'
-                        }
-                    });
-                    
-                    this.video.srcObject = stream;
-                    
-                    this.video.addEventListener('loadedmetadata', () => {
-                        this.canvas.width = this.video.videoWidth;
-                        this.canvas.height = this.video.videoHeight;
-                        this.canvas.style.width = '100%';
-                        this.canvas.style.height = '100%';
-                    });
-
-                } catch (error) {
-                    console.error('Camera access failed:', error);
-                    alert('Camera access is required for this game. Please allow camera permissions.');
-                }
-            }
-
-            setupEventListeners() {
-                // Mouse/touch fallback for testing
-                this.canvas.addEventListener('mousemove', (e) => {
-                    if (!this.gameStarted) return;
-                    const rect = this.canvas.getBoundingClientRect();
-                    this.updateHandPosition(
-                        (e.clientX - rect.left) * (this.canvas.width / rect.width),
-                        (e.clientY - rect.top) * (this.canvas.height / rect.height)
-                    );
-                });
-
-                this.canvas.addEventListener('touchmove', (e) => {
-                    if (!this.gameStarted) return;
-                    e.preventDefault();
-                    const rect = this.canvas.getBoundingClientRect();
-                    const touch = e.touches[0];
-                    this.updateHandPosition(
-                        (touch.clientX - rect.left) * (this.canvas.width / rect.width),
-                        (touch.clientY - rect.top) * (this.canvas.height / rect.height)
-                    );
-                });
-
-                this.canvas.addEventListener('mousedown', () => {
-                    if (!this.gameStarted) return;
-                    this.selectNearestBlock();
-                });
-
-                this.canvas.addEventListener('mouseup', () => {
-                    if (!this.gameStarted) return;
-                    this.releaseBlock();
-                });
-            }
-
-            updateHandPosition(x, y) {
-                this.handPosition.x = x;
-                this.handPosition.y = y;
-                this.isHandDetected = true;
-
-                // Update visual hand tracker
-                const rect = this.canvas.getBoundingClientRect();
-                this.handTracker.style.left = (x / this.canvas.width) * rect.width + 'px';
-                this.handTracker.style.top = (y / this.canvas.height) * rect.height + 'px';
-                this.handTracker.style.opacity = '1';
-
-                // Create particle effects
-                this.createParticles(x, y);
-
-                // Handle block interaction
-                if (this.selectedBlock) {
-                    this.moveSelectedBlock(x, y);
-                } else {
-                    this.selectNearestBlock();
-                }
-            }
-
-            selectNearestBlock() {
-                let nearestBlock = null;
-                let minDistance = Infinity;
-
-                this.blocks.forEach(block => {
-                    const distance = Math.sqrt(
-                        Math.pow(block.x + block.width/2 - this.handPosition.x, 2) +
-                        Math.pow(block.y + block.height/2 - this.handPosition.y, 2)
-                    );
-
-                    if (distance < 80 && distance < minDistance) {
-                        minDistance = distance;
-                        nearestBlock = block;
-                    }
-                });
-
-                if (nearestBlock && nearestBlock !== this.selectedBlock) {
-                    this.selectedBlock = nearestBlock;
-                    this.selectedBlock.selected = true;
-                    gsap.to(this.selectedBlock, {
-                        duration: 0.2,
-                        scale: 1.1,
-                        ease: "power2.out"
-                    });
-                }
-            }
-
-            moveSelectedBlock(x, y) {
-                if (this.selectedBlock) {
-                    this.selectedBlock.x = x - this.selectedBlock.width / 2;
-                    this.selectedBlock.y = y - this.selectedBlock.height / 2;
-                    
-                    // Check for target zone collision
-                    this.checkTargetCollision();
-                }
-            }
-
-            releaseBlock() {
-                if (this.selectedBlock) {
-                    this.selectedBlock.selected = false;
-                    gsap.to(this.selectedBlock, {
-                        duration: 0.2,
-                        scale: 1,
-                        ease: "power2.out"
-                    });
-                    this.selectedBlock = null;
-                }
-            }
-
-            checkTargetCollision() {
-                if (!this.selectedBlock) return;
-
-                this.targetZones.forEach(zone => {
-                    if (this.isColliding(this.selectedBlock, zone) && 
-                        this.selectedBlock.color === zone.color && 
-                        !this.selectedBlock.matched) {
-                        
-                        this.selectedBlock.matched = true;
-                        this.selectedBlock.x = zone.x + 10;
-                        this.selectedBlock.y = zone.y + 10;
-                        
-                        this.score++;
-                        this.updateUI();
-                        this.createSuccessEffect(zone.x + zone.width/2, zone.y + zone.height/2);
-                        
-                        if (this.score >= this.targetScore) {
-                            this.completeLevel();
-                        }
-                    }
-                });
-            }
-
-            isColliding(rect1, rect2) {
-                return rect1.x < rect2.x + rect2.width &&
-                       rect1.x + rect1.width > rect2.x &&
-                       rect1.y < rect2.y + rect2.height &&
-                       rect1.y + rect1.height > rect2.y;
-            }
-
-            createSuccessEffect(x, y) {
-                // Particle explosion effect
-                for (let i = 0; i < 15; i++) {
+        function processInput(input) {
+            const inputLower = input.toLowerCase();
+            
+            // Add user message to chat
+            addMessage(input, true);
+            
+            // Clear input
+            document.getElementById('textInput').value = '';
+            
+            // Check for app commands first
+            if (appCommands[inputLower]) {
+                const confirmMessage = `Opening ${inputLower.replace('open ', '').replace('call ', '').replace('email', 'email app')}...`;
+                addMessage(confirmMessage, false);
+                speakResponse(confirmMessage, () => {
                     setTimeout(() => {
-                        this.createSuccessParticle(x, y);
-                    }, i * 50);
-                }
-
-                // Screen flash effect
-                gsap.to(this.canvas, {
-                    duration: 0.1,
-                    opacity: 0.8,
-                    yoyo: true,
-                    repeat: 1
+                        appCommands[inputLower]();
+                    }, 1000);
                 });
+                return;
             }
-
-            createSuccessParticle(x, y) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = (x / this.canvas.width) * this.canvas.offsetWidth + 'px';
-                particle.style.top = (y / this.canvas.height) * this.canvas.offsetHeight + 'px';
-                
-                document.querySelector('.camera-container').appendChild(particle);
-
-                gsap.to(particle, {
-                    duration: 1,
-                    x: (Math.random() - 0.5) * 200,
-                    y: (Math.random() - 0.5) * 200,
-                    opacity: 0,
-                    scale: 0,
-                    ease: "power2.out",
-                    onComplete: () => particle.remove()
-                });
-            }
-
-            createParticles(x, y) {
-                if (Math.random() > 0.7) {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    particle.style.left = (x / this.canvas.width) * this.canvas.offsetWidth + 'px';
-                    particle.style.top = (y / this.canvas.height) * this.canvas.offsetHeight + 'px';
-                    particle.style.width = '2px';
-                    particle.style.height = '2px';
-                    
-                    document.querySelector('.camera-container').appendChild(particle);
-
-                    gsap.to(particle, {
-                        duration: 0.5,
-                        y: -30,
-                        opacity: 0,
-                        ease: "power2.out",
-                        onComplete: () => particle.remove()
-                    });
+            
+            // Check for Q&A pairs
+            let response = qaPairs[inputLower];
+            
+            if (!response) {
+                // Try partial matching
+                for (let key in qaPairs) {
+                    if (inputLower.includes(key) || key.includes(inputLower)) {
+                        response = qaPairs[key];
+                        break;
+                    }
                 }
             }
+            
+            if (!response) {
+                response = "I don't understand that yet.";
+            }
+            
+            // Add response with typing effect
+            setTimeout(() => {
+                addMessage(response, false, true);
+                speakResponse(response);
+            }, 500);
+        }
 
-            completeLevel() {
-                const successAnim = document.getElementById('successAnimation');
-                successAnim.style.opacity = '1';
+        function addMessage(text, isUser, useTypewriter = false) {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${isUser ? 'user-message' : 'assistant-message'}`;
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message';
+            
+            if (useTypewriter && !isUser) {
+                messageContent.className += ' typewriter';
+                messageContent.style.width = '0';
+                messageContent.textContent = text;
                 
-                gsap.to(successAnim, {
-                    duration: 0.5,
-                    scale: 1.2,
-                    ease: "back.out(1.7)"
-                });
-
+                // Animate typing effect
                 setTimeout(() => {
-                    gsap.to(successAnim, {
-                        duration: 0.3,
-                        opacity: 0,
-                        scale: 1,
-                        onComplete: () => {
-                            if (this.currentLevel < 5) {
-                                this.nextLevel();
-                            } else {
-                                this.gameComplete();
-                            }
-                        }
-                    });
+                    messageContent.style.width = 'auto';
+                    messageContent.style.whiteSpace = 'normal';
+                    messageContent.classList.remove('typewriter');
                 }, 2000);
+            } else {
+                messageContent.textContent = text;
             }
+            
+            messageDiv.appendChild(messageContent);
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
 
-            nextLevel() {
-                this.currentLevel++;
-                this.score = 0;
-                this.selectedBlock = null;
-                this.initializeLevel();
-                this.updateUI();
-            }
-
-            gameComplete() {
-                const successAnim = document.getElementById('successAnimation');
-                successAnim.textContent = '🎉 Game Complete! 🎉';
-                successAnim.style.opacity = '1';
+        function speakResponse(text, callback) {
+            if ('speechSynthesis' in window && !isSpeaking) {
+                isSpeaking = true;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.9;
+                utterance.pitch = 1.1;
+                utterance.volume = 0.8;
                 
-                setTimeout(() => {
-                    this.resetGame();
-                }, 3000);
-            }
-
-            resetGame() {
-                this.currentLevel = 1;
-                this.score = 0;
-                this.gameStarted = false;
-                document.getElementById('startScreen').style.display = 'flex';
-                this.clearLevel();
-            }
-
-            initializeLevel() {
-                this.clearLevel();
-                const config = this.levelConfigs[this.currentLevel - 1];
-                this.targetScore = config.target;
-
-                // Create blocks
-                for (let i = 0; i < config.blocks; i++) {
-                    const block = {
-                        x: Math.random() * (this.canvas.width - 80),
-                        y: Math.random() * (this.canvas.height - 80),
-                        width: 60,
-                        height: 60,
-                        color: config.colors[i],
-                        matched: false,
-                        selected: false,
-                        scale: 1
-                    };
-                    this.blocks.push(block);
-                }
-
-                // Create target zones
-                for (let i = 0; i < config.blocks; i++) {
-                    const zone = {
-                        x: 50 + (i * 120),
-                        y: this.canvas.height - 150,
-                        width: 80,
-                        height: 80,
-                        color: config.colors[i]
-                    };
-                    this.targetZones.push(zone);
-                }
-            }
-
-            clearLevel() {
-                this.blocks = [];
-                this.targetZones = [];
-                this.selectedBlock = null;
-            }
-
-            updateUI() {
-                document.getElementById('currentLevel').textContent = this.currentLevel;
-                document.getElementById('score').textContent = this.score;
-                document.getElementById('target').textContent = this.targetScore;
+                // Show voice visualizer
+                document.getElementById('voiceVisualizer').classList.add('active');
                 
-                const progress = (this.score / this.targetScore) * 100;
-                document.getElementById('progressFill').style.width = progress + '%';
-            }
-
-            render() {
-                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-                if (!this.gameStarted) return;
-
-                // Render target zones
-                this.targetZones.forEach(zone => {
-                    this.ctx.fillStyle = zone.color;
-                    this.ctx.globalAlpha = 0.3;
-                    this.ctx.fillRect(zone.x, zone.y, zone.width, zone.height);
-                    
-                    this.ctx.globalAlpha = 0.8;
-                    this.ctx.strokeStyle = zone.color;
-                    this.ctx.lineWidth = 3;
-                    this.ctx.setLineDash([10, 5]);
-                    this.ctx.strokeRect(zone.x, zone.y, zone.width, zone.height);
-                    this.ctx.setLineDash([]);
-                    
-                    this.ctx.globalAlpha = 1;
-                    this.ctx.fillStyle = 'white';
-                    this.ctx.font = '12px Arial';
-                    this.ctx.textAlign = 'center';
-                    this.ctx.fillText('TARGET', zone.x + zone.width/2, zone.y + zone.height/2);
-                });
-
-                // Render blocks
-                this.blocks.forEach(block => {
-                    this.ctx.save();
-                    
-                    if (block.selected) {
-                        this.ctx.shadowColor = block.color;
-                        this.ctx.shadowBlur = 20;
-                    }
-                    
-                    const scale = block.scale || 1;
-                    this.ctx.translate(block.x + block.width/2, block.y + block.height/2);
-                    this.ctx.scale(scale, scale);
-                    this.ctx.translate(-block.width/2, -block.height/2);
-                    
-                    // Gradient fill
-                    const gradient = this.ctx.createLinearGradient(0, 0, block.width, block.height);
-                    gradient.addColorStop(0, block.color);
-                    gradient.addColorStop(1, this.adjustColor(block.color, -20));
-                    
-                    this.ctx.fillStyle = gradient;
-                    this.ctx.fillRect(0, 0, block.width, block.height);
-                    
-                    // Border
-                    this.ctx.strokeStyle = 'white';
-                    this.ctx.lineWidth = 2;
-                    this.ctx.strokeRect(0, 0, block.width, block.height);
-                    
-                    // Text
-                    this.ctx.fillStyle = 'white';
-                    this.ctx.font = 'bold 14px Arial';
-                    this.ctx.textAlign = 'center';
-                    this.ctx.fillText('BLOCK', block.width/2, block.height/2 + 5);
-                    
-                    this.ctx.restore();
-                });
-
-                // Render hand tracking indicator
-                if (this.isHandDetected) {
-                    this.ctx.beginPath();
-                    this.ctx.arc(this.handPosition.x, this.handPosition.y, 15, 0, 2 * Math.PI);
-                    this.ctx.fillStyle = 'rgba(255, 0, 128, 0.6)';
-                    this.ctx.fill();
-                    this.ctx.strokeStyle = 'white';
-                    this.ctx.lineWidth = 2;
-                    this.ctx.stroke();
-                }
-            }
-
-            adjustColor(color, amount) {
-                const num = parseInt(color.replace("#", ""), 16);
-                const amt = Math.round(2.55 * amount);
-                const R = (num >> 16) + amt;
-                const B = (num >> 8 & 0x00FF) + amt;
-                const G = (num & 0x0000FF) + amt;
-                return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 + 
-                    (B < 255 ? B < 1 ? 0 : B : 255) * 0x100 + 
-                    (G < 255 ? G < 1 ? 0 : G : 255)).toString(16).slice(1);
-            }
-
-            async processAIDetection() {
-                if (!this.handModel || !this.handModel.loaded || !this.gameStarted) return;
-
-                try {
-                    // Create image data from video for AI processing
-                    const tempCanvas = document.createElement('canvas');
-                    const tempCtx = tempCanvas.getContext('2d');
-                    tempCanvas.width = this.video.videoWidth;
-                    tempCanvas.height = this.video.videoHeight;
-                    tempCtx.drawImage(this.video, 0, 0);
-                    
-                    const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-                    
-                    // AI hand detection
-                    const detection = await this.handModel.detect(imageData);
-                    
-                    if (detection.hands && detection.hands.length > 0) {
-                        const hand = detection.hands[0];
-                        const centerX = hand.boundingBox.x + hand.boundingBox.width / 2;
-                        const centerY = hand.boundingBox.y + hand.boundingBox.height / 2;
-                        
-                        // Convert to canvas coordinates
-                        const canvasX = (centerX / this.video.videoWidth) * this.canvas.width;
-                        const canvasY = (centerY / this.video.videoHeight) * this.canvas.height;
-                        
-                        this.updateHandPosition(canvasX, canvasY);
-                    } else {
-                        this.isHandDetected = false;
-                        this.handTracker.style.opacity = '0';
-                    }
-                } catch (error) {
-                    console.error('AI detection error:', error);
-                }
-            }
-
-            gameLoop() {
-                this.render();
-                this.processAIDetection();
-                requestAnimationFrame(() => this.gameLoop());
-            }
-
-            start() {
-                this.gameStarted = true;
-                this.initializeLevel();
-                this.updateUI();
-                document.getElementById('startScreen').style.display = 'none';
-                this.gameLoop();
+                utterance.onend = () => {
+                    isSpeaking = false;
+                    document.getElementById('voiceVisualizer').classList.remove('active');
+                    if (callback) callback();
+                };
+                
+                utterance.onerror = () => {
+                    isSpeaking = false;
+                    document.getElementById('voiceVisualizer').classList.remove('active');
+                    if (callback) callback();
+                };
+                
+                speechSynthesis.speak(utterance);
+            } else if (callback) {
+                callback();
             }
         }
 
-        let game;
-
-        function startGame() {
-            if (!game) {
-                game = new AIBlocksGame();
-            }
-            game.start();
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
         }
 
-        // Initialize game when page loads
-        window.addEventListener('load', () => {
-            game = new AIBlocksGame();
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Auto-scroll to bottom
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         });
     </script>
 </body>
