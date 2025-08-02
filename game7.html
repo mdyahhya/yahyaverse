@@ -507,61 +507,55 @@
                 isSpeaking = true;
                 const utterance = new SpeechSynthesisUtterance(text);
                 
-                // Configure for natural male voice
-                utterance.rate = 1.0; // Normal speaking speed
-                utterance.pitch = 0.8; // Natural male pitch - not too low, not too high
-                utterance.volume = 0.9; // Comfortable volume
-                
-                // Try to find the most natural male voice
+                // Find specifically male voices first
                 const voices = speechSynthesis.getVoices();
                 let maleVoice = null;
                 
-                // Priority order for NATURAL male voices
-                const naturalMaleVoices = [
-                    'alex', // Usually very natural sounding
-                    'microsoft david',
-                    'google us english male',
-                    'daniel',
-                    'microsoft mark',
-                    'tom',
-                    'aaron',
-                    'paul',
-                    'david',
-                    'mark'
-                ];
+                console.log('All available voices:', voices.map(v => `${v.name} (${v.lang}) - ${v.gender || 'unknown'}`));
                 
-                // Look for natural-sounding male voices
-                for (let maleName of naturalMaleVoices) {
-                    for (let voice of voices) {
-                        const voiceName = voice.name.toLowerCase();
-                        if (voiceName.includes(maleName) && 
-                            !voiceName.includes('female') &&
-                            !voiceName.includes('woman')) {
-                            maleVoice = voice;
-                            break;
-                        }
+                // Look for voices with "male" explicitly in the name
+                for (let voice of voices) {
+                    const voiceName = voice.name.toLowerCase();
+                    if (voiceName.includes('male') && voice.lang.startsWith('en')) {
+                        maleVoice = voice;
+                        console.log('Found explicit male voice:', voice.name);
+                        break;
                     }
-                    if (maleVoice) break;
                 }
                 
-                // Avoid female voices completely
+                // If no explicit male voice, look for known male voice names
                 if (!maleVoice) {
-                    const femaleNames = ['samantha', 'susan', 'victoria', 'karen', 'moira', 'zira', 'cortana', 'siri', 'female', 'woman', 'girl', 'lady', 'helena', 'anna', 'emma'];
+                    const definiteMaleVoices = ['alex', 'daniel', 'tom', 'aaron', 'paul', 'david', 'mark', 'james', 'john', 'mike', 'steve'];
+                    for (let maleName of definiteMaleVoices) {
+                        for (let voice of voices) {
+                            const voiceName = voice.name.toLowerCase();
+                            if (voiceName === maleName || voiceName.includes(`microsoft ${maleName}`) || voiceName.includes(`google ${maleName}`)) {
+                                maleVoice = voice;
+                                console.log('Found male voice by name:', voice.name);
+                                break;
+                            }
+                        }
+                        if (maleVoice) break;
+                    }
+                }
+                
+                // Last resort - find any voice that's NOT female
+                if (!maleVoice) {
+                    const definitelyFemaleVoices = ['samantha', 'susan', 'victoria', 'karen', 'moira', 'zira', 'cortana', 'siri', 'anna', 'emma', 'helena', 'kate', 'sarah', 'mary', 'jane', 'lisa', 'alice', 'female'];
                     for (let voice of voices) {
                         const voiceName = voice.name.toLowerCase();
                         let isFemale = false;
                         
-                        // Check if it's a female voice
-                        for (let femaleName of femaleNames) {
+                        for (let femaleName of definitelyFemaleVoices) {
                             if (voiceName.includes(femaleName)) {
                                 isFemale = true;
                                 break;
                             }
                         }
                         
-                        // Only use if it's English and not female
                         if (!isFemale && voice.lang.startsWith('en')) {
                             maleVoice = voice;
+                            console.log('Using non-female voice:', voice.name);
                             break;
                         }
                     }
@@ -569,15 +563,19 @@
                 
                 if (maleVoice) {
                     utterance.voice = maleVoice;
-                    console.log('Using natural MALE voice:', maleVoice.name);
+                    // Use the voice's natural settings - don't modify pitch
+                    utterance.rate = 1.0;
+                    utterance.pitch = 1.0; // Let the voice use its natural pitch
+                    utterance.volume = 0.9;
+                    console.log('Selected voice:', maleVoice.name, 'Language:', maleVoice.lang);
                 } else {
-                    // Natural male settings if no specific voice found
-                    utterance.pitch = 0.85; // Natural male range
-                    utterance.rate = 0.95;  // Slightly slower for clarity
-                    console.log('Using default voice with natural male settings');
+                    // If still no good voice found, use very specific male settings
+                    utterance.rate = 0.9;
+                    utterance.pitch = 0.7; // Lower but not too low
+                    utterance.volume = 0.9;
+                    console.log('Using default voice with male-oriented settings');
                 }
                 
-                // Clean, natural text delivery
                 utterance.text = text;
                 
                 // Show voice visualizer
