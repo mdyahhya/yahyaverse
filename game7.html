@@ -507,69 +507,79 @@
                 isSpeaking = true;
                 const utterance = new SpeechSynthesisUtterance(text);
                 
-                // Configure for sharp, authoritative AI voice
-                utterance.rate = 1.1; // Faster for sharp, efficient delivery
-                utterance.pitch = 1.3; // Higher pitch for harder, more authoritative tone
+                // Configure for deep, manly AI voice
+                utterance.rate = 1.0; // Normal-fast speed for efficiency
+                utterance.pitch = 0.4; // VERY LOW pitch for deep masculine voice
                 utterance.volume = 1.0; // Full volume for commanding presence
                 
-                // Try to find the most AI-like male voice
+                // Try to find the most masculine male voice
                 const voices = speechSynthesis.getVoices();
-                let aiVoice = null;
+                let maleVoice = null;
                 
-                // Priority order for AI-like voices
-                const preferredVoices = [
+                // Priority order for MALE voices only
+                const maleVoiceNames = [
                     'microsoft david',
-                    'google us english male',
                     'alex',
                     'daniel',
                     'microsoft mark',
+                    'google us english male',
                     'google uk english male',
                     'tom',
                     'aaron',
                     'paul',
-                    'microsoft zira', // Sometimes sounds more robotic
-                    'david'
+                    'david',
+                    'mark',
+                    'male'
                 ];
                 
-                // Look for AI-like voices in order of preference
-                for (let preferred of preferredVoices) {
+                // Look for explicitly male voices first
+                for (let maleName of maleVoiceNames) {
                     for (let voice of voices) {
                         const voiceName = voice.name.toLowerCase();
-                        if (voiceName.includes(preferred)) {
-                            aiVoice = voice;
+                        if (voiceName.includes(maleName) && 
+                            !voiceName.includes('female') &&
+                            !voiceName.includes('woman')) {
+                            maleVoice = voice;
                             break;
                         }
                     }
-                    if (aiVoice) break;
+                    if (maleVoice) break;
                 }
                 
-                // Fallback: find any English male voice
-                if (!aiVoice) {
+                // Extra filtering to avoid any female voices
+                if (!maleVoice) {
+                    const femaleNames = ['samantha', 'susan', 'victoria', 'karen', 'moira', 'zira', 'cortana', 'siri', 'female', 'woman', 'girl', 'lady'];
                     for (let voice of voices) {
                         const voiceName = voice.name.toLowerCase();
-                        if (voice.lang.startsWith('en') && 
-                            !voiceName.includes('female') && 
-                            !voiceName.includes('samantha') && 
-                            !voiceName.includes('susan') && 
-                            !voiceName.includes('victoria') &&
-                            !voiceName.includes('karen') &&
-                            !voiceName.includes('moira')) {
-                            aiVoice = voice;
+                        let isFemale = false;
+                        
+                        // Check if it's a female voice
+                        for (let femaleName of femaleNames) {
+                            if (voiceName.includes(femaleName)) {
+                                isFemale = true;
+                                break;
+                            }
+                        }
+                        
+                        // Only use if it's English and not female
+                        if (!isFemale && voice.lang.startsWith('en')) {
+                            maleVoice = voice;
                             break;
                         }
                     }
                 }
                 
-                if (aiVoice) {
-                    utterance.voice = aiVoice;
-                    console.log('Using AI voice:', aiVoice.name);
+                if (maleVoice) {
+                    utterance.voice = maleVoice;
+                    console.log('Using MALE voice:', maleVoice.name);
                 } else {
-                    // Ultimate fallback with sharp, authoritative settings
-                    utterance.pitch = 1.4; // Higher for sharp, hard tone
-                    utterance.rate = 1.0;  // Normal speed for clarity
+                    // Force masculine settings if no male voice found
+                    utterance.pitch = 0.3; // EXTREMELY low for deep male voice
+                    utterance.rate = 0.9;  // Slightly slower for authority
+                    console.log('Using default voice with DEEP masculine settings');
                 }
                 
-                // Clean text delivery without extra pauses
+                // Clean text delivery
                 utterance.text = text;
                 
                 // Show voice visualizer
@@ -622,4 +632,4 @@
         });
     </script>
 </body>
-</html>
+    </html>
