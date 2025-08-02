@@ -319,10 +319,10 @@
 
     <script>
         const qaPairs = {
-            "hi": "Hello! How can I assist you today?",
+            "hi": "Hello Boss! How can I assist you today?",
             "hello": "Hello! How can I assist you today?",
             "how are you": "I am fully operational and here to help.",
-            "who made you": "I was developed by a brilliant coder.",
+            "who made you": "I was developed by Mister Yahya.",
             "what's your name": "I'm JARVIS, your personal assistant.",
             "tell me a joke": "Why do programmers prefer dark mode? Because light attracts bugs!",
             "what can you do": "I can talk, respond, simulate futuristic AI behavior, and help you open apps.",
@@ -507,55 +507,63 @@
                 isSpeaking = true;
                 const utterance = new SpeechSynthesisUtterance(text);
                 
-                // Find specifically male voices first
+                // Configure for deep, manly AI voice
+                utterance.rate = 1.0; // Normal-fast speed for efficiency
+                utterance.pitch = 0.4; // VERY LOW pitch for deep masculine voice
+                utterance.volume = 1.0; // Full volume for commanding presence
+                
+                // Try to find the most masculine male voice
                 const voices = speechSynthesis.getVoices();
                 let maleVoice = null;
                 
-                console.log('All available voices:', voices.map(v => `${v.name} (${v.lang}) - ${v.gender || 'unknown'}`));
+                // Priority order for MALE voices only
+                const maleVoiceNames = [
+                    'microsoft david',
+                    'alex',
+                    'daniel',
+                    'microsoft mark',
+                    'google us english male',
+                    'google uk english male',
+                    'tom',
+                    'aaron',
+                    'paul',
+                    'david',
+                    'mark',
+                    'male'
+                ];
                 
-                // Look for voices with "male" explicitly in the name
-                for (let voice of voices) {
-                    const voiceName = voice.name.toLowerCase();
-                    if (voiceName.includes('male') && voice.lang.startsWith('en')) {
-                        maleVoice = voice;
-                        console.log('Found explicit male voice:', voice.name);
-                        break;
-                    }
-                }
-                
-                // If no explicit male voice, look for known male voice names
-                if (!maleVoice) {
-                    const definiteMaleVoices = ['alex', 'daniel', 'tom', 'aaron', 'paul', 'david', 'mark', 'james', 'john', 'mike', 'steve'];
-                    for (let maleName of definiteMaleVoices) {
-                        for (let voice of voices) {
-                            const voiceName = voice.name.toLowerCase();
-                            if (voiceName === maleName || voiceName.includes(`microsoft ${maleName}`) || voiceName.includes(`google ${maleName}`)) {
-                                maleVoice = voice;
-                                console.log('Found male voice by name:', voice.name);
-                                break;
-                            }
+                // Look for explicitly male voices first
+                for (let maleName of maleVoiceNames) {
+                    for (let voice of voices) {
+                        const voiceName = voice.name.toLowerCase();
+                        if (voiceName.includes(maleName) && 
+                            !voiceName.includes('female') &&
+                            !voiceName.includes('woman')) {
+                            maleVoice = voice;
+                            break;
                         }
-                        if (maleVoice) break;
                     }
+                    if (maleVoice) break;
                 }
                 
-                // Last resort - find any voice that's NOT female
+                // Extra filtering to avoid any female voices
                 if (!maleVoice) {
-                    const definitelyFemaleVoices = ['samantha', 'susan', 'victoria', 'karen', 'moira', 'zira', 'cortana', 'siri', 'anna', 'emma', 'helena', 'kate', 'sarah', 'mary', 'jane', 'lisa', 'alice', 'female'];
+                    const femaleNames = ['samantha', 'susan', 'victoria', 'karen', 'moira', 'zira', 'cortana', 'siri', 'female', 'woman', 'girl', 'lady'];
                     for (let voice of voices) {
                         const voiceName = voice.name.toLowerCase();
                         let isFemale = false;
                         
-                        for (let femaleName of definitelyFemaleVoices) {
+                        // Check if it's a female voice
+                        for (let femaleName of femaleNames) {
                             if (voiceName.includes(femaleName)) {
                                 isFemale = true;
                                 break;
                             }
                         }
                         
+                        // Only use if it's English and not female
                         if (!isFemale && voice.lang.startsWith('en')) {
                             maleVoice = voice;
-                            console.log('Using non-female voice:', voice.name);
                             break;
                         }
                     }
@@ -563,19 +571,15 @@
                 
                 if (maleVoice) {
                     utterance.voice = maleVoice;
-                    // Use the voice's natural settings - don't modify pitch
-                    utterance.rate = 1.0;
-                    utterance.pitch = 1.0; // Let the voice use its natural pitch
-                    utterance.volume = 0.9;
-                    console.log('Selected voice:', maleVoice.name, 'Language:', maleVoice.lang);
+                    console.log('Using MALE voice:', maleVoice.name);
                 } else {
-                    // If still no good voice found, use very specific male settings
-                    utterance.rate = 0.9;
-                    utterance.pitch = 0.7; // Lower but not too low
-                    utterance.volume = 0.9;
-                    console.log('Using default voice with male-oriented settings');
+                    // Force masculine settings if no male voice found
+                    utterance.pitch = 0.3; // EXTREMELY low for deep male voice
+                    utterance.rate = 0.9;  // Slightly slower for authority
+                    console.log('Using default voice with DEEP masculine settings');
                 }
                 
+                // Clean text delivery
                 utterance.text = text;
                 
                 // Show voice visualizer
