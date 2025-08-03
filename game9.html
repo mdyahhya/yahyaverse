@@ -3,7 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Interview Coach</title>
+    <title>PDF Converter by Yahya</title>
+    <meta name="description" content="Fast. Powerful. Private. Convert images to PDF instantly">
+    <meta name="theme-color" content="#667eea">
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiUERGIENvbnZlcnRlciBieSBZYWh5YSIsInNob3J0X25hbWUiOiJQREYgQ29udmVydGVyIiwic3RhcnRfdXJsIjoiLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMwZjEwMjMiLCJ0aGVtZV9jb2xvciI6IiM2NjdlZWEiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M00zUnZjbWN2TWpBd01DOXpkbWNpSUhacFpYZENiM2c5SWpBZ01DQXlOVFlnTWpVMklpQm1hV3hzUFNJalptWm1JaUI0Yld4dWN6cHNhVzVyUFNKb2RIUndPaTh2ZDNkM0xuY3pkRzl5Wnk4eE9UazVMM2hzYVc1ckppQjRiV3h1Y3owelBTSm9kSFJ3T2k4dmQzZDNMbmN6TG05eVp5OHlNREF3TDNOMlp5SStQR1JsWm5NK1BHeHBibVZoY2tkeVlXUnBaVzUwSUdsa1BTSm5jbUZrTVNJZ2VERTlJakFsSUhreE9TSWdlREk5SWpFd01DVXRJSGt5T1NKdlptWnpaWFE5SWpGbk1DSWdaM0poWkdsbGJuUlVjbUZ1YzJadmNtMDlJbkp2ZEdGMFpTZ3ROekE2TWprNklERjVJSGxoZUdselEyTmhiaWtpTHo0OEwyUmxabk0rUEhKbFkzUWdlRDBpTkRRaUlIazlJalF3SWlCM2FXUjBhRDBpTVRZNElpQm9aV2xuYUhROUlqRTJJaUJ5ZUQwaU9DSWdabWxzYkQwaWRYSnNLQ05uY21Ga01Ta2lMejQ4Y21WamRDQjRQU0k0TnlJZ2VUMGJOQ0lpSUhkcFpIUm9QU0k0TWlJZ2FHVnBaMmgwUFNJNElpQnllRDBpTkNJZ1ptbHNiRDBpZFhKc0tDTm5jbUZrTVNraUx6NDhMM04yWno0PSIsInNpemVzIjoiMjU2eDI1NiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIn1dfQ==">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTYgMjU2IiBmaWxsPSIjZmZmIiB4bWxuczpsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4beGU9Im0zZCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkMSIgeDI9IjAlIiB5MT05IiB4Mj0iMTAwJSIgeTE5IiBvZmZzZXQ9IjFnMCIgZ3JhZGllbnRUcmFuc2Zvcm09InJvdGF0ZSgtNzA6Mjk6IDIgeXlheGlzQ2NhbikiLz48L2RlZnM+PHJlY3QgeD0iNDQiIHk9IjQwIiB3aWR0aD0iMTY4IiBoZWlnaHQ9IjE2IiByeD0iOCIgZmlsbD0idXJsKCNncmFkMSkiLz48cmVjdCB4PSI4NyIgeT0iNCIgd2lkdGg9IjgyIiBoZWlnaHQ9IjgiIHJ4PSI0IiBmaWxsPSJ1cmwoI2dyYWQxKSIvPjwvc3ZnPg==">
+    
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.16/typed.umd.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         * {
             margin: 0;
@@ -12,238 +27,378 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 20px;
-        }
-
-        .container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            width: 100%;
-            max-width: 800px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            animation: slideUp 0.8s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            color: #333;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .header p {
-            color: #666;
-            font-size: 1.1em;
-        }
-
-        .setup-section {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-left: 4px solid #667eea;
-        }
-
-        .setup-section h3 {
-            color: #333;
-            margin-bottom: 15px;
-            display: flex;
             align-items: center;
-            gap: 10px;
+            padding: 0;
+            overflow-x: hidden;
         }
 
-        .setup-section input {
+        .app-container {
+            max-width: 375px;
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
-            margin-bottom: 10px;
-        }
-
-        .setup-section input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .interview-controls {
+            height: 100vh;
+            background: rgba(15, 16, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 0;
+            position: relative;
+            overflow: hidden;
             display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            flex-direction: column;
         }
 
-        .btn {
-            padding: 12px 25px;
+        .app-header {
+            padding: 20px 20px 0;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .app-title {
+            color: #fff;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .app-tagline {
+            color: #a0a9d8;
+            font-size: 14px;
+            margin-bottom: 15px;
+            font-weight: 300;
+        }
+
+        .typewriter {
+            min-height: 20px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+
+        .main-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
             border: none;
-            border-radius: 10px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: #fff;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .upload-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 2px dashed rgba(102, 126, 234, 0.5);
+            padding: 30px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .upload-section.dragover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: #667eea;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .upload-text {
+            color: #fff;
             font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .upload-subtext {
+            color: #a0a9d8;
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            color: #fff;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .upload-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .upload-btn:hover::before {
+            left: 100%;
+        }
+
+        .image-preview {
+            margin-top: 20px;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .preview-item {
+            position: relative;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 1;
+            cursor: grab;
+            transition: all 0.3s ease;
+        }
+
+        .preview-item:active {
+            cursor: grabbing;
+        }
+
+        .preview-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-item .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 59, 48, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .preview-item .order-number {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            background: rgba(102, 126, 234, 0.9);
+            color: #fff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .settings-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .settings-title {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .btn-primary {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #5a6268;
-            transform: translateY(-2px);
-        }
-
-        .btn-success {
-            background: #28a745;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #218838;
-            transform: translateY(-2px);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
-        .chat-container {
-            height: 400px;
-            border: 2px solid #e0e0e0;
-            border-radius: 15px;
-            overflow-y: auto;
-            padding: 20px;
-            background: white;
-            margin-bottom: 20px;
-            scroll-behavior: smooth;
-        }
-
-        .message {
+        .setting-group {
             margin-bottom: 15px;
-            animation: fadeIn 0.5s ease-out;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .setting-label {
+            color: #a0a9d8;
+            font-size: 12px;
+            margin-bottom: 5px;
+            display: block;
         }
 
-        .message.ai {
-            text-align: left;
+        .setting-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            color: #fff;
+            font-size: 14px;
         }
 
-        .message.user {
-            text-align: right;
-        }
-
-        .message-content {
-            display: inline-block;
-            padding: 12px 18px;
-            border-radius: 18px;
-            max-width: 80%;
-            word-wrap: break-word;
-            position: relative;
-        }
-
-        .message.ai .message-content {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .message.user .message-content {
-            background: #f1f3f4;
-            color: #333;
-        }
-
-        .input-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .input-container input {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 25px;
-            font-size: 16px;
-        }
-
-        .input-container input:focus {
+        .setting-input:focus {
             outline: none;
             border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
         }
 
-        .score-display {
-            background: linear-gradient(45deg, #28a745, #20c997);
-            color: white;
-            padding: 15px;
-            border-radius: 15px;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 1.2em;
-            font-weight: 600;
-        }
-
-        .loading {
+        .setting-row {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            color: #667eea;
+            gap: 10px;
         }
 
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid #667eea;
+        .setting-row .setting-input {
+            flex: 1;
+        }
+
+        .convert-section {
+            padding: 20px 0;
+        }
+
+        .convert-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 16px;
+            padding: 18px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .convert-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .convert-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .convert-btn .btn-text {
+            position: relative;
+            z-index: 2;
+        }
+
+        .convert-btn .btn-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particle-float 2s infinite ease-in-out;
+        }
+
+        @keyframes particle-float {
+            0% {
+                opacity: 0;
+                transform: translateY(100%) scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(-50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100%) scale(0);
+            }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 16, 35, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .loading-content {
+            text-align: center;
+            color: #fff;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(102, 126, 234, 0.3);
+            border-top: 3px solid #667eea;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-right: 10px;
+            margin-bottom: 20px;
         }
 
         @keyframes spin {
@@ -251,532 +406,736 @@
             100% { transform: rotate(360deg); }
         }
 
-        .status {
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .status.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .status.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .status.info {
-            background: #cce7ff;
-            color: #004085;
-            border: 1px solid #b3d7ff;
-        }
-
-        .feedback-section {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .feedback-section h4 {
-            color: #856404;
+        .loading-text {
+            font-size: 16px;
             margin-bottom: 10px;
         }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-                margin: 10px;
+        .loading-progress {
+            color: #a0a9d8;
+            font-size: 14px;
+        }
+
+        .success-message {
+            background: rgba(52, 199, 89, 0.1);
+            border: 1px solid rgba(52, 199, 89, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+            color: #34c759;
+            text-align: center;
+            display: none;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .share-btn {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+
+        .share-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .light-theme {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .light-theme .app-container {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+        }
+
+        .light-theme .app-title {
+            color: #333;
+            text-shadow: 0 0 20px rgba(240, 147, 251, 0.5);
+        }
+
+        .light-theme .app-tagline {
+            color: #666;
+        }
+
+        .light-theme .upload-text,
+        .light-theme .settings-title {
+            color: #333;
+        }
+
+        .light-theme .upload-subtext,
+        .light-theme .setting-label {
+            color: #666;
+        }
+
+        @media (max-width: 375px) {
+            .app-container {
+                border-radius: 0;
             }
             
-            .header h1 {
-                font-size: 2em;
+            .main-content {
+                padding: 15px;
             }
             
-            .interview-controls {
-                flex-direction: column;
-            }
-            
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .chat-container {
-                height: 300px;
+            .upload-section {
+                padding: 20px 15px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🧑‍🎓 AI Interview Coach</h1>
-            <p>Practice interviews with AI feedback and scoring</p>
-        </div>
-
-        <div class="setup-section">
-            <h3>🔑 API Setup</h3>
-            <input type="password" id="apiKeyInput" placeholder="Enter your Hugging Face API key (hf_...)" />
-            <button class="btn btn-primary" id="testApiBtn">Test API Connection</button>
-            <div class="status info" id="apiStatus" style="display: none;">
-                Ready to test connection...
+    <div class="app-container">
+        <div class="app-header">
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+            <h1 class="app-title">PDF Converter by Yahya</h1>
+            <div class="app-tagline">
+                <span class="typewriter" id="typewriter"></span>
             </div>
         </div>
 
-        <div class="interview-controls">
-            <button class="btn btn-primary" id="startInterview" disabled>
-                🚀 Start Interview
-            </button>
-            <button class="btn btn-secondary" id="endInterview" disabled>
-                ⏹️ End Interview
-            </button>
-            <button class="btn btn-success" id="voiceBtn" disabled>
-                🎤 Voice Input
-            </button>
-        </div>
+        <div class="main-content">
+            <div class="upload-section" id="uploadSection">
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                <div class="upload-text">Drop images here or tap to select</div>
+                <div class="upload-subtext">Supports JPG, PNG, WEBP • Multiple files allowed</div>
+                <input type="file" class="file-input" id="fileInput" accept="image/*" multiple>
+                <button class="upload-btn" id="uploadBtn">
+                    <i class="fas fa-plus"></i> Select Images
+                </button>
+            </div>
 
-        <div class="score-display" id="scoreDisplay" style="display: none;">
-            Score: <span id="currentScore">0</span>/100
-        </div>
+            <div class="image-preview" id="imagePreview" style="display: none;">
+                <div class="preview-grid" id="previewGrid"></div>
+            </div>
 
-        <div class="chat-container" id="chatContainer">
-            <div class="message ai">
-                <div class="message-content">
-                    Welcome to AI Interview Coach! Enter your Hugging Face API key above, test the connection, and start practicing!
+            <div class="settings-section" id="settingsSection" style="display: none;">
+                <div class="settings-title">
+                    <i class="fas fa-cog"></i>
+                    PDF Settings
+                </div>
+                
+                <div class="setting-group">
+                    <label class="setting-label">Document Title</label>
+                    <input type="text" class="setting-input" id="pdfTitle" placeholder="My Document">
+                </div>
+
+                <div class="setting-row">
+                    <div class="setting-group">
+                        <label class="setting-label">Page Size</label>
+                        <select class="setting-input" id="pageSize">
+                            <option value="a4">A4</option>
+                            <option value="letter">Letter</option>
+                            <option value="a3">A3</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                    <div class="setting-group">
+                        <label class="setting-label">Orientation</label>
+                        <select class="setting-input" id="orientation">
+                            <option value="auto">Auto</option>
+                            <option value="portrait">Portrait</option>
+                            <option value="landscape">Landscape</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="setting-row">
+                    <div class="setting-group">
+                        <label class="setting-label">Quality (%)</label>
+                        <input type="range" class="setting-input" id="quality" min="10" max="100" value="85">
+                    </div>
+                    <div class="setting-group">
+                        <label class="setting-label">DPI</label>
+                        <select class="setting-input" id="dpi">
+                            <option value="72">72 DPI</option>
+                            <option value="150">150 DPI</option>
+                            <option value="300" selected>300 DPI</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <label class="setting-label">Password Protection (Optional)</label>
+                    <input type="password" class="setting-input" id="pdfPassword" placeholder="Enter password">
+                </div>
+            </div>
+
+            <div class="convert-section">
+                <button class="convert-btn" id="convertBtn" disabled>
+                    <div class="btn-particles" id="btnParticles"></div>
+                    <span class="btn-text">
+                        <i class="fas fa-magic"></i> Convert to PDF
+                    </span>
+                </button>
+                
+                <div class="success-message" id="successMessage">
+                    <i class="fas fa-check-circle"></i>
+                    PDF created successfully!
+                    <div class="share-buttons">
+                        <button class="share-btn" id="downloadBtn">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                        <button class="share-btn" id="shareBtn">
+                            <i class="fas fa-share"></i> Share
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="input-container">
-            <input type="text" id="userInput" placeholder="Type your answer here..." disabled />
-            <button class="btn btn-primary" id="sendBtn" disabled>Send</button>
-        </div>
-
-        <div class="feedback-section" id="feedbackSection" style="display: none;">
-            <h4>📊 Interview Feedback</h4>
-            <div id="feedbackContent"></div>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Creating PDF...</div>
+            <div class="loading-progress" id="loadingProgress">Processing images...</div>
         </div>
     </div>
 
     <script>
-        class AIInterviewCoach {
+        class PDFConverterApp {
             constructor() {
-                this.apiKey = '';
-                this.isApiConnected = false;
-                this.isInterviewActive = false;
-                this.currentScore = 0;
-                this.questionCount = 0;
-                this.responses = [];
-                this.recognition = null;
-                this.isListening = false;
-                
-                // Multiple models to try (in order of preference)
-                this.models = [
-                    'https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium',
-                    'https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill',
-                    'https://api-inference.huggingface.co/models/microsoft/DialoGPT-small'
-                ];
-                this.currentModelIndex = 0;
-                this.apiUrl = this.models[0];
-                
-                this.initializeElements();
-                this.setupEventListeners();
-                this.setupSpeechRecognition();
+                this.images = [];
+                this.pdfBlob = null;
+                this.isDarkTheme = true;
+                this.init();
             }
 
-            initializeElements() {
-                this.elements = {
-                    apiKeyInput: document.getElementById('apiKeyInput'),
-                    testApiBtn: document.getElementById('testApiBtn'),
-                    apiStatus: document.getElementById('apiStatus'),
-                    startBtn: document.getElementById('startInterview'),
-                    endBtn: document.getElementById('endInterview'),
-                    voiceBtn: document.getElementById('voiceBtn'),
-                    chatContainer: document.getElementById('chatContainer'),
-                    userInput: document.getElementById('userInput'),
-                    sendBtn: document.getElementById('sendBtn'),
-                    scoreDisplay: document.getElementById('scoreDisplay'),
-                    currentScore: document.getElementById('currentScore'),
-                    feedbackSection: document.getElementById('feedbackSection'),
-                    feedbackContent: document.getElementById('feedbackContent')
-                };
+            init() {
+                this.setupEventListeners();
+                this.initTypewriter();
+                this.initAnimations();
+                this.registerServiceWorker();
             }
 
             setupEventListeners() {
-                this.elements.testApiBtn.addEventListener('click', () => this.testApiConnection());
-                this.elements.startBtn.addEventListener('click', () => this.startInterview());
-                this.elements.endBtn.addEventListener('click', () => this.endInterview());
-                this.elements.voiceBtn.addEventListener('click', () => this.toggleVoiceInput());
-                this.elements.sendBtn.addEventListener('click', () => this.sendResponse());
-                this.elements.userInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') this.sendResponse();
+                // File input
+                const fileInput = document.getElementById('fileInput');
+                const uploadBtn = document.getElementById('uploadBtn');
+                const uploadSection = document.getElementById('uploadSection');
+
+                uploadBtn.addEventListener('click', () => fileInput.click());
+                fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
+
+                // Drag and drop
+                uploadSection.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    uploadSection.classList.add('dragover');
                 });
-                this.elements.apiKeyInput.addEventListener('input', () => {
-                    this.apiKey = this.elements.apiKeyInput.value.trim();
+
+                uploadSection.addEventListener('dragleave', () => {
+                    uploadSection.classList.remove('dragover');
+                });
+
+                uploadSection.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    uploadSection.classList.remove('dragover');
+                    this.handleFiles(e.dataTransfer.files);
+                });
+
+                // Convert button
+                document.getElementById('convertBtn').addEventListener('click', () => this.convertToPDF());
+
+                // Theme toggle
+                document.getElementById('themeToggle').addEventListener('click', () => this.toggleTheme());
+
+                // Share buttons
+                document.getElementById('downloadBtn').addEventListener('click', () => this.downloadPDF());
+                document.getElementById('shareBtn').addEventListener('click', () => this.sharePDF());
+            }
+
+            initTypewriter() {
+                const typed = new Typed('#typewriter', {
+                    strings: ['Fast. Powerful. Private.', 'Convert Images to PDF', 'Secure & Offline'],
+                    typeSpeed: 50,
+                    backSpeed: 30,
+                    backDelay: 2000,
+                    loop: true,
+                    showCursor: true,
+                    cursorChar: '|'
                 });
             }
 
-            setupSpeechRecognition() {
-                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                    this.recognition = new SpeechRecognition();
-                    this.recognition.continuous = false;
-                    this.recognition.interimResults = false;
-                    this.recognition.lang = 'en-US';
+            initAnimations() {
+                // Entrance animations
+                gsap.from('.app-title', { 
+                    duration: 1, 
+                    y: -50, 
+                    opacity: 0, 
+                    ease: 'bounce.out' 
+                });
 
-                    this.recognition.onresult = (event) => {
-                        const transcript = event.results[0][0].transcript;
-                        this.elements.userInput.value = transcript;
-                        this.isListening = false;
-                        this.elements.voiceBtn.textContent = '🎤 Voice Input';
-                    };
-
-                    this.recognition.onerror = () => {
-                        this.isListening = false;
-                        this.elements.voiceBtn.textContent = '🎤 Voice Input';
-                        this.showStatus('Voice recognition error. Please try again.', 'error');
-                    };
-                }
+                gsap.from('.upload-section', { 
+                    duration: 0.8, 
+                    scale: 0.8, 
+                    opacity: 0, 
+                    delay: 0.3,
+                    ease: 'back.out(1.7)' 
+                });
             }
 
-            async testApiConnection() {
-                if (!this.apiKey || !this.apiKey.startsWith('hf_')) {
-                    this.showStatus('❌ Please enter a valid Hugging Face API key starting with "hf_"', 'error');
+            handleFiles(files) {
+                const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+                const newImages = Array.from(files).filter(file => validTypes.includes(file.type));
+
+                if (newImages.length === 0) {
+                    this.showNotification('Please select valid image files (JPG, PNG, WEBP)', 'error');
                     return;
                 }
 
-                this.showStatus('🔄 Testing API connection...', 'info');
-                
-                // Try each model until one works
-                for (let i = 0; i < this.models.length; i++) {
-                    try {
-                        this.showStatus(`🔄 Testing model ${i + 1}/${this.models.length}...`, 'info');
-                        
-                        const response = await fetch(this.models[i], {
-                            method: 'POST',
-                            headers: {
-                                'Authorization': `Bearer ${this.apiKey}`,
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                inputs: "Hello",
-                                parameters: {
-                                    max_new_tokens: 20,
-                                    temperature: 0.7,
-                                    return_full_text: false
-                                }
-                            })
+                newImages.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.images.push({
+                            file: file,
+                            dataUrl: e.target.result,
+                            id: Date.now() + Math.random()
                         });
-
-                        if (response.ok) {
-                            const data = await response.json();
-                            console.log('API Response:', data);
-                            
-                            this.isApiConnected = true;
-                            this.apiUrl = this.models[i];
-                            this.currentModelIndex = i;
-                            this.showStatus(`✅ API connected successfully using model ${i + 1}!`, 'success');
-                            this.elements.startBtn.disabled = false;
-                            this.addMessage('🎉 API connected! I\'m ready to help you practice interviews. Click "Start Interview" to begin!', 'ai');
-                            return; // Success - exit the loop
-                            
-                        } else if (response.status === 401) {
-                            this.showStatus('❌ Invalid API key or insufficient permissions. Make sure your token has "Inference" permission enabled.', 'error');
-                            return; // Don't try other models if auth fails
-                        } else if (response.status === 503) {
-                            this.showStatus(`🔄 Model ${i + 1} is loading... Trying next model...`, 'info');
-                            continue; // Try next model
-                        } else {
-                            console.log(`Model ${i + 1} failed with status:`, response.status);
-                            continue; // Try next model
-                        }
-                        
-                    } catch (error) {
-                        console.error(`Model ${i + 1} connection error:`, error);
-                        continue; // Try next model
-                    }
-                }
-                
-                // If we get here, all models failed
-                this.isApiConnected = false;
-                this.showStatus('❌ All models failed. Using offline mode with basic feedback. Check your API key permissions.', 'error');
-                this.elements.startBtn.disabled = false;
+                        this.updatePreview();
+                    };
+                    reader.readAsDataURL(file);
+                });
             }
 
-            showStatus(message, type) {
-                this.elements.apiStatus.innerHTML = message;
-                this.elements.apiStatus.className = `status ${type}`;
-                this.elements.apiStatus.style.display = 'block';
-            }
+            updatePreview() {
+                const previewSection = document.getElementById('imagePreview');
+                const previewGrid = document.getElementById('previewGrid');
+                const settingsSection = document.getElementById('settingsSection');
+                const convertBtn = document.getElementById('convertBtn');
 
-            async startInterview() {
-                this.isInterviewActive = true;
-                this.currentScore = 0;
-                this.questionCount = 0;
-                this.responses = [];
-
-                this.elements.startBtn.disabled = true;
-                this.elements.endBtn.disabled = false;
-                this.elements.userInput.disabled = false;
-                this.elements.sendBtn.disabled = false;
-                this.elements.voiceBtn.disabled = false;
-                this.elements.scoreDisplay.style.display = 'block';
-                this.elements.feedbackSection.style.display = 'none';
-
-                this.addMessage('🚀 Interview started! I\'ll ask you some questions. Take your time and give thoughtful answers.', 'ai');
-                
-                setTimeout(() => this.askQuestion(), 1500);
-            }
-
-            endInterview() {
-                this.isInterviewActive = false;
-                
-                this.elements.startBtn.disabled = false;
-                this.elements.endBtn.disabled = true;
-                this.elements.userInput.disabled = true;
-                this.elements.sendBtn.disabled = true;
-                this.elements.voiceBtn.disabled = true;
-
-                this.addMessage('Interview completed! Here\'s your performance summary.', 'ai');
-                this.showFinalFeedback();
-            }
-
-            toggleVoiceInput() {
-                if (!this.recognition) {
-                    this.showStatus('Speech recognition not supported in this browser.', 'error');
+                if (this.images.length === 0) {
+                    previewSection.style.display = 'none';
+                    settingsSection.style.display = 'none';
+                    convertBtn.disabled = true;
                     return;
                 }
 
-                if (this.isListening) {
-                    this.recognition.stop();
-                    this.isListening = false;
-                    this.elements.voiceBtn.textContent = '🎤 Voice Input';
-                } else {
-                    this.recognition.start();
-                    this.isListening = true;
-                    this.elements.voiceBtn.textContent = '🛑 Stop Listening';
-                }
-            }
+                previewSection.style.display = 'block';
+                settingsSection.style.display = 'block';
+                convertBtn.disabled = false;
 
-            askQuestion() {
-                const questions = [
-                    "Tell me about yourself and your background.",
-                    "What are your greatest strengths and how do they apply to this role?",
-                    "Describe a challenging project you worked on and how you overcame obstacles.",
-                    "Where do you see yourself in 5 years?",
-                    "Why do you want to work for our company?",
-                    "Tell me about a time you had to work under pressure.",
-                    "What is your biggest weakness and how are you working to improve it?",
-                    "Describe your ideal work environment.",
-                    "How do you handle criticism and feedback?",
-                    "Do you have any questions for us?"
-                ];
+                previewGrid.innerHTML = '';
+                this.images.forEach((image, index) => {
+                    const previewItem = document.createElement('div');
+                    previewItem.className = 'preview-item';
+                    previewItem.draggable = true;
+                    previewItem.innerHTML = `
+                        <img src="${image.dataUrl}" alt="Preview ${index + 1}">
+                        <button class="remove-btn" onclick="app.removeImage(${index})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <div class="order-number">${index + 1}</div>
+                    `;
 
-                const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
-                this.addMessage(randomQuestion, 'ai');
-            }
-
-            async sendResponse() {
-                const userResponse = this.elements.userInput.value.trim();
-                if (!userResponse || !this.isInterviewActive) return;
-
-                this.addMessage(userResponse, 'user');
-                this.elements.userInput.value = '';
-                this.responses.push(userResponse);
-
-                this.showLoading();
-
-                try {
-                    const feedback = await this.getAIFeedback(userResponse);
-                    this.hideLoading();
-                    
-                    const responseScore = this.calculateScore(userResponse, feedback);
-                    this.currentScore = Math.min(100, this.currentScore + responseScore);
-                    this.elements.currentScore.textContent = Math.round(this.currentScore);
-
-                    this.addMessage(feedback, 'ai');
-
-                    this.questionCount++;
-                    if (this.questionCount < 3) {
-                        setTimeout(() => this.askQuestion(), 1000);
-                    } else {
-                        setTimeout(() => this.endInterview(), 2000);
-                    }
-
-                } catch (error) {
-                    this.hideLoading();
-                    this.addMessage('Sorry, I had trouble processing your response. Here\'s some basic feedback.', 'ai');
-                    
-                    // Provide fallback feedback
-                    const fallbackFeedback = this.generateFallbackFeedback(userResponse);
-                    this.addMessage(fallbackFeedback, 'ai');
-                    
-                    const responseScore = this.calculateScore(userResponse, fallbackFeedback);
-                    this.currentScore = Math.min(100, this.currentScore + responseScore);
-                    this.elements.currentScore.textContent = Math.round(this.currentScore);
-                    
-                    this.questionCount++;
-                    if (this.questionCount < 3) {
-                        setTimeout(() => this.askQuestion(), 1000);
-                    } else {
-                        setTimeout(() => this.endInterview(), 2000);
-                    }
-                }
-            }
-
-            async getAIFeedback(userResponse) {
-                if (!this.isApiConnected) {
-                    return this.generateFallbackFeedback(userResponse);
-                }
-
-                try {
-                    const prompt = `Give brief interview feedback for: "${userResponse}". Focus on strengths and one improvement.`;
-                    
-                    const response = await fetch(this.apiUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${this.apiKey}`,
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            inputs: prompt,
-                            parameters: {
-                                max_new_tokens: 80,
-                                temperature: 0.7,
-                                return_full_text: false
-                            }
-                        })
+                    // Add drag and drop for reordering
+                    previewItem.addEventListener('dragstart', (e) => {
+                        e.dataTransfer.setData('text/plain', index);
                     });
 
-                    if (!response.ok) {
-                        throw new Error(`API Error: ${response.status}`);
-                    }
+                    previewItem.addEventListener('dragover', (e) => {
+                        e.preventDefault();
 
-                    const data = await response.json();
+            
+                                } else {
+                                    // Fixed orientation
+                                    if (imgAspect > pageAspect) {
+                                        imgWidth = pageWidth - 20;
+                                        imgHeight = imgWidth / imgAspect;
+                                    } else {
+                                        imgHeight = pageHeight - 20;
+                                        imgWidth = imgHeight * imgAspect;
+                                    }
+                                }
+
+                                const x = (pageWidth - imgWidth) / 2;
+                                const y = (pageHeight - imgHeight) / 2;
+
+                                if (i > 0) {
+                                    pdf.addPage();
+                                }
+
+                                pdf.addImage(
+                                    image.dataUrl,
+                                    'JPEG',
+                                    x,
+                                    y,
+                                    imgWidth,
+                                    imgHeight,
+                                    undefined,
+                                    'MEDIUM'
+                                );
+
+                                resolve();
+                            } catch (error) {
+                                reject(error);
+                            }
+                        };
+                        
+                        img.onerror = () => reject(new Error('Failed to load image'));
+                        img.src = image.dataUrl;
+                    });
+
+                    // Add a small delay to prevent UI blocking
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+
+                this.updateLoadingProgress('Finalizing PDF...');
+                
+                // Generate PDF blob
+                this.pdfBlob = pdf.output('blob');
+                
+                // Add password protection if specified (using pdf-lib for advanced features)
+                if (settings.password) {
+                    await this.addPasswordProtection(settings.password);
+                }
+            }
+
+            async addPasswordProtection(password) {
+                try {
+                    const { PDFDocument } = PDFLib;
+                    const existingPdfBytes = await this.pdfBlob.arrayBuffer();
+                    const pdfDoc = await PDFDocument.load(existingPdfBytes);
                     
-                    let feedback = '';
-                    if (Array.isArray(data)) {
-                        feedback = data[0]?.generated_text || '';
-                    } else if (data.generated_text) {
-                        feedback = data.generated_text;
-                    }
-
-                    // Clean up the feedback
-                    feedback = feedback.replace(prompt, '').trim();
-                    
-                    if (!feedback || feedback.length < 10) {
-                        return this.generateFallbackFeedback(userResponse);
-                    }
-
-                    return feedback;
-
+                    // Note: pdf-lib doesn't support password protection in browser version
+                    // This is a placeholder for the feature
+                    console.log('Password protection requested but not available in browser version');
                 } catch (error) {
-                    console.error('API Error:', error);
-                    return this.generateFallbackFeedback(userResponse);
+                    console.warn('Password protection failed:', error);
                 }
             }
 
-            generateFallbackFeedback(response) {
-                const length = response.split(' ').length;
-                const feedbacks = [
-                    `Good response! Your answer shows thoughtfulness. Consider adding more specific examples to strengthen your points.`,
-                    `Nice work! You've covered the key points well. Try to be more concise while maintaining detail.`,
-                    `Well articulated! Your response demonstrates good communication skills. Consider adding metrics or outcomes.`,
-                    `Solid answer! You show good self-awareness. Try to connect your experience more directly to the role.`
-                ];
-
-                let feedback = feedbacks[Math.floor(Math.random() * feedbacks.length)];
+            showLoading(show) {
+                const overlay = document.getElementById('loadingOverlay');
+                overlay.style.display = show ? 'flex' : 'none';
                 
-                if (length < 10) {
-                    feedback += " Try to elaborate more on your points for a comprehensive answer.";
-                } else if (length > 100) {
-                    feedback += " Consider being more concise to keep the interviewer engaged.";
+                if (show) {
+                    this.createParticleEffect();
+                }
+            }
+
+            updateLoadingProgress(text) {
+                document.getElementById('loadingProgress').textContent = text;
+            }
+
+            showSuccess() {
+                document.getElementById('successMessage').style.display = 'block';
+                
+                // Animate success message
+                gsap.from('#successMessage', {
+                    duration: 0.5,
+                    scale: 0.8,
+                    opacity: 0,
+                    ease: 'back.out(1.7)'
+                });
+            }
+
+            animateSuccess() {
+                // Success particle explosion
+                for (let i = 0; i < 20; i++) {
+                    const particle = document.createElement('div');
+                    particle.style.cssText = `
+                        position: fixed;
+                        width: 4px;
+                        height: 4px;
+                        background: #34c759;
+                        border-radius: 50%;
+                        pointer-events: none;
+                        z-index: 1001;
+                        left: 50%;
+                        top: 50%;
+                    `;
+                    document.body.appendChild(particle);
+
+                    anime({
+                        targets: particle,
+                        translateX: anime.random(-200, 200),
+                        translateY: anime.random(-200, 200),
+                        scale: [1, 0],
+                        opacity: [1, 0],
+                        duration: 1000,
+                        easing: 'easeOutQuad',
+                        complete: () => particle.remove()
+                    });
+                }
+            }
+
+            createParticleEffect() {
+                const convertBtn = document.getElementById('convertBtn');
+                const particlesContainer = document.getElementById('btnParticles');
+                
+                const createParticle = () => {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.cssText = `
+                        width: ${Math.random() * 4 + 2}px;
+                        height: ${Math.random() * 4 + 2}px;
+                        left: ${Math.random() * 100}%;
+                        animation-delay: ${Math.random() * 2}s;
+                    `;
+                    particlesContainer.appendChild(particle);
+                    
+                    setTimeout(() => particle.remove(), 2000);
+                };
+
+                const particleInterval = setInterval(createParticle, 100);
+                setTimeout(() => clearInterval(particleInterval), 3000);
+            }
+
+            async downloadPDF() {
+                if (!this.pdfBlob) return;
+
+                const url = URL.createObjectURL(this.pdfBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${document.getElementById('pdfTitle').value || 'converted-images'}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                this.showNotification('PDF downloaded successfully!', 'success');
+            }
+
+            async sharePDF() {
+                if (!this.pdfBlob) return;
+
+                if (navigator.share && navigator.canShare) {
+                    try {
+                        const file = new File([this.pdfBlob], 
+                            `${document.getElementById('pdfTitle').value || 'converted-images'}.pdf`, 
+                            { type: 'application/pdf' }
+                        );
+                        
+                        if (navigator.canShare({ files: [file] })) {
+                            await navigator.share({
+                                title: 'PDF Converter by Yahya',
+                                text: 'Check out this PDF I created!',
+                                files: [file]
+                            });
+                            this.showNotification('PDF shared successfully!', 'success');
+                        } else {
+                            this.fallbackShare();
+                        }
+                    } catch (error) {
+                        if (error.name !== 'AbortError') {
+                            console.error('Sharing failed:', error);
+                            this.fallbackShare();
+                        }
+                    }
+                } else {
+                    this.fallbackShare();
+                }
+            }
+
+            fallbackShare() {
+                // Fallback: copy blob URL to clipboard
+                const url = URL.createObjectURL(this.pdfBlob);
+                navigator.clipboard.writeText(url).then(() => {
+                    this.showNotification('PDF link copied to clipboard!', 'success');
+                }).catch(() => {
+                    this.showNotification('Please use download button to save PDF', 'info');
+                });
+            }
+
+            toggleTheme() {
+                this.isDarkTheme = !this.isDarkTheme;
+                const body = document.body;
+                const themeIcon = document.querySelector('.theme-toggle i');
+                
+                if (this.isDarkTheme) {
+                    body.classList.remove('light-theme');
+                    themeIcon.className = 'fas fa-moon';
+                } else {
+                    body.classList.add('light-theme');
+                    themeIcon.className = 'fas fa-sun';
                 }
 
-                return feedback;
+                // Animate theme transition
+                anime({
+                    targets: body,
+                    duration: 500,
+                    easing: 'easeInOutQuad'
+                });
             }
 
-            calculateScore(response, feedback) {
-                const wordCount = response.split(' ').length;
-                let score = 0;
-
-                if (wordCount >= 20 && wordCount <= 80) score += 15;
-                else if (wordCount >= 10) score += 10;
-                else score += 5;
-
-                const goodPhrases = ['experience', 'skills', 'team', 'project', 'challenge', 'success', 'learned', 'improved'];
-                const phraseCount = goodPhrases.filter(phrase => 
-                    response.toLowerCase().includes(phrase)
-                ).length;
-
-                score += phraseCount * 2;
-                return Math.min(score, 20);
-            }
-
-            showLoading() {
-                const loadingDiv = document.createElement('div');
-                loadingDiv.className = 'loading';
-                loadingDiv.id = 'loading';
-                loadingDiv.innerHTML = '<div class="spinner"></div>Analyzing your response...';
-                this.elements.chatContainer.appendChild(loadingDiv);
-                this.scrollToBottom();
-            }
-
-            hideLoading() {
-                const loading = document.getElementById('loading');
-                if (loading) loading.remove();
-            }
-
-            addMessage(content, type) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${type}`;
-                
-                const contentDiv = document.createElement('div');
-                contentDiv.className = 'message-content';
-                contentDiv.textContent = content;
-                
-                messageDiv.appendChild(contentDiv);
-                this.elements.chatContainer.appendChild(messageDiv);
-                this.scrollToBottom();
-            }
-
-            scrollToBottom() {
-                this.elements.chatContainer.scrollTop = this.elements.chatContainer.scrollHeight;
-            }
-
-            showFinalFeedback() {
-                const finalScore = Math.round(this.currentScore);
-                let performance = '';
-                
-                if (finalScore >= 80) performance = 'Excellent! 🌟';
-                else if (finalScore >= 60) performance = 'Good! 👍';
-                else if (finalScore >= 40) performance = 'Fair 📈';
-                else performance = 'Needs Improvement 💪';
-
-                const feedbackHTML = `
-                    <p><strong>Final Score:</strong> ${finalScore}/100 - ${performance}</p>
-                    <p><strong>Questions Answered:</strong> ${this.questionCount}</p>
-                    <p><strong>Key Strengths:</strong> Communication, engagement, thoughtful responses</p>
-                    <p><strong>Areas for Improvement:</strong> Add more specific examples, practice conciseness</p>
-                    <p><strong>Recommendation:</strong> Keep practicing! Research common questions for your field.</p>
+            showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: ${type === 'error' ? '#ff3b30' : type === 'success' ? '#34c759' : '#667eea'};
+                    color: white;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    z-index: 1002;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                    backdrop-filter: blur(10px);
                 `;
+                notification.textContent = message;
+                document.body.appendChild(notification);
 
-                this.elements.feedbackContent.innerHTML = feedbackHTML;
-                this.elements.feedbackSection.style.display = 'block';
+                gsap.from(notification, { duration: 0.3, y: -50, opacity: 0 });
+                
+                setTimeout(() => {
+                    gsap.to(notification, { 
+                        duration: 0.3, 
+                        y: -50, 
+                        opacity: 0,
+                        onComplete: () => notification.remove()
+                    });
+                }, 3000);
+            }
+
+            async registerServiceWorker() {
+                if ('serviceWorker' in navigator) {
+                    try {
+                        // Create service worker inline
+                        const swCode = `
+                            const CACHE_NAME = 'pdf-converter-v1';
+                            const urlsToCache = [
+                                '/',
+                                '/offline.html'
+                            ];
+
+                            self.addEventListener('install', (event) => {
+                                event.waitUntil(
+                                    caches.open(CACHE_NAME)
+                                        .then((cache) => cache.addAll(urlsToCache))
+                                );
+                            });
+
+                            self.addEventListener('fetch', (event) => {
+                                event.respondWith(
+                                    caches.match(event.request)
+                                        .then((response) => {
+                                            return response || fetch(event.request);
+                                        })
+                                );
+                            });
+                        `;
+                        
+                        const swBlob = new Blob([swCode], { type: 'application/javascript' });
+                        const swUrl = URL.createObjectURL(swBlob);
+                        
+                        await navigator.serviceWorker.register(swUrl);
+                        console.log('Service Worker registered successfully');
+                    } catch (error) {
+                        console.log('Service Worker registration failed:', error);
+                    }
+                }
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            new AIInterviewCoach();
+        // Initialize app
+        const app = new PDFConverterApp();
+
+        // Add touch gesture support
+        let touchStartY = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
         });
+
+        document.addEventListener('touchmove', (e) => {
+            const touchY = e.touches[0].clientY;
+            const diffY = touchStartY - touchY;
+            
+            // Pull to refresh (simplified)
+            if (diffY < -100 && window.scrollY === 0) {
+                document.querySelector('.app-header').style.transform = `translateY(${-diffY - 100}px)`;
+            }
+        });
+
+        document.addEventListener('touchend', () => {
+            document.querySelector('.app-header').style.transform = 'translateY(0)';
+        });
+
+        // Add performance monitoring
+        if ('performance' in window) {
+            window.addEventListener('load', () => {
+                const perfData = performance.getEntriesByType('navigation')[0];
+                console.log('App loaded in:', perfData.loadEventEnd - perfData.loadEventStart, 'ms');
+            });
+        }
+
+        // Add memory usage monitoring (if available)
+        if ('memory' in performance) {
+            setInterval(() => {
+                const memory = performance.memory;
+                if (memory.usedJSHeapSize > memory.jsHeapSizeLimit * 0.9) {
+                    console.warn('High memory usage detected');
+                }
+            }, 30000);
+        }
+
+        // Add offline detection
+        window.addEventListener('online', () => {
+            app.showNotification('Connection restored', 'success');
+        });
+
+        window.addEventListener('offline', () => {
+            app.showNotification('Working offline', 'info');
+        });
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch (e.key) {
+                    case 'o':
+                        e.preventDefault();
+                        document.getElementById('fileInput').click();
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        if (app.pdfBlob) {
+                            app.downloadPDF();
+                        }
+                        break;
+                    case 'Enter':
+                        if (e.target.tagName !== 'INPUT') {
+                            e.preventDefault();
+                            if (!document.getElementById('convertBtn').disabled) {
+                                app.convertToPDF();
+                            }
+                        }
+                        break;
+                }
+            }
+        });
+
+        // Initialize IndexedDB for session persistence
+        const initDB = () => {
+            const request = indexedDB.open('PDFConverterDB', 1);
+            
+            request.onerror = () => console.log('IndexedDB error');
+            
+            request.onsuccess = (event) => {
+                const db = event.target.result;
+                console.log('IndexedDB initialized');
+            };
+            
+            request.onupgradeneeded = (event) => {
+                const db = event.target.result;
+                const objectStore = db.createObjectStore('sessions', { keyPath: 'id' });
+                objectStore.createIndex('timestamp', 'timestamp', { unique: false });
+            };
+        };
+
+        initDB();
     </script>
 </body>
 </html>
