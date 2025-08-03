@@ -4,201 +4,180 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF Converter by Yahya</title>
-    <meta name="description" content="Fast. Powerful. Private. Convert images to PDF instantly">
-    <meta name="theme-color" content="#667eea">
-    
-    <!-- PWA Meta Tags -->
-    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiUERGIENvbnZlcnRlciBieSBZYWh5YSIsInNob3J0X25hbWUiOiJQREYgQ29udmVydGVyIiwic3RhcnRfdXJsIjoiLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMwZjEwMjMiLCJ0aGVtZV9jb2xvciI6IiM2NjdlZWEiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M00zUnZjbWN2TWpBd01DOXpkbWNpSUhacFpYZENiM2c5SWpBZ01DQXlOVFlnTWpVMklpQm1hV3hzUFNJalptWm1JaUI0Yld4dWN6cHNhVzVyUFNKb2RIUndPaTh2ZDNkM0xuY3pkRzl5Wnk4eE9UazVMM2hzYVc1ckppQjRiV3h1Y3owelBTSm9kSFJ3T2k4dmQzZDNMbmN6TG05eVp5OHlNREF3TDNOMlp5SStQR1JsWm5NK1BHeHBibVZoY2tkeVlXUnBaVzUwSUdsa1BTSm5jbUZrTVNJZ2VERTlJakFsSUhreE9TSWdlREk5SWpFd01DVXRJSGt5T1NKdlptWnpaWFE5SWpGbk1DSWdaM0poWkdsbGJuUlVjbUZ1YzJadmNtMDlJbkp2ZEdGMFpTZ3ROekE2TWprNklERjVJSGxoZUdselEyTmhiaWtpTHo0OEwyUmxabk0rUEhKbFkzUWdlRDBpTkRRaUlIazlJalF3SWlCM2FXUjBhRDBpTVRZNElpQm9aV2xuYUhROUlqRTJJaUJ5ZUQwaU9DSWdabWxzYkQwaWRYSnNLQ05uY21Ga01Ta2lMejQ4Y21WamRDQjRQU0k0TnlJZ2VUMGJOQ0lpSUhkcFpIUm9QU0k0TWlJZ2FHVnBaMmgwUFNJNElpQnllRDBpTkNJZ1ptbHNiRDBpZFhKc0tDTm5jbUZrTVNraUx6NDhMM04yWno0PSIsInNpemVzIjoiMjU2eDI1NiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIn1dfQ==">
-    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTYgMjU2IiBmaWxsPSIjZmZmIiB4bWxuczpsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4beGU9Im0zZCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkMSIgeDI9IjAlIiB5MT05IiB4Mj0iMTAwJSIgeTE5IiBvZmZzZXQ9IjFnMCIgZ3JhZGllbnRUcmFuc2Zvcm09InJvdGF0ZSgtNzA6Mjk6IDIgeXlheGlzQ2NhbikiLz48L2RlZnM+PHJlY3QgeD0iNDQiIHk9IjQwIiB3aWR0aD0iMTY4IiBoZWlnaHQ9IjE2IiByeD0iOCIgZmlsbD0idXJsKCNncmFkMSkiLz48cmVjdCB4PSI4NyIgeT0iNCIgd2lkdGg9IjgyIiBoZWlnaHQ9IjgiIHJ4PSI0IiBmaWxsPSJ1cmwoI2dyYWQxKSIvPjwvc3ZnPg==">
-    
-    <!-- External Libraries -->
+    <meta name="theme-color" content="#6366f1">
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiUERGIENvbnZlcnRlciBieSBZYWh5YSIsInNob3J0X25hbWUiOiJQREYgQ29udmVydGVyIiwic3RhcnRfdXJsIjoiLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMwZjE0MjkiLCJ0aGVtZV9jb2xvciI6IiM2MzY2ZjEiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M00zUnZjbWN2TWpBd01DOXpkbWNpSUhkcFpIUm9QU0l4TWpnaUlHaGxhV2RvZEQwaU1USTRJajQ4Y21WamRDQjNhV1IwYUQwaU1USTRJaUJvWldsbmFIUTlJakV5T0NJZ1ptbHNiRDBpSXpZek5qWm1NU0l2UGp3dmMzWm5QZz09Iiwic2l6ZXMiOiIxMjh4MTI4IiwidHlwZSI6ImltYWdlL3N2Zyt4bWwifV19">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.16/typed.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.16/typed.min.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #06b6d4;
+            --bg-dark: #0f172a;
+            --bg-card: rgba(30, 41, 59, 0.8);
+            --text-light: #f1f5f9;
+            --text-gray: #94a3b8;
+            --border: rgba(148, 163, 184, 0.2);
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --glow: 0 0 20px rgba(99, 102, 241, 0.5);
         }
 
         body {
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1e293b 100%);
+            color: var(--text-light);
+            overflow-x: hidden;
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             padding: 0;
-            overflow-x: hidden;
         }
 
         .app-container {
             max-width: 375px;
             width: 100%;
             height: 100vh;
-            background: rgba(15, 16, 35, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 0;
             position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
 
-        .app-header {
-            padding: 20px 20px 0;
+        .app-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .header {
+            padding: 20px;
             text-align: center;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
         }
 
-        .app-title {
-            color: #fff;
-            font-size: 24px;
-            font-weight: 700;
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
             margin-bottom: 5px;
-            text-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
-        .app-tagline {
-            color: #a0a9d8;
-            font-size: 14px;
-            margin-bottom: 15px;
+        .tagline {
+            font-size: 0.9rem;
+            opacity: 0.9;
             font-weight: 300;
         }
 
-        .typewriter {
-            min-height: 20px;
+        .typed-text {
+            color: #fbbf24;
+            font-weight: 600;
         }
 
         .main-content {
-            flex: 1;
             padding: 20px;
-            overflow-y: auto;
-            scrollbar-width: none;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .main-content::-webkit-scrollbar {
-            display: none;
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
         }
 
-        .theme-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            color: #fff;
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--glow), var(--shadow);
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            transition: all 0.3s ease;
             cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
         }
 
-        .theme-toggle:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
-        }
-
-        .upload-section {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            border: 2px dashed rgba(102, 126, 234, 0.5);
-            padding: 30px 20px;
-            text-align: center;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .upload-section.dragover {
-            border-color: #667eea;
-            background: rgba(102, 126, 234, 0.1);
+        .file-input-wrapper:hover {
             transform: scale(1.02);
-        }
-
-        .upload-icon {
-            font-size: 48px;
-            color: #667eea;
-            margin-bottom: 15px;
-            display: block;
-        }
-
-        .upload-text {
-            color: #fff;
-            font-size: 16px;
-            margin-bottom: 15px;
-        }
-
-        .upload-subtext {
-            color: #a0a9d8;
-            font-size: 12px;
-            margin-bottom: 20px;
+            box-shadow: var(--glow);
         }
 
         .file-input {
-            display: none;
-        }
-
-        .upload-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 12px;
-            padding: 12px 24px;
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .upload-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-
-        .upload-btn::before {
-            content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s;
+            left: -9999px;
+            opacity: 0;
         }
 
-        .upload-btn:hover::before {
-            left: 100%;
+        .file-input-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+            color: white;
+            cursor: pointer;
+            text-align: center;
+            min-height: 120px;
         }
 
-        .image-preview {
-            margin-top: 20px;
+        .upload-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
         }
 
         .preview-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
             gap: 10px;
-            margin-bottom: 20px;
+            margin-top: 15px;
         }
 
         .preview-item {
             position: relative;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            overflow: hidden;
             aspect-ratio: 1;
-            cursor: grab;
+            border-radius: 10px;
+            overflow: hidden;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
             transition: all 0.3s ease;
+            cursor: grab;
         }
 
         .preview-item:active {
@@ -207,7 +186,7 @@
 
         .preview-item:hover {
             transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            border-color: var(--primary);
         }
 
         .preview-item img {
@@ -220,108 +199,111 @@
             position: absolute;
             top: 5px;
             right: 5px;
-            background: rgba(255, 59, 48, 0.9);
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
             border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            color: #fff;
-            cursor: pointer;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .preview-item .order-number {
-            position: absolute;
-            bottom: 5px;
-            left: 5px;
-            background: rgba(102, 126, 234, 0.9);
-            color: #fff;
             border-radius: 50%;
             width: 20px;
             height: 20px;
-            font-size: 11px;
-            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.2s ease;
         }
 
-        .settings-section {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            backdrop-filter: blur(10px);
+        .preview-item .remove-btn:hover {
+            transform: scale(1.1);
+            background: #dc2626;
         }
 
-        .settings-title {
-            color: #fff;
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
         }
 
         .setting-group {
-            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .setting-label {
-            color: #a0a9d8;
-            font-size: 12px;
-            margin-bottom: 5px;
-            display: block;
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            font-weight: 500;
         }
 
         .setting-input {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            padding: 10px;
-            color: #fff;
-            font-size: 14px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 12px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
         }
 
         .setting-input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
-        .setting-row {
-            display: flex;
-            gap: 10px;
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: var(--border);
+            border-radius: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .setting-row .setting-input {
-            flex: 1;
+        .toggle-switch.active {
+            background: var(--primary);
         }
 
-        .convert-section {
-            padding: 20px 0;
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(24px);
         }
 
         .convert-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
             border: none;
-            border-radius: 16px;
-            padding: 18px;
-            color: #fff;
-            font-size: 16px;
+            border-radius: 15px;
+            padding: 18px 30px;
+            font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .convert-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: var(--glow), var(--shadow);
         }
 
         .convert-btn:disabled {
@@ -329,76 +311,29 @@
             cursor: not-allowed;
         }
 
-        .convert-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
-        }
-
-        .convert-btn .btn-text {
-            position: relative;
-            z-index: 2;
-        }
-
-        .convert-btn .btn-particles {
+        .convert-btn .ripple {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
             pointer-events: none;
         }
 
-        .particle {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 50%;
-            opacity: 0;
-            animation: particle-float 2s infinite ease-in-out;
-        }
-
-        @keyframes particle-float {
-            0% {
+        @keyframes ripple {
+            to {
+                transform: scale(4);
                 opacity: 0;
-                transform: translateY(100%) scale(0);
             }
-            50% {
-                opacity: 1;
-                transform: translateY(-50%) scale(1);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-100%) scale(0);
-            }
-        }
-
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 16, 35, 0.95);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-        }
-
-        .loading-content {
-            text-align: center;
-            color: #fff;
         }
 
         .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 3px solid rgba(102, 126, 234, 0.3);
-            border-top: 3px solid #667eea;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-bottom: 20px;
         }
 
         @keyframes spin {
@@ -406,736 +341,881 @@
             100% { transform: rotate(360deg); }
         }
 
-        .loading-text {
-            font-size: 16px;
-            margin-bottom: 10px;
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 10px;
         }
 
-        .loading-progress {
-            color: #a0a9d8;
-            font-size: 14px;
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 2px;
         }
 
-        .success-message {
-            background: rgba(52, 199, 89, 0.1);
-            border: 1px solid rgba(52, 199, 89, 0.3);
-            border-radius: 12px;
-            padding: 15px;
-            margin-top: 15px;
-            color: #34c759;
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 15px 20px;
+            color: var(--text-light);
+            font-weight: 500;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            max-width: 320px;
             text-align: center;
-            display: none;
         }
 
-        .share-buttons {
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-gray);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            width: 40px;
+            height: 40px;
             display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .share-btn {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            padding: 10px;
-            color: #fff;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 12px;
+            color: var(--text-light);
         }
 
-        .share-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-1px);
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            background: var(--primary);
         }
 
-        .light-theme {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-
-        .light-theme .app-container {
-            background: rgba(255, 255, 255, 0.95);
-            color: #333;
-        }
-
-        .light-theme .app-title {
-            color: #333;
-            text-shadow: 0 0 20px rgba(240, 147, 251, 0.5);
-        }
-
-        .light-theme .app-tagline {
-            color: #666;
-        }
-
-        .light-theme .upload-text,
-        .light-theme .settings-title {
-            color: #333;
-        }
-
-        .light-theme .upload-subtext,
-        .light-theme .setting-label {
-            color: #666;
-        }
-
-        @media (max-width: 375px) {
+        @media (max-width: 320px) {
             .app-container {
-                border-radius: 0;
+                max-width: 100%;
             }
             
-            .main-content {
-                padding: 15px;
+            .settings-grid {
+                grid-template-columns: 1fr;
             }
             
-            .upload-section {
-                padding: 20px 15px;
+            .preview-grid {
+                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
             }
+        }
+
+        .dragging {
+            transform: scale(1.1);
+            opacity: 0.8;
+            z-index: 1000;
+        }
+
+        .drag-over {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
         }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <div class="app-header">
-            <button class="theme-toggle" id="themeToggle">
-                <i class="fas fa-moon"></i>
-            </button>
-            <h1 class="app-title">PDF Converter by Yahya</h1>
-            <div class="app-tagline">
-                <span class="typewriter" id="typewriter"></span>
-            </div>
+        <div class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
         </div>
 
-        <div class="main-content">
-            <div class="upload-section" id="uploadSection">
-                <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                <div class="upload-text">Drop images here or tap to select</div>
-                <div class="upload-subtext">Supports JPG, PNG, WEBP • Multiple files allowed</div>
-                <input type="file" class="file-input" id="fileInput" accept="image/*" multiple>
-                <button class="upload-btn" id="uploadBtn">
-                    <i class="fas fa-plus"></i> Select Images
-                </button>
+        <header class="header">
+            <div class="logo">PDF Converter by Yahya</div>
+            <div class="tagline">
+                <span class="typed-text"></span>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="glass-card">
+                <div class="section-title">
+                    <i class="fas fa-images"></i>
+                    Select Images
+                </div>
+                
+                <div class="file-input-wrapper" onclick="document.getElementById('imageInput').click()">
+                    <input type="file" id="imageInput" class="file-input" accept="image/*" multiple>
+                    <label for="imageInput" class="file-input-label">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <div>Tap to select images</div>
+                        <small>JPG, PNG, WEBP supported</small>
+                    </label>
+                </div>
+
+                <div id="previewContainer" class="preview-grid"></div>
             </div>
 
-            <div class="image-preview" id="imagePreview" style="display: none;">
-                <div class="preview-grid" id="previewGrid"></div>
-            </div>
-
-            <div class="settings-section" id="settingsSection" style="display: none;">
-                <div class="settings-title">
+            <div class="glass-card">
+                <div class="section-title">
                     <i class="fas fa-cog"></i>
                     PDF Settings
                 </div>
                 
-                <div class="setting-group">
-                    <label class="setting-label">Document Title</label>
-                    <input type="text" class="setting-input" id="pdfTitle" placeholder="My Document">
-                </div>
-
-                <div class="setting-row">
+                <div class="settings-grid">
                     <div class="setting-group">
                         <label class="setting-label">Page Size</label>
-                        <select class="setting-input" id="pageSize">
+                        <select id="pageSize" class="setting-input">
                             <option value="a4">A4</option>
                             <option value="letter">Letter</option>
-                            <option value="a3">A3</option>
-                            <option value="custom">Custom</option>
+                            <option value="legal">Legal</option>
                         </select>
                     </div>
+                    
                     <div class="setting-group">
                         <label class="setting-label">Orientation</label>
-                        <select class="setting-input" id="orientation">
+                        <select id="orientation" class="setting-input">
                             <option value="auto">Auto</option>
                             <option value="portrait">Portrait</option>
                             <option value="landscape">Landscape</option>
                         </select>
                     </div>
-                </div>
-
-                <div class="setting-row">
+                    
                     <div class="setting-group">
-                        <label class="setting-label">Quality (%)</label>
-                        <input type="range" class="setting-input" id="quality" min="10" max="100" value="85">
+                        <label class="setting-label">Quality</label>
+                        <select id="quality" class="setting-input">
+                            <option value="high">High</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="low">Low</option>
+                        </select>
                     </div>
+                    
                     <div class="setting-group">
-                        <label class="setting-label">DPI</label>
-                        <select class="setting-input" id="dpi">
-                            <option value="72">72 DPI</option>
-                            <option value="150">150 DPI</option>
-                            <option value="300" selected>300 DPI</option>
+                        <label class="setting-label">Fit Mode</label>
+                        <select id="fitMode" class="setting-input">
+                            <option value="contain">Fit Page</option>
+                            <option value="cover">Fill Page</option>
+                            <option value="stretch">Stretch</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="setting-group">
-                    <label class="setting-label">Password Protection (Optional)</label>
-                    <input type="password" class="setting-input" id="pdfPassword" placeholder="Enter password">
+                <div class="setting-group" style="margin-top: 15px;">
+                    <label class="setting-label">PDF Title</label>
+                    <input type="text" id="pdfTitle" class="setting-input" placeholder="My Document">
                 </div>
             </div>
 
-            <div class="convert-section">
-                <button class="convert-btn" id="convertBtn" disabled>
-                    <div class="btn-particles" id="btnParticles"></div>
-                    <span class="btn-text">
-                        <i class="fas fa-magic"></i> Convert to PDF
-                    </span>
-                </button>
-                
-                <div class="success-message" id="successMessage">
-                    <i class="fas fa-check-circle"></i>
-                    PDF created successfully!
-                    <div class="share-buttons">
-                        <button class="share-btn" id="downloadBtn">
-                            <i class="fas fa-download"></i> Download
-                        </button>
-                        <button class="share-btn" id="shareBtn">
-                            <i class="fas fa-share"></i> Share
-                        </button>
-                    </div>
+            <button id="convertBtn" class="convert-btn" onclick="convertToPDF()">
+                <i class="fas fa-file-pdf"></i>
+                <span>Create PDF</span>
+            </button>
+
+            <div id="progressContainer" style="display: none;">
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill"></div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-content">
-            <div class="loading-spinner"></div>
-            <div class="loading-text">Creating PDF...</div>
-            <div class="loading-progress" id="loadingProgress">Processing images...</div>
-        </div>
-    </div>
+    <div id="toast" class="toast"></div>
 
     <script>
-        class PDFConverterApp {
-            constructor() {
-                this.images = [];
-                this.pdfBlob = null;
-                this.isDarkTheme = true;
-                this.init();
-            }
-
-            init() {
-                this.setupEventListeners();
-                this.initTypewriter();
-                this.initAnimations();
-                this.registerServiceWorker();
-            }
-
-            setupEventListeners() {
-                // File input
-                const fileInput = document.getElementById('fileInput');
-                const uploadBtn = document.getElementById('uploadBtn');
-                const uploadSection = document.getElementById('uploadSection');
-
-                uploadBtn.addEventListener('click', () => fileInput.click());
-                fileInput.addEventListener('change', (e) => this.handleFiles(e.target.files));
-
-                // Drag and drop
-                uploadSection.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    uploadSection.classList.add('dragover');
-                });
-
-                uploadSection.addEventListener('dragleave', () => {
-                    uploadSection.classList.remove('dragover');
-                });
-
-                uploadSection.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    uploadSection.classList.remove('dragover');
-                    this.handleFiles(e.dataTransfer.files);
-                });
-
-                // Convert button
-                document.getElementById('convertBtn').addEventListener('click', () => this.convertToPDF());
-
-                // Theme toggle
-                document.getElementById('themeToggle').addEventListener('click', () => this.toggleTheme());
-
-                // Share buttons
-                document.getElementById('downloadBtn').addEventListener('click', () => this.downloadPDF());
-                document.getElementById('shareBtn').addEventListener('click', () => this.sharePDF());
-            }
-
-            initTypewriter() {
-                const typed = new Typed('#typewriter', {
-                    strings: ['Fast. Powerful. Private.', 'Convert Images to PDF', 'Secure & Offline'],
-                    typeSpeed: 50,
-                    backSpeed: 30,
-                    backDelay: 2000,
-                    loop: true,
-                    showCursor: true,
-                    cursorChar: '|'
-                });
-            }
-
-            initAnimations() {
-                // Entrance animations
-                gsap.from('.app-title', { 
-                    duration: 1, 
-                    y: -50, 
-                    opacity: 0, 
-                    ease: 'bounce.out' 
-                });
-
-                gsap.from('.upload-section', { 
-                    duration: 0.8, 
-                    scale: 0.8, 
-                    opacity: 0, 
-                    delay: 0.3,
-                    ease: 'back.out(1.7)' 
-                });
-            }
-
-            handleFiles(files) {
-                const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-                const newImages = Array.from(files).filter(file => validTypes.includes(file.type));
-
-                if (newImages.length === 0) {
-                    this.showNotification('Please select valid image files (JPG, PNG, WEBP)', 'error');
-                    return;
-                }
-
-                newImages.forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        this.images.push({
-                            file: file,
-                            dataUrl: e.target.result,
-                            id: Date.now() + Math.random()
-                        });
-                        this.updatePreview();
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
-
-            updatePreview() {
-                const previewSection = document.getElementById('imagePreview');
-                const previewGrid = document.getElementById('previewGrid');
-                const settingsSection = document.getElementById('settingsSection');
-                const convertBtn = document.getElementById('convertBtn');
-
-                if (this.images.length === 0) {
-                    previewSection.style.display = 'none';
-                    settingsSection.style.display = 'none';
-                    convertBtn.disabled = true;
-                    return;
-                }
-
-                previewSection.style.display = 'block';
-                settingsSection.style.display = 'block';
-                convertBtn.disabled = false;
-
-                previewGrid.innerHTML = '';
-                this.images.forEach((image, index) => {
-                    const previewItem = document.createElement('div');
-                    previewItem.className = 'preview-item';
-                    previewItem.draggable = true;
-                    previewItem.innerHTML = `
-                        <img src="${image.dataUrl}" alt="Preview ${index + 1}">
-                        <button class="remove-btn" onclick="app.removeImage(${index})">
-                            <i class="fas fa-times"></i>
-                        </button>
-                        <div class="order-number">${index + 1}</div>
-                    `;
-
-                    // Add drag and drop for reordering
-                    previewItem.addEventListener('dragstart', (e) => {
-                        e.dataTransfer.setData('text/plain', index);
-                    });
-
-                    previewItem.addEventListener('dragover', (e) => {
-                        e.preventDefault();
-
-            
-                                } else {
-                                    // Fixed orientation
-                                    if (imgAspect > pageAspect) {
-                                        imgWidth = pageWidth - 20;
-                                        imgHeight = imgWidth / imgAspect;
-                                    } else {
-                                        imgHeight = pageHeight - 20;
-                                        imgWidth = imgHeight * imgAspect;
-                                    }
-                                }
-
-                                const x = (pageWidth - imgWidth) / 2;
-                                const y = (pageHeight - imgHeight) / 2;
-
-                                if (i > 0) {
-                                    pdf.addPage();
-                                }
-
-                                pdf.addImage(
-                                    image.dataUrl,
-                                    'JPEG',
-                                    x,
-                                    y,
-                                    imgWidth,
-                                    imgHeight,
-                                    undefined,
-                                    'MEDIUM'
-                                );
-
-                                resolve();
-                            } catch (error) {
-                                reject(error);
-                            }
-                        };
-                        
-                        img.onerror = () => reject(new Error('Failed to load image'));
-                        img.src = image.dataUrl;
-                    });
-
-                    // Add a small delay to prevent UI blocking
-                    await new Promise(resolve => setTimeout(resolve, 100));
-                }
-
-                this.updateLoadingProgress('Finalizing PDF...');
-                
-                // Generate PDF blob
-                this.pdfBlob = pdf.output('blob');
-                
-                // Add password protection if specified (using pdf-lib for advanced features)
-                if (settings.password) {
-                    await this.addPasswordProtection(settings.password);
-                }
-            }
-
-            async addPasswordProtection(password) {
-                try {
-                    const { PDFDocument } = PDFLib;
-                    const existingPdfBytes = await this.pdfBlob.arrayBuffer();
-                    const pdfDoc = await PDFDocument.load(existingPdfBytes);
-                    
-                    // Note: pdf-lib doesn't support password protection in browser version
-                    // This is a placeholder for the feature
-                    console.log('Password protection requested but not available in browser version');
-                } catch (error) {
-                    console.warn('Password protection failed:', error);
-                }
-            }
-
-            showLoading(show) {
-                const overlay = document.getElementById('loadingOverlay');
-                overlay.style.display = show ? 'flex' : 'none';
-                
-                if (show) {
-                    this.createParticleEffect();
-                }
-            }
-
-            updateLoadingProgress(text) {
-                document.getElementById('loadingProgress').textContent = text;
-            }
-
-            showSuccess() {
-                document.getElementById('successMessage').style.display = 'block';
-                
-                // Animate success message
-                gsap.from('#successMessage', {
-                    duration: 0.5,
-                    scale: 0.8,
-                    opacity: 0,
-                    ease: 'back.out(1.7)'
-                });
-            }
-
-            animateSuccess() {
-                // Success particle explosion
-                for (let i = 0; i < 20; i++) {
-                    const particle = document.createElement('div');
-                    particle.style.cssText = `
-                        position: fixed;
-                        width: 4px;
-                        height: 4px;
-                        background: #34c759;
-                        border-radius: 50%;
-                        pointer-events: none;
-                        z-index: 1001;
-                        left: 50%;
-                        top: 50%;
-                    `;
-                    document.body.appendChild(particle);
-
-                    anime({
-                        targets: particle,
-                        translateX: anime.random(-200, 200),
-                        translateY: anime.random(-200, 200),
-                        scale: [1, 0],
-                        opacity: [1, 0],
-                        duration: 1000,
-                        easing: 'easeOutQuad',
-                        complete: () => particle.remove()
-                    });
-                }
-            }
-
-            createParticleEffect() {
-                const convertBtn = document.getElementById('convertBtn');
-                const particlesContainer = document.getElementById('btnParticles');
-                
-                const createParticle = () => {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    particle.style.cssText = `
-                        width: ${Math.random() * 4 + 2}px;
-                        height: ${Math.random() * 4 + 2}px;
-                        left: ${Math.random() * 100}%;
-                        animation-delay: ${Math.random() * 2}s;
-                    `;
-                    particlesContainer.appendChild(particle);
-                    
-                    setTimeout(() => particle.remove(), 2000);
-                };
-
-                const particleInterval = setInterval(createParticle, 100);
-                setTimeout(() => clearInterval(particleInterval), 3000);
-            }
-
-            async downloadPDF() {
-                if (!this.pdfBlob) return;
-
-                const url = URL.createObjectURL(this.pdfBlob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `${document.getElementById('pdfTitle').value || 'converted-images'}.pdf`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-
-                this.showNotification('PDF downloaded successfully!', 'success');
-            }
-
-            async sharePDF() {
-                if (!this.pdfBlob) return;
-
-                if (navigator.share && navigator.canShare) {
-                    try {
-                        const file = new File([this.pdfBlob], 
-                            `${document.getElementById('pdfTitle').value || 'converted-images'}.pdf`, 
-                            { type: 'application/pdf' }
-                        );
-                        
-                        if (navigator.canShare({ files: [file] })) {
-                            await navigator.share({
-                                title: 'PDF Converter by Yahya',
-                                text: 'Check out this PDF I created!',
-                                files: [file]
-                            });
-                            this.showNotification('PDF shared successfully!', 'success');
-                        } else {
-                            this.fallbackShare();
-                        }
-                    } catch (error) {
-                        if (error.name !== 'AbortError') {
-                            console.error('Sharing failed:', error);
-                            this.fallbackShare();
-                        }
-                    }
-                } else {
-                    this.fallbackShare();
-                }
-            }
-
-            fallbackShare() {
-                // Fallback: copy blob URL to clipboard
-                const url = URL.createObjectURL(this.pdfBlob);
-                navigator.clipboard.writeText(url).then(() => {
-                    this.showNotification('PDF link copied to clipboard!', 'success');
-                }).catch(() => {
-                    this.showNotification('Please use download button to save PDF', 'info');
-                });
-            }
-
-            toggleTheme() {
-                this.isDarkTheme = !this.isDarkTheme;
-                const body = document.body;
-                const themeIcon = document.querySelector('.theme-toggle i');
-                
-                if (this.isDarkTheme) {
-                    body.classList.remove('light-theme');
-                    themeIcon.className = 'fas fa-moon';
-                } else {
-                    body.classList.add('light-theme');
-                    themeIcon.className = 'fas fa-sun';
-                }
-
-                // Animate theme transition
-                anime({
-                    targets: body,
-                    duration: 500,
-                    easing: 'easeInOutQuad'
-                });
-            }
-
-            showNotification(message, type = 'info') {
-                const notification = document.createElement('div');
-                notification.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    background: ${type === 'error' ? '#ff3b30' : type === 'success' ? '#34c759' : '#667eea'};
-                    color: white;
-                    padding: 12px 20px;
-                    border-radius: 8px;
-                    font-size: 14px;
-                    z-index: 1002;
-                    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-                    backdrop-filter: blur(10px);
-                `;
-                notification.textContent = message;
-                document.body.appendChild(notification);
-
-                gsap.from(notification, { duration: 0.3, y: -50, opacity: 0 });
-                
-                setTimeout(() => {
-                    gsap.to(notification, { 
-                        duration: 0.3, 
-                        y: -50, 
-                        opacity: 0,
-                        onComplete: () => notification.remove()
-                    });
-                }, 3000);
-            }
-
-            async registerServiceWorker() {
-                if ('serviceWorker' in navigator) {
-                    try {
-                        // Create service worker inline
-                        const swCode = `
-                            const CACHE_NAME = 'pdf-converter-v1';
-                            const urlsToCache = [
-                                '/',
-                                '/offline.html'
-                            ];
-
-                            self.addEventListener('install', (event) => {
-                                event.waitUntil(
-                                    caches.open(CACHE_NAME)
-                                        .then((cache) => cache.addAll(urlsToCache))
-                                );
-                            });
-
-                            self.addEventListener('fetch', (event) => {
-                                event.respondWith(
-                                    caches.match(event.request)
-                                        .then((response) => {
-                                            return response || fetch(event.request);
-                                        })
-                                );
-                            });
-                        `;
-                        
-                        const swBlob = new Blob([swCode], { type: 'application/javascript' });
-                        const swUrl = URL.createObjectURL(swBlob);
-                        
-                        await navigator.serviceWorker.register(swUrl);
-                        console.log('Service Worker registered successfully');
-                    } catch (error) {
-                        console.log('Service Worker registration failed:', error);
-                    }
-                }
-            }
-        }
+        let selectedImages = [];
+        let isDarkMode = true;
 
         // Initialize app
-        const app = new PDFConverterApp();
-
-        // Add touch gesture support
-        let touchStartY = 0;
-        document.addEventListener('touchstart', (e) => {
-            touchStartY = e.touches[0].clientY;
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            registerServiceWorker();
         });
 
-        document.addEventListener('touchmove', (e) => {
-            const touchY = e.touches[0].clientY;
-            const diffY = touchStartY - touchY;
-            
-            // Pull to refresh (simplified)
-            if (diffY < -100 && window.scrollY === 0) {
-                document.querySelector('.app-header').style.transform = `translateY(${-diffY - 100}px)`;
-            }
-        });
+        function initializeApp() {
+            // Typed.js animation
+            new Typed('.typed-text', {
+                strings: ['Fast. Powerful. Private.', 'Convert Images to PDF', 'Mobile Optimized'],
+                typeSpeed: 50,
+                backSpeed: 30,
+                backDelay: 2000,
+                loop: true
+            });
 
-        document.addEventListener('touchend', () => {
-            document.querySelector('.app-header').style.transform = 'translateY(0)';
-        });
+            // GSAP animations
+            gsap.from('.glass-card', {
+                duration: 0.8,
+                y: 50,
+                opacity: 0,
+                stagger: 0.2,
+                ease: "power2.out"
+            });
 
-        // Add performance monitoring
-        if ('performance' in window) {
-            window.addEventListener('load', () => {
-                const perfData = performance.getEntriesByType('navigation')[0];
-                console.log('App loaded in:', perfData.loadEventEnd - perfData.loadEventStart, 'ms');
+            // Initialize drag and drop
+            initializeDragAndDrop();
+        }
+
+        function initializeDragAndDrop() {
+            const previewContainer = document.getElementById('previewContainer');
+            let draggedElement = null;
+
+            previewContainer.addEventListener('dragstart', (e) => {
+                if (e.target.closest('.preview-item')) {
+                    draggedElement = e.target.closest('.preview-item');
+                    draggedElement.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                }
+            });
+
+            previewContainer.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                
+                const afterElement = getDragAfterElement(previewContainer, e.clientY);
+                if (afterElement == null) {
+                    previewContainer.appendChild(draggedElement);
+                } else {
+                    previewContainer.insertBefore(draggedElement, afterElement);
+                }
+            });
+
+            previewContainer.addEventListener('dragend', (e) => {
+                if (draggedElement) {
+                    draggedElement.classList.remove('dragging');
+                    updateImageOrder();
+                    draggedElement = null;
+                }
             });
         }
 
-        // Add memory usage monitoring (if available)
-        if ('memory' in performance) {
-            setInterval(() => {
-                const memory = performance.memory;
-                if (memory.usedJSHeapSize > memory.jsHeapSizeLimit * 0.9) {
-                    console.warn('High memory usage detected');
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.preview-item:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
                 }
-            }, 30000);
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
         }
 
-        // Add offline detection
-        window.addEventListener('online', () => {
-            app.showNotification('Connection restored', 'success');
-        });
+        function updateImageOrder() {
+            const previewItems = document.querySelectorAll('.preview-item');
+            const newOrder = [];
+            
+            previewItems.forEach(item => {
+                const index = parseInt(item.dataset.index);
+                newOrder.push(selectedImages[index]);
+            });
+            
+            selectedImages = newOrder;
+        }
 
-        window.addEventListener('offline', () => {
-            app.showNotification('Working offline', 'info');
-        });
-
-        // Add keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey || e.metaKey) {
-                switch (e.key) {
-                    case 'o':
-                        e.preventDefault();
-                        document.getElementById('fileInput').click();
-                        break;
-                    case 's':
-                        e.preventDefault();
-                        if (app.pdfBlob) {
-                            app.downloadPDF();
-                        }
-                        break;
-                    case 'Enter':
-                        if (e.target.tagName !== 'INPUT') {
-                            e.preventDefault();
-                            if (!document.getElementById('convertBtn').disabled) {
-                                app.convertToPDF();
-                            }
-                        }
-                        break;
+        // File input handler
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    selectedImages.push(file);
+                    addImagePreview(file, selectedImages.length - 1);
                 }
+            });
+            updateConvertButton();
+        });
+
+        function addImagePreview(file, index) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewContainer = document.getElementById('previewContainer');
+                const previewItem = document.createElement('div');
+                previewItem.className = 'preview-item';
+                previewItem.draggable = true;
+                previewItem.dataset.index = index;
+                
+                previewItem.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview">
+                    <button class="remove-btn" onclick="removeImage(${index})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                previewContainer.appendChild(previewItem);
+                
+                // Animation
+                gsap.from(previewItem, {
+                    duration: 0.5,
+                    scale: 0,
+                    opacity: 0,
+                    ease: "back.out(1.7)"
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeImage(index) {
+            selectedImages.splice(index, 1);
+            updateImagePreviews();
+            updateConvertButton();
+            showToast('Image removed');
+        }
+
+        function updateImagePreviews() {
+            const previewContainer = document.getElementById('previewContainer');
+            previewContainer.innerHTML = '';
+            
+            selectedImages.forEach((file, index) => {
+                addImagePreview(file, index);
+            });
+        }
+
+        function updateConvertButton() {
+            const convertBtn = document.getElementById('convertBtn');
+            const hasImages = selectedImages.length > 0;
+            
+            convertBtn.disabled = !hasImages;
+            convertBtn.style.opacity = hasImages ? '1' : '0.6';
+            
+            if (!hasImages) {
+                convertBtn.innerHTML = '<i class="fas fa-file-pdf"></i><span>Select images first</span>';
+            } else {
+                convertBtn.innerHTML = `<i class="fas fa-file-pdf"></i><span>Create PDF (${selectedImages.length} images)</span>`;
+            }
+        }
+
+        async function convertToPDF() {
+            if (selectedImages.length === 0) {
+                showToast('Please select images first');
+                return;
+            }
+
+            const convertBtn = document.getElementById('convertBtn');
+            const progressContainer = document.getElementById('progressContainer');
+            const progressFill = document.getElementById('progressFill');
+            
+            // Show loading state
+            convertBtn.disabled = true;
+            convertBtn.innerHTML = '<div class="loading-spinner"></div><span>Creating PDF...</span>';
+            progressContainer.style.display = 'block';
+
+            try {
+                const { jsPDF } = window.jspdf;
+                const pageSize = document.getElementById('pageSize').value;
+                const orientation = document.getElementById('orientation').value;
+                const quality = document.getElementById('quality').value;
+                const fitMode = document.getElementById('fitMode').value;
+                const title = document.getElementById('pdfTitle').value || 'Converted Images';
+
+                // Create PDF with settings
+                const pdf = new jsPDF({
+                    orientation: orientation === 'auto' ? 'portrait' : orientation,
+                    unit: 'mm',
+                    format: pageSize
+                });
+
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
+
+                for (let i = 0; i < selectedImages.length; i++) {
+                    const file = selectedImages[i];
+                    const progress = ((i + 1) / selectedImages.length) * 100;
+                    progressFill.style.width = progress + '%';
+
+                    if (i > 0) {
+                        pdf.addPage();
+                    }
+
+                    const imageData = await fileToBase64(file);
+                    const img = new Image();
+                    
+                    await new Promise((resolve) => {
+                        img.onload = () => {
+                            const imgWidth = img.width;
+                            const imgHeight = img.height;
+                            const imgRatio = imgWidth / imgHeight;
+                            const pageRatio = pageWidth / pageHeight;
+
+                            let finalWidth, finalHeight, x, y;
+
+                            if (fitMode === 'contain') {
+                                if (imgRatio > pageRatio) {
+                                    finalWidth = pageWidth;
+                                    finalHeight = pageWidth / imgRatio;
+                                    x = 0;
+                                    y = (pageHeight - finalHeight) / 2;
+                                } else {
+                                    finalHeight = pageHeight;
+                                    finalWidth = pageHeight * imgRatio;
+                                    x = (pageWidth - finalWidth) / 2;
+                                    y = 0;
+                                }
+                            } else if (fitMode === 'cover') {
+                                if (imgRatio > pageRatio) {
+                                    finalHeight = pageHeight;
+                                    finalWidth = pageHeight * imgRatio;
+                                    x = (pageWidth - finalWidth) / 2;
+                                    y = 0;
+                                } else {
+                                    finalWidth = pageWidth;
+                                    finalHeight = pageWidth / imgRatio;
+                                    x = 0;
+                                    y = (pageHeight - finalHeight) / 2;
+                                }
+                            } else { // stretch
+                                finalWidth = pageWidth;
+                                finalHeight = pageHeight;
+                                x = 0;
+                                y = 0;
+                            }
+
+                            const compressionRatio = quality === 'high' ? 0.9 : quality === 'medium' ? 0.7 : 0.5;
+                            
+                            pdf.addImage(imageData, 'JPEG', x, y, finalWidth, finalHeight, undefined, 'FAST', 0, compressionRatio);
+                            resolve();
+                        };
+                        img.src = imageData;
+                    });
+
+                    // Small delay for UI responsiveness
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
+
+                // Set PDF metadata
+                pdf.setProperties({
+                    title: title,
+                    subject: 'Images converted to PDF',
+                    author: 'PDF Converter by Yahya',
+                    creator: 'PDF Converter PWA'
+                });
+
+                // Generate and download PDF
+                const pdfBlob = pdf.output('blob');
+                const fileName = `${title.replace(/[^a-z0-9]/gi, '_')}_${new Date().getTime()}.pdf`;
+                
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([pdfBlob], fileName, { type: 'application/pdf' })] })) {
+                    try {
+                        await navigator.share({
+                            files: [new File([pdfBlob], fileName, { type: 'application/pdf' })],
+                            title: title,
+                            text: 'PDF created with PDF Converter by Yahya'
+                        });
+                        showToast('PDF shared successfully!');
+                    } catch (err) {
+                        if (err.name !== 'AbortError') {
+                            downloadPDF(pdfBlob, fileName);
+                        }
+                    }
+                } else {
+                    downloadPDF(pdfBlob, fileName);
+                }
+
+                showToast('PDF created successfully!');
+                
+                // Confetti effect
+                createConfetti();
+
+            } catch (error) {
+                console.error('Error creating PDF:', error);
+                showToast('Error creating PDF. Please try again.');
+            } finally {
+                // Reset UI
+                convertBtn.disabled = false;
+                updateConvertButton();
+                progressContainer.style.display = 'none';
+                progressFill.style.width = '0%';
+            }
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+function downloadPDF(blob, fileName) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('PDF downloaded successfully!');
+}
+
+function createConfetti() {
+    const colors = ['#6366f1', '#06b6d4', '#fbbf24', '#ef4444', '#10b981'];
+    
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.style.position = 'fixed';
+        confetti.style.width = '6px';
+        confetti.style.height = '6px';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.top = '-10px';
+        confetti.style.borderRadius = '50%';
+        confetti.style.pointerEvents = 'none';
+        confetti.style.zIndex = '9999';
+        document.body.appendChild(confetti);
+        
+        gsap.to(confetti, {
+            duration: 2 + Math.random() * 2,
+            y: window.innerHeight + 100,
+            x: (Math.random() - 0.5) * 200,
+            rotation: Math.random() * 360,
+            opacity: 0,
+            ease: "power2.out",
+            onComplete: () => {
+                document.body.removeChild(confetti);
             }
         });
+    }
+}
 
-        // Initialize IndexedDB for session persistence
-        const initDB = () => {
-            const request = indexedDB.open('PDFConverterDB', 1);
-            
-            request.onerror = () => console.log('IndexedDB error');
-            
-            request.onsuccess = (event) => {
-                const db = event.target.result;
-                console.log('IndexedDB initialized');
-            };
-            
-            request.onupgradeneeded = (event) => {
-                const db = event.target.result;
-                const objectStore = db.createObjectStore('sessions', { keyPath: 'id' });
-                objectStore.createIndex('timestamp', 'timestamp', { unique: false });
-            };
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+function toggleTheme() {
+    isDarkMode = !isDarkMode;
+    const themeToggle = document.querySelector('.theme-toggle i');
+    
+    if (isDarkMode) {
+        themeToggle.className = 'fas fa-moon';
+        document.documentElement.style.setProperty('--bg-dark', '#0f172a');
+        document.documentElement.style.setProperty('--bg-card', 'rgba(30, 41, 59, 0.8)');
+        document.documentElement.style.setProperty('--text-light', '#f1f5f9');
+    } else {
+        themeToggle.className = 'fas fa-sun';
+        document.documentElement.style.setProperty('--bg-dark', '#f8fafc');
+        document.documentElement.style.setProperty('--bg-card', 'rgba(255, 255, 255, 0.8)');
+        document.documentElement.style.setProperty('--text-light', '#1e293b');
+    }
+    
+    gsap.from('.app-container', {
+        duration: 0.5,
+        scale: 0.95,
+        ease: "power2.out"
+    });
+}
+
+// Add ripple effect to convert button
+document.getElementById('convertBtn').addEventListener('click', function(e) {
+    const ripple = document.createElement('span');
+    const rect = this.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top - size / 2;
+    
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = x + 'px';
+    ripple.style.top = y + 'px';
+    ripple.classList.add('ripple');
+    
+    this.appendChild(ripple);
+    
+    setTimeout(() => {
+        ripple.remove();
+    }, 600);
+});
+
+// Service Worker Registration
+function registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        const swCode = `
+            const CACHE_NAME = 'pdf-converter-v1';
+            const urlsToCache = [
+                '/',
+                'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+                'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.16/typed.min.js'
+            ];
+
+            self.addEventListener('install', event => {
+                event.waitUntil(
+                    caches.open(CACHE_NAME)
+                        .then(cache => cache.addAll(urlsToCache))
+                );
+            });
+
+            self.addEventListener('fetch', event => {
+                event.respondWith(
+                    caches.match(event.request)
+                        .then(response => {
+                            if (response) {
+                                return response;
+                            }
+                            return fetch(event.request);
+                        })
+                );
+            });
+        `;
+        
+        const blob = new Blob([swCode], { type: 'application/javascript' });
+        const swUrl = URL.createObjectURL(blob);
+        
+        navigator.serviceWorker.register(swUrl)
+            .then(registration => {
+                console.log('ServiceWorker registered successfully');
+            })
+            .catch(error => {
+                console.log('ServiceWorker registration failed');
+            });
+    }
+}
+
+// Handle drag and drop on file input area
+const fileInputWrapper = document.querySelector('.file-input-wrapper');
+
+fileInputWrapper.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    fileInputWrapper.classList.add('drag-over');
+});
+
+fileInputWrapper.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    fileInputWrapper.classList.remove('drag-over');
+});
+
+fileInputWrapper.addEventListener('drop', (e) => {
+    e.preventDefault();
+    fileInputWrapper.classList.remove('drag-over');
+    
+    const files = Array.from(e.dataTransfer.files);
+    files.forEach(file => {
+        if (file.type.startsWith('image/')) {
+            selectedImages.push(file);
+            addImagePreview(file, selectedImages.length - 1);
+        }
+    });
+    updateConvertButton();
+});
+
+// Handle keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey || e.metaKey) {
+        switch(e.key) {
+            case 'o':
+                e.preventDefault();
+                document.getElementById('imageInput').click();
+                break;
+            case 'Enter':
+                e.preventDefault();
+                if (selectedImages.length > 0) {
+                    convertToPDF();
+                }
+                break;
+        }
+    }
+});
+
+// Handle touch gestures for mobile
+let touchStartX = 0;
+let touchStartY = 0;
+
+document.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+});
+
+document.addEventListener('touchend', (e) => {
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    const diffX = touchStartX - touchEndX;
+    const diffY = touchStartY - touchEndY;
+    
+    // Swipe gestures
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+        if (diffX > 0) {
+            // Swipe left - could add functionality
+        } else {
+            // Swipe right - could add functionality
+        }
+    }
+});
+
+// Initialize IndexedDB for offline storage
+function initIndexedDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('PDFConverterDB', 1);
+        
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => resolve(request.result);
+        
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            const objectStore = db.createObjectStore('settings', { keyPath: 'id' });
+            objectStore.createIndex('timestamp', 'timestamp', { unique: false });
         };
+    });
+}
 
-        initDB();
+// Save settings to IndexedDB
+async function saveSettings() {
+    try {
+        const db = await initIndexedDB();
+        const transaction = db.transaction(['settings'], 'readwrite');
+        const objectStore = transaction.objectStore('settings');
+        
+        const settings = {
+            id: 'userSettings',
+            pageSize: document.getElementById('pageSize').value,
+            orientation: document.getElementById('orientation').value,
+            quality: document.getElementById('quality').value,
+            fitMode: document.getElementById('fitMode').value,
+            timestamp: Date.now()
+        };
+        
+        objectStore.put(settings);
+    } catch (error) {
+        console.log('Settings save failed:', error);
+    }
+}
+
+// Load settings from IndexedDB
+async function loadSettings() {
+    try {
+        const db = await initIndexedDB();
+        const transaction = db.transaction(['settings'], 'readonly');
+        const objectStore = transaction.objectStore('settings');
+        const request = objectStore.get('userSettings');
+        
+        request.onsuccess = () => {
+            if (request.result) {
+                const settings = request.result;
+                document.getElementById('pageSize').value = settings.pageSize || 'a4';
+                document.getElementById('orientation').value = settings.orientation || 'auto';
+                document.getElementById('quality').value = settings.quality || 'medium';
+                document.getElementById('fitMode').value = settings.fitMode || 'contain';
+            }
+        };
+    } catch (error) {
+        console.log('Settings load failed:', error);
+    }
+}
+
+// Auto-save settings when changed
+document.querySelectorAll('.setting-input').forEach(input => {
+    input.addEventListener('change', saveSettings);
+});
+
+// Load settings on app start
+loadSettings();
+
+// Intersection Observer for animations
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            gsap.from(entry.target, {
+                duration: 0.6,
+                y: 30,
+                opacity: 0,
+                ease: "power2.out"
+            });
+        }
+    });
+});
+
+document.querySelectorAll('.glass-card').forEach(card => {
+    observer.observe(card);
+});
+
+// Handle app install prompt
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // Show install button or banner
+    const installBtn = document.createElement('button');
+    installBtn.innerHTML = '<i class="fas fa-download"></i> Install App';
+    installBtn.className = 'convert-btn';
+    installBtn.style.marginTop = '10px';
+    installBtn.style.fontSize = '0.9rem';
+    installBtn.style.padding = '12px 20px';
+    
+    installBtn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                showToast('App installed successfully!');
+            }
+            deferredPrompt = null;
+            installBtn.remove();
+        }
+    });
+    
+    document.querySelector('.main-content').appendChild(installBtn);
+});
+
+// Handle app installed
+window.addEventListener('appinstalled', () => {
+    showToast('PDF Converter installed successfully!');
+    deferredPrompt = null;
+});
+
+// Performance monitoring
+if ('performance' in window) {
+    window.addEventListener('load', () => {
+        const perfData = performance.getEntriesByType('navigation')[0];
+        console.log('App load time:', perfData.loadEventEnd - perfData.fetchStart, 'ms');
+    });
+}
+
+// Error handling
+window.addEventListener('error', (e) => {
+    console.error('Global error:', e.error);
+    showToast('An error occurred. Please try again.');
+});
+
+window.addEventListener('unhandledrejection', (e) => {
+    console.error('Unhandled promise rejection:', e.reason);
+    showToast('Something went wrong. Please refresh and try again.');
+});
+
+// Memory cleanup
+window.addEventListener('beforeunload', () => {
+    selectedImages = [];
+    // Clean up any object URLs
+    document.querySelectorAll('.preview-item img').forEach(img => {
+        if (img.src.startsWith('blob:')) {
+            URL.revokeObjectURL(img.src);
+        }
+    });
+});
     </script>
 </body>
 </html>
