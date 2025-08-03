@@ -1183,4 +1183,150 @@ async function saveSettings() {
         const settings = {
             id: 'userSettings',
             pageSize: document.getElementById('pageSize')?.value || 'a4',
-            orientation: document.getElementB
+            orientation: document.getElementById('orientation')?.value || 'auto',
+            quality: document.getElementById('quality')?.value || 'medium',
+            fitMode: document.getElementById('fitMode')?.value || 'contain',
+            timestamp: Date.now()
+        };
+        
+        objectStore.put(settings);
+    } catch (error) {
+        console.log('Settings save failed:', error);
+    }
+}
+
+// Load settings from IndexedDB
+async function loadSettings() {
+    try {
+        const db = await initIndexedDB();
+        const transaction = db.transaction(['settings'], 'readonly');
+        const objectStore = transaction.objectStore('settings');
+        const request = objectStore.get('userSettings');
+        
+        request.onsuccess = () => {
+            if (request.result) {
+                const settings = request.result;
+                const pageSize = document.getElementById('pageSize');
+                const orientation = document.getElementById('orientation');
+                const quality = document.getElementById('quality');
+                const fitMode = document.getElementById('fitMode');
+                
+                if (pageSize) pageSize.value = settings.pageSize || 'a4';
+                if (orientation) orientation.value = settings.orientation || 'auto';
+                if (quality) quality.value = settings.quality || 'medium';
+                if (fitMode) fitMode.value = settings.fitMode || 'contain';
+            }
+        };
+    } catch (error) {
+        console.log('Settings load failed:', error);
+    }
+}
+
+// Handle app install prompt
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // Show install button
+    const mainContent = document.querySelector('.main-content');
+    if (mainContent && !document.querySelector('.install-btn')) {
+        const installBtn = document.createElement('button');
+        installBtn.innerHTML = '<i class="fas fa-download"></i> Install App';
+        installBtn.className = 'convert-btn install-btn';
+        installBtn.style.marginTop = '10px';
+        installBtn.style.fontSize = '0.9rem';
+        installBtn.style.padding = '12px 20px';
+        
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    showToast('App installed successfully!');
+                }
+                deferredPrompt = null;
+                installBtn.remove();
+            }
+        });
+        
+        mainContent.appendChild(installBtn);
+    }
+});
+
+// Handle app installed
+window.addEventListener('appinstalled', () => {
+    showToast('PDF Converter installed successfully!');
+    deferredPrompt = null;
+});
+
+// Error handling
+window.addEventListener('error', (e) => {
+    console.error('Global error:', e.error);
+    showToast('An error occurred. Please try again.');
+});
+
+window.addEventListener('unhandledrejection', (e) => {
+    console.error('Unhandled promise rejection:', e.reason);
+    showToast('Something went wrong. Please refresh and try again.');
+    e.preventDefault(); // Prevent default browser handling
+});
+
+// Memory cleanup
+window.addEventListener('beforeunload', () => {
+    selectedImages = [];
+    // Clean up any object URLs
+    document.querySelectorAll('.preview-item img').forEach(img => {
+        if (img.src && img.src.startsWith('blob:')) {
+            URL.revokeObjectURL(img.src);
+        }
+    });
+});
+
+// Touch gestures for mobile (optional - can be removed if not needed)
+let touchStartX = 0;
+let touchStartY = 0;
+
+document.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+});
+
+document.addEventListener('touchend', (e) => {
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    const diffX = touchStartX - touchEndX;
+    const diffY = touchStartY - touchEndY;
+    
+    // Swipe gestures - can add functionality here if needed
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+        // Swipe detected
+    }
+});
+
+// Intersection Observer for animations
+if (typeof IntersectionObserver !== 'undefined') {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && typeof gsap !== 'undefined') {
+                gsap.from(entry.target, {
+                    duration: 0.6,
+                    y: 30,
+                    opacity: 0,
+                    ease: "power2.out"
+                });
+            }
+        });
+    });
+
+    // Observe glass cards when DOM is ready
+    setTimeout(() => {
+        document.querySelectorAll('.glass-card').forEach(card => {
+            observer.observe(card);
+        });
+    }, 100);
+}
+    </script>
+</body>
+</html>
