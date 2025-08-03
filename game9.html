@@ -539,17 +539,20 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        let selectedImages = [];
-        let isDarkMode = true;
+let selectedImages = [];
+let isDarkMode = true;
 
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeApp();
-            registerServiceWorker();
-        });
+// Initialize app
+document.addEventListener('DOMContentLoaded', function() {
+    initializeApp();
+    registerServiceWorker();
+    loadSettings();
+});
 
-        function initializeApp() {
-            // Typed.js animation
+function initializeApp() {
+    try {
+        // Check if Typed.js is loaded
+        if (typeof Typed !== 'undefined') {
             new Typed('.typed-text', {
                 strings: ['Fast. Powerful. Private.', 'Convert Images to PDF', 'Mobile Optimized'],
                 typeSpeed: 50,
@@ -557,8 +560,13 @@
                 backDelay: 2000,
                 loop: true
             });
+        } else {
+            // Fallback if Typed.js fails to load
+            document.querySelector('.typed-text').textContent = 'Convert Images to PDF';
+        }
 
-            // GSAP animations
+        // Check if GSAP is loaded
+        if (typeof gsap !== 'undefined') {
             gsap.from('.glass-card', {
                 duration: 0.8,
                 y: 50,
@@ -566,73 +574,24 @@
                 stagger: 0.2,
                 ease: "power2.out"
             });
-
-            // Initialize drag and drop
-            initializeDragAndDrop();
         }
 
-        function initializeDragAndDrop() {
-            const previewContainer = document.getElementById('previewContainer');
-            let draggedElement = null;
+        // Initialize drag and drop
+        initializeDragAndDrop();
+        initializeEventListeners();
+        
+    } catch (error) {
+        console.error('Initialization error:', error);
+        // Continue without animations if there's an error
+        document.querySelector('.typed-text').textContent = 'Convert Images to PDF';
+    }
+}
 
-            previewContainer.addEventListener('dragstart', (e) => {
-                if (e.target.closest('.preview-item')) {
-                    draggedElement = e.target.closest('.preview-item');
-                    draggedElement.classList.add('dragging');
-                    e.dataTransfer.effectAllowed = 'move';
-                }
-            });
-
-            previewContainer.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                e.dataTransfer.dropEffect = 'move';
-                
-                const afterElement = getDragAfterElement(previewContainer, e.clientY);
-                if (afterElement == null) {
-                    previewContainer.appendChild(draggedElement);
-                } else {
-                    previewContainer.insertBefore(draggedElement, afterElement);
-                }
-            });
-
-            previewContainer.addEventListener('dragend', (e) => {
-                if (draggedElement) {
-                    draggedElement.classList.remove('dragging');
-                    updateImageOrder();
-                    draggedElement = null;
-                }
-            });
-        }
-
-        function getDragAfterElement(container, y) {
-            const draggableElements = [...container.querySelectorAll('.preview-item:not(.dragging)')];
-            
-            return draggableElements.reduce((closest, child) => {
-                const box = child.getBoundingClientRect();
-                const offset = y - box.top - box.height / 2;
-                
-                if (offset < 0 && offset > closest.offset) {
-                    return { offset: offset, element: child };
-                } else {
-                    return closest;
-                }
-            }, { offset: Number.NEGATIVE_INFINITY }).element;
-        }
-
-        function updateImageOrder() {
-            const previewItems = document.querySelectorAll('.preview-item');
-            const newOrder = [];
-            
-            previewItems.forEach(item => {
-                const index = parseInt(item.dataset.index);
-                newOrder.push(selectedImages[index]);
-            });
-            
-            selectedImages = newOrder;
-        }
-
-        // File input handler
-        document.getElementById('imageInput').addEventListener('change', function(e) {
+function initializeEventListeners() {
+    // File input handler
+    const imageInput = document.getElementById('imageInput');
+    if (imageInput) {
+        imageInput.addEventListener('change', function(e) {
             const files = Array.from(e.target.files);
             files.forEach(file => {
                 if (file.type.startsWith('image/')) {
@@ -642,113 +601,285 @@
             });
             updateConvertButton();
         });
+    }
 
-        function addImagePreview(file, index) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const previewContainer = document.getElementById('previewContainer');
-                const previewItem = document.createElement('div');
-                previewItem.className = 'preview-item';
-                previewItem.draggable = true;
-                previewItem.dataset.index = index;
-                
-                previewItem.innerHTML = `
-                    <img src="${e.target.result}" alt="Preview">
-                    <button class="remove-btn" onclick="removeImage(${index})">
-                        <i class="fas fa-times"></i>
-                    </button>
-                `;
-                
-                previewContainer.appendChild(previewItem);
-                
-                // Animation
-                gsap.from(previewItem, {
-                    duration: 0.5,
-                    scale: 0,
-                    opacity: 0,
-                    ease: "back.out(1.7)"
-                });
-            };
-            reader.readAsDataURL(file);
-        }
+    // Handle drag and drop on file input area
+    const fileInputWrapper = document.querySelector('.file-input-wrapper');
+    if (fileInputWrapper) {
+        fileInputWrapper.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileInputWrapper.classList.add('drag-over');
+        });
 
-        function removeImage(index) {
-            selectedImages.splice(index, 1);
-            updateImagePreviews();
-            updateConvertButton();
-            showToast('Image removed');
-        }
+        fileInputWrapper.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            fileInputWrapper.classList.remove('drag-over');
+        });
 
-        function updateImagePreviews() {
-            const previewContainer = document.getElementById('previewContainer');
-            previewContainer.innerHTML = '';
+        fileInputWrapper.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileInputWrapper.classList.remove('drag-over');
             
-            selectedImages.forEach((file, index) => {
-                addImagePreview(file, index);
+            const files = Array.from(e.dataTransfer.files);
+            files.forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    selectedImages.push(file);
+                    addImagePreview(file, selectedImages.length - 1);
+                }
+            });
+            updateConvertButton();
+        });
+    }
+
+    // Add ripple effect to convert button
+    const convertBtn = document.getElementById('convertBtn');
+    if (convertBtn) {
+        convertBtn.addEventListener('click', function(e) {
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.classList.add('ripple');
+            
+            this.appendChild(ripple);
+            
+            setTimeout(() => {
+                if (ripple.parentNode) {
+                    ripple.remove();
+                }
+            }, 600);
+        });
+    }
+
+    // Auto-save settings when changed
+    document.querySelectorAll('.setting-input').forEach(input => {
+        input.addEventListener('change', saveSettings);
+    });
+
+    // Handle keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey || e.metaKey) {
+            switch(e.key) {
+                case 'o':
+                    e.preventDefault();
+                    const imageInput = document.getElementById('imageInput');
+                    if (imageInput) imageInput.click();
+                    break;
+                case 'Enter':
+                    e.preventDefault();
+                    if (selectedImages.length > 0) {
+                        convertToPDF();
+                    }
+                    break;
+            }
+        }
+    });
+}
+
+function initializeDragAndDrop() {
+    const previewContainer = document.getElementById('previewContainer');
+    if (!previewContainer) return;
+    
+    let draggedElement = null;
+
+    previewContainer.addEventListener('dragstart', (e) => {
+        if (e.target.closest('.preview-item')) {
+            draggedElement = e.target.closest('.preview-item');
+            draggedElement.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+    });
+
+    previewContainer.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        
+        if (draggedElement) {
+            const afterElement = getDragAfterElement(previewContainer, e.clientY);
+            if (afterElement == null) {
+                previewContainer.appendChild(draggedElement);
+            } else {
+                previewContainer.insertBefore(draggedElement, afterElement);
+            }
+        }
+    });
+
+    previewContainer.addEventListener('dragend', (e) => {
+        if (draggedElement) {
+            draggedElement.classList.remove('dragging');
+            updateImageOrder();
+            draggedElement = null;
+        }
+    });
+}
+
+function getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll('.preview-item:not(.dragging)')];
+    
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+        } else {
+            return closest;
+        }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+function updateImageOrder() {
+    const previewItems = document.querySelectorAll('.preview-item');
+    const newOrder = [];
+    
+    previewItems.forEach(item => {
+        const index = parseInt(item.dataset.index);
+        if (!isNaN(index) && selectedImages[index]) {
+            newOrder.push(selectedImages[index]);
+        }
+    });
+    
+    selectedImages = newOrder;
+    updateImagePreviews();
+}
+
+function addImagePreview(file, index) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const previewContainer = document.getElementById('previewContainer');
+        if (!previewContainer) return;
+        
+        const previewItem = document.createElement('div');
+        previewItem.className = 'preview-item';
+        previewItem.draggable = true;
+        previewItem.dataset.index = index;
+        
+        previewItem.innerHTML = `
+            <img src="${e.target.result}" alt="Preview">
+            <button class="remove-btn" onclick="removeImage(${index})">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        
+        previewContainer.appendChild(previewItem);
+        
+        // Animation with GSAP if available
+        if (typeof gsap !== 'undefined') {
+            gsap.from(previewItem, {
+                duration: 0.5,
+                scale: 0,
+                opacity: 0,
+                ease: "back.out(1.7)"
             });
         }
+    };
+    
+    reader.onerror = function(error) {
+        console.error('Error reading file:', error);
+        showToast('Error reading image file');
+    };
+    
+    reader.readAsDataURL(file);
+}
 
-        function updateConvertButton() {
-            const convertBtn = document.getElementById('convertBtn');
-            const hasImages = selectedImages.length > 0;
-            
-            convertBtn.disabled = !hasImages;
-            convertBtn.style.opacity = hasImages ? '1' : '0.6';
-            
-            if (!hasImages) {
-                convertBtn.innerHTML = '<i class="fas fa-file-pdf"></i><span>Select images first</span>';
-            } else {
-                convertBtn.innerHTML = `<i class="fas fa-file-pdf"></i><span>Create PDF (${selectedImages.length} images)</span>`;
-            }
+function removeImage(index) {
+    selectedImages.splice(index, 1);
+    updateImagePreviews();
+    updateConvertButton();
+    showToast('Image removed');
+}
+
+function updateImagePreviews() {
+    const previewContainer = document.getElementById('previewContainer');
+    if (!previewContainer) return;
+    
+    previewContainer.innerHTML = '';
+    
+    selectedImages.forEach((file, index) => {
+        addImagePreview(file, index);
+    });
+}
+
+function updateConvertButton() {
+    const convertBtn = document.getElementById('convertBtn');
+    if (!convertBtn) return;
+    
+    const hasImages = selectedImages.length > 0;
+    
+    convertBtn.disabled = !hasImages;
+    convertBtn.style.opacity = hasImages ? '1' : '0.6';
+    
+    if (!hasImages) {
+        convertBtn.innerHTML = '<i class="fas fa-file-pdf"></i><span>Select images first</span>';
+    } else {
+        convertBtn.innerHTML = `<i class="fas fa-file-pdf"></i><span>Create PDF (${selectedImages.length} images)</span>`;
+    }
+}
+
+async function convertToPDF() {
+    if (selectedImages.length === 0) {
+        showToast('Please select images first');
+        return;
+    }
+
+    const convertBtn = document.getElementById('convertBtn');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressFill = document.getElementById('progressFill');
+    
+    if (!convertBtn || !progressContainer || !progressFill) {
+        showToast('Error: UI elements not found');
+        return;
+    }
+
+    // Show loading state
+    convertBtn.disabled = true;
+    convertBtn.innerHTML = '<div class="loading-spinner"></div><span>Creating PDF...</span>';
+    progressContainer.style.display = 'block';
+
+    try {
+        // Check if jsPDF is loaded
+        if (typeof window.jspdf === 'undefined' || !window.jspdf.jsPDF) {
+            throw new Error('jsPDF library not loaded');
         }
 
-        async function convertToPDF() {
-            if (selectedImages.length === 0) {
-                showToast('Please select images first');
-                return;
+        const { jsPDF } = window.jspdf;
+        const pageSize = document.getElementById('pageSize')?.value || 'a4';
+        const orientation = document.getElementById('orientation')?.value || 'auto';
+        const quality = document.getElementById('quality')?.value || 'medium';
+        const fitMode = document.getElementById('fitMode')?.value || 'contain';
+        const title = document.getElementById('pdfTitle')?.value || 'Converted Images';
+
+        // Create PDF with settings
+        const pdf = new jsPDF({
+            orientation: orientation === 'auto' ? 'portrait' : orientation,
+            unit: 'mm',
+            format: pageSize
+        });
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+
+        for (let i = 0; i < selectedImages.length; i++) {
+            const file = selectedImages[i];
+            const progress = ((i + 1) / selectedImages.length) * 100;
+            progressFill.style.width = progress + '%';
+
+            if (i > 0) {
+                pdf.addPage();
             }
 
-            const convertBtn = document.getElementById('convertBtn');
-            const progressContainer = document.getElementById('progressContainer');
-            const progressFill = document.getElementById('progressFill');
-            
-            // Show loading state
-            convertBtn.disabled = true;
-            convertBtn.innerHTML = '<div class="loading-spinner"></div><span>Creating PDF...</span>';
-            progressContainer.style.display = 'block';
-
             try {
-                const { jsPDF } = window.jspdf;
-                const pageSize = document.getElementById('pageSize').value;
-                const orientation = document.getElementById('orientation').value;
-                const quality = document.getElementById('quality').value;
-                const fitMode = document.getElementById('fitMode').value;
-                const title = document.getElementById('pdfTitle').value || 'Converted Images';
-
-                // Create PDF with settings
-                const pdf = new jsPDF({
-                    orientation: orientation === 'auto' ? 'portrait' : orientation,
-                    unit: 'mm',
-                    format: pageSize
-                });
-
-                const pageWidth = pdf.internal.pageSize.getWidth();
-                const pageHeight = pdf.internal.pageSize.getHeight();
-
-                for (let i = 0; i < selectedImages.length; i++) {
-                    const file = selectedImages[i];
-                    const progress = ((i + 1) / selectedImages.length) * 100;
-                    progressFill.style.width = progress + '%';
-
-                    if (i > 0) {
-                        pdf.addPage();
-                    }
-
-                    const imageData = await fileToBase64(file);
-                    const img = new Image();
-                    
-                    await new Promise((resolve) => {
-                        img.onload = () => {
+                const imageData = await fileToBase64(file);
+                const img = new Image();
+                
+                await new Promise((resolve, reject) => {
+                    img.onload = () => {
+                        try {
                             const imgWidth = img.width;
                             const imgHeight = img.height;
                             const imgRatio = imgWidth / imgHeight;
@@ -791,82 +922,109 @@
                             
                             pdf.addImage(imageData, 'JPEG', x, y, finalWidth, finalHeight, undefined, 'FAST', 0, compressionRatio);
                             resolve();
-                        };
-                        img.src = imageData;
-                    });
-
-                    // Small delay for UI responsiveness
-                    await new Promise(resolve => setTimeout(resolve, 50));
-                }
-
-                // Set PDF metadata
-                pdf.setProperties({
-                    title: title,
-                    subject: 'Images converted to PDF',
-                    author: 'PDF Converter by Yahya',
-                    creator: 'PDF Converter PWA'
-                });
-
-                // Generate and download PDF
-                const pdfBlob = pdf.output('blob');
-                const fileName = `${title.replace(/[^a-z0-9]/gi, '_')}_${new Date().getTime()}.pdf`;
-                
-                if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([pdfBlob], fileName, { type: 'application/pdf' })] })) {
-                    try {
-                        await navigator.share({
-                            files: [new File([pdfBlob], fileName, { type: 'application/pdf' })],
-                            title: title,
-                            text: 'PDF created with PDF Converter by Yahya'
-                        });
-                        showToast('PDF shared successfully!');
-                    } catch (err) {
-                        if (err.name !== 'AbortError') {
-                            downloadPDF(pdfBlob, fileName);
+                        } catch (error) {
+                            reject(error);
                         }
-                    }
+                    };
+                    
+                    img.onerror = () => {
+                        reject(new Error('Failed to load image'));
+                    };
+                    
+                    img.src = imageData;
+                });
+            } catch (error) {
+                console.error(`Error processing image ${i + 1}:`, error);
+                showToast(`Error processing image ${i + 1}. Skipping...`);
+                continue;
+            }
+
+            // Small delay for UI responsiveness
+            await new Promise(resolve => setTimeout(resolve, 50));
+        }
+
+        // Set PDF metadata
+        pdf.setProperties({
+            title: title,
+            subject: 'Images converted to PDF',
+            author: 'PDF Converter by Yahya',
+            creator: 'PDF Converter PWA'
+        });
+
+        // Generate and download PDF
+        const pdfBlob = pdf.output('blob');
+        const fileName = `${title.replace(/[^a-z0-9]/gi, '_')}_${new Date().getTime()}.pdf`;
+        
+        // Try native sharing first, fallback to download
+        if (navigator.share && navigator.canShare) {
+            try {
+                const file = new File([pdfBlob], fileName, { type: 'application/pdf' });
+                if (navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        files: [file],
+                        title: title,
+                        text: 'PDF created with PDF Converter by Yahya'
+                    });
+                    showToast('PDF shared successfully!');
                 } else {
                     downloadPDF(pdfBlob, fileName);
                 }
-
-                showToast('PDF created successfully!');
-                
-                // Confetti effect
-                createConfetti();
-
-            } catch (error) {
-                console.error('Error creating PDF:', error);
-                showToast('Error creating PDF. Please try again.');
-            } finally {
-                // Reset UI
-                convertBtn.disabled = false;
-                updateConvertButton();
-                progressContainer.style.display = 'none';
-                progressFill.style.width = '0%';
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    downloadPDF(pdfBlob, fileName);
+                }
             }
+        } else {
+            downloadPDF(pdfBlob, fileName);
         }
 
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
-        }
+        showToast('PDF created successfully!');
+        
+        // Confetti effect
+        createConfetti();
+
+    } catch (error) {
+        console.error('Error creating PDF:', error);
+        showToast('Error creating PDF: ' + error.message);
+    } finally {
+        // Reset UI
+        convertBtn.disabled = false;
+        updateConvertButton();
+        progressContainer.style.display = 'none';
+        progressFill.style.width = '0%';
+    }
+}
+
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(file);
+    });
+}
 
 function downloadPDF(blob, fileName) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    showToast('PDF downloaded successfully!');
+    try {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('PDF downloaded successfully!');
+    } catch (error) {
+        console.error('Download error:', error);
+        showToast('Download failed. Please try again.');
+    }
 }
 
 function createConfetti() {
+    if (typeof gsap === 'undefined') return;
+    
     const colors = ['#6366f1', '#06b6d4', '#fbbf24', '#ef4444', '#10b981'];
     
     for (let i = 0; i < 50; i++) {
@@ -890,7 +1048,9 @@ function createConfetti() {
             opacity: 0,
             ease: "power2.out",
             onComplete: () => {
-                document.body.removeChild(confetti);
+                if (document.body.contains(confetti)) {
+                    document.body.removeChild(confetti);
+                }
             }
         });
     }
@@ -898,6 +1058,8 @@ function createConfetti() {
 
 function showToast(message) {
     const toast = document.getElementById('toast');
+    if (!toast) return;
+    
     toast.textContent = message;
     toast.classList.add('show');
     
@@ -910,44 +1072,28 @@ function toggleTheme() {
     isDarkMode = !isDarkMode;
     const themeToggle = document.querySelector('.theme-toggle i');
     
-    if (isDarkMode) {
-        themeToggle.className = 'fas fa-moon';
-        document.documentElement.style.setProperty('--bg-dark', '#0f172a');
-        document.documentElement.style.setProperty('--bg-card', 'rgba(30, 41, 59, 0.8)');
-        document.documentElement.style.setProperty('--text-light', '#f1f5f9');
-    } else {
-        themeToggle.className = 'fas fa-sun';
-        document.documentElement.style.setProperty('--bg-dark', '#f8fafc');
-        document.documentElement.style.setProperty('--bg-card', 'rgba(255, 255, 255, 0.8)');
-        document.documentElement.style.setProperty('--text-light', '#1e293b');
+    if (themeToggle) {
+        if (isDarkMode) {
+            themeToggle.className = 'fas fa-moon';
+            document.documentElement.style.setProperty('--bg-dark', '#0f172a');
+            document.documentElement.style.setProperty('--bg-card', 'rgba(30, 41, 59, 0.8)');
+            document.documentElement.style.setProperty('--text-light', '#f1f5f9');
+        } else {
+            themeToggle.className = 'fas fa-sun';
+            document.documentElement.style.setProperty('--bg-dark', '#f8fafc');
+            document.documentElement.style.setProperty('--bg-card', 'rgba(255, 255, 255, 0.8)');
+            document.documentElement.style.setProperty('--text-light', '#1e293b');
+        }
     }
     
-    gsap.from('.app-container', {
-        duration: 0.5,
-        scale: 0.95,
-        ease: "power2.out"
-    });
+    if (typeof gsap !== 'undefined') {
+        gsap.from('.app-container', {
+            duration: 0.5,
+            scale: 0.95,
+            ease: "power2.out"
+        });
+    }
 }
-
-// Add ripple effect to convert button
-document.getElementById('convertBtn').addEventListener('click', function(e) {
-    const ripple = document.createElement('span');
-    const rect = this.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height);
-    const x = e.clientX - rect.left - size / 2;
-    const y = e.clientY - rect.top - size / 2;
-    
-    ripple.style.width = ripple.style.height = size + 'px';
-    ripple.style.left = x + 'px';
-    ripple.style.top = y + 'px';
-    ripple.classList.add('ripple');
-    
-    this.appendChild(ripple);
-    
-    setTimeout(() => {
-        ripple.remove();
-    }, 600);
-});
 
 // Service Worker Registration
 function registerServiceWorker() {
@@ -966,6 +1112,7 @@ function registerServiceWorker() {
                 event.waitUntil(
                     caches.open(CACHE_NAME)
                         .then(cache => cache.addAll(urlsToCache))
+                        .catch(error => console.log('Cache add failed:', error))
                 );
             });
 
@@ -978,96 +1125,39 @@ function registerServiceWorker() {
                             }
                             return fetch(event.request);
                         })
+                        .catch(error => {
+                            console.log('Fetch failed:', error);
+                            return new Response('Offline');
+                        })
                 );
             });
         `;
         
-        const blob = new Blob([swCode], { type: 'application/javascript' });
-        const swUrl = URL.createObjectURL(blob);
-        
-        navigator.serviceWorker.register(swUrl)
-            .then(registration => {
-                console.log('ServiceWorker registered successfully');
-            })
-            .catch(error => {
-                console.log('ServiceWorker registration failed');
-            });
+        try {
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+            
+            navigator.serviceWorker.register(swUrl)
+                .then(registration => {
+                    console.log('ServiceWorker registered successfully');
+                })
+                .catch(error => {
+                    console.log('ServiceWorker registration failed:', error);
+                });
+        } catch (error) {
+            console.log('ServiceWorker setup failed:', error);
+        }
     }
 }
-
-// Handle drag and drop on file input area
-const fileInputWrapper = document.querySelector('.file-input-wrapper');
-
-fileInputWrapper.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    fileInputWrapper.classList.add('drag-over');
-});
-
-fileInputWrapper.addEventListener('dragleave', (e) => {
-    e.preventDefault();
-    fileInputWrapper.classList.remove('drag-over');
-});
-
-fileInputWrapper.addEventListener('drop', (e) => {
-    e.preventDefault();
-    fileInputWrapper.classList.remove('drag-over');
-    
-    const files = Array.from(e.dataTransfer.files);
-    files.forEach(file => {
-        if (file.type.startsWith('image/')) {
-            selectedImages.push(file);
-            addImagePreview(file, selectedImages.length - 1);
-        }
-    });
-    updateConvertButton();
-});
-
-// Handle keyboard shortcuts
-document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey || e.metaKey) {
-        switch(e.key) {
-            case 'o':
-                e.preventDefault();
-                document.getElementById('imageInput').click();
-                break;
-            case 'Enter':
-                e.preventDefault();
-                if (selectedImages.length > 0) {
-                    convertToPDF();
-                }
-                break;
-        }
-    }
-});
-
-// Handle touch gestures for mobile
-let touchStartX = 0;
-let touchStartY = 0;
-
-document.addEventListener('touchstart', (e) => {
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
-});
-
-document.addEventListener('touchend', (e) => {
-    const touchEndX = e.changedTouches[0].clientX;
-    const touchEndY = e.changedTouches[0].clientY;
-    const diffX = touchStartX - touchEndX;
-    const diffY = touchStartY - touchEndY;
-    
-    // Swipe gestures
-    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
-        if (diffX > 0) {
-            // Swipe left - could add functionality
-        } else {
-            // Swipe right - could add functionality
-        }
-    }
-});
 
 // Initialize IndexedDB for offline storage
 function initIndexedDB() {
     return new Promise((resolve, reject) => {
+        if (!window.indexedDB) {
+            reject(new Error('IndexedDB not supported'));
+            return;
+        }
+        
         const request = indexedDB.open('PDFConverterDB', 1);
         
         request.onerror = () => reject(request.error);
@@ -1075,8 +1165,10 @@ function initIndexedDB() {
         
         request.onupgradeneeded = (event) => {
             const db = event.target.result;
-            const objectStore = db.createObjectStore('settings', { keyPath: 'id' });
-            objectStore.createIndex('timestamp', 'timestamp', { unique: false });
+            if (!db.objectStoreNames.contains('settings')) {
+                const objectStore = db.createObjectStore('settings', { keyPath: 'id' });
+                objectStore.createIndex('timestamp', 'timestamp', { unique: false });
+            }
         };
     });
 }
@@ -1090,132 +1182,5 @@ async function saveSettings() {
         
         const settings = {
             id: 'userSettings',
-            pageSize: document.getElementById('pageSize').value,
-            orientation: document.getElementById('orientation').value,
-            quality: document.getElementById('quality').value,
-            fitMode: document.getElementById('fitMode').value,
-            timestamp: Date.now()
-        };
-        
-        objectStore.put(settings);
-    } catch (error) {
-        console.log('Settings save failed:', error);
-    }
-}
-
-// Load settings from IndexedDB
-async function loadSettings() {
-    try {
-        const db = await initIndexedDB();
-        const transaction = db.transaction(['settings'], 'readonly');
-        const objectStore = transaction.objectStore('settings');
-        const request = objectStore.get('userSettings');
-        
-        request.onsuccess = () => {
-            if (request.result) {
-                const settings = request.result;
-                document.getElementById('pageSize').value = settings.pageSize || 'a4';
-                document.getElementById('orientation').value = settings.orientation || 'auto';
-                document.getElementById('quality').value = settings.quality || 'medium';
-                document.getElementById('fitMode').value = settings.fitMode || 'contain';
-            }
-        };
-    } catch (error) {
-        console.log('Settings load failed:', error);
-    }
-}
-
-// Auto-save settings when changed
-document.querySelectorAll('.setting-input').forEach(input => {
-    input.addEventListener('change', saveSettings);
-});
-
-// Load settings on app start
-loadSettings();
-
-// Intersection Observer for animations
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            gsap.from(entry.target, {
-                duration: 0.6,
-                y: 30,
-                opacity: 0,
-                ease: "power2.out"
-            });
-        }
-    });
-});
-
-document.querySelectorAll('.glass-card').forEach(card => {
-    observer.observe(card);
-});
-
-// Handle app install prompt
-let deferredPrompt;
-
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    
-    // Show install button or banner
-    const installBtn = document.createElement('button');
-    installBtn.innerHTML = '<i class="fas fa-download"></i> Install App';
-    installBtn.className = 'convert-btn';
-    installBtn.style.marginTop = '10px';
-    installBtn.style.fontSize = '0.9rem';
-    installBtn.style.padding = '12px 20px';
-    
-    installBtn.addEventListener('click', async () => {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                showToast('App installed successfully!');
-            }
-            deferredPrompt = null;
-            installBtn.remove();
-        }
-    });
-    
-    document.querySelector('.main-content').appendChild(installBtn);
-});
-
-// Handle app installed
-window.addEventListener('appinstalled', () => {
-    showToast('PDF Converter installed successfully!');
-    deferredPrompt = null;
-});
-
-// Performance monitoring
-if ('performance' in window) {
-    window.addEventListener('load', () => {
-        const perfData = performance.getEntriesByType('navigation')[0];
-        console.log('App load time:', perfData.loadEventEnd - perfData.fetchStart, 'ms');
-    });
-}
-
-// Error handling
-window.addEventListener('error', (e) => {
-    console.error('Global error:', e.error);
-    showToast('An error occurred. Please try again.');
-});
-
-window.addEventListener('unhandledrejection', (e) => {
-    console.error('Unhandled promise rejection:', e.reason);
-    showToast('Something went wrong. Please refresh and try again.');
-});
-
-// Memory cleanup
-window.addEventListener('beforeunload', () => {
-    selectedImages = [];
-    // Clean up any object URLs
-    document.querySelectorAll('.preview-item img').forEach(img => {
-        if (img.src.startsWith('blob:')) {
-            URL.revokeObjectURL(img.src);
-        }
-    });
-});
-    </script>
-</body>
-</html>
+            pageSize: document.getElementById('pageSize')?.value || 'a4',
+            orientation: document.getElementB
