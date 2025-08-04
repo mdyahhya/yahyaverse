@@ -227,37 +227,232 @@
         }
 
         /* Animation Canvas */
-        .animation-container {
-            width: 300px;
-            height: 300px;
-            margin: 2rem auto;
-            background: var(--glass-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
+ /* Horizontal Slideshow Container - Mobile Responsive */
+.animation-container {
+    width: 100%;
+    max-width: 500px;
+    height: 80px;
+    margin: 2rem auto;
+    background: var(--glass-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 0 20px;
+}
 
-        .animation-placeholder {
-            width: 200px;
-            height: 200px;
-            background: var(--gradient-primary);
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            color: white;
-        }
+.slideshow-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.1); opacity: 1; }
-        }
+.slideshow-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    position: relative;
+}
+
+.slideshow-icon {
+    font-size: 1.5rem;
+    color: var(--text-color);
+    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    opacity: 0.3;
+    transform: scale(0.7) translateX(0);
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+}
+
+.slideshow-icon.active {
+    font-size: 2.5rem;
+    opacity: 1;
+    transform: scale(1) translateX(0);
+    color: var(--primary-color);
+    font-weight: bold;
+    filter: drop-shadow(0 0 15px var(--primary-color));
+    z-index: 3;
+}
+
+.slideshow-icon.prev {
+    opacity: 0.5;
+    transform: scale(0.8) translateX(-10px);
+    z-index: 2;
+}
+
+.slideshow-icon.next {
+    opacity: 0.5;
+    transform: scale(0.8) translateX(10px);
+    z-index: 2;
+}
+
+/* Sliding Animation Classes */
+.slideshow-icon.slide-left {
+    animation: slideToLeft 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.slideshow-icon.slide-right {
+    animation: slideToRight 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.slideshow-icon.slide-to-center {
+    animation: slideToCenter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes slideToLeft {
+    0% { transform: scale(1) translateX(0); opacity: 1; }
+    100% { transform: scale(0.8) translateX(-40px); opacity: 0.5; }
+}
+
+@keyframes slideToRight {
+    0% { transform: scale(0.8) translateX(-10px); opacity: 0.5; }
+    100% { transform: scale(0.7) translateX(40px); opacity: 0.3; }
+}
+
+@keyframes slideToCenter {
+    0% { transform: scale(0.8) translateX(10px); opacity: 0.5; }
+    100% { transform: scale(1) translateX(0); opacity: 1; }
+}
+
+/* Navigation Buttons - Mobile Optimized */
+.nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--glass-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    z-index: 10;
+    touch-action: manipulation;
+}
+
+.nav-button:hover,
+.nav-button:active {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.nav-button.prev-btn {
+    left: 5px;
+}
+
+.nav-button.next-btn {
+    right: 5px;
+}
+
+/* Horizontal divider lines */
+.animation-container::before,
+.animation-container::after {
+    content: '';
+    position: absolute;
+    width: calc(100% - 40px);
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--border-color) 20%, var(--border-color) 80%, transparent 100%);
+    left: 20px;
+}
+
+.animation-container::before {
+    top: 0;
+}
+
+.animation-container::after {
+    bottom: 0;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .animation-container {
+        height: 70px;
+        padding: 0 15px;
+        margin: 1.5rem auto;
+    }
+    
+    .slideshow-wrapper {
+        gap: 15px;
+    }
+    
+    .slideshow-icon {
+        font-size: 1.2rem;
+    }
+    
+    .slideshow-icon.active {
+        font-size: 2rem;
+    }
+    
+    .nav-button {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+    }
+    
+    .nav-button.prev-btn {
+        left: 3px;
+    }
+    
+    .nav-button.next-btn {
+        right: 3px;
+    }
+}
+
+@media (max-width: 480px) {
+    .animation-container {
+        height: 60px;
+        padding: 0 10px;
+    }
+    
+    .slideshow-wrapper {
+        gap: 10px;
+    }
+    
+    .slideshow-icon {
+        font-size: 1rem;
+    }
+    
+    .slideshow-icon.active {
+        font-size: 1.8rem;
+    }
+    
+    .nav-button {
+        width: 25px;
+        height: 25px;
+        font-size: 0.7rem;
+    }
+}
+
+/* Touch-friendly interactions */
+@media (hover: none) and (pointer: coarse) {
+    .nav-button:hover {
+        background: var(--glass-bg);
+        color: var(--text-color);
+        transform: translateY(-50%) scale(1);
+    }
+    
+    .nav-button:active {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-50%) scale(0.95);
+    }
+}
+
 
         /* Section Styles */
         .section-title {
@@ -592,6 +787,8 @@
    font-weight: 500;
    color: var(--primary-text);
 }
+
+
     </style>
 </head>
 <body>
@@ -606,6 +803,8 @@
                 <li><a href="#about">About Me</a></li>
                 <li><a href="#projects">My Projects</a></li>
                 <li><a href="#client-projects">Client Projects</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#languages">Languages</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
             <div class="menu-toggle" id="menuToggle">
@@ -629,7 +828,7 @@
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-phone"></i>
-                        <span>9307426215</span>
+                        <span>Contact Number (To be added)</span>
                     </div>
                 </div>
                 <div class="intro">
@@ -637,11 +836,27 @@
                     I am a full stack developer who builds PWA apps, knows SQL, and has worked with Private Limited companies and local businesses.
                 </div>
                 
-                <div class="animation-container" data-aos="zoom-in" data-aos-delay="300">
-                    <div class="animation-placeholder">
-                        <i class="fas fa-code"></i>
-                    </div>
-                </div>
+                <div class="animation-container" data-aos-delay="500">
+    <div class="slideshow-container">
+        <!-- Optional Navigation Buttons -->
+        <button class="nav-button prev-btn" onclick="previousSlide()">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        
+        <div class="slideshow-wrapper">
+            <i class="fas fa-database slideshow-icon prev"></i>
+            <i class="fas fa-code slideshow-icon active"></i>
+            <i class="fas fa-mobile-alt slideshow-icon next"></i>
+        </div>
+        
+        <!-- Optional Navigation Buttons -->
+        <button class="nav-button next-btn" onclick="nextSlide()">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+</div>
+
+
             </div>
         </section>
 
@@ -809,7 +1024,7 @@
         </section>
 
         <!-- Skills Section -->
-        <section class="section">
+        <section id="skills" class="section">
             <h2 class="section-title" data-aos="fade-up">Technical Skills</h2>
             <div class="skills-grid">
                 <div class="skill-item" data-aos="fade-up" data-aos-delay="250">
@@ -824,15 +1039,31 @@
                     <div class="skill-icon"><i class="fas fa-fire"></i></div>
                     <div class="skill-name">Firebase</div>
                 </div> -->
-                <div class="skill-item" data-aos="fade-up" data-aos-delay="400">
+                <div class="skill-item" data-aos="fade-up" data-aos-delay="350">
                     <div class="skill-icon"><i class="fas fa-server"></i></div>
                     <div class="skill-name">Supabase</div>
                 </div>
-                <div class="skill-item" data-aos="fade-up" data-aos-delay="450">
+                <div class="skill-item" data-aos="fade-up" data-aos-delay="400">
+    <div class="skill-icon"><i class="fas fa-globe-americas"></i></div>
+    <div class="skill-name">Web Development</div>
+</div>
+<div class="skill-item" data-aos="fade-up" data-aos-delay="450">
+    <div class="skill-icon"><i class="fas fa-tasks"></i></div>
+    <div class="skill-name">Project Management</div>
+</div>
+<div class="skill-item" data-aos="fade-up" data-aos-delay="500">
+    <div class="skill-icon"><i class="fas fa-chart-line"></i></div>
+    <div class="skill-name">Business Development</div>
+</div>
+<div class="skill-item" data-aos="fade-up" data-aos-delay="550">
+    <div class="skill-icon"><i class="fas fa-palette"></i></div>
+    <div class="skill-name">Brand Development</div>
+</div>
+                <div class="skill-item" data-aos="fade-up" data-aos-delay="600">
                     <div class="skill-icon"><i class="fab fa-node-js"></i></div>
                     <div class="skill-name">Node.js</div>
                 </div>
-                <div class="skill-item" data-aos="fade-up" data-aos-delay="500">
+                <div class="skill-item" data-aos="fade-up" data-aos-delay="650">
                     <div class="skill-icon"><i class="fas fa-bolt"></i></div>
                     <div class="skill-name">Express.js</div>
                 </div>
@@ -935,6 +1166,156 @@
                 navLinks.classList.remove('active');
             }
         });
+
+
+
+
+        const icons = [
+    'fas fa-code',
+    'fas fa-cloud', 
+    'fas fa-fingerprint',
+    'fas fa-user-shield',
+    'fas fa-brain',
+    'fas fa-chart-pie',
+    'fas fa-palette',
+    'fas fa-tools'
+];
+
+
+
+let currentIndex = 0;
+let autoRotateInterval;
+let isAnimating = false;
+
+function updateSlideshow(direction = 'next') {
+    if (isAnimating) return;
+    
+    isAnimating = true;
+    const wrapper = document.querySelector('.slideshow-wrapper');
+    const iconElements = wrapper.querySelectorAll('.slideshow-icon');
+    
+    // Add sliding animation classes
+    iconElements.forEach((icon, index) => {
+        icon.classList.remove('slide-left', 'slide-right', 'slide-to-center');
+        
+        if (direction === 'next') {
+            if (icon.classList.contains('active')) {
+                icon.classList.add('slide-left');
+            } else if (icon.classList.contains('next')) {
+                icon.classList.add('slide-to-center');
+            } else if (icon.classList.contains('prev')) {
+                icon.classList.add('slide-right');
+            }
+        } else {
+            if (icon.classList.contains('active')) {
+                icon.classList.add('slide-right');
+            } else if (icon.classList.contains('prev')) {
+                icon.classList.add('slide-to-center');
+            } else if (icon.classList.contains('next')) {
+                icon.classList.add('slide-left');
+            }
+        }
+    });
+    
+    // Update positions after animation
+    setTimeout(() => {
+        const prevIndex = (currentIndex - 1 + icons.length) % icons.length;
+        const nextIndex = (currentIndex + 1) % icons.length;
+        
+        // Clear existing icons
+        wrapper.innerHTML = '';
+        
+        // Create and append new icons
+        const prevIcon = document.createElement('i');
+        prevIcon.className = `${icons[prevIndex]} slideshow-icon prev`;
+        
+        const currentIcon = document.createElement('i');
+        currentIcon.className = `${icons[currentIndex]} slideshow-icon active`;
+        
+        const nextIcon = document.createElement('i');
+        nextIcon.className = `${icons[nextIndex]} slideshow-icon next`;
+        
+        wrapper.appendChild(prevIcon);
+        wrapper.appendChild(currentIcon);
+        wrapper.appendChild(nextIcon);
+        
+        isAnimating = false;
+    }, 300);
+}
+
+function nextSlide() {
+    if (isAnimating) return;
+    currentIndex = (currentIndex + 1) % icons.length;
+    updateSlideshow('next');
+}
+
+function previousSlide() {
+    if (isAnimating) return;
+    currentIndex = (currentIndex - 1 + icons.length) % icons.length;
+    updateSlideshow('prev');
+}
+
+function startAutoRotate() {
+    autoRotateInterval = setInterval(nextSlide, 2000);
+}
+
+function stopAutoRotate() {
+    if (autoRotateInterval) {
+        clearInterval(autoRotateInterval);
+    }
+}
+
+// Touch/Swipe support for mobile
+let startX = 0;
+let startY = 0;
+
+function handleTouchStart(e) {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+}
+
+function handleTouchEnd(e) {
+    if (!startX || !startY) return;
+    
+    const endX = e.changedTouches[0].clientX;
+    const endY = e.changedTouches[0].clientY;
+    
+    const diffX = startX - endX;
+    const diffY = startY - endY;
+    
+    // Check if horizontal swipe is more significant than vertical
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+        if (diffX > 0) {
+            nextSlide(); // Swipe left -> next
+        } else {
+            previousSlide(); // Swipe right -> previous
+        }
+    }
+    
+    startX = 0;
+    startY = 0;
+}
+
+// Initialize slideshow
+document.addEventListener('DOMContentLoaded', function() {
+    updateSlideshow();
+    startAutoRotate();
+    
+    const container = document.querySelector('.animation-container');
+    
+    // Mouse events
+    container.addEventListener('mouseenter', stopAutoRotate);
+    container.addEventListener('mouseleave', startAutoRotate);
+    
+    // Touch events for mobile
+    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    container.addEventListener('touchend', handleTouchEnd, { passive: true });
+    container.addEventListener('touchstart', stopAutoRotate);
+    container.addEventListener('touchend', () => {
+        setTimeout(startAutoRotate, 3000); // Resume after 3 seconds
+    });
+});
+
 
         // Background particles animation
         function createParticles() {
