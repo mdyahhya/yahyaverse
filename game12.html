@@ -3,12 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hand Motion Object Controller</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow/4.4.0/tf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <title>Md. Yahya Mundewadi - Full Stack Developer</title>
+    <meta name="description" content="Founder of Continental Group. Full Stack Developer specializing in PWA apps, SQL, and enterprise solutions.">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#0f1419">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiWWFoeWEgTXVuZGV3YWRpIC0gUG9ydGZvbGlvIiwic2hvcnRfbmFtZSI6IllhaHlhIFBvcnRmb2xpbyIsImRlc2NyaXB0aW9uIjoiRnVsbCBTdGFjayBEZXZlbG9wZXIgUG9ydGZvbGlvIiwic3RhcnRfdXJsIjoiLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMwZjE0MTkiLCJ0aGVtZV9jb2xvciI6IiMwZjE0MTkiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCM2FXUjBhRDBpTVRFeUlpQm9aV2xuYUhROUlqRXhNaUlnZG1sbGQwSnZlRDBpTUNBd0lERXhNaUF4TVRJSUR6cERVeUlnZUcxc2JuTTlJbWgwZEhBNkx5OTNkM2N1ZHpNdWIzSm5Mekl3TURBdmMzWm5JajROQ2lBZ1BISmxZM1FnZUQwaU1DSWdlVDBpTUNJZ2QybGtkR2c5SWpFeE1pSWdhR1ZwWjJoMFBTSXhNVElpSUdacGJHdzlJaU14TURBeU4yRWlMejROQ2lBZ1BIUmxlSFFnZUQwaU5UWWlJSGs5SWpVNElpQm1hV3hzUFNJalptWm1JaUJtYjI1MExYTnBlbVU5SWpJMElpQjBaWGgwTFdGdVkyaHZjajFpYldsa1pHeGxJajVaUEM5MFpYaDBQZzA4TDNOMlp6ND0iLCJzaXplcyI6IjExMngxMTIiLCJ0eXBlIjoiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- AOS Animation -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    
     <style>
+        :root {
+            --primary-bg: #0f1419;
+            --secondary-bg: #1a1f2e;
+            --accent-bg: #2a3441;
+            --primary-text: #ffffff;
+            --secondary-text: #b0b8c5;
+            --accent-color: #64ffda;
+            --highlight-color: #00d9ff;
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-accent: linear-gradient(135deg, #64ffda 0%, #00d9ff 100%);
+            --glass-bg: rgba(42, 52, 65, 0.3);
+            --border-color: rgba(100, 255, 218, 0.2);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -16,788 +46,1015 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            overflow: hidden;
-            color: white;
-        }
-
-        .game-container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .camera-view {
-            position: relative;
-            width: 90vw;
-            height: 90vh;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
-            background: #000;
-            border: 3px solid rgba(255,255,255,0.2);
-        }
-
-        #videoElement {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transform: scaleX(-1);
-        }
-
-        .game-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        .calibration-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-        }
-
-        .calibration-text {
-            font-size: 24px;
-            margin-bottom: 30px;
-            text-align: center;
+            font-family: 'Inter', sans-serif;
+            background: var(--primary-bg);
+            color: var(--primary-text);
+            overflow-x: hidden;
             line-height: 1.6;
         }
 
-        .hand-target {
-            width: 150px;
-            height: 150px;
-            border: 4px solid #00ff88;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 18px;
-            animation: pulse 2s infinite;
-            margin-bottom: 30px;
-            position: relative;
-        }
-
-        @keyframes pulse {
-            0%, 100% { 
-                transform: scale(1);
-                box-shadow: 0 0 20px rgba(0,255,136,0.5);
-            }
-            50% { 
-                transform: scale(1.1);
-                box-shadow: 0 0 40px rgba(0,255,136,0.8);
-            }
-        }
-
-        .calibration-progress {
-            width: 300px;
-            height: 10px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 5px;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-
-        .progress-bar {
+        /* Background Animation */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, #00ff88, #00ccff);
-            width: 0%;
-            transition: width 0.1s ease;
-        }
-
-        .ui-panel {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(0,0,0,0.7);
-            padding: 20px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            z-index: 50;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .status {
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: #00ff88;
-        }
-
-        .coordinates {
-            font-size: 14px;
-            color: #ccc;
-            margin-bottom: 5px;
-        }
-
-        .moving-object {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            border-radius: 50%;
-            border: 3px solid white;
-            box-shadow: 0 0 30px rgba(255,107,107,0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            font-size: 14px;
-            transition: all 0.1s ease;
-            z-index: 30;
-        }
-
-        .collectible {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            background: radial-gradient(circle, #feca57, #ff9f43);
-            border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 0 20px rgba(254,202,87,0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 20px;
-            animation: float 2s ease-in-out infinite;
-            z-index: 25;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) scale(1); }
-            50% { transform: translateY(-10px) scale(1.1); }
+            z-index: -1;
+            opacity: 0.1;
         }
 
         .particle {
             position: absolute;
-            width: 6px;
-            height: 6px;
-            background: radial-gradient(circle, #ff6b6b, #4ecdc4);
+            width: 2px;
+            height: 2px;
+            background: var(--accent-color);
             border-radius: 50%;
-            pointer-events: none;
-            z-index: 20;
+            animation: float 6s ease-in-out infinite;
         }
 
-        .score-display {
-            font-size: 20px;
-            font-weight: bold;
-            color: #00ff88;
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
         }
 
-        .hand-indicator {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background: radial-gradient(circle, #ff0080, #ff4080);
-            border: 3px solid white;
-            border-radius: 50%;
-            box-shadow: 0 0 25px #ff0080;
-            transform: translate(-50%, -50%);
-            z-index: 40;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 20, 25, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            transition: all 0.3s ease;
         }
 
-        .hand-indicator::after {
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--secondary-text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .nav-links a::after {
             content: '';
             position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
-            border: 2px solid rgba(255,0,128,0.3);
-            border-radius: 50%;
-            animation: ripple 2s infinite;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-accent);
+            transition: width 0.3s ease;
         }
 
-        @keyframes ripple {
-            0% {
-                transform: scale(0.8);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(2);
-                opacity: 0;
-            }
+        .nav-links a:hover::after {
+            width: 100%;
         }
 
-        .instructions {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.7);
-            padding: 15px 25px;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-            text-align: center;
-            z-index: 50;
-            border: 1px solid rgba(255,255,255,0.2);
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 4px;
         }
 
-        .level-complete {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 48px;
-            font-weight: bold;
-            color: #00ff88;
-            text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
-            opacity: 0;
-            z-index: 200;
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--accent-color);
+            transition: all 0.3s ease;
         }
 
-        .obstacle {
-            position: absolute;
-            background: linear-gradient(45deg, #e74c3c, #c0392b);
-            border: 2px solid white;
-            border-radius: 10px;
+        /* Main Content */
+        main {
+            margin-top: 80px;
+        }
+
+        .section {
+            padding: 5rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 90vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-weight: bold;
-            color: white;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-            z-index: 25;
-            animation: obstacle-pulse 3s ease-in-out infinite;
+            text-align: center;
+            position: relative;
         }
 
-        @keyframes obstacle-pulse {
-            0%, 100% { 
-                box-shadow: 0 0 20px rgba(231,76,60,0.5);
-                transform: scale(1);
+        .hero-content {
+            z-index: 2;
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .subtitle {
+            font-size: 1.2rem;
+            color: var(--secondary-text);
+            margin-bottom: 2rem;
+        }
+
+        .hero .intro {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 3rem;
+            color: var(--primary-text);
+        }
+
+        .contact-info {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+        }
+
+        .contact-item i {
+            color: var(--accent-color);
+        }
+
+        /* Animation Canvas */
+        .animation-container {
+            width: 300px;
+            height: 300px;
+            margin: 2rem auto;
+            background: var(--glass-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .animation-placeholder {
+            width: 200px;
+            height: 200px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        /* Section Styles */
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .intro-section {
+            background: var(--glass-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 3rem 0;
+            backdrop-filter: blur(20px);
+        }
+
+        .intro-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--secondary-text);
+            text-align: center;
+        }
+
+        /* Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .project-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(100, 255, 218, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .project-card:hover::before {
+            left: 100%;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-color);
+            box-shadow: 0 20px 40px rgba(100, 255, 218, 0.1);
+        }
+
+        .project-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-logo {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: 600;
+        }
+
+        .project-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-text);
+        }
+
+        .project-description {
+            color: var(--secondary-text);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .project-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-accent);
+            color: var(--primary-bg);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(100, 255, 218, 0.2);
+        }
+
+        /* Skills Section */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .skill-item {
+            background: var(--glass-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(20px);
+        }
+
+        .skill-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+        }
+
+        .skill-icon {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .skill-name {
+            font-weight: 500;
+            color: var(--primary-text);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--secondary-bg);
+            border-top: 1px solid var(--border-color);
+            padding: 3rem 5%;
+            text-align: center;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-link {
+            width: 60px;
+            height: 60px;
+            background: var(--glass-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            transform: translateY(-5px);
+            background: var(--accent-color);
+            color: var(--primary-bg);
+        }
+
+        /* PWA Install Button */
+        .install-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--gradient-accent);
+            color: var(--primary-bg);
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 1000;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background: rgba(15, 20, 25, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                padding-top: 3rem;
+                transition: left 0.3s ease;
             }
-            50% { 
-                box-shadow: 0 0 40px rgba(231,76,60,0.8);
-                transform: scale(1.05);
+
+            .nav-links.active {
+                left: 0;
             }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .menu-toggle.active span:nth-child(1) {
+                transform: rotate(-45deg) translate(-5px, 6px);
+            }
+
+            .menu-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .menu-toggle.active span:nth-child(3) {
+                transform: rotate(45deg) translate(-5px, -6px);
+            }
+
+            .section {
+                padding: 3rem 5%;
+            }
+
+            .contact-info {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .project-buttons {
+                justify-content: center;
+            }
+
+            .skills-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+
+            .social-links {
+                gap: 1rem;
+            }
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <div class="camera-view">
-            <video id="videoElement" autoplay muted playsinline></video>
-            <canvas id="gameCanvas" class="game-overlay"></canvas>
-            
-            <div class="ui-panel">
-                <div class="status" id="status">Starting...</div>
-                <div class="score-display">Score: <span id="score">0</span></div>
-                <div class="coordinates" id="handCoords">Hand: (0, 0)</div>
-                <div class="coordinates" id="motionStrength">Motion: 0%</div>
-            </div>
+    <!-- Background Animation -->
+    <div class="bg-animation" id="bgAnimation"></div>
 
-            <div class="hand-indicator" id="handIndicator"></div>
-            <div class="moving-object" id="playerObject">🎮</div>
-            <div class="level-complete" id="levelComplete">Level Complete!</div>
-
-            <div class="calibration-screen" id="calibrationScreen">
-                <div class="calibration-text">
-                    <h2>🤚 Hand Calibration</h2>
-                    <p>Place your hand in the circle and hold steady</p>
-                    <p>Move slowly to calibrate motion sensitivity</p>
-                </div>
-                <div class="hand-target">
-                    Place Hand Here
-                </div>
-                <div class="calibration-progress">
-                    <div class="progress-bar" id="calibrationProgress"></div>
-                </div>
-                <div id="calibrationStatus">Detecting hand...</div>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">YM</div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#about">About Me</a></li>
+                <li><a href="#projects">My Projects</a></li>
+                <li><a href="#client-projects">Client Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
+        </nav>
+    </header>
 
-            <div class="instructions">
-                Move your hand to control the object • Collect stars ⭐ • Avoid obstacles ⚠️
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero section" id="home">
+            <div class="hero-content" data-aos="fade-up">
+                <h1>Md. Yahya Mundewadi</h1>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>mdyahyamundewadi@gmail.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>9307426215</span>
+                    </div>
+                </div>
+                <div class="intro">
+                    <strong>Founder of Continental Group.</strong><br>
+                    I am a full stack developer who builds PWA apps, knows SQL, and has worked with Private Limited companies and local businesses.
+                </div>
+                
+                <div class="animation-container" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="animation-placeholder">
+                        <i class="fas fa-code"></i>
+                    </div>
+                </div>
             </div>
+        </section>
+
+        <!-- Introduction Section -->
+        <section class="section" id="about">
+            <div class="intro-section" data-aos="fade-up">
+                <h2 class="section-title">Introduction</h2>
+                <p class="intro-text">
+                    Welcome to my digital portfolio. This is a placeholder introduction section where you can add your detailed background, 
+                    experience, and professional journey. Feel free to customize this content to reflect your unique story, 
+                    achievements, and vision for the future. This space is designed to give visitors a comprehensive understanding 
+                    of who you are as a professional and what drives your passion for technology and innovation.
+                </p>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section class="section" id="projects">
+            <h2 class="section-title" data-aos="fade-up">My Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="project-header">
+                        <div class="project-logo">YB</div>
+                        <h3 class="project-title">YouBuddy AI</h3>
+                    </div>
+                    <p class="project-description">
+                        A comprehensive educational platform for engineering students featuring an AI-powered chatbot for academic assistance, 
+                        a social tech feed, gamified learning experiences, and organized study materials across all academic years.
+                    </p>
+                    <div class="project-buttons">
+                        <a href="project1.html" class="btn btn-primary">
+                            <i class="fas fa-eye"></i> View Project
+                        </a>
+                        <a href="#" class="btn btn-secondary">
+                            <i class="fas fa-download"></i> Download App
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="project-header">
+                        <div class="project-logo">JC</div>
+                        <h3 class="project-title">JobCenter</h3>
+                    </div>
+                    <p class="project-description">
+                        A comprehensive job portal solution for Jobcenter Pvt. Ltd., featuring resume building tools, 
+                        job application tracking, and separate portals for HR professionals and job seekers.
+                    </p>
+                    <div class="project-buttons">
+                        <a href="project2.html" class="btn btn-primary">
+                            <i class="fas fa-eye"></i> View Project
+                        </a>
+                        <a href="#" class="btn btn-secondary">
+                            <i class="fas fa-download"></i> Download App
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="project-header">
+                        <div class="project-logo">TB</div>
+                        <h3 class="project-title">TurfBook</h3>
+                    </div>
+                    <p class="project-description">
+                        An online turf booking system for sports facilities, developed for Solapur Railway Turf. 
+                        Features real-time slot management, user bookings, and comprehensive admin dashboard.
+                    </p>
+                    <div class="project-buttons">
+                        <a href="solapurturfs.netlify.app" class="btn btn-primary">
+                            <i class="fas fa-eye"></i> View Project
+                        </a>
+                        <a href="#" class="btn btn-secondary">
+                            <i class="fas fa-download"></i> Download App
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="project-header">
+                        <div class="project-logo">CV</div>
+                        <h3 class="project-title">CoderVerse</h3>
+                    </div>
+                    <p class="project-description">
+                        A gamified programming education platform featuring interactive MCQ quizzes, 
+                        problem-solving challenges, and comprehensive testing modules to enhance coding skills.
+                    </p>
+                    <div class="project-buttons">
+                        <a href="coderverse.netlify.app" class="btn btn-primary">
+                            <i class="fas fa-eye"></i> View Project
+                        </a>
+                        <a href="#" class="btn btn-secondary">
+                            <i class="fas fa-download"></i> Download App
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="project-header">
+                        <div class="project-logo">PS</div>
+                        <h3 class="project-title">Photography Shop</h3>
+                    </div>
+                    <p class="project-description">
+                        A custom business website for local photography services featuring service portfolios, 
+                        direct WhatsApp integration for seamless client communication and booking inquiries.
+                    </p>
+                    <div class="project-buttons">
+                        <a href="project5.html" class="btn btn-primary">
+                            <i class="fas fa-eye"></i> View Project
+                        </a>
+                        <a href="#" class="btn btn-secondary">
+                            <i class="fas fa-download"></i> Download App
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card" data-aos="fade-up" data-aos-delay="600">
+                    <div class="project-header">
+                        <div class="project-logo">FA</div>
+                        <h3 class="project-title">FaceAttend</h3>
+                    </div>
+                    <p class="project-description">
+                        An AI-powered attendance management system utilizing advanced face recognition technology 
+                        for secure, automated attendance tracking with comprehensive data management.
+                    </p>
+                    <div class="project-buttons">
+                        <a href="project6.html" class="btn btn-primary">
+                            <i class="fas fa-eye"></i> View Project
+                        </a>
+                        <a href="#" class="btn btn-secondary">
+                            <i class="fas fa-download"></i> Download App
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card" data-aos="fade-up" data-aos-delay="700">
+                    <div class="project-header">
+                        <div class="project-logo">AI</div>
+                        <h3 class="project-title">VVPIET AI Chatbot</h3>
+                    </div>
+                    <p class="project-description">
+                        An intelligent chatbot solution for VVPIET College designed to handle student and parent queries 
+                        automatically, providing instant responses and improving institutional communication efficiency.
+                    </p>
+                    <div class="project-buttons">
+                        <a href="project7.html" class="btn btn-primary">
+                            <i class="fas fa-eye"></i> View Project
+                        </a>
+                        <a href="#" class="btn btn-secondary">
+                            <i class="fas fa-download"></i> Download App
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Client Projects Section -->
+        <section class="section" id="client-projects">
+            <h2 class="section-title" data-aos="fade-up">Client Projects</h2>
+            <div class="intro-section" data-aos="fade-up" data-aos-delay="200">
+                <p class="intro-text">
+                    This section showcases projects developed for various clients including Private Limited companies and local businesses. 
+                    Each project represents a unique solution tailored to specific business requirements and challenges.
+                </p>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section class="section">
+            <h2 class="section-title" data-aos="fade-up">Technical Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-item" data-aos="fade-up" data-aos-delay="250">
+                    <div class="skill-icon"><i class="fas fa-database"></i></div>
+                    <div class="skill-name">SQL</div>
+                </div>
+                <div class="skill-item" data-aos="fade-up" data-aos-delay="300">
+                    <div class="skill-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <div class="skill-name">PWA</div>
+                </div>
+                <div class="skill-item" data-aos="fade-up" data-aos-delay="350">
+                    <div class="skill-icon"><i class="fas fa-fire"></i></div>
+                    <div class="skill-name">Firebase</div>
+                </div>
+                <div class="skill-item" data-aos="fade-up" data-aos-delay="400">
+                    <div class="skill-icon"><i class="fas fa-server"></i></div>
+                    <div class="skill-name">Supabase</div>
+                </div>
+                <div class="skill-item" data-aos="fade-up" data-aos-delay="450">
+                    <div class="skill-icon"><i class="fab fa-node-js"></i></div>
+                    <div class="skill-name">Node.js</div>
+                </div>
+                <div class="skill-item" data-aos="fade-up" data-aos-delay="500">
+                    <div class="skill-icon"><i class="fas fa-bolt"></i></div>
+                    <div class="skill-name">Express.js</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="social-links">
+            <a href="#" class="social-link" title="LinkedIn">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="#" class="social-link" title="GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+            <a href="mailto:mdyahyamundewadi@gmail.com" class="social-link" title="Email">
+                <i class="fas fa-envelope"></i>
+            </a>
         </div>
-    </div>
+        <p>&copy; 2024 Md. Yahya Mundewadi. All rights reserved.</p>
+    </footer>
 
+    <!-- PWA Install Button -->
+    <button class="install-btn" id="installBtn">
+        <i class="fas fa-download"></i>
+        Install App
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script>
-        class HandMotionGame {
-            constructor() {
-                this.video = document.getElementById('videoElement');
-                this.canvas = document.getElementById('gameCanvas');
-                this.ctx = this.canvas.getContext('2d');
-                
-                // Game state
-                this.isCalibrated = false;
-                this.isGameActive = false;
-                this.score = 0;
-                this.level = 1;
-                
-                // Hand tracking
-                this.handPosition = { x: 0, y: 0 };
-                this.previousHandPosition = { x: 0, y: 0 };
-                this.calibrationData = { x: 0, y: 0, sensitivity: 1 };
-                this.motionHistory = [];
-                this.isHandDetected = false;
-                
-                // Game objects
-                this.playerObject = document.getElementById('playerObject');
-                this.collectibles = [];
-                this.obstacles = [];
-                this.particles = [];
-                
-                // Calibration
-                this.calibrationProgress = 0;
-                this.calibrationFrames = 0;
-                this.requiredCalibrationFrames = 60;
-                
-                // Motion detection
-                this.previousFrame = null;
-                this.motionThreshold = 15;
-                this.smoothingFactor = 0.7;
-                
-                this.initializeCamera();
-                this.setupGameLoop();
-                this.generateGameObjects();
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on a link
+        navLinks.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A') {
+                menuToggle.classList.remove('active');
+                navLinks.classList.remove('active');
             }
+        });
 
-            async initializeCamera() {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({
-                        video: { 
-                            width: { ideal: 1280 },
-                            height: { ideal: 720 },
-                            facingMode: 'user'
-                        }
-                    });
-                    
-                    this.video.srcObject = stream;
-                    
-                    this.video.addEventListener('loadedmetadata', () => {
-                        this.canvas.width = this.video.videoWidth;
-                        this.canvas.height = this.video.videoHeight;
-                        this.canvas.style.width = '100%';
-                        this.canvas.style.height = '100%';
-                        
-                        // Initialize player object position
-                        this.updatePlayerPosition(this.canvas.width / 2, this.canvas.height / 2);
-                        
-                        this.updateStatus('Camera ready - Starting hand detection');
-                    });
+        // Background particles animation
+        function createParticles() {
+            const bgAnimation = document.getElementById('bgAnimation');
+            const particleCount = 50;
 
-                } catch (error) {
-                    console.error('Camera access failed:', error);
-                    this.updateStatus('Camera access required');
-                }
-            }
-
-            detectMotion() {
-                if (!this.video.videoWidth) return;
-
-                // Create temporary canvas for motion detection
-                const tempCanvas = document.createElement('canvas');
-                const tempCtx = tempCanvas.getContext('2d');
-                tempCanvas.width = this.video.videoWidth / 4; // Reduce resolution for performance
-                tempCanvas.height = this.video.videoHeight / 4;
-                
-                // Draw current frame
-                tempCtx.drawImage(this.video, 0, 0, tempCanvas.width, tempCanvas.height);
-                const currentFrame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-                
-                if (this.previousFrame) {
-                    const motionData = this.calculateMotion(this.previousFrame.data, currentFrame.data);
-                    this.processMotionData(motionData);
-                }
-                
-                this.previousFrame = currentFrame;
-            }
-
-            calculateMotion(prevData, currData) {
-                let totalMotion = 0;
-                let motionCenterX = 0;
-                let motionCenterY = 0;
-                let motionPixels = 0;
-                
-                const width = this.canvas.width / 4;
-                const height = this.canvas.height / 4;
-                
-                for (let i = 0; i < prevData.length; i += 4) {
-                    const pixelIndex = i / 4;
-                    const x = pixelIndex % width;
-                    const y = Math.floor(pixelIndex / width);
-                    
-                    // Calculate color difference
-                    const rDiff = Math.abs(prevData[i] - currData[i]);
-                    const gDiff = Math.abs(prevData[i + 1] - currData[i + 1]);
-                    const bDiff = Math.abs(prevData[i + 2] - currData[i + 2]);
-                    
-                    const motionIntensity = (rDiff + gDiff + bDiff) / 3;
-                    
-                    if (motionIntensity > this.motionThreshold) {
-                        totalMotion += motionIntensity;
-                        motionCenterX += x * motionIntensity;
-                        motionCenterY += y * motionIntensity;
-                        motionPixels += motionIntensity;
-                    }
-                }
-                
-                return {
-                    intensity: totalMotion,
-                    center: motionPixels > 0 ? {
-                        x: (motionCenterX / motionPixels) * 4, // Scale back up
-                        y: (motionCenterY / motionPixels) * 4
-                    } : null
-                };
-            }
-
-            processMotionData(motionData) {
-                if (!motionData.center) {
-                    this.isHandDetected = false;
-                    document.getElementById('handIndicator').style.opacity = '0';
-                    return;
-                }
-
-                const newX = motionData.center.x;
-                const newY = motionData.center.y;
-                
-                // Smooth the motion
-                this.handPosition.x = this.handPosition.x * this.smoothingFactor + newX * (1 - this.smoothingFactor);
-                this.handPosition.y = this.handPosition.y * this.smoothingFactor + newY * (1 - this.smoothingFactor);
-                
-                this.isHandDetected = true;
-                this.updateHandIndicator();
-                
-                // Update motion strength display
-                const motionStrength = Math.min(100, motionData.intensity / 1000 * 100);
-                document.getElementById('motionStrength').textContent = `Motion: ${Math.round(motionStrength)}%`;
-                
-                if (!this.isCalibrated) {
-                    this.handleCalibration();
-                } else if (this.isGameActive) {
-                    this.updatePlayerFromHand();
-                }
-                
-                // Update coordinates display
-                document.getElementById('handCoords').textContent = 
-                    `Hand: (${Math.round(this.handPosition.x)}, ${Math.round(this.handPosition.y)})`;
-            }
-
-            handleCalibration() {
-                const centerX = this.canvas.width / 2;
-                const centerY = this.canvas.height / 2;
-                const distance = Math.sqrt(
-                    Math.pow(this.handPosition.x - centerX, 2) + 
-                    Math.pow(this.handPosition.y - centerY, 2)
-                );
-                
-                if (distance < 100) { // Hand is in calibration zone
-                    this.calibrationFrames++;
-                    this.calibrationProgress = (this.calibrationFrames / this.requiredCalibrationFrames) * 100;
-                    
-                    document.getElementById('calibrationProgress').style.width = this.calibrationProgress + '%';
-                    document.getElementById('calibrationStatus').textContent = 
-                        `Calibrating... ${Math.round(this.calibrationProgress)}%`;
-                    
-                    if (this.calibrationFrames >= this.requiredCalibrationFrames) {
-                        this.completeCalibration();
-                    }
-                } else {
-                    this.calibrationFrames = Math.max(0, this.calibrationFrames - 2);
-                    this.calibrationProgress = (this.calibrationFrames / this.requiredCalibrationFrames) * 100;
-                    document.getElementById('calibrationProgress').style.width = this.calibrationProgress + '%';
-                }
-            }
-
-            completeCalibration() {
-                this.isCalibrated = true;
-                this.calibrationData = {
-                    x: this.handPosition.x,
-                    y: this.handPosition.y,
-                    sensitivity: 2.5
-                };
-                
-                // Hide calibration screen
-                gsap.to(document.getElementById('calibrationScreen'), {
-                    duration: 0.5,
-                    opacity: 0,
-                    onComplete: () => {
-                        document.getElementById('calibrationScreen').style.display = 'none';
-                        this.startGame();
-                    }
-                });
-                
-                this.updateStatus('Calibration complete - Game starting!');
-            }
-
-            startGame() {
-                this.isGameActive = true;
-                this.updateStatus('Move your hand to control the object!');
-            }
-
-            updateHandIndicator() {
-                const indicator = document.getElementById('handIndicator');
-                const rect = this.canvas.getBoundingClientRect();
-                
-                indicator.style.left = (this.handPosition.x / this.canvas.width) * rect.width + 'px';
-                indicator.style.top = (this.handPosition.y / this.canvas.height) * rect.height + 'px';
-                indicator.style.opacity = '1';
-            }
-
-            updatePlayerFromHand() {
-                if (!this.isHandDetected) return;
-                
-                // Calculate movement based on hand position relative to calibration center
-                const deltaX = (this.handPosition.x - this.calibrationData.x) * this.calibrationData.sensitivity;
-                const deltaY = (this.handPosition.y - this.calibrationData.y) * this.calibrationData.sensitivity;
-                
-                // Update player object position
-                const rect = this.canvas.getBoundingClientRect();
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                
-                const newX = Math.max(30, Math.min(rect.width - 30, centerX + deltaX));
-                const newY = Math.max(30, Math.min(rect.height - 30, centerY + deltaY));
-                
-                this.updatePlayerPosition(newX, newY);
-                this.checkCollisions();
-                
-                // Create motion particles
-                if (Math.random() > 0.8) {
-                    this.createParticle(newX, newY);
-                }
-            }
-
-            updatePlayerPosition(x, y) {
-                this.playerObject.style.left = x + 'px';
-                this.playerObject.style.top = y + 'px';
-            }
-
-            generateGameObjects() {
-                // Generate collectibles
-                setInterval(() => {
-                    if (this.isGameActive && this.collectibles.length < 5) {
-                        this.createCollectible();
-                    }
-                }, 2000);
-                
-                // Generate obstacles
-                setInterval(() => {
-                    if (this.isGameActive && this.obstacles.length < 3) {
-                        this.createObstacle();
-                    }
-                }, 3000);
-            }
-
-            createCollectible() {
-                const collectible = document.createElement('div');
-                collectible.className = 'collectible';
-                collectible.textContent = '⭐';
-                
-                const rect = this.canvas.getBoundingClientRect();
-                collectible.style.left = Math.random() * (rect.width - 40) + 'px';
-                collectible.style.top = Math.random() * (rect.height - 40) + 'px';
-                
-                document.querySelector('.camera-view').appendChild(collectible);
-                this.collectibles.push(collectible);
-                
-                // Auto-remove after 10 seconds
-                setTimeout(() => {
-                    this.removeCollectible(collectible);
-                }, 10000);
-            }
-
-            createObstacle() {
-                const obstacle = document.createElement('div');
-                obstacle.className = 'obstacle';
-                obstacle.textContent = '⚠️';
-                obstacle.style.width = '80px';
-                obstacle.style.height = '80px';
-                
-                const rect = this.canvas.getBoundingClientRect();
-                obstacle.style.left = Math.random() * (rect.width - 80) + 'px';
-                obstacle.style.top = Math.random() * (rect.height - 80) + 'px';
-                
-                document.querySelector('.camera-view').appendChild(obstacle);
-                this.obstacles.push(obstacle);
-                
-                // Auto-remove after 15 seconds
-                setTimeout(() => {
-                    this.removeObstacle(obstacle);
-                }, 15000);
-            }
-
-            checkCollisions() {
-                const playerRect = this.playerObject.getBoundingClientRect();
-                
-                // Check collectible collisions
-                this.collectibles.forEach((collectible, index) => {
-                    const collectibleRect = collectible.getBoundingClientRect();
-                    if (this.isColliding(playerRect, collectibleRect)) {
-                        this.collectItem(collectible, index);
-                    }
-                });
-                
-                // Check obstacle collisions
-                this.obstacles.forEach((obstacle) => {
-                    const obstacleRect = obstacle.getBoundingClientRect();
-                    if (this.isColliding(playerRect, obstacleRect)) {
-                        this.hitObstacle();
-                    }
-                });
-            }
-
-            isColliding(rect1, rect2) {
-                return rect1.left < rect2.right &&
-                       rect1.right > rect2.left &&
-                       rect1.top < rect2.bottom &&
-                       rect1.bottom > rect2.top;
-            }
-
-            collectItem(collectible, index) {
-                this.score += 10;
-                document.getElementById('score').textContent = this.score;
-                
-                // Create explosion effect
-                this.createExplosion(
-                    parseFloat(collectible.style.left),
-                    parseFloat(collectible.style.top)
-                );
-                
-                this.removeCollectible(collectible);
-                
-                // Check for level completion
-                if (this.score > 0 && this.score % 100 === 0) {
-                    this.levelComplete();
-                }
-            }
-
-            hitObstacle() {
-                // Flash effect
-                gsap.to(this.playerObject, {
-                    duration: 0.1,
-                    backgroundColor: '#ff0000',
-                    yoyo: true,
-                    repeat: 3,
-                    onComplete: () => {
-                        this.playerObject.style.backgroundColor = '';
-                    }
-                });
-                
-                this.updateStatus('Obstacle hit! Be careful!');
-                setTimeout(() => {
-                    if (this.isGameActive) {
-                        this.updateStatus('Move your hand to control the object!');
-                    }
-                }, 2000);
-            }
-
-            removeCollectible(collectible) {
-                const index = this.collectibles.indexOf(collectible);
-                if (index > -1) {
-                    this.collectibles.splice(index, 1);
-                    collectible.remove();
-                }
-            }
-
-            removeObstacle(obstacle) {
-                const index = this.obstacles.indexOf(obstacle);
-                if (index > -1) {
-                    this.obstacles.splice(index, 1);
-                    obstacle.remove();
-                }
-            }
-
-            createParticle(x, y) {
+            for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
-                particle.style.left = x + 'px';
-                particle.style.top = y + 'px';
-                
-                document.querySelector('.camera-view').appendChild(particle);
-                
-                gsap.to(particle, {
-                    duration: 1,
-                    x: (Math.random() - 0.5) * 100,
-                    y: (Math.random() - 0.5) * 100,
-                    opacity: 0,
-                    scale: 0,
-                    ease: "power2.out",
-                    onComplete: () => particle.remove()
-                });
-            }
-
-            createExplosion(x, y) {
-                for (let i = 0; i < 8; i++) {
-                    setTimeout(() => {
-                        const particle = document.createElement('div');
-                        particle.className = 'particle';
-                        particle.style.left = x + 'px';
-                        particle.style.top = y + 'px';
-                        particle.style.backgroundColor = '#feca57';
-                        
-                        document.querySelector('.camera-view').appendChild(particle);
-                        
-                        gsap.to(particle, {
-                            duration: 0.8,
-                            x: (Math.random() - 0.5) * 200,
-                            y: (Math.random() - 0.5) * 200,
-                            opacity: 0,
-                            scale: 0,
-                            ease: "power2.out",
-                            onComplete: () => particle.remove()
-                        });
-                    }, i * 50);
-                }
-            }
-
-            levelComplete() {
-                const levelCompleteEl = document.getElementById('levelComplete');
-                levelCompleteEl.style.opacity = '1';
-                
-                gsap.to(levelCompleteEl, {
-                    duration: 0.5,
-                    scale: 1.2,
-                    ease: "back.out(1.7)"
-                });
-                
-                setTimeout(() => {
-                    gsap.to(levelCompleteEl, {
-                        duration: 0.3,
-                        opacity: 0,
-                        scale: 1
-                    });
-                }, 2000);
-                
-                this.level++;
-                this.updateStatus(`Level ${this.level} - Keep collecting!`);
-            }
-
-            updateStatus(message) {
-                document.getElementById('status').textContent = message;
-            }
-
-            setupGameLoop() {
-                const gameLoop = () => {
-                    this.detectMotion();
-                    requestAnimationFrame(gameLoop);
-                };
-                gameLoop();
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                bgAnimation.appendChild(particle);
             }
         }
 
-        // Initialize game when page loads
-        window.addEventListener('load', () => {
-            new HandMotionGame();
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(15, 20, 25, 0.98)';
+            } else {
+                header.style.background = 'rgba(15, 20, 25, 0.95)';
+            }
         });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // PWA Install functionality
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'flex';
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    installBtn.style.display = 'none';
+                }
+                deferredPrompt = null;
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            installBtn.style.display = 'none';
+        });
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swScript = `
+                    const CACHE_NAME = 'yahya-portfolio-v1';
+                    const urlsToCache = [
+                        '/',
+                        '/styles.css',
+                        '/script.js',
+                        'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap',
+                        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+                        'https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css',
+                        'https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js'
+                    ];
+
+                    self.addEventListener('install', (event) => {
+                        event.waitUntil(
+                            caches.open(CACHE_NAME)
+                                .then((cache) => cache.addAll(urlsToCache))
+                        );
+                    });
+
+                    self.addEventListener('fetch', (event) => {
+                        event.respondWith(
+                            caches.match(event.request)
+                                .then((response) => {
+                                    if (response) {
+                                        return response;
+                                    }
+                                    return fetch(event.request);
+                                })
+                        );
+                    });
+                `;
+
+                const blob = new Blob([swScript], { type: 'application/javascript' });
+                const swUrl = URL.createObjectURL(blob);
+
+                navigator.serviceWorker.register(swUrl)
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+
+        // Initialize particles on load
+        window.addEventListener('load', () => {
+            createParticles();
+        });
+
+        // Add hover effects to project cards
+        document.addEventListener('DOMContentLoaded', () => {
+            const projectCards = document.querySelectorAll('.project-card');
+            
+            projectCards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-10px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+
+        // Add typing animation to hero text
+        function typeWriter(element, text, speed = 50) {
+            let i = 0;
+            element.innerHTML = '';
+            
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        // Initialize typing animation on load
+        window.addEventListener('load', () => {
+            const heroTitle = document.querySelector('.hero h1');
+            if (heroTitle) {
+                const originalText = heroTitle.textContent;
+                setTimeout(() => {
+                    typeWriter(heroTitle, originalText, 100);
+                }, 1000);
+            }
+        });
+
+        // Add parallax effect to hero section
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.hero');
+            const speed = scrolled * 0.5;
+            
+            if (parallax) {
+                parallax.style.transform = `translateY(${speed}px)`;
+            }
+        });
+
+        // Add intersection observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.project-card, .skill-item').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Add dynamic gradient background
+        function updateGradient() {
+            const time = Date.now() * 0.0005;
+            const x = Math.sin(time) * 0.5 + 0.5;
+            const y = Math.cos(time * 0.7) * 0.5 + 0.5;
+            
+            document.documentElement.style.setProperty(
+                '--gradient-primary', 
+                `linear-gradient(${135 + x * 90}deg, hsl(${220 + x * 40}, 70%, 60%) 0%, hsl(${280 + y * 40}, 70%, 70%) 100%)`
+            );
+        }
+
+        setInterval(updateGradient, 100);
     </script>
 </body>
 </html>
