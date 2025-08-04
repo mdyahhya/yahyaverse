@@ -557,6 +557,41 @@
         html {
             scroll-behavior: smooth;
         }
+
+
+        /* Programming Languages Section */
+.languages-grid {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+   gap: 1.5rem;
+   margin-top: 3rem;
+}
+
+.language-item {
+   background: var(--glass-bg);
+   border: 1px solid var(--border-color);
+   border-radius: 15px;
+   padding: 1.5rem;
+   text-align: center;
+   transition: all 0.3s ease;
+   backdrop-filter: blur(20px);
+}
+
+.language-item:hover {
+   transform: translateY(-5px);
+   border-color: var(--accent-color);
+}
+
+.language-flag {
+   font-size: 2.5rem;
+   color: var(--accent-color);
+   margin-bottom: 1rem;
+}
+
+.language-name {
+   font-weight: 500;
+   color: var(--primary-text);
+}
     </style>
 </head>
 <body>
@@ -594,7 +629,7 @@
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-phone"></i>
-                        <span>9307426215</span>
+                        <span>Contact Number (To be added)</span>
                     </div>
                 </div>
                 <div class="intro">
@@ -637,8 +672,8 @@
                         a social tech feed, gamified learning experiences, and organized study materials across all academic years.
                     </p>
                     <div class="project-buttons">
-                        <a href="project1.html" class="btn btn-primary">
-                            <i class="fas fa-eye"></i> View Project
+                        <a href="https://project1.netlify.app" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-external-link-alt"></i> View Live
                         </a>
                         <a href="#" class="btn btn-secondary">
                             <i class="fas fa-download"></i> Download App
@@ -656,8 +691,8 @@
                         job application tracking, and separate portals for HR professionals and job seekers.
                     </p>
                     <div class="project-buttons">
-                        <a href="project2.html" class="btn btn-primary">
-                            <i class="fas fa-eye"></i> View Project
+                        <a href="https://project2.netlify.app" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-external-link-alt"></i> View Live
                         </a>
                         <a href="#" class="btn btn-secondary">
                             <i class="fas fa-download"></i> Download App
@@ -675,8 +710,8 @@
                         Features real-time slot management, user bookings, and comprehensive admin dashboard.
                     </p>
                     <div class="project-buttons">
-                        <a href="solapurturfs.netlify.app" class="btn btn-primary">
-                            <i class="fas fa-eye"></i> View Project
+                        <a href="https://solapurturfs.netlify.app" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-external-link-alt"></i> View Live
                         </a>
                         <a href="#" class="btn btn-secondary">
                             <i class="fas fa-download"></i> Download App
@@ -694,7 +729,7 @@
                         problem-solving challenges, and comprehensive testing modules to enhance coding skills.
                     </p>
                     <div class="project-buttons">
-                        <a href="coderverse.netlify.app" class="btn btn-primary">
+                        <a href="project4.html" class="btn btn-primary">
                             <i class="fas fa-eye"></i> View Project
                         </a>
                         <a href="#" class="btn btn-secondary">
@@ -785,10 +820,10 @@
                     <div class="skill-icon"><i class="fas fa-mobile-alt"></i></div>
                     <div class="skill-name">PWA</div>
                 </div>
-                <div class="skill-item" data-aos="fade-up" data-aos-delay="350">
+                <!-- <div class="skill-item" data-aos="fade-up" data-aos-delay="350">
                     <div class="skill-icon"><i class="fas fa-fire"></i></div>
                     <div class="skill-name">Firebase</div>
-                </div>
+                </div> -->
                 <div class="skill-item" data-aos="fade-up" data-aos-delay="400">
                     <div class="skill-icon"><i class="fas fa-server"></i></div>
                     <div class="skill-name">Supabase</div>
@@ -804,6 +839,53 @@
             </div>
         </section>
     </main>
+
+    <!-- Programming Languages Section -->
+<section class="section" id="languages">
+   <h2 class="section-title" data-aos="fade-up">Programming Languages</h2>
+   <div class="languages-grid">
+       <div class="language-item" data-aos="fade-up" data-aos-delay="100">
+           <div class="language-flag"><i class="fab fa-html5"></i></div>
+           <div class="language-info">
+               <h3 class="language-name">HTML5</h3>
+               <div class="proficiency-bar">
+                   <div class="proficiency-fill" data-level="95"></div>
+               </div>
+               <span class="proficiency-text">Expert</span>
+           </div>
+       </div>
+       <div class="language-item" data-aos="fade-up" data-aos-delay="200">
+           <div class="language-flag"><i class="fab fa-css3-alt"></i></div>
+           <div class="language-info">
+               <h3 class="language-name">CSS3</h3>
+               <div class="proficiency-bar">
+                   <div class="proficiency-fill" data-level="90"></div>
+               </div>
+               <span class="proficiency-text">Expert</span>
+           </div>
+       </div>
+       <div class="language-item" data-aos="fade-up" data-aos-delay="300">
+           <div class="language-flag"><i class="fab fa-js-square"></i></div>
+           <div class="language-info">
+               <h3 class="language-name">JavaScript</h3>
+               <div class="proficiency-bar">
+                   <div class="proficiency-fill" data-level="85"></div>
+               </div>
+               <span class="proficiency-text">Advanced</span>
+           </div>
+       </div>
+       <div class="language-item" data-aos="fade-up" data-aos-delay="400">
+           <div class="language-flag"><i class="fas fa-database"></i></div>
+           <div class="language-info">
+               <h3 class="language-name">SQL</h3>
+               <div class="proficiency-bar">
+                   <div class="proficiency-fill" data-level="80"></div>
+               </div>
+               <span class="proficiency-text">Advanced</span>
+           </div>
+       </div>
+   </div>
+</section>
 
     <!-- Footer -->
     <footer id="contact">
