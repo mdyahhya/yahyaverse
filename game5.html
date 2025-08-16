@@ -508,6 +508,38 @@
             width: auto;
             margin: 0;
         }
+
+        .audio-call-container {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.call-avatar {
+    margin-bottom: 2rem;
+}
+
+.avatar-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    margin: 0 auto 1rem;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.call-status {
+    font-size: 1.2rem;
+    font-weight: 500;
+    opacity: 0.9;
+}
     </style>
 </head>
 <body>
@@ -634,22 +666,18 @@
                     <div class="subtitle" id="callWithUser">Connecting...</div>
                 </div>
                 <div class="form-container">
-                    <div class="video-container">
-                        <video id="remoteVideo" class="video" autoplay playsinline></video>
-                        <video id="localVideo" class="local-video" autoplay muted playsinline></video>
-                    </div>
+                    <div class="audio-call-container">
+    <div class="call-avatar">
+        <div class="avatar-circle" id="remoteAvatar">👤</div>
+        <div class="call-status" id="audioStatus">Connecting...</div>
+    </div>
+    <audio id="remoteAudio" autoplay></audio>
+</div>
                     
                     <div class="call-controls">
-                        <button id="muteBtn" class="control-btn mute" title="Mute/Unmute">
-                            🎤
-                        </button>
-                        <button id="videoBtn" class="control-btn video" title="Video On/Off">
-                            📹
-                        </button>
-                        <button id="endCallBtn" class="control-btn end" title="End Call">
-                            📞
-                        </button>
-                    </div>
+    <button id="muteBtn" class="control-btn mute" title="Mute/Unmute">🎤</button>
+    <button id="endCallBtn" class="control-btn end" title="End Call">📞</button>
+</div>
                     
                     <button id="backToDashboardBtn" class="btn btn-secondary">Back to Dashboard</button>
                 </div>
@@ -743,8 +771,7 @@
             
             // Call controls
             document.getElementById('muteBtn').addEventListener('click', toggleAudio);
-            document.getElementById('videoBtn').addEventListener('click', toggleVideo);
-
+          
             // Enter key handling
             document.getElementById('loginPassword').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') handleLogin();
@@ -825,7 +852,7 @@
                 
                 // Get user media
                 localStream = await navigator.mediaDevices.getUserMedia({
-                    video: true,
+                    video: false,
                     audio: true
                 });
 
@@ -840,10 +867,12 @@
                 });
 
                 // Handle remote stream
-                peerConnection.ontrack = (event) => {
-                    remoteStream = event.streams[0];
-                    document.getElementById('remoteVideo').srcObject = remoteStream;
-                };
+               // Handle remote stream (audio only)
+peerConnection.ontrack = (event) => {
+    remoteStream = event.streams[0];
+    document.getElementById('remoteAudio').srcObject = remoteStream;
+    document.getElementById('audioStatus').textContent = 'Connected';
+};
 
                 // Handle ICE candidates
                 peerConnection.onicecandidate = (event) => {
@@ -956,9 +985,14 @@
             }
 
             // Clean up UI
-            document.getElementById('localVideo').srcObject = null;
-            document.getElementById('remoteVideo').srcObject = null;
+          // Clean up UI
+document.getElementById('remoteAudio').srcObject = null;
+document.getElementById('audioStatus').textContent = 'Disconnected';
             document.getElementById('incomingCall').classList.remove('show');
+
+            // Add this after setting remoteAudio srcObject
+const remoteAudio = document.getElementById('remoteAudio');
+remoteAudio.play().catch(e => console.log('Audio autoplay prevented:', e));
 
             // Reset state
             currentCall = null;
@@ -972,6 +1006,7 @@
             showPage('dashboardPage');
             loadCallHistory();
         }
+        
 
         function toggleAudio() {
             if (localStream) {
@@ -1088,49 +1123,76 @@
             }
         });
 
-        
         async function handleRegister() {
-            const username = document.getElementById('registerUsername').value;
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-            
-            if (!username || !email || !password) {
-                showError('Please fill in all fields', 'registerErrorMessage');
-                return;
-            }
+    const username = document.getElementById('registerUsername').value;
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+    
+    if (!username || !email || !password) {
+        showError('Please fill in all fields', 'registerErrorMessage');
+        return;
+    }
 
-            setLoading('registerBtn', true);
+    setLoading('registerBtn', true);
+    
+    try {
+        // First create auth user
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+            email: email,
+            password: password
+        });
+
+        if (authError) throw authError;
+
+        // If no session but user created, it means confirmation is required
+        if (authData.user && !authData.session) {
+            // Auto-confirm the user (bypass email confirmation)
+            const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password
+            });
             
-            try {
-                const { data, error } = await supabase.auth.signUp({
+            if (signInError) {
+                throw new Error('Account created but auto-login failed. Please try logging in manually.');
+            }
+            
+            // Create user record
+            const { error: dbError } = await supabase
+                .from('users')
+                .insert([{
+                    id: signInData.user.id,
+                    username: username,
                     email: email,
-                    password: password
-                });
+                    status: 'online'
+                }]);
 
-                if (error) throw error;
+            if (dbError) throw dbError;
+            
+            await loadUserData(signInData.user);
+        } else {
+            // Normal flow if confirmation is disabled
+            const { error: dbError } = await supabase
+                .from('users')
+                .insert([{
+                    id: authData.user.id,
+                    username: username,
+                    email: email,
+                    status: 'online'
+                }]);
 
-                // Create user record in database
-                const { error: dbError } = await supabase
-                    .from('users')
-                    .insert([{
-                        id: data.user.id,
-                        username: username,
-                        email: email,
-                        status: 'online'
-                    }]);
-
-                if (dbError) throw dbError;
-
-                await loadUserData(data.user);
-                showPage('dashboardPage');
-                
-            } catch (error) {
-                showError(error.message, 'registerErrorMessage');
-            } finally {
-                setLoading('registerBtn', false);
-            }
+            if (dbError) throw dbError;
+            
+            await loadUserData(authData.user);
         }
 
+        showPage('dashboardPage');
+        
+    } catch (error) {
+        showError(error.message, 'registerErrorMessage');
+    } finally {
+        setLoading('registerBtn', false);
+    }
+}
         async function handleLogout() {
             try {
                 // Update user status to offline
@@ -1303,7 +1365,7 @@ function startDashboardRefresh() {
 }
 
         function subscribeToIncomingCalls() {
-            callsSubscription = supabase
+          callsSubscription = supabase
     .channel('public:calls')
     .on('postgres_changes',
         {
