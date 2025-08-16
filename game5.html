@@ -1160,6 +1160,7 @@
         async function loadUserData(user) {
             currentUser = user;
             
+            
             // Update user status to online
             await supabase
                 .from('users')
@@ -1176,6 +1177,8 @@
             
             // Subscribe to calls
             subscribeToIncomingCalls();
+            // Add this line at the end of loadUserData function
+            startDashboardRefresh();
         }
 
         async function loadCallHistory() {
@@ -1223,6 +1226,40 @@
             }
         }
 
+        async function checkForIncomingCalls() {
+    try {
+        const { data, error } = await supabase
+            .from('calls')
+            .select('*, caller:users!calls_caller_id_fkey(username)')
+            .eq('receiver_id', currentUser.id)
+            .eq('status', 'initiated')
+            .order('created_at', { ascending: false })
+            .limit(1);
+
+        if (error) throw error;
+
+        if (data.length > 0 && !currentCall) {
+            currentCall = data[0];
+            document.getElementById('callerName').textContent = data[0].caller.username;
+            document.getElementById('incomingCall').classList.add('show');
+        }
+    } catch (error) {
+        console.error('Error checking calls:', error);
+    }
+}
+
+function startDashboardRefresh() {
+    setInterval(async () => {
+        if (document.getElementById('dashboardPage').classList.contains('active')) {
+            await loadOnlineUsers();
+            await loadCallHistory();
+            await checkForIncomingCalls(); // Add this line
+        }
+    }, 3000);
+}
+
+
+
         async function loadOnlineUsers() {
             try {
                 const { data, error } = await supabase
@@ -1256,18 +1293,28 @@
             }
         }
 
+        function startDashboardRefresh() {
+    setInterval(async () => {
+        if (document.getElementById('dashboardPage').classList.contains('active')) {
+            await loadOnlineUsers();
+            await loadCallHistory();
+        }
+    }, 3000); // Refresh every 3 seconds
+}
+
         function subscribeToIncomingCalls() {
             callsSubscription = supabase
-                .channel('calls')
-                .on('postgres_changes',
-                    {
-                        event: 'INSERT',
-                        schema: 'public',
-                        table: 'calls',
-                        filter: `receiver_id=eq.${currentUser.id}`
-                    },
-                    handleIncomingCall
-                )
+    .channel('public:calls')
+    .on('postgres_changes',
+        {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'calls',
+            filter: `receiver_id=eq.${currentUser.id}`
+        },
+        handleIncomingCall
+    )
+                
                 .on('postgres_changes',
                     {
                         event: 'UPDATE',
