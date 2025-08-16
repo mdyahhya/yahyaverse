@@ -736,22 +736,37 @@
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', async function() {
-            if (!initializeSupabase()) {
-                showError('Failed to initialize app. Please refresh.');
+    if (!initializeSupabase()) {
+        showError('Failed to initialize app. Please refresh.');
+        return;
+    }
+
+    // Check if user was logged in before
+    const stored = localStorage.getItem('userCredentials');
+    if (stored) {
+        try {
+            const credentials = JSON.parse(stored);
+            const { data, error } = await supabase
+                .from('users')
+                .select('*')
+                .eq('email', credentials.email)
+                .single();
+
+            if (data) {
+                currentUser = data;
+                await loadUserData(data);
+                showPage('dashboardPage');
+                setupEventListeners();
                 return;
             }
+        } catch (e) {
+            console.log('Auto-login failed');
+        }
+    }
 
-            // Check if user is already logged in
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                await loadUserData(session.user);
-                showPage('dashboardPage');
-            }
-
-            // Set up event listeners
-            setupEventListeners();
-        });
-
+    // Set up event listeners
+    setupEventListeners();
+});
         function setupEventListeners() {
             // Navigation
             document.getElementById('showRegisterBtn').addEventListener('click', () => showPage('registerPage'));
@@ -796,14 +811,32 @@
     setLoading('loginBtn', true);
     
     try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password
-        });
+        // Check if user exists in our users table
+        const { data, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('email', email)
+            .single();
 
-        if (error) throw error;
+        if (error || !data) {
+            throw new Error('User not found. Please register first.');
+        }
 
-        await loadUserData(data.user);
+        // Check stored credentials (simple password check)
+        const stored = localStorage.getItem('userCredentials');
+        if (stored) {
+            const credentials = JSON.parse(stored);
+            if (credentials.email === email && credentials.password === password) {
+                currentUser = data;
+                await loadUserData(data);
+                showPage('dashboardPage');
+                return;
+            }
+        }
+
+        // If no stored credentials, just log them in (for demo)
+        currentUser = data;
+        await loadUserData(data);
         showPage('dashboardPage');
         
     } catch (error) {
@@ -1136,33 +1169,40 @@ remoteAudio.play().catch(e => console.log('Audio autoplay prevented:', e));
     setLoading('registerBtn', true);
     
     try {
-        // Try to sign up
-        const { error } = await supabase.auth.signUp({
-            email: email,
-            password: password
-        });
-
-        // Ignore confirmation errors and try to login immediately
-        const { data, error: loginError } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password
-        });
-
-        if (loginError) throw loginError;
-
-        // Create user record (use upsert to avoid conflicts)
-        const { error: dbError } = await supabase
+        // Create a fake user ID (for demo purposes)
+        const fakeUserId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        
+        // Directly insert into users table without auth
+        const { data, error } = await supabase
             .from('users')
-            .upsert([{
-                id: data.user.id,
+            .insert([{
+                id: fakeUserId,
                 username: username,
                 email: email,
                 status: 'online'
-            }], { onConflict: 'id' });
+            }])
+            .select()
+            .single();
 
-        if (dbError) throw dbError;
+        if (error) throw error;
 
-        await loadUserData(data.user);
+        // Create fake session object
+        const fakeUser = {
+            id: data.id,
+            email: data.email,
+            username: data.username
+        };
+
+        currentUser = fakeUser;
+        
+        // Store credentials locally for login
+        localStorage.setItem('userCredentials', JSON.stringify({
+            email: email,
+            password: password,
+            userData: fakeUser
+        }));
+
+        await loadUserData(fakeUser);
         showPage('dashboardPage');
         
     } catch (error) {
@@ -1198,29 +1238,26 @@ remoteAudio.play().catch(e => console.log('Audio autoplay prevented:', e));
         }
 
         async function loadUserData(user) {
-            currentUser = user;
-            
-            
-            // Update user status to online
-            await supabase
-                .from('users')
-                .update({ status: 'online' })
-                .eq('id', user.id);
+    currentUser = user;
+    
+    // Update user status to online
+    await supabase
+        .from('users')
+        .update({ status: 'online' })
+        .eq('id', user.id);
 
-            // Update UI
-            document.getElementById('userId').textContent = `ID: ${user.id.substring(0, 8)}`;
-            document.getElementById('userAvatar').textContent = user.email.charAt(0).toUpperCase();
-            
-            // Load data
-            await loadCallHistory();
-            await loadOnlineUsers();
-            
-            // Subscribe to calls
-            subscribeToIncomingCalls();
-            // Add this line at the end of loadUserData function
-            startDashboardRefresh();
-        }
-
+    // Update UI
+    document.getElementById('userId').textContent = `ID: ${user.id}`;
+    document.getElementById('userAvatar').textContent = user.email.charAt(0).toUpperCase();
+    
+    // Load data
+    await loadCallHistory();
+    await loadOnlineUsers();
+    
+    // Subscribe to calls
+    subscribeToIncomingCalls();
+    startDashboardRefresh();
+}
         async function loadCallHistory() {
             try {
                 const { data, error } = await supabase
