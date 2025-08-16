@@ -1408,38 +1408,78 @@ input:focus, textarea:focus {
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', async () => {
-            if (!initializeSupabase()) {
-                alert('Failed to initialize Supabase. Please check your configuration.');
-                return;
-            }
-            
-            await checkAuthState();
-            setupEventListeners();
-            populateAvatarOptions();
-        });
+    if (!initializeSupabase()) {
+        alert('Failed to initialize Supabase. Please check your configuration.');
+        return;
+    }
+    
+    // Add the new HTML structures and CSS
+    updateContactsTabHTML();
+    addContactsCSS();
+    updateGroupsTabHTML();
+    addGroupsCSS();
+    
+    await checkAuthState();
+    setupEventListeners();
+    setupContactEventListeners();
+    setupGroupEventListeners(); // ADD THIS LINE
+    populateAvatarOptions();
+});
 
         // Check if user is already logged in
-        async function checkAuthState() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                const user = await getUserProfile(session.user.id);
-                if (user) {
-                    currentUser = user;
-                    showScreen('main-screen');
-                    loadChats();
-                    loadContacts();
-                    loadGroups();
-                }
+        // Enhanced checkAuthState function
+async function checkAuthState() {
+    try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+            const user = await getUserProfile(session.user.id);
+            if (user) {
+                currentUser = user;
+                
+                // Ensure HTML structures exist
+                updateContactsTabHTML();
+                addContactsCSS();
+                updateGroupsTabHTML();
+                addGroupsCSS();
+                addChatCSS();
+                ensureChatHTML();
+                
+                showScreen('main-screen');
+                await loadChats();
+                await loadContacts();
+                await loadGroups();
+                
+                // Start auto-refresh
+                startContactRequestsAutoRefresh();
+                startGroupRequestsAutoRefresh();
             }
         }
-
+    } catch (error) {
+        console.error('Error checking auth state:', error);
+    }
+}
         // Show specific screen
         function showScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
-            });
-            document.getElementById(screenId).classList.add('active');
-        }
+    document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+    });
+    document.getElementById(screenId).classList.add('active');
+    
+    // Handle auto-refresh based on screen
+    if (screenId === 'main-screen') {
+        startContactRequestsAutoRefresh();
+        startGroupRequestsAutoRefresh();
+    } else if (screenId === 'chat-screen') {
+        stopContactRequestsAutoRefresh();
+        stopGroupRequestsAutoRefresh();
+        // Message refresh is handled separately in openGroup/startChat
+    } else {
+        stopContactRequestsAutoRefresh();
+        stopGroupRequestsAutoRefresh();
+        stopMessageRefresh();
+    }
+}
+
 
         // Populate avatar options
         function populateAvatarOptions() {
@@ -1482,83 +1522,103 @@ input:focus, textarea:focus {
         }
 
         // Setup event listeners
-        function setupEventListeners() {
-            // Auth form toggles
-            document.getElementById('show-signup').addEventListener('click', (e) => {
-                e.preventDefault();
-                document.getElementById('login-form').classList.remove('active');
-                document.getElementById('signup-form').classList.add('active');
-            });
+        // COMPLETE setupEventListeners function - REPLACE your existing one with this:
+function setupEventListeners() {
+    // Auth form toggles
+    document.getElementById('show-signup')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('login-form').classList.remove('active');
+        document.getElementById('signup-form').classList.add('active');
+    });
 
-            document.getElementById('show-login').addEventListener('click', (e) => {
-                e.preventDefault();
-                document.getElementById('signup-form').classList.remove('active');
-                document.getElementById('login-form').classList.add('active');
-            });
+    document.getElementById('show-login')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('signup-form').classList.remove('active');
+        document.getElementById('login-form').classList.add('active');
+    });
 
-            // Username validation
-            document.getElementById('signup-username').addEventListener('input', debounce(checkUsernameAvailability, 500));
+    // Username validation
+    document.getElementById('signup-username')?.addEventListener('input', debounce(checkUsernameAvailability, 500));
 
-            // Auth buttons
-            document.getElementById('signup-btn').addEventListener('click', handleSignup);
-            document.getElementById('login-btn').addEventListener('click', handleLogin);
-            document.getElementById('complete-profile-btn').addEventListener('click', completeProfile);
+    // Auth buttons
+    document.getElementById('signup-btn')?.addEventListener('click', handleSignup);
+    document.getElementById('login-btn')?.addEventListener('click', handleLogin);
+    document.getElementById('complete-profile-btn')?.addEventListener('click', completeProfile);
 
-            // Tab switching
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.addEventListener('click', () => switchTab(tab.dataset.tab));
-            });
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+    });
 
-            // Search functionality
-            document.getElementById('search-btn').addEventListener('click', toggleSearch);
-            document.getElementById('search-input').addEventListener('input', debounce(handleSearch, 300));
+    // Search functionality
+    document.getElementById('search-btn')?.addEventListener('click', toggleSearch);
+    document.getElementById('search-input')?.addEventListener('input', debounce(handleSearch, 300));
 
-            // Modal controls
-            document.querySelectorAll('.close-modal').forEach(btn => {
-                btn.addEventListener('click', closeModals);
-            });
+    // Modal controls
+    document.querySelectorAll('.close-modal').forEach(btn => {
+        btn.addEventListener('click', closeModals);
+    });
 
-            // Action buttons
-            document.getElementById('add-contact-btn').addEventListener('click', () => {
-                document.getElementById('add-contact-modal').style.display = 'flex';
-            });
-
-            document.getElementById('create-group-btn').addEventListener('click', () => {
-                document.getElementById('create-group-modal').style.display = 'flex';
-            });
-
-            document.getElementById('join-group-btn').addEventListener('click', () => {
-                document.getElementById('join-group-modal').style.display = 'flex';
-            });
-
-            document.getElementById('send-request-btn').addEventListener('click', sendContactRequest);
-            document.getElementById('create-group-submit').addEventListener('click', createGroup);
-            document.getElementById('join-group-submit').addEventListener('click', joinGroup);
-
-            // Chat functionality
-            document.getElementById('back-btn').addEventListener('click', () => {
-                showScreen('main-screen');
-                currentChat = null;
-            });
-
-            document.getElementById('send-btn').addEventListener('click', sendMessage);
-            document.getElementById('message-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-
-            // Group image upload
-            document.getElementById('group-image-upload').addEventListener('change', handleGroupImageUpload);
-
-            // Click outside modal to close
-            window.addEventListener('click', (e) => {
-                if (e.target.classList.contains('modal')) {
-                    closeModals();
-                }
-            });
+    // Contact and group actions - use event delegation
+    document.addEventListener('click', (e) => {
+        // Contact actions
+        if (e.target.id === 'add-contact-btn' || e.target.closest('#add-contact-btn')) {
+            document.getElementById('add-contact-modal').style.display = 'flex';
         }
+        
+        // Group actions
+        if (e.target.id === 'create-group-btn' || e.target.closest('#create-group-btn')) {
+            document.getElementById('create-group-modal').style.display = 'flex';
+        }
+        
+        if (e.target.id === 'join-group-btn' || e.target.closest('#join-group-btn')) {
+            document.getElementById('join-group-modal').style.display = 'flex';
+        }
+
+        // Back button
+        if (e.target.id === 'back-btn' || e.target.closest('#back-btn')) {
+            stopMessageRefresh();
+            showScreen('main-screen');
+            currentChat = null;
+        }
+
+        // Send button
+        if (e.target.id === 'send-btn' || e.target.closest('#send-btn')) {
+            sendMessage();
+        }
+    });
+
+    // Form submissions
+    document.getElementById('send-request-btn')?.addEventListener('click', sendContactRequest);
+    document.getElementById('create-group-submit')?.addEventListener('click', createGroup);
+    document.getElementById('join-group-submit')?.addEventListener('click', joinGroup);
+
+    // Message input handling
+    document.addEventListener('keypress', (e) => {
+        if (e.target.id === 'message-input' && e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    // Auto-resize message input
+    document.addEventListener('input', (e) => {
+        if (e.target.id === 'message-input') {
+            e.target.style.height = 'auto';
+            e.target.style.height = Math.min(e.target.scrollHeight, 100) + 'px';
+        }
+    });
+
+    // Group image upload
+    document.getElementById('group-image-upload')?.addEventListener('change', handleGroupImageUpload);
+
+    // Click outside modal to close
+    window.addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal')) {
+            closeModals();
+        }
+    });
+}
 
         // Debounce function
         function debounce(func, wait) {
@@ -1785,33 +1845,54 @@ async function handleSignup() {
 
         // Complete profile setup
         async function completeProfile() {
-            if (!selectedAvatar) {
-                alert('Please select an avatar');
-                return;
-            }
+    if (!selectedAvatar) {
+        alert('Please select an avatar');
+        return;
+    }
 
-            try {
-                const { error } = await supabase
-                    .from('profiles')
-                    .update({ avatar_url: selectedAvatar })
-                    .eq('id', currentUser.id);
+    try {
+        const { error } = await supabase
+            .from('profiles')
+            .update({ avatar_url: selectedAvatar })
+            .eq('id', currentUser.id);
 
-                if (error) {
-                    alert('Failed to update profile: ' + error.message);
-                    return;
-                }
-
-                currentUser.avatar_url = selectedAvatar;
-                showScreen('main-screen');
-                await loadChats();
-                await loadContacts();
-                await loadGroups();
-
-            } catch (error) {
-                console.error('Profile completion error:', error);
-                alert('Failed to complete profile');
-            }
+        if (error) {
+            alert('Failed to update profile: ' + error.message);
+            return;
         }
+
+        currentUser.avatar_url = selectedAvatar;
+        
+        // Ensure HTML structures exist
+        updateContactsTabHTML();
+        addContactsCSS();
+        updateGroupsTabHTML();
+        addGroupsCSS();
+        addChatCSS();
+        ensureChatHTML();
+        
+        showScreen('main-screen');
+        await loadChats();
+        await loadContacts();
+        await loadGroups();
+        
+        // Start auto-refresh
+        startContactRequestsAutoRefresh();
+        startGroupRequestsAutoRefresh();
+
+    } catch (error) {
+        console.error('Profile completion error:', error);
+        alert('Failed to complete profile');
+    }
+}
+
+// Add a utility function to generate UUID for file uploads
+function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
 
         // Tab switching
         function switchTab(tabName) {
@@ -1871,57 +1952,7 @@ async function handleSignup() {
         }
 
         // Send contact request
-        async function sendContactRequest() {
-            const username = document.getElementById('contact-username').value.trim();
-            
-            if (!username) {
-                alert('Please enter a username');
-                return;
-            }
-
-            try {
-                // Find user by username
-                const { data: targetUser, error: userError } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('username', username)
-                    .single();
-
-                if (userError || !targetUser) {
-                    alert('User not found');
-                    return;
-                }
-
-                if (targetUser.id === currentUser.id) {
-                    alert('You cannot add yourself');
-                    return;
-                }
-
-                // Send contact request
-                const { error: requestError } = await supabase
-                    .from('contact_requests')
-                    .insert([
-                        {
-                            from_user_id: currentUser.id,
-                            to_user_id: targetUser.id,
-                            status: 'pending'
-                        }
-                    ]);
-
-                if (requestError) {
-                    alert('Failed to send request: ' + requestError.message);
-                    return;
-                }
-
-                alert('Contact request sent!');
-                closeModals();
-                document.getElementById('contact-username').value = '';
-
-            } catch (error) {
-                console.error('Error sending contact request:', error);
-                alert('Failed to send contact request');
-            }
-        }
+       
 
         // Handle group image upload
         async function handleGroupImageUpload(event) {
@@ -2102,40 +2133,83 @@ async function handleSignup() {
         }
 
         // Load chats
-        async function loadChats() {
-            // Implementation for loading chats
-            console.log('Loading chats...');
+        // Enhanced loadChats function (basic implementation)
+async function loadChats() {
+    try {
+        // This is a basic implementation - you might want to enhance this
+        // to show recent conversations
+        console.log('Loading chats...');
+        
+        // You could implement a recent conversations list here
+        // For now, users can access chats through contacts and groups
+        
+    } catch (error) {
+        console.error('Error loading chats:', error);
+    }
+}
+
+// Add window beforeunload to cleanup intervals
+window.addEventListener('beforeunload', () => {
+    stopContactRequestsAutoRefresh();
+    stopGroupRequestsAutoRefresh();
+    stopMessageRefresh();
+});
+
+// Add visibility change handler to pause/resume refresh when tab is not active
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+        // Resume refresh when tab becomes visible
+        if (document.getElementById('main-screen')?.classList.contains('active')) {
+            startContactRequestsAutoRefresh();
+            startGroupRequestsAutoRefresh();
         }
+        if (currentChat) {
+            startMessageRefresh();
+        }
+    } else {
+        // Pause refresh when tab is not visible to save resources
+        stopContactRequestsAutoRefresh();
+        stopGroupRequestsAutoRefresh();
+        stopMessageRefresh();
+    }
+});
 
         // Load contacts
         async function loadContacts() {
-            try {
-                const { data: contacts, error } = await supabase
-                    .from('contacts')
-                    .select(`
-                        *,
-                        contact:profiles!contacts_contact_id_fkey(*)
-                    `)
-                    .eq('owner_id', currentUser.id)
-                    .eq('status', 'approved');
+    try {
+        const { data: contacts, error } = await supabase
+            .from('contacts')
+            .select(`
+                *,
+                contact:profiles!contacts_contact_id_fkey(*)
+            `)
+            .eq('owner_id', currentUser.id)
+            .eq('status', 'approved');
 
-                if (error) {
-                    console.error('Error loading contacts:', error);
-                    return;
-                }
-
-                const contactsList = document.getElementById('contacts-list');
-                contactsList.innerHTML = '';
-
-                contacts.forEach(contact => {
-                    const contactElement = createContactElement(contact.contact);
-                    contactsList.appendChild(contactElement);
-                });
-
-            } catch (error) {
-                console.error('Error loading contacts:', error);
-            }
+        if (error) {
+            console.error('Error loading contacts:', error);
+            return;
         }
+
+        const contactsList = document.getElementById('contacts-list');
+        if (contactsList) {
+            contactsList.innerHTML = '';
+
+            if (contacts.length === 0) {
+                contactsList.innerHTML = '<p class="no-contacts">No contacts yet. Add some friends!</p>';
+                return;
+            }
+
+            contacts.forEach(contact => {
+                const contactElement = createContactElement(contact.contact);
+                contactsList.appendChild(contactElement);
+            });
+        }
+
+    } catch (error) {
+        console.error('Error loading contacts:', error);
+    }
+}
 
         // Load groups
         async function loadGroups() {
@@ -2203,28 +2277,1616 @@ async function handleSignup() {
         }
 
         // Start chat with contact
-        function startChat(contactId) {
-            console.log('Starting chat with:', contactId);
-            // Implementation for starting individual chat
+        async function startChat(contactId) {
+    try {
+        // Get contact details
+        const { data: contact, error: contactError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', contactId)
+            .single();
+
+        if (contactError || !contact) {
+            alert('Contact not found');
+            return;
         }
+
+        // Set current chat
+        currentChat = {
+            id: contactId,
+            type: 'private',
+            name: contact.display_name,
+            avatar_url: contact.avatar_url
+        };
+
+        // Update chat header
+        document.getElementById('chat-header-avatar').src = contact.avatar_url || '/default-avatar.png';
+        document.getElementById('chat-header-name').textContent = contact.display_name;
+        document.getElementById('chat-header-status').textContent = `@${contact.username}`;
+
+        // Clear messages
+        document.getElementById('messages-container').innerHTML = '';
+
+        // Load messages
+        await loadPrivateMessages(contactId);
+
+        // Show chat screen
+        showScreen('chat-screen');
+
+        // Start message refresh
+        startMessageRefresh();
+
+    } catch (error) {
+        console.error('Error starting chat:', error);
+        alert('Failed to start chat');
+    }
+}
 
         // Open group chat
-        function openGroup(groupId) {
-            console.log('Opening group:', groupId);
-            // Implementation for opening group chat
+        async function openGroup(groupId) {
+    try {
+        // Get group details
+        const { data: group, error: groupError } = await supabase
+            .from('groups')
+            .select('*')
+            .eq('id', groupId)
+            .single();
+
+        if (groupError || !group) {
+            alert('Group not found');
+            return;
         }
 
-        // Send message
-        function sendMessage() {
-            const messageInput = document.getElementById('message-input');
-            const message = messageInput.value.trim();
-            
-            if (!message) return;
-            
-            console.log('Sending message:', message);
-            messageInput.value = '';
-            // Implementation for sending message
+        // Set current chat
+        currentChat = {
+            id: groupId,
+            type: 'group',
+            name: group.name,
+            avatar_url: group.avatar_url
+        };
+
+        // Update chat header
+        document.getElementById('chat-header-avatar').src = group.avatar_url || '/default-group.png';
+        document.getElementById('chat-header-name').textContent = group.name;
+        document.getElementById('chat-header-status').textContent = `Group • ${group.group_code}`;
+
+        // Clear messages
+        document.getElementById('messages-container').innerHTML = '';
+
+        // Load messages
+        await loadGroupMessages(groupId);
+
+        // Show chat screen
+        showScreen('chat-screen');
+
+        // Start message refresh
+        startMessageRefresh();
+
+    } catch (error) {
+        console.error('Error opening group:', error);
+        alert('Failed to open group chat');
+    }
+}
+
+async function loadGroupMessages(groupId) {
+    try {
+        const { data: messages, error } = await supabase
+            .from('messages')
+            .select(`
+                *,
+                sender:profiles!messages_sender_id_fkey(*)
+            `)
+            .eq('group_id', groupId)
+            .order('created_at', { ascending: true });
+
+        if (error) {
+            console.error('Error loading group messages:', error);
+            return;
         }
+
+        const container = document.getElementById('messages-container');
+        container.innerHTML = '';
+
+        messages.forEach(message => {
+            const messageElement = createMessageElement(message);
+            container.appendChild(messageElement);
+        });
+
+        // Scroll to bottom
+        container.scrollTop = container.scrollHeight;
+
+    } catch (error) {
+        console.error('Error loading group messages:', error);
+    }
+}
+async function loadGroupMessages(groupId) {
+    try {
+        const { data: messages, error } = await supabase
+            .from('messages')
+            .select(`
+                *,
+                sender:profiles!messages_sender_id_fkey(*)
+            `)
+            .eq('group_id', groupId)
+            .order('created_at', { ascending: true });
+
+        if (error) {
+            console.error('Error loading group messages:', error);
+            return;
+        }
+
+        const container = document.getElementById('messages-container');
+        container.innerHTML = '';
+
+        messages.forEach(message => {
+            const messageElement = createMessageElement(message);
+            container.appendChild(messageElement);
+        });
+
+        // Scroll to bottom
+        container.scrollTop = container.scrollHeight;
+
+    } catch (error) {
+        console.error('Error loading group messages:', error);
+    }
+}
+
+        // Send message
+        // UPDATE your sendMessage function:
+async function sendMessage() {
+    const messageInput = document.getElementById('message-input');
+    const message = messageInput.value.trim();
+    
+    if (!message || !currentChat) return;
+    
+    try {
+        const messageData = {
+            content: message,
+            sender_id: currentUser.id
+        };
+
+        if (currentChat.type === 'group') {
+            messageData.group_id = currentChat.id;
+        } else {
+            messageData.receiver_id = currentChat.id;
+        }
+
+        const { error } = await supabase
+            .from('messages')
+            .insert([messageData]);
+
+        if (error) {
+            alert('Failed to send message: ' + error.message);
+            return;
+        }
+
+        messageInput.value = '';
+        
+        // Immediately reload messages
+        if (currentChat.type === 'group') {
+            await loadGroupMessages(currentChat.id);
+        } else {
+            await loadPrivateMessages(currentChat.id);
+        }
+
+    } catch (error) {
+        console.error('Error sending message:', error);
+        alert('Failed to send message');
+    }
+}
+
+        // Add this function to update your contacts tab HTML structure
+function updateContactsTabHTML() {
+    const contactsTab = document.getElementById('contacts-tab');
+    if (contactsTab) {
+        contactsTab.innerHTML = `
+            <div class="contacts-header">
+                <div class="contacts-nav">
+                    <button class="contact-nav-btn active" data-contact-tab="contacts">My Contacts</button>
+                    <button class="contact-nav-btn" data-contact-tab="received">Received (<span id="received-count">0</span>)</button>
+                    <button class="contact-nav-btn" data-contact-tab="sent">Sent (<span id="sent-count">0</span>)</button>
+                </div>
+                <button id="add-contact-btn" class="btn-primary">
+                    <i class="fas fa-user-plus"></i> Add Contact
+                </button>
+            </div>
+
+            <div id="contacts-content" class="contact-tab-content active">
+                <div id="contacts-list" class="contacts-list"></div>
+            </div>
+
+            <div id="received-content" class="contact-tab-content">
+                <h3>Received Requests</h3>
+                <div id="received-requests-list" class="requests-list"></div>
+            </div>
+
+            <div id="sent-content" class="contact-tab-content">
+                <h3>Sent Requests</h3>
+                <div id="sent-requests-list" class="requests-list"></div>
+            </div>
+        `;
+    }
+}
+
+// Add CSS styles for the new structure
+function addContactsCSS() {
+    const style = document.createElement('style');
+    style.textContent = `
+        .contacts-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .contacts-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .contact-nav-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .contact-nav-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .contact-nav-btn:hover {
+            background: #f8f9fa;
+        }
+
+        .contact-nav-btn.active:hover {
+            background: #0056b3;
+        }
+
+        .contact-tab-content {
+            display: none;
+        }
+
+        .contact-tab-content.active {
+            display: block;
+        }
+
+        .requests-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .request-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .request-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        .request-info {
+            flex: 1;
+        }
+
+        .request-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+        }
+
+        .request-info p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-accept {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-reject {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .request-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+
+
+
+
+
+
+
+// Global variables for auto-refresh
+let contactRequestsInterval = null;
+let currentContactTab = 'contacts';
+
+// Enhanced setupEventListeners function - ADD THESE to your existing function
+// function setupContactEventListeners() {
+//     // Contact tab navigation
+//     document.addEventListener('click', (e) => {
+//         if (e.target.classList.contains('contact-nav-btn')) {
+//             switchContactTab(e.target.dataset.contactTab);
+//         }
+//     });
+
+//     // Add contact button (update existing listener)
+//     document.getElementById('add-contact-btn').addEventListener('click', () => {
+//         document.getElementById('add-contact-modal').style.display = 'flex';
+//     });
+// }
+
+// Switch between contact tabs
+function switchContactTab(tabName) {
+    currentContactTab = tabName;
+    
+    // Update nav buttons
+    document.querySelectorAll('.contact-nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[data-contact-tab="${tabName}"]`).classList.add('active');
+    
+    // Update content
+    document.querySelectorAll('.contact-tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    document.getElementById(`${tabName}-content`).classList.add('active');
+    
+    // Load appropriate data
+    if (tabName === 'received') {
+        loadReceivedRequests();
+    } else if (tabName === 'sent') {
+        loadSentRequests();
+    }
+}
+
+// Start auto-refresh for contact requests
+function startContactRequestsAutoRefresh() {
+    // Clear existing interval
+    if (contactRequestsInterval) {
+        clearInterval(contactRequestsInterval);
+    }
+    
+    // Set up fast refresh every 2 seconds
+    contactRequestsInterval = setInterval(() => {
+        loadReceivedRequests();
+        loadSentRequests();
+        updateRequestCounts();
+    }, 2000);
+    
+    // Initial load
+    loadReceivedRequests();
+    loadSentRequests();
+    updateRequestCounts();
+}
+
+// Stop auto-refresh
+function stopContactRequestsAutoRefresh() {
+    if (contactRequestsInterval) {
+        clearInterval(contactRequestsInterval);
+        contactRequestsInterval = null;
+    }
+}
+
+// Enhanced send contact request
+async function sendContactRequest() {
+    const username = document.getElementById('contact-username').value.trim();
+    
+    if (!username) {
+        alert('Please enter a username');
+        return;
+    }
+
+    try {
+        // Find user by username
+        const { data: targetUser, error: userError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('username', username)
+            .single();
+
+        if (userError || !targetUser) {
+            alert('User not found');
+            return;
+        }
+
+        if (targetUser.id === currentUser.id) {
+            alert('You cannot add yourself');
+            return;
+        }
+
+        // Check if request already exists
+        const { data: existingRequest } = await supabase
+            .from('contact_requests')
+            .select('*')
+            .eq('from_user_id', currentUser.id)
+            .eq('to_user_id', targetUser.id)
+            .single();
+
+        if (existingRequest) {
+            alert('Request already sent to this user');
+            return;
+        }
+
+        // Check if they're already contacts
+        const { data: existingContact } = await supabase
+            .from('contacts')
+            .select('*')
+            .eq('owner_id', currentUser.id)
+            .eq('contact_id', targetUser.id)
+            .eq('status', 'approved')
+            .single();
+
+        if (existingContact) {
+            alert('This user is already in your contacts');
+            return;
+        }
+
+        // Send contact request
+        const { error: requestError } = await supabase
+            .from('contact_requests')
+            .insert([
+                {
+                    from_user_id: currentUser.id,
+                    to_user_id: targetUser.id,
+                    status: 'pending'
+                }
+            ]);
+
+        if (requestError) {
+            alert('Failed to send request: ' + requestError.message);
+            return;
+        }
+
+        alert('Contact request sent!');
+        closeModals();
+        document.getElementById('contact-username').value = '';
+        
+        // Immediately refresh sent requests
+        loadSentRequests();
+        updateRequestCounts();
+
+    } catch (error) {
+        console.error('Error sending contact request:', error);
+        alert('Failed to send contact request');
+    }
+}
+
+// Load received requests
+async function loadReceivedRequests() {
+    try {
+        const { data: requests, error } = await supabase
+            .from('contact_requests')
+            .select(`
+                *,
+                from_user:profiles!contact_requests_from_user_id_fkey(*)
+            `)
+            .eq('to_user_id', currentUser.id)
+            .eq('status', 'pending')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error('Error loading received requests:', error);
+            return;
+        }
+
+        const requestsList = document.getElementById('received-requests-list');
+        requestsList.innerHTML = '';
+
+        if (requests.length === 0) {
+            requestsList.innerHTML = '<p class="no-requests">No pending requests</p>';
+            return;
+        }
+
+        requests.forEach(request => {
+            const requestElement = createReceivedRequestElement(request);
+            requestsList.appendChild(requestElement);
+        });
+
+    } catch (error) {
+        console.error('Error loading received requests:', error);
+    }
+}
+
+// Load sent requests
+async function loadSentRequests() {
+    try {
+        const { data: requests, error } = await supabase
+            .from('contact_requests')
+            .select(`
+                *,
+                to_user:profiles!contact_requests_to_user_id_fkey(*)
+            `)
+            .eq('from_user_id', currentUser.id)
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error('Error loading sent requests:', error);
+            return;
+        }
+
+        const requestsList = document.getElementById('sent-requests-list');
+        requestsList.innerHTML = '';
+
+        if (requests.length === 0) {
+            requestsList.innerHTML = '<p class="no-requests">No sent requests</p>';
+            return;
+        }
+
+        requests.forEach(request => {
+            const requestElement = createSentRequestElement(request);
+            requestsList.appendChild(requestElement);
+        });
+
+    } catch (error) {
+        console.error('Error loading sent requests:', error);
+    }
+}
+
+// Update request counts in navigation
+async function updateRequestCounts() {
+    try {
+        // Get received requests count
+        const { data: receivedRequests, error: receivedError } = await supabase
+            .from('contact_requests')
+            .select('id', { count: 'exact', head: true })
+            .eq('to_user_id', currentUser.id)
+            .eq('status', 'pending');
+
+        // Get sent requests count
+        const { data: sentRequests, error: sentError } = await supabase
+            .from('contact_requests')
+            .select('id', { count: 'exact', head: true })
+            .eq('from_user_id', currentUser.id);
+
+        if (!receivedError) {
+            const receivedCount = receivedRequests || 0;
+            const receivedCountElement = document.getElementById('received-count');
+            if (receivedCountElement) {
+                receivedCountElement.textContent = receivedCount;
+            }
+        }
+
+        if (!sentError) {
+            const sentCount = sentRequests || 0;
+            const sentCountElement = document.getElementById('sent-count');
+            if (sentCountElement) {
+                sentCountElement.textContent = sentCount;
+            }
+        }
+
+    } catch (error) {
+        console.error('Error updating request counts:', error);
+    }
+}
+
+// Create received request element
+function createReceivedRequestElement(request) {
+    const div = document.createElement('div');
+    div.className = 'request-item';
+    div.innerHTML = `
+        <img src="${request.from_user.avatar_url || '/default-avatar.png'}" alt="${request.from_user.display_name}">
+        <div class="request-info">
+            <h4>${request.from_user.display_name}</h4>
+            <p>@${request.from_user.username}</p>
+            <small>${request.from_user.about || 'No bio available'}</small>
+        </div>
+        <div class="request-actions">
+            <button class="btn-accept" onclick="acceptContactRequest('${request.id}')">Accept</button>
+            <button class="btn-reject" onclick="rejectContactRequest('${request.id}')">Reject</button>
+        </div>
+    `;
+    return div;
+}
+
+// Create sent request element
+function createSentRequestElement(request) {
+    const div = document.createElement('div');
+    div.className = 'request-item';
+    
+    let statusElement = '';
+    let actionButton = '';
+    
+    if (request.status === 'pending') {
+        statusElement = '<span class="request-status status-pending">Pending</span>';
+        actionButton = `<button class="btn-cancel" onclick="cancelContactRequest('${request.id}')">Cancel</button>`;
+    } else if (request.status === 'approved') {
+        statusElement = '<span class="request-status status-approved">Accepted</span>';
+    } else if (request.status === 'rejected') {
+        statusElement = '<span class="request-status status-rejected">Rejected</span>';
+    }
+    
+    div.innerHTML = `
+        <img src="${request.to_user.avatar_url || '/default-avatar.png'}" alt="${request.to_user.display_name}">
+        <div class="request-info">
+            <h4>${request.to_user.display_name}</h4>
+            <p>@${request.to_user.username}</p>
+            <small>Sent: ${new Date(request.created_at).toLocaleDateString()}</small>
+        </div>
+        <div class="request-actions">
+            ${statusElement}
+            ${actionButton}
+        </div>
+    `;
+    return div;
+}
+
+// Accept contact request
+async function acceptContactRequest(requestId) {
+    try {
+        // Get request details
+        const { data: request, error: requestError } = await supabase
+            .from('contact_requests')
+            .select('*')
+            .eq('id', requestId)
+            .single();
+
+        if (requestError) {
+            alert('Error fetching request details');
+            return;
+        }
+
+        // Update request status
+        const { error: updateError } = await supabase
+            .from('contact_requests')
+            .update({ status: 'approved' })
+            .eq('id', requestId);
+
+        if (updateError) {
+            alert('Failed to accept request: ' + updateError.message);
+            return;
+        }
+
+        // Add to contacts (both ways)
+        const { error: contactError1 } = await supabase
+            .from('contacts')
+            .insert([
+                {
+                    owner_id: currentUser.id,
+                    contact_id: request.from_user_id,
+                    status: 'approved'
+                },
+                {
+                    owner_id: request.from_user_id,
+                    contact_id: currentUser.id,
+                    status: 'approved'
+                }
+            ]);
+
+        if (contactError1) {
+            console.error('Error adding contacts:', contactError1);
+        }
+
+        // Refresh all data
+        loadReceivedRequests();
+        loadContacts();
+        updateRequestCounts();
+        
+        alert('Contact request accepted!');
+
+    } catch (error) {
+        console.error('Error accepting request:', error);
+        alert('Failed to accept request');
+    }
+}
+
+// Reject contact request
+async function rejectContactRequest(requestId) {
+    try {
+        const { error } = await supabase
+            .from('contact_requests')
+            .update({ status: 'rejected' })
+            .eq('id', requestId);
+
+        if (error) {
+            alert('Failed to reject request: ' + error.message);
+            return;
+        }
+
+        loadReceivedRequests();
+        updateRequestCounts();
+        
+        alert('Contact request rejected');
+
+    } catch (error) {
+        console.error('Error rejecting request:', error);
+        alert('Failed to reject request');
+    }
+}
+
+// Cancel sent contact request
+async function cancelContactRequest(requestId) {
+    try {
+        const { error } = await supabase
+            .from('contact_requests')
+            .delete()
+            .eq('id', requestId);
+
+        if (error) {
+            alert('Failed to cancel request: ' + error.message);
+            return;
+        }
+
+        loadSentRequests();
+        updateRequestCounts();
+        
+        alert('Contact request cancelled');
+
+    } catch (error) {
+        console.error('Error cancelling request:', error);
+        alert('Failed to cancel request');
+    }
+}
+
+
+
+
+// Enhanced groups HTML structure
+function updateGroupsTabHTML() {
+    const groupsTab = document.getElementById('groups-tab');
+    if (groupsTab) {
+        groupsTab.innerHTML = `
+            <div class="groups-header">
+                <div class="groups-nav">
+                    <button class="group-nav-btn active" data-group-tab="groups">My Groups</button>
+                    <button class="group-nav-btn" data-group-tab="group-requests">Requests (<span id="group-requests-count">0</span>)</button>
+                    <button class="group-nav-btn" data-group-tab="sent-group-requests">Sent (<span id="sent-group-requests-count">0</span>)</button>
+                </div>
+                <div class="group-actions">
+                    <button id="create-group-btn" class="btn-primary">
+                        <i class="fas fa-plus"></i> Create Group
+                    </button>
+                    <button id="join-group-btn" class="btn-secondary">
+                        <i class="fas fa-sign-in-alt"></i> Join Group
+                    </button>
+                </div>
+            </div>
+
+            <div id="groups-content" class="group-tab-content active">
+                <div id="groups-list" class="groups-list"></div>
+            </div>
+
+            <div id="group-requests-content" class="group-tab-content">
+                <h3>Group Join Requests</h3>
+                <div id="group-requests-list" class="requests-list"></div>
+            </div>
+
+            <div id="sent-group-requests-content" class="group-tab-content">
+                <h3>My Join Requests</h3>
+                <div id="sent-group-requests-list" class="requests-list"></div>
+            </div>
+        `;
+    }
+}
+
+// Add CSS for groups (similar to contacts but for groups)
+function addGroupsCSS() {
+    const style = document.createElement('style');
+    style.textContent = `
+        .groups-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .groups-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .group-nav-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .group-nav-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .group-nav-btn:hover {
+            background: #f8f9fa;
+        }
+
+        .group-nav-btn.active:hover {
+            background: #0056b3;
+        }
+
+        .group-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .group-tab-content {
+            display: none;
+        }
+
+        .group-tab-content.active {
+            display: block;
+        }
+
+        .groups-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .group-item {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .group-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .group-item img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+        }
+
+        .group-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 18px;
+        }
+
+        .group-info p {
+            margin: 0 0 10px 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .group-info small {
+            background: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #495057;
+        }
+
+        .btn-chat {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .btn-chat:hover {
+            background: #0056b3;
+        }
+
+        .group-role-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .group-role-badge.admin {
+            background: #dc3545;
+        }
+
+        .no-groups, .no-requests {
+            text-align: center;
+            color: #666;
+            padding: 40px;
+            font-style: italic;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 15px;
+            max-width: 70%;
+        }
+
+        .message.own-message {
+            margin-left: auto;
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            margin: 0 10px;
+        }
+
+        .message-content {
+            background: #f1f3f4;
+            padding: 10px 15px;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .own-message .message-content {
+            background: #007bff;
+            color: white;
+        }
+
+        .message-sender {
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 3px;
+        }
+
+        .own-message .message-sender {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .message-text {
+            margin-bottom: 5px;
+        }
+
+        .message-time {
+            font-size: 11px;
+            opacity: 0.7;
+        }
+
+        #messages-container {
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// Global variables for group auto-refresh
+let groupRequestsInterval = null;
+let currentGroupTab = 'groups';
+
+// Setup group event listeners
+function setupGroupEventListeners() {
+    // Group tab navigation
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('group-nav-btn')) {
+            switchGroupTab(e.target.dataset.groupTab);
+        }
+    });
+
+    // Create and join group buttons
+    document.addEventListener('click', (e) => {
+        if (e.target.id === 'create-group-btn' || e.target.closest('#create-group-btn')) {
+            document.getElementById('create-group-modal').style.display = 'flex';
+        }
+        if (e.target.id === 'join-group-btn' || e.target.closest('#join-group-btn')) {
+            document.getElementById('join-group-modal').style.display = 'flex';
+        }
+    });
+}
+
+// Switch between group tabs
+function switchGroupTab(tabName) {
+    currentGroupTab = tabName;
+    
+    // Update nav buttons
+    document.querySelectorAll('.group-nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[data-group-tab="${tabName}"]`).classList.add('active');
+    
+    // Update content
+    document.querySelectorAll('.group-tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    document.getElementById(`${tabName}-content`).classList.add('active');
+    
+    // Load appropriate data
+    if (tabName === 'group-requests') {
+        loadGroupJoinRequests();
+    } else if (tabName === 'sent-group-requests') {
+        loadSentGroupJoinRequests();
+    }
+}
+
+// Start auto-refresh for group requests
+function startGroupRequestsAutoRefresh() {
+    // Clear existing interval
+    if (groupRequestsInterval) {
+        clearInterval(groupRequestsInterval);
+    }
+    
+    // Set up fast refresh every 2 seconds
+    groupRequestsInterval = setInterval(() => {
+        loadGroupJoinRequests();
+        loadSentGroupJoinRequests();
+        updateGroupRequestCounts();
+    }, 2000);
+    
+    // Initial load
+    loadGroupJoinRequests();
+    loadSentGroupJoinRequests();
+    updateGroupRequestCounts();
+}
+
+// Stop group auto-refresh
+function stopGroupRequestsAutoRefresh() {
+    if (groupRequestsInterval) {
+        clearInterval(groupRequestsInterval);
+        groupRequestsInterval = null;
+    }
+}
+
+// Load group join requests (for group admins)
+async function loadGroupJoinRequests() {
+    try {
+        const { data: requests, error } = await supabase
+            .from('group_members')
+            .select(`
+                *,
+                user:profiles!group_members_user_id_fkey(*),
+                group:groups!group_members_group_id_fkey(*)
+            `)
+            .eq('status', 'pending')
+            .in('group_id', await getAdminGroupIds())
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error('Error loading group requests:', error);
+            return;
+        }
+
+        const requestsList = document.getElementById('group-requests-list');
+        if (requestsList) {
+            requestsList.innerHTML = '';
+
+            if (requests.length === 0) {
+                requestsList.innerHTML = '<p class="no-requests">No pending requests</p>';
+                return;
+            }
+
+            requests.forEach(request => {
+                const requestElement = createGroupRequestElement(request);
+                requestsList.appendChild(requestElement);
+            });
+        }
+
+    } catch (error) {
+        console.error('Error loading group requests:', error);
+    }
+}
+
+// Load sent group join requests
+async function loadSentGroupJoinRequests() {
+    try {
+        const { data: requests, error } = await supabase
+            .from('group_members')
+            .select(`
+                *,
+                group:groups!group_members_group_id_fkey(*)
+            `)
+            .eq('user_id', currentUser.id)
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error('Error loading sent group requests:', error);
+            return;
+        }
+
+        const requestsList = document.getElementById('sent-group-requests-list');
+        if (requestsList) {
+            requestsList.innerHTML = '';
+
+            if (requests.length === 0) {
+                requestsList.innerHTML = '<p class="no-requests">No sent requests</p>';
+                return;
+            }
+
+            requests.forEach(request => {
+                const requestElement = createSentGroupRequestElement(request);
+                requestsList.appendChild(requestElement);
+            });
+        }
+
+    } catch (error) {
+        console.error('Error loading sent group requests:', error);
+    }
+}
+
+// Get group IDs where current user is admin
+async function getAdminGroupIds() {
+    try {
+        const { data: adminGroups, error } = await supabase
+            .from('groups')
+            .select('id')
+            .eq('admin_id', currentUser.id);
+
+        if (error) return [];
+        return adminGroups.map(group => group.id);
+    } catch (error) {
+        console.error('Error getting admin groups:', error);
+        return [];
+    }
+}
+
+// Update group request counts
+async function updateGroupRequestCounts() {
+    try {
+        // Get group requests count (for admin groups)
+        const adminGroupIds = await getAdminGroupIds();
+        const { data: groupRequests, error: groupError } = await supabase
+            .from('group_members')
+            .select('id', { count: 'exact', head: true })
+            .in('group_id', adminGroupIds)
+            .eq('status', 'pending');
+
+        // Get sent group requests count
+        const { data: sentRequests, error: sentError } = await supabase
+            .from('group_members')
+            .select('id', { count: 'exact', head: true })
+            .eq('user_id', currentUser.id);
+
+        if (!groupError) {
+            const requestCount = groupRequests || 0;
+            const countElement = document.getElementById('group-requests-count');
+            if (countElement) {
+                countElement.textContent = requestCount;
+            }
+        }
+
+        if (!sentError) {
+            const sentCount = sentRequests || 0;
+            const sentCountElement = document.getElementById('sent-group-requests-count');
+            if (sentCountElement) {
+                sentCountElement.textContent = sentCount;
+            }
+        }
+
+    } catch (error) {
+        console.error('Error updating group request counts:', error);
+    }
+}
+
+// Create group request element
+function createGroupRequestElement(request) {
+    const div = document.createElement('div');
+    div.className = 'request-item';
+    div.innerHTML = `
+        <img src="${request.user.avatar_url || '/default-avatar.png'}" alt="${request.user.display_name}">
+        <div class="request-info">
+            <h4>${request.user.display_name}</h4>
+            <p>@${request.user.username}</p>
+            <small>Wants to join: <strong>${request.group.name}</strong></small>
+        </div>
+        <div class="request-actions">
+            <button class="btn-accept" onclick="approveGroupJoinRequest('${request.id}')">Approve</button>
+            <button class="btn-reject" onclick="rejectGroupJoinRequest('${request.id}')">Reject</button>
+        </div>
+    `;
+    return div;
+}
+
+// Create sent group request element
+function createSentGroupRequestElement(request) {
+    const div = document.createElement('div');
+    div.className = 'request-item';
+    
+    let statusElement = '';
+    let actionButton = '';
+    
+    if (request.status === 'pending') {
+        statusElement = '<span class="request-status status-pending">Pending</span>';
+        actionButton = `<button class="btn-cancel" onclick="cancelGroupJoinRequest('${request.id}')">Cancel</button>`;
+    } else if (request.status === 'approved') {
+        statusElement = '<span class="request-status status-approved">Approved</span>';
+    } else if (request.status === 'rejected') {
+        statusElement = '<span class="request-status status-rejected">Rejected</span>';
+    }
+    
+    div.innerHTML = `
+        <img src="${request.group.avatar_url || '/default-group.png'}" alt="${request.group.name}">
+        <div class="request-info">
+            <h4>${request.group.name}</h4>
+            <p>Code: ${request.group.group_code}</p>
+            <small>Requested: ${new Date(request.created_at).toLocaleDateString()}</small>
+        </div>
+        <div class="request-actions">
+            ${statusElement}
+            ${actionButton}
+        </div>
+    `;
+    return div;
+}
+
+// Approve group join request
+async function approveGroupJoinRequest(requestId) {
+    try {
+        const { error } = await supabase
+            .from('group_members')
+            .update({ status: 'approved' })
+            .eq('id', requestId);
+
+        if (error) {
+            alert('Failed to approve request: ' + error.message);
+            return;
+        }
+
+        loadGroupJoinRequests();
+        loadGroups(); // Refresh groups list
+        updateGroupRequestCounts();
+        
+        alert('Member approved!');
+
+    } catch (error) {
+        console.error('Error approving group request:', error);
+        alert('Failed to approve request');
+    }
+}
+
+// Reject group join request
+async function rejectGroupJoinRequest(requestId) {
+    try {
+        const { error } = await supabase
+            .from('group_members')
+            .update({ status: 'rejected' })
+            .eq('id', requestId);
+
+        if (error) {
+            alert('Failed to reject request: ' + error.message);
+            return;
+        }
+
+        loadGroupJoinRequests();
+        updateGroupRequestCounts();
+        
+        alert('Request rejected');
+
+    } catch (error) {
+        console.error('Error rejecting group request:', error);
+        alert('Failed to reject request');
+    }
+}
+
+// Cancel sent group join request
+async function cancelGroupJoinRequest(requestId) {
+    try {
+        const { error } = await supabase
+            .from('group_members')
+            .delete()
+            .eq('id', requestId);
+
+        if (error) {
+            alert('Failed to cancel request: ' + error.message);
+            return;
+        }
+
+        loadSentGroupJoinRequests();
+        updateGroupRequestCounts();
+        
+        alert('Request cancelled');
+
+    } catch (error) {
+        console.error('Error cancelling group request:', error);
+        alert('Failed to cancel request');
+    }
+}
+
+// Enhanced loadGroups function with role display
+async function loadGroups() {
+    try {
+        const { data: groups, error } = await supabase
+            .from('group_members')
+            .select(`
+                *,
+                group:groups(*)
+            `)
+            .eq('user_id', currentUser.id)
+            .eq('status', 'approved');
+
+        if (error) {
+            console.error('Error loading groups:', error);
+            return;
+        }
+
+        const groupsList = document.getElementById('groups-list');
+        if (groupsList) {
+            groupsList.innerHTML = '';
+
+            if (groups.length === 0) {
+                groupsList.innerHTML = '<p class="no-groups">No groups yet. Create or join one!</p>';
+                return;
+            }
+
+            groups.forEach(groupMember => {
+                const groupElement = createEnhancedGroupElement(groupMember.group, groupMember.role);
+                groupsList.appendChild(groupElement);
+            });
+        }
+
+    } catch (error) {
+        console.error('Error loading groups:', error);
+    }
+}
+
+// Enhanced group element with role display
+function createEnhancedGroupElement(group, role) {
+    const div = document.createElement('div');
+    div.className = 'group-item';
+    div.innerHTML = `
+        <img src="${group.avatar_url || '/default-group.png'}" alt="${group.name}">
+        <div class="group-info">
+            <h4>${group.name} <span class="group-role-badge ${role}">${role}</span></h4>
+            <p>${group.description || 'No description'}</p>
+            <small>Code: ${group.group_code}</small>
+        </div>
+        <button class="btn-chat" onclick="openGroup('${group.id}')">
+            <i class="fas fa-comments"></i> Open Chat
+        </button>
+    `;
+    return div;
+}
+
+
+// ADD these CSS rules for the chat interface (add to your existing CSS or create new style tag)
+function addChatCSS() {
+    const style = document.createElement('style');
+    style.textContent = `
+        #chat-screen {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .chat-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        .chat-header-info h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .chat-header-info p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .chat-input-container {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        #message-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            resize: none;
+            max-height: 100px;
+            min-height: 45px;
+        }
+
+        #send-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            margin-left: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #send-btn:hover {
+            background: #0056b3;
+        }
+
+        #send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 10px;
+            margin-right: 10px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-btn:hover {
+            background: #f8f9fa;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 10px 0;
+            color: #666;
+            font-style: italic;
+            font-size: 14px;
+        }
+
+        .online-status {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #28a745;
+            border-radius: 50%;
+            margin-left: 8px;
+        }
+
+        .offline-status {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #6c757d;
+            border-radius: 50%;
+            margin-left: 8px;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+
+
+function ensureChatHTML() {
+    const chatScreen = document.getElementById('chat-screen');
+    if (chatScreen && !chatScreen.querySelector('.chat-header')) {
+        chatScreen.innerHTML = `
+            <div class="chat-header">
+                <button id="back-btn" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <img id="chat-header-avatar" src="/default-avatar.png" alt="Chat Avatar">
+                <div class="chat-header-info">
+                    <h3 id="chat-header-name">Chat Name</h3>
+                    <p id="chat-header-status">Status</p>
+                </div>
+            </div>
+            
+            <div class="chat-messages">
+                <div id="messages-container"></div>
+                <div class="typing-indicator" id="typing-indicator">
+                    Someone is typing...
+                </div>
+            </div>
+            
+            <div class="chat-input-container">
+                <textarea id="message-input" placeholder="Type a message..." rows="1"></textarea>
+                <button id="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        `;
+    }
+}
+
+
     </script>
 </body>
 </html>
