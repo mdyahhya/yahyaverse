@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Camera Blocks Game</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow/4.4.0/tf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <title>CallConnect - Professional Video Calls</title>
+    
+    <!-- Supabase CDN -->
+    
+
+    
     <style>
         * {
             margin: 0;
@@ -16,792 +17,1644 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            overflow: hidden;
-            position: relative;
-        }
-
-        .game-container {
-            position: relative;
-            width: 100vw;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 0;
+            margin: 0;
         }
 
-        .camera-container {
+        .mobile-container {
+            width: 100%;
+            max-width: 375px;
+            height: 100vh;
+            background: white;
             position: relative;
-            width: 90vw;
-            height: 90vh;
-            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            background: #000;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         }
 
-        #videoElement {
+        .status-bar {
+            height: 44px;
+            background: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .app-content {
+            height: calc(100vh - 44px);
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .page {
+            display: none;
+            height: 100%;
+        }
+
+        .page.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            padding: 2rem 1.5rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 1.5rem;
+            flex: 1;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e8ecef;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: #f8f9fa;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 0.75rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: #5a6fd8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        .user-info {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            background: #667eea;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .user-id {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status.online {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.offline {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .section {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+            padding-left: 0.5rem;
+        }
+
+        .call-history {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid #667eea;
+        }
+
+        .call-history:empty::after {
+            content: "No call history yet";
+            color: #6c757d;
+            font-style: italic;
+            text-align: center;
+            display: block;
+            padding: 1rem;
+        }
+
+        .call-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .call-item:last-child {
+            border-bottom: none;
+        }
+
+        .call-info {
+            flex: 1;
+        }
+
+        .call-user {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .call-time {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .call-status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .call-status-badge.accepted {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .call-status-badge.ended {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .video-container {
+            position: relative;
+            height: 60vh;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .video {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transform: scaleX(-1);
         }
 
-        .overlay-canvas {
+        .local-video {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
+            top: 1rem;
+            right: 1rem;
+            width: 100px;
+            height: 130px;
+            border-radius: 8px;
+            border: 2px solid white;
             z-index: 10;
         }
 
-        .game-ui {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            z-index: 100;
-            color: white;
-            background: rgba(0,0,0,0.7);
-            padding: 20px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-        }
-
-        .level-info {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .score {
-            font-size: 18px;
-            margin-bottom: 5px;
-        }
-
-        .progress-bar {
-            width: 200px;
-            height: 10px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 5px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00ff88, #00ccff);
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        .hand-tracker {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: radial-gradient(circle, #ff0080, #ff4080);
-            border: 3px solid white;
-            border-radius: 50%;
-            box-shadow: 0 0 20px #ff0080;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            z-index: 50;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .start-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
+        .call-controls {
             display: flex;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .control-btn.mute {
+            background: #6c757d;
+            color: white;
+        }
+
+        .control-btn.mute.active {
+            background: #dc3545;
+        }
+
+        .control-btn.video {
+            background: #6c757d;
+            color: white;
+        }
+
+        .control-btn.video.active {
+            background: #dc3545;
+        }
+
+        .control-btn.end {
+            background: #dc3545;
+            color: white;
+        }
+
+        .incoming-call {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 375px;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: white;
-            z-index: 200;
-        }
-
-        .start-btn {
-            padding: 15px 30px;
-            font-size: 20px;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: transform 0.3s ease;
-        }
-
-        .start-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .instructions {
+            z-index: 1000;
             text-align: center;
-            max-width: 600px;
-            margin-bottom: 30px;
-            line-height: 1.6;
+            padding: 2rem;
         }
 
-        .block {
-            position: absolute;
-            border-radius: 8px;
-            border: 2px solid rgba(255,255,255,0.5);
+        .incoming-call.show {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            font-size: 16px;
-            color: white;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
-            cursor: grab;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        .block:active {
-            cursor: grabbing;
-            transform: scale(1.1);
+        .caller-info {
+            margin-bottom: 3rem;
         }
 
-        .target-zone {
-            position: absolute;
-            border: 3px dashed rgba(255,255,255,0.6);
-            border-radius: 10px;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(5px);
+        .caller-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .incoming-text {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .call-actions {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 14px;
-            color: rgba(255,255,255,0.8);
+            gap: 2rem;
         }
 
-        .success-animation {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 48px;
-            color: #00ff88;
-            font-weight: bold;
-            opacity: 0;
-            z-index: 150;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: radial-gradient(circle, #ff6b6b, #4ecdc4);
+        .call-action-btn {
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
-            pointer-events: none;
-            z-index: 40;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+            color: white;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+        .call-action-btn.accept {
+            background: #28a745;
         }
 
-        .floating {
-            animation: float 2s ease-in-out infinite;
+        .call-action-btn.decline {
+            background: #dc3545;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .online-users {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .online-user {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .online-user:last-child {
+            border-bottom: none;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            width: auto;
+            margin: 0;
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <div class="camera-container">
-            <video id="videoElement" autoplay muted playsinline></video>
-            <canvas id="overlayCanvas" class="overlay-canvas"></canvas>
-            
-            <div class="game-ui">
-                <div class="level-info">Level <span id="currentLevel">1</span></div>
-                <div class="score">Score: <span id="score">0</span></div>
-                <div class="score">Target: <span id="target">3</span></div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
+    <div class="mobile-container">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <span id="statusText">CallConnect</span>
+        </div>
+
+        <!-- App Content -->
+        <div class="app-content">
+            <!-- Login Page -->
+            <div id="loginPage" class="page active">
+                <div class="header">
+                    <div class="logo">📞 CallConnect</div>
+                    <div class="subtitle">Secure video calls made simple</div>
+                </div>
+                <div class="form-container">
+                    <div id="errorMessage" class="error" style="display: none;"></div>
+                    
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                    </div>
+                    
+                    <button id="loginBtn" class="btn">
+                        <span class="btn-text">Sign In</span>
+                    </button>
+                    
+                    <div class="text-center">
+                        <p style="margin: 1rem 0; color: #6c757d;">Don't have an account?</p>
+                        <button id="showRegisterBtn" class="btn btn-outline">Create Account</button>
+                    </div>
                 </div>
             </div>
 
-            <div class="hand-tracker" id="handTracker"></div>
-            <div class="success-animation" id="successAnimation">Level Complete!</div>
-
-            <div class="start-screen" id="startScreen">
-                <div class="instructions">
-                    <h1>🎮 AI Camera Blocks Game</h1>
-                    <p>Use your hands to move the colored blocks into the target zones!</p>
-                    <p>• Move your hand in front of the camera to control blocks</p>
-                    <p>• Match blocks to their corresponding colored target zones</p>
-                    <p>• Complete all 5 levels by achieving the target score</p>
-                    <p>• AI-powered hand tracking detects your gestures</p>
+            <!-- Register Page -->
+            <div id="registerPage" class="page">
+                <div class="header">
+                    <div class="logo">📞 CallConnect</div>
+                    <div class="subtitle">Create your account</div>
                 </div>
-                <button class="start-btn" onclick="startGame()">Start Game</button>
+                <div class="form-container">
+                    <div id="registerErrorMessage" class="error" style="display: none;"></div>
+                    
+                    <div class="form-group">
+                        <label for="registerUsername">Username</label>
+                        <input type="text" id="registerUsername" placeholder="Choose a username" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" id="registerEmail" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="registerPassword">Password</label>
+                        <input type="password" id="registerPassword" placeholder="Create a password" required>
+                    </div>
+                    
+                    <button id="registerBtn" class="btn">
+                        <span class="btn-text">Create Account</span>
+                    </button>
+                    
+                    <div class="text-center">
+                        <p style="margin: 1rem 0; color: #6c757d;">Already have an account?</p>
+                        <button id="showLoginBtn" class="btn btn-outline">Sign In</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Page -->
+            <div id="dashboardPage" class="page">
+                <div class="header">
+                    <div class="logo">📞 Dashboard</div>
+                    <div class="subtitle">Welcome back!</div>
+                </div>
+                <div class="form-container">
+                    <!-- User Info -->
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar"></div>
+                        <div class="user-id" id="userId"></div>
+                        <span class="status online" id="userStatus">Online</span>
+                    </div>
+
+                    <!-- Start Call Section -->
+                    <div class="section">
+                        <div class="section-title">Start a Call</div>
+                        <div class="form-group">
+                            <input type="text" id="callUserId" placeholder="Enter user ID to call">
+                        </div>
+                        <button id="startCallBtn" class="btn">Start Video Call</button>
+                    </div>
+
+                    <!-- Online Users Section -->
+                    <div class="section">
+                        <div class="section-title">Online Users</div>
+                        <div class="online-users" id="onlineUsers">
+                            <div style="text-align: center; color: #6c757d; padding: 1rem;">
+                                Loading users...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Call History Section -->
+                    <div class="section">
+                        <div class="section-title">Recent Calls</div>
+                        <div class="call-history" id="callHistory"></div>
+                    </div>
+
+                    <button id="logoutBtn" class="btn btn-danger">Sign Out</button>
+                </div>
+            </div>
+
+            <!-- Call Page -->
+            <div id="callPage" class="page">
+                <div class="header">
+                    <div class="logo">📞 In Call</div>
+                    <div class="subtitle" id="callWithUser">Connecting...</div>
+                </div>
+                <div class="form-container">
+                    <div class="video-container">
+                        <video id="remoteVideo" class="video" autoplay playsinline></video>
+                        <video id="localVideo" class="local-video" autoplay muted playsinline></video>
+                    </div>
+                    
+                    <div class="call-controls">
+                        <button id="muteBtn" class="control-btn mute" title="Mute/Unmute">
+                            🎤
+                        </button>
+                        <button id="videoBtn" class="control-btn video" title="Video On/Off">
+                            📹
+                        </button>
+                        <button id="endCallBtn" class="control-btn end" title="End Call">
+                            📞
+                        </button>
+                    </div>
+                    
+                    <button id="backToDashboardBtn" class="btn btn-secondary">Back to Dashboard</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Incoming Call Overlay -->
+        <div id="incomingCall" class="incoming-call">
+            <div class="caller-info">
+                <div class="caller-name" id="callerName">Unknown User</div>
+                <div class="incoming-text">Incoming video call...</div>
+            </div>
+            <div class="call-actions">
+                <button id="acceptCallBtn" class="call-action-btn accept">📞</button>
+                <button id="declineCallBtn" class="call-action-btn decline">❌</button>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        class AIBlocksGame {
-            constructor() {
-                this.video = document.getElementById('videoElement');
-                this.canvas = document.getElementById('overlayCanvas');
-                this.ctx = this.canvas.getContext('2d');
-                this.handTracker = document.getElementById('handTracker');
-                
-                this.currentLevel = 1;
-                this.score = 0;
-                this.targetScore = 3;
-                this.blocks = [];
-                this.targetZones = [];
-                this.handPosition = { x: 0, y: 0 };
-                this.isHandDetected = false;
-                this.selectedBlock = null;
-                this.gameStarted = false;
-                
-                this.levelConfigs = [
-                    { blocks: 3, colors: ['#ff6b6b', '#4ecdc4', '#45b7d1'], target: 3 },
-                    { blocks: 4, colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4'], target: 4 },
-                    { blocks: 5, colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'], target: 5 },
-                    { blocks: 6, colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3'], target: 6 },
-                    { blocks: 7, colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff'], target: 7 }
-                ];
+        // Configuration
+        const SUPABASE_URL = 'https://nsnacwwcrszpjmanskti.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zbmFjd3djcnN6cGptYW5za3RpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5MTg2MTIsImV4cCI6MjA2ODQ5NDYxMn0.W01JADzAuGFvcAHAN6LPRIxc75J7A9Q76HIxvxkJDn4';
+        let supabase;
 
-                this.handModel = null;
-                this.initializeAI();
-                this.initializeCamera();
-                this.setupEventListeners();
+        // Initialize Supabase client
+        function initializeSupabase() {
+            try {
+                console.log("Initializing Supabase client...");
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                return true;
+            } catch (error) {
+                console.error("Error initializing Supabase client:", error);
+                return false;
+            }
+        }
+
+        // Global variables
+        let currentUser = null;
+        let currentCall = null;
+        let localStream = null;
+        let remoteStream = null;
+        let peerConnection = null;
+        let callsSubscription = null;
+        let isAudioMuted = false;
+        let isVideoMuted = false;
+
+        // WebRTC configuration
+        const rtcConfig = {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' }
+            ]
+        };
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', async function() {
+            if (!initializeSupabase()) {
+                showError('Failed to initialize app. Please refresh.');
+                return;
             }
 
-            async initializeAI() {
-                try {
-                    // Initialize TensorFlow.js hand pose detection
-                    console.log('Loading AI hand tracking model...');
-                    await tf.ready();
-                    
-                    // Simulate AI model loading with TensorFlow
-                    this.handModel = {
-                        loaded: true,
-                        detect: (imageData) => {
-                            // Simulate hand detection with computer vision algorithms
-                            return this.simulateHandDetection(imageData);
-                        }
-                    };
-                    
-                    console.log('AI model loaded successfully');
-                } catch (error) {
-                    console.error('AI model loading failed:', error);
-                    this.handModel = { loaded: false };
-                }
+            // Check if user is already logged in
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                await loadUserData(session.user);
+                showPage('dashboardPage');
             }
 
-            simulateHandDetection(imageData) {
-                // Advanced hand detection simulation using image processing concepts
-                const detection = {
-                    hands: [],
-                    confidence: Math.random()
+            // Set up event listeners
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Navigation
+            document.getElementById('showRegisterBtn').addEventListener('click', () => showPage('registerPage'));
+            document.getElementById('showLoginBtn').addEventListener('click', () => showPage('loginPage'));
+            
+            // Auth
+            document.getElementById('loginBtn').addEventListener('click', handleLogin);
+            document.getElementById('registerBtn').addEventListener('click', handleRegister);
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+            
+            // Call actions
+            document.getElementById('startCallBtn').addEventListener('click', handleStartCall);
+            document.getElementById('acceptCallBtn').addEventListener('click', handleAcceptCall);
+            document.getElementById('declineCallBtn').addEventListener('click', handleDeclineCall);
+            document.getElementById('endCallBtn').addEventListener('click', handleEndCall);
+            document.getElementById('backToDashboardBtn').addEventListener('click', () => showPage('dashboardPage'));
+            
+            // Call controls
+            document.getElementById('muteBtn').addEventListener('click', toggleAudio);
+            document.getElementById('videoBtn').addEventListener('click', toggleVideo);
+
+            // Enter key handling
+            document.getElementById('loginPassword').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleLogin();
+            });
+            document.getElementById('registerPassword').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleRegister();
+            });
+            document.getElementById('callUserId').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleStartCall();
+            });
+        }
+
+        async function handleLogin() {
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    
+    if (!email || !password) {
+        showError('Please fill in all fields');
+        return;
+    }
+
+    setLoading('loginBtn', true);
+    
+    try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+        if (error) throw error;
+
+        await loadUserData(data.user);
+        showPage('dashboardPage');
+        
+    } catch (error) {
+        showError(error.message);
+    } finally {
+        setLoading('loginBtn', false);
+    }
+}
+        async function handleAcceptCall() {
+            try {
+                // Update call status
+                const { error } = await supabase
+                    .from('calls')
+                    .update({ status: 'accepted' })
+                    .eq('id', currentCall.id);
+
+                if (error) throw error;
+
+                document.getElementById('incomingCall').classList.remove('show');
+                await startCall(false);
+                
+            } catch (error) {
+                showError('Failed to accept call: ' + error.message);
+            }
+        }
+
+        async function handleDeclineCall() {
+            try {
+                // Update call status
+                await supabase
+                    .from('calls')
+                    .update({ status: 'ended' })
+                    .eq('id', currentCall.id);
+
+                document.getElementById('incomingCall').classList.remove('show');
+                currentCall = null;
+                
+            } catch (error) {
+                console.error('Error declining call:', error);
+            }
+        }
+
+        async function startCall(isCaller) {
+            try {
+                showPage('callPage');
+                
+                // Get user media
+                localStream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: true
+                });
+
+                document.getElementById('localVideo').srcObject = localStream;
+
+                // Create peer connection
+                peerConnection = new RTCPeerConnection(rtcConfig);
+
+                // Add local stream to peer connection
+                localStream.getTracks().forEach(track => {
+                    peerConnection.addTrack(track, localStream);
+                });
+
+                // Handle remote stream
+                peerConnection.ontrack = (event) => {
+                    remoteStream = event.streams[0];
+                    document.getElementById('remoteVideo').srcObject = remoteStream;
                 };
 
-                if (Math.random() > 0.3) { // Simulate hand detection
-                    const hand = {
-                        landmarks: [],
-                        boundingBox: {
-                            x: Math.random() * this.canvas.width,
-                            y: Math.random() * this.canvas.height,
-                            width: 100 + Math.random() * 50,
-                            height: 120 + Math.random() * 60
-                        },
-                        handedness: Math.random() > 0.5 ? 'Right' : 'Left',
-                        confidence: 0.8 + Math.random() * 0.2
-                    };
-
-                    // Generate realistic hand landmarks
-                    for (let i = 0; i < 21; i++) {
-                        hand.landmarks.push({
-                            x: hand.boundingBox.x + Math.random() * hand.boundingBox.width,
-                            y: hand.boundingBox.y + Math.random() * hand.boundingBox.height,
-                            z: Math.random() * 0.1
+                // Handle ICE candidates
+                peerConnection.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        sendSignal('ice-candidate', {
+                            candidate: event.candidate
                         });
                     }
+                };
 
-                    detection.hands.push(hand);
-                }
+                // Subscribe to signaling
+                subscribeToSignaling();
 
-                return detection;
-            }
-
-            async initializeCamera() {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({
-                        video: { 
-                            width: { ideal: 1280 },
-                            height: { ideal: 720 },
-                            facingMode: 'user'
-                        }
-                    });
+                if (isCaller) {
+                    // Create and send offer
+                    const offer = await peerConnection.createOffer();
+                    await peerConnection.setLocalDescription(offer);
                     
-                    this.video.srcObject = stream;
-                    
-                    this.video.addEventListener('loadedmetadata', () => {
-                        this.canvas.width = this.video.videoWidth;
-                        this.canvas.height = this.video.videoHeight;
-                        this.canvas.style.width = '100%';
-                        this.canvas.style.height = '100%';
+                    sendSignal('offer', {
+                        offer: offer
                     });
-
-                } catch (error) {
-                    console.error('Camera access failed:', error);
-                    alert('Camera access is required for this game. Please allow camera permissions.');
                 }
+
+                // Update UI
+                const otherUserId = isCaller ? currentCall.receiver_id : currentCall.caller_id;
+                const { data: otherUser } = await supabase
+                    .from('users')
+                    .select('username')
+                    .eq('id', otherUserId)
+                    .single();
+
+                document.getElementById('callWithUser').textContent = `Call with ${otherUser.username}`;
+                
+            } catch (error) {
+                showError('Failed to start call: ' + error.message);
+                endCall();
             }
+        }
 
-            setupEventListeners() {
-                // Mouse/touch fallback for testing
-                this.canvas.addEventListener('mousemove', (e) => {
-                    if (!this.gameStarted) return;
-                    const rect = this.canvas.getBoundingClientRect();
-                    this.updateHandPosition(
-                        (e.clientX - rect.left) * (this.canvas.width / rect.width),
-                        (e.clientY - rect.top) * (this.canvas.height / rect.height)
-                    );
-                });
+        function subscribeToSignaling() {
+            supabase
+                .channel(`call_${currentCall.id}`)
+                .on('broadcast', { event: 'signal' }, handleSignal)
+                .subscribe();
+        }
 
-                this.canvas.addEventListener('touchmove', (e) => {
-                    if (!this.gameStarted) return;
-                    e.preventDefault();
-                    const rect = this.canvas.getBoundingClientRect();
-                    const touch = e.touches[0];
-                    this.updateHandPosition(
-                        (touch.clientX - rect.left) * (this.canvas.width / rect.width),
-                        (touch.clientY - rect.top) * (this.canvas.height / rect.height)
-                    );
-                });
+        async function handleSignal(payload) {
+            const { type, data } = payload.payload;
 
-                this.canvas.addEventListener('mousedown', () => {
-                    if (!this.gameStarted) return;
-                    this.selectNearestBlock();
-                });
+            try {
+                switch (type) {
+                    case 'offer':
+                        await peerConnection.setRemoteDescription(data.offer);
+                        const answer = await peerConnection.createAnswer();
+                        await peerConnection.setLocalDescription(answer);
+                        sendSignal('answer', { answer });
+                        break;
 
-                this.canvas.addEventListener('mouseup', () => {
-                    if (!this.gameStarted) return;
-                    this.releaseBlock();
-                });
-            }
+                    case 'answer':
+                        await peerConnection.setRemoteDescription(data.answer);
+                        break;
 
-            updateHandPosition(x, y) {
-                this.handPosition.x = x;
-                this.handPosition.y = y;
-                this.isHandDetected = true;
-
-                // Update visual hand tracker
-                const rect = this.canvas.getBoundingClientRect();
-                this.handTracker.style.left = (x / this.canvas.width) * rect.width + 'px';
-                this.handTracker.style.top = (y / this.canvas.height) * rect.height + 'px';
-                this.handTracker.style.opacity = '1';
-
-                // Create particle effects
-                this.createParticles(x, y);
-
-                // Handle block interaction
-                if (this.selectedBlock) {
-                    this.moveSelectedBlock(x, y);
-                } else {
-                    this.selectNearestBlock();
+                    case 'ice-candidate':
+                        await peerConnection.addIceCandidate(data.candidate);
+                        break;
                 }
+            } catch (error) {
+                console.error('Error handling signal:', error);
+            }
+        }
+
+        function sendSignal(type, data) {
+            supabase
+                .channel(`call_${currentCall.id}`)
+                .send({
+                    type: 'broadcast',
+                    event: 'signal',
+                    payload: { type, data }
+                });
+        }
+
+        async function handleEndCall() {
+            try {
+                // Update call status
+                if (currentCall) {
+                    await supabase
+                        .from('calls')
+                        .update({ status: 'ended' })
+                        .eq('id', currentCall.id);
+                }
+
+                endCall();
+                
+            } catch (error) {
+                console.error('Error ending call:', error);
+                endCall();
+            }
+        }
+
+        function endCall() {
+            // Clean up WebRTC
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
             }
 
-            selectNearestBlock() {
-                let nearestBlock = null;
-                let minDistance = Infinity;
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
 
-                this.blocks.forEach(block => {
-                    const distance = Math.sqrt(
-                        Math.pow(block.x + block.width/2 - this.handPosition.x, 2) +
-                        Math.pow(block.y + block.height/2 - this.handPosition.y, 2)
-                    );
+            // Clean up UI
+            document.getElementById('localVideo').srcObject = null;
+            document.getElementById('remoteVideo').srcObject = null;
+            document.getElementById('incomingCall').classList.remove('show');
 
-                    if (distance < 80 && distance < minDistance) {
-                        minDistance = distance;
-                        nearestBlock = block;
+            // Reset state
+            currentCall = null;
+            isAudioMuted = false;
+            isVideoMuted = false;
+            
+            document.getElementById('muteBtn').classList.remove('active');
+            document.getElementById('videoBtn').classList.remove('active');
+
+            // Return to dashboard
+            showPage('dashboardPage');
+            loadCallHistory();
+        }
+
+        function toggleAudio() {
+            if (localStream) {
+                const audioTrack = localStream.getAudioTracks()[0];
+                if (audioTrack) {
+                    audioTrack.enabled = !audioTrack.enabled;
+                    isAudioMuted = !audioTrack.enabled;
+                    
+                    const btn = document.getElementById('muteBtn');
+                    if (isAudioMuted) {
+                        btn.classList.add('active');
+                        btn.textContent = '🔇';
+                    } else {
+                        btn.classList.remove('active');
+                        btn.textContent = '🎤';
                     }
-                });
-
-                if (nearestBlock && nearestBlock !== this.selectedBlock) {
-                    this.selectedBlock = nearestBlock;
-                    this.selectedBlock.selected = true;
-                    gsap.to(this.selectedBlock, {
-                        duration: 0.2,
-                        scale: 1.1,
-                        ease: "power2.out"
-                    });
                 }
             }
+        }
 
-            moveSelectedBlock(x, y) {
-                if (this.selectedBlock) {
-                    this.selectedBlock.x = x - this.selectedBlock.width / 2;
-                    this.selectedBlock.y = y - this.selectedBlock.height / 2;
+        function toggleVideo() {
+            if (localStream) {
+                const videoTrack = localStream.getVideoTracks()[0];
+                if (videoTrack) {
+                    videoTrack.enabled = !videoTrack.enabled;
+                    isVideoMuted = !videoTrack.enabled;
                     
-                    // Check for target zone collision
-                    this.checkTargetCollision();
-                }
-            }
-
-            releaseBlock() {
-                if (this.selectedBlock) {
-                    this.selectedBlock.selected = false;
-                    gsap.to(this.selectedBlock, {
-                        duration: 0.2,
-                        scale: 1,
-                        ease: "power2.out"
-                    });
-                    this.selectedBlock = null;
-                }
-            }
-
-            checkTargetCollision() {
-                if (!this.selectedBlock) return;
-
-                this.targetZones.forEach(zone => {
-                    if (this.isColliding(this.selectedBlock, zone) && 
-                        this.selectedBlock.color === zone.color && 
-                        !this.selectedBlock.matched) {
-                        
-                        this.selectedBlock.matched = true;
-                        this.selectedBlock.x = zone.x + 10;
-                        this.selectedBlock.y = zone.y + 10;
-                        
-                        this.score++;
-                        this.updateUI();
-                        this.createSuccessEffect(zone.x + zone.width/2, zone.y + zone.height/2);
-                        
-                        if (this.score >= this.targetScore) {
-                            this.completeLevel();
-                        }
+                    const btn = document.getElementById('videoBtn');
+                    if (isVideoMuted) {
+                        btn.classList.add('active');
+                        btn.textContent = '📹';
+                    } else {
+                        btn.classList.remove('active');
+                        btn.textContent = '📹';
                     }
-                });
-            }
-
-            isColliding(rect1, rect2) {
-                return rect1.x < rect2.x + rect2.width &&
-                       rect1.x + rect1.width > rect2.x &&
-                       rect1.y < rect2.y + rect2.height &&
-                       rect1.y + rect1.height > rect2.y;
-            }
-
-            createSuccessEffect(x, y) {
-                // Particle explosion effect
-                for (let i = 0; i < 15; i++) {
-                    setTimeout(() => {
-                        this.createSuccessParticle(x, y);
-                    }, i * 50);
-                }
-
-                // Screen flash effect
-                gsap.to(this.canvas, {
-                    duration: 0.1,
-                    opacity: 0.8,
-                    yoyo: true,
-                    repeat: 1
-                });
-            }
-
-            createSuccessParticle(x, y) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = (x / this.canvas.width) * this.canvas.offsetWidth + 'px';
-                particle.style.top = (y / this.canvas.height) * this.canvas.offsetHeight + 'px';
-                
-                document.querySelector('.camera-container').appendChild(particle);
-
-                gsap.to(particle, {
-                    duration: 1,
-                    x: (Math.random() - 0.5) * 200,
-                    y: (Math.random() - 0.5) * 200,
-                    opacity: 0,
-                    scale: 0,
-                    ease: "power2.out",
-                    onComplete: () => particle.remove()
-                });
-            }
-
-            createParticles(x, y) {
-                if (Math.random() > 0.7) {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    particle.style.left = (x / this.canvas.width) * this.canvas.offsetWidth + 'px';
-                    particle.style.top = (y / this.canvas.height) * this.canvas.offsetHeight + 'px';
-                    particle.style.width = '2px';
-                    particle.style.height = '2px';
-                    
-                    document.querySelector('.camera-container').appendChild(particle);
-
-                    gsap.to(particle, {
-                        duration: 0.5,
-                        y: -30,
-                        opacity: 0,
-                        ease: "power2.out",
-                        onComplete: () => particle.remove()
-                    });
                 }
             }
+        }
 
-            completeLevel() {
-                const successAnim = document.getElementById('successAnimation');
-                successAnim.style.opacity = '1';
-                
-                gsap.to(successAnim, {
-                    duration: 0.5,
-                    scale: 1.2,
-                    ease: "back.out(1.7)"
-                });
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
 
-                setTimeout(() => {
-                    gsap.to(successAnim, {
-                        duration: 0.3,
-                        opacity: 0,
-                        scale: 1,
-                        onComplete: () => {
-                            if (this.currentLevel < 5) {
-                                this.nextLevel();
-                            } else {
-                                this.gameComplete();
-                            }
-                        }
-                    });
-                }, 2000);
+            // Update status bar
+            const statusText = document.getElementById('statusText');
+            switch (pageId) {
+                case 'loginPage':
+                case 'registerPage':
+                    statusText.textContent = 'CallConnect';
+                    break;
+                case 'dashboardPage':
+                    statusText.textContent = 'Dashboard';
+                    break;
+                case 'callPage':
+                    statusText.textContent = 'In Call';
+                    break;
             }
+        }
 
-            nextLevel() {
-                this.currentLevel++;
-                this.score = 0;
-                this.selectedBlock = null;
-                this.initializeLevel();
-                this.updateUI();
-            }
+        function showError(message, elementId = 'errorMessage') {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 5000);
+        }
 
-            gameComplete() {
-                const successAnim = document.getElementById('successAnimation');
-                successAnim.textContent = '🎉 Game Complete! 🎉';
-                successAnim.style.opacity = '1';
-                
+        function showSuccess(message, elementId = 'successMessage') {
+            const successElement = document.getElementById(elementId);
+            if (successElement) {
+                successElement.textContent = message;
+                successElement.style.display = 'block';
                 setTimeout(() => {
-                    this.resetGame();
+                    successElement.style.display = 'none';
                 }, 3000);
             }
+        }
 
-            resetGame() {
-                this.currentLevel = 1;
-                this.score = 0;
-                this.gameStarted = false;
-                document.getElementById('startScreen').style.display = 'flex';
-                this.clearLevel();
-            }
-
-            initializeLevel() {
-                this.clearLevel();
-                const config = this.levelConfigs[this.currentLevel - 1];
-                this.targetScore = config.target;
-
-                // Create blocks
-                for (let i = 0; i < config.blocks; i++) {
-                    const block = {
-                        x: Math.random() * (this.canvas.width - 80),
-                        y: Math.random() * (this.canvas.height - 80),
-                        width: 60,
-                        height: 60,
-                        color: config.colors[i],
-                        matched: false,
-                        selected: false,
-                        scale: 1
-                    };
-                    this.blocks.push(block);
-                }
-
-                // Create target zones
-                for (let i = 0; i < config.blocks; i++) {
-                    const zone = {
-                        x: 50 + (i * 120),
-                        y: this.canvas.height - 150,
-                        width: 80,
-                        height: 80,
-                        color: config.colors[i]
-                    };
-                    this.targetZones.push(zone);
+        function setLoading(buttonId, isLoading) {
+            const button = document.getElementById(buttonId);
+            const textSpan = button.querySelector('.btn-text');
+            
+            if (isLoading) {
+                button.disabled = true;
+                textSpan.innerHTML = '<span class="loading"></span>';
+            } else {
+                button.disabled = false;
+                if (buttonId === 'loginBtn') {
+                    textSpan.textContent = 'Sign In';
+                } else if (buttonId === 'registerBtn') {
+                    textSpan.textContent = 'Create Account';
                 }
             }
+        }
 
-            clearLevel() {
-                this.blocks = [];
-                this.targetZones = [];
-                this.selectedBlock = null;
-            }
+        // Global function to call user from online users list
+        window.callUser = callUser;
 
-            updateUI() {
-                document.getElementById('currentLevel').textContent = this.currentLevel;
-                document.getElementById('score').textContent = this.score;
-                document.getElementById('target').textContent = this.targetScore;
+        // Handle page visibility changes
+        document.addEventListener('visibilitychange', async () => {
+            if (currentUser) {
+                const status = document.hidden ? 'offline' : 'online';
+                await supabase
+                    .from('users')
+                    .update({ status })
+                    .eq('id', currentUser.id);
                 
-                const progress = (this.score / this.targetScore) * 100;
-                document.getElementById('progressFill').style.width = progress + '%';
-            }
-
-            render() {
-                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-                if (!this.gameStarted) return;
-
-                // Render target zones
-                this.targetZones.forEach(zone => {
-                    this.ctx.fillStyle = zone.color;
-                    this.ctx.globalAlpha = 0.3;
-                    this.ctx.fillRect(zone.x, zone.y, zone.width, zone.height);
-                    
-                    this.ctx.globalAlpha = 0.8;
-                    this.ctx.strokeStyle = zone.color;
-                    this.ctx.lineWidth = 3;
-                    this.ctx.setLineDash([10, 5]);
-                    this.ctx.strokeRect(zone.x, zone.y, zone.width, zone.height);
-                    this.ctx.setLineDash([]);
-                    
-                    this.ctx.globalAlpha = 1;
-                    this.ctx.fillStyle = 'white';
-                    this.ctx.font = '12px Arial';
-                    this.ctx.textAlign = 'center';
-                    this.ctx.fillText('TARGET', zone.x + zone.width/2, zone.y + zone.height/2);
-                });
-
-                // Render blocks
-                this.blocks.forEach(block => {
-                    this.ctx.save();
-                    
-                    if (block.selected) {
-                        this.ctx.shadowColor = block.color;
-                        this.ctx.shadowBlur = 20;
-                    }
-                    
-                    const scale = block.scale || 1;
-                    this.ctx.translate(block.x + block.width/2, block.y + block.height/2);
-                    this.ctx.scale(scale, scale);
-                    this.ctx.translate(-block.width/2, -block.height/2);
-                    
-                    // Gradient fill
-                    const gradient = this.ctx.createLinearGradient(0, 0, block.width, block.height);
-                    gradient.addColorStop(0, block.color);
-                    gradient.addColorStop(1, this.adjustColor(block.color, -20));
-                    
-                    this.ctx.fillStyle = gradient;
-                    this.ctx.fillRect(0, 0, block.width, block.height);
-                    
-                    // Border
-                    this.ctx.strokeStyle = 'white';
-                    this.ctx.lineWidth = 2;
-                    this.ctx.strokeRect(0, 0, block.width, block.height);
-                    
-                    // Text
-                    this.ctx.fillStyle = 'white';
-                    this.ctx.font = 'bold 14px Arial';
-                    this.ctx.textAlign = 'center';
-                    this.ctx.fillText('BLOCK', block.width/2, block.height/2 + 5);
-                    
-                    this.ctx.restore();
-                });
-
-                // Render hand tracking indicator
-                if (this.isHandDetected) {
-                    this.ctx.beginPath();
-                    this.ctx.arc(this.handPosition.x, this.handPosition.y, 15, 0, 2 * Math.PI);
-                    this.ctx.fillStyle = 'rgba(255, 0, 128, 0.6)';
-                    this.ctx.fill();
-                    this.ctx.strokeStyle = 'white';
-                    this.ctx.lineWidth = 2;
-                    this.ctx.stroke();
+                if (!document.hidden) {
+                    loadOnlineUsers();
                 }
             }
-
-            adjustColor(color, amount) {
-                const num = parseInt(color.replace("#", ""), 16);
-                const amt = Math.round(2.55 * amount);
-                const R = (num >> 16) + amt;
-                const B = (num >> 8 & 0x00FF) + amt;
-                const G = (num & 0x0000FF) + amt;
-                return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 + 
-                    (B < 255 ? B < 1 ? 0 : B : 255) * 0x100 + 
-                    (G < 255 ? G < 1 ? 0 : G : 255)).toString(16).slice(1);
-            }
-
-            async processAIDetection() {
-                if (!this.handModel || !this.handModel.loaded || !this.gameStarted) return;
-
-                try {
-                    // Create image data from video for AI processing
-                    const tempCanvas = document.createElement('canvas');
-                    const tempCtx = tempCanvas.getContext('2d');
-                    tempCanvas.width = this.video.videoWidth;
-                    tempCanvas.height = this.video.videoHeight;
-                    tempCtx.drawImage(this.video, 0, 0);
-                    
-                    const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-                    
-                    // AI hand detection
-                    const detection = await this.handModel.detect(imageData);
-                    
-                    if (detection.hands && detection.hands.length > 0) {
-                        const hand = detection.hands[0];
-                        const centerX = hand.boundingBox.x + hand.boundingBox.width / 2;
-                        const centerY = hand.boundingBox.y + hand.boundingBox.height / 2;
-                        
-                        // Convert to canvas coordinates
-                        const canvasX = (centerX / this.video.videoWidth) * this.canvas.width;
-                        const canvasY = (centerY / this.video.videoHeight) * this.canvas.height;
-                        
-                        this.updateHandPosition(canvasX, canvasY);
-                    } else {
-                        this.isHandDetected = false;
-                        this.handTracker.style.opacity = '0';
-                    }
-                } catch (error) {
-                    console.error('AI detection error:', error);
-                }
-            }
-
-            gameLoop() {
-                this.render();
-                this.processAIDetection();
-                requestAnimationFrame(() => this.gameLoop());
-            }
-
-            start() {
-                this.gameStarted = true;
-                this.initializeLevel();
-                this.updateUI();
-                document.getElementById('startScreen').style.display = 'none';
-                this.gameLoop();
-            }
-        }
-
-        let game;
-
-        function startGame() {
-            if (!game) {
-                game = new AIBlocksGame();
-            }
-            game.start();
-        }
-
-        // Initialize game when page loads
-        window.addEventListener('load', () => {
-            game = new AIBlocksGame();
         });
+
+        
+        async function handleRegister() {
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            if (!username || !email || !password) {
+                showError('Please fill in all fields', 'registerErrorMessage');
+                return;
+            }
+
+            setLoading('registerBtn', true);
+            
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password
+                });
+
+                if (error) throw error;
+
+                // Create user record in database
+                const { error: dbError } = await supabase
+                    .from('users')
+                    .insert([{
+                        id: data.user.id,
+                        username: username,
+                        email: email,
+                        status: 'online'
+                    }]);
+
+                if (dbError) throw dbError;
+
+                await loadUserData(data.user);
+                showPage('dashboardPage');
+                
+            } catch (error) {
+                showError(error.message, 'registerErrorMessage');
+            } finally {
+                setLoading('registerBtn', false);
+            }
+        }
+
+        async function handleLogout() {
+            try {
+                // Update user status to offline
+                if (currentUser) {
+                    await supabase
+                        .from('users')
+                        .update({ status: 'offline' })
+                        .eq('id', currentUser.id);
+                }
+
+                // Sign out
+                await supabase.auth.signOut();
+                
+                // Clean up
+                if (callsSubscription) {
+                    callsSubscription.unsubscribe();
+                }
+                
+                currentUser = null;
+                showPage('loginPage');
+                
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+
+        async function loadUserData(user) {
+            currentUser = user;
+            
+            // Update user status to online
+            await supabase
+                .from('users')
+                .update({ status: 'online' })
+                .eq('id', user.id);
+
+            // Update UI
+            document.getElementById('userId').textContent = `ID: ${user.id.substring(0, 8)}`;
+            document.getElementById('userAvatar').textContent = user.email.charAt(0).toUpperCase();
+            
+            // Load data
+            await loadCallHistory();
+            await loadOnlineUsers();
+            
+            // Subscribe to calls
+            subscribeToIncomingCalls();
+        }
+
+        async function loadCallHistory() {
+            try {
+                const { data, error } = await supabase
+                    .from('calls')
+                    .select(`
+                        *,
+                        caller:users!calls_caller_id_fkey(username),
+                        receiver:users!calls_receiver_id_fkey(username)
+                    `)
+                    .or(`caller_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`)
+                    .order('created_at', { ascending: false })
+                    .limit(10);
+
+                if (error) throw error;
+
+                const historyContainer = document.getElementById('callHistory');
+                historyContainer.innerHTML = '';
+
+                if (data.length === 0) {
+                    historyContainer.innerHTML = '<div style="text-align: center; color: #6c757d; padding: 1rem;">No call history yet</div>';
+                    return;
+                }
+
+                data.forEach(call => {
+                    const isOutgoing = call.caller_id === currentUser.id;
+                    const otherUser = isOutgoing ? call.receiver : call.caller;
+                    
+                    const callItem = document.createElement('div');
+                    callItem.className = 'call-item';
+                    callItem.innerHTML = `
+                        <div class="call-info">
+                            <div class="call-user">${otherUser.username}</div>
+                            <div class="call-time">${new Date(call.created_at).toLocaleString()}</div>
+                        </div>
+                        <span class="call-status-badge ${call.status}">${call.status}</span>
+                    `;
+                    
+                    historyContainer.appendChild(callItem);
+                });
+                
+            } catch (error) {
+                console.error('Error loading call history:', error);
+            }
+        }
+
+        async function loadOnlineUsers() {
+            try {
+                const { data, error } = await supabase
+                    .from('users')
+                    .select('*')
+                    .eq('status', 'online')
+                    .neq('id', currentUser.id);
+
+                if (error) throw error;
+
+                const container = document.getElementById('onlineUsers');
+                container.innerHTML = '';
+
+                if (data.length === 0) {
+                    container.innerHTML = '<div style="text-align: center; color: #6c757d; padding: 1rem;">No other users online</div>';
+                    return;
+                }
+
+                data.forEach(user => {
+                    const userItem = document.createElement('div');
+                    userItem.className = 'online-user';
+                    userItem.innerHTML = `
+                        <div class="user-name">${user.username}</div>
+                        <button class="btn btn-small" onclick="callUser('${user.id}')">Call</button>
+                    `;
+                    container.appendChild(userItem);
+                });
+                
+            } catch (error) {
+                console.error('Error loading online users:', error);
+            }
+        }
+
+        function subscribeToIncomingCalls() {
+            callsSubscription = supabase
+                .channel('calls')
+                .on('postgres_changes',
+                    {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'calls',
+                        filter: `receiver_id=eq.${currentUser.id}`
+                    },
+                    handleIncomingCall
+                )
+                .on('postgres_changes',
+                    {
+                        event: 'UPDATE',
+                        schema: 'public',
+                        table: 'calls'
+                    },
+                    handleCallUpdate
+                )
+                .subscribe();
+        }
+
+        async function handleIncomingCall(payload) {
+            const call = payload.new;
+            if (call.status === 'initiated') {
+                currentCall = call;
+                
+                // Get caller info
+                const { data: caller } = await supabase
+                    .from('users')
+                    .select('username')
+                    .eq('id', call.caller_id)
+                    .single();
+
+                document.getElementById('callerName').textContent = caller.username;
+                document.getElementById('incomingCall').classList.add('show');
+            }
+        }
+
+        async function handleCallUpdate(payload) {
+            const call = payload.new;
+            if (currentCall && call.id === currentCall.id) {
+                if (call.status === 'accepted') {
+                    document.getElementById('incomingCall').classList.remove('show');
+                    await startCall(false);
+                } else if (call.status === 'ended') {
+                    endCall();
+                }
+            }
+        }
+
+        async function handleStartCall() {
+            const userId = document.getElementById('callUserId').value.trim();
+            if (!userId) {
+                showError('Please enter a user ID');
+                return;
+            }
+            
+            await callUser(userId);
+        }
+
+        async function callUser(userId) {
+            try {
+                // Create call record
+                const { data, error } = await supabase
+                    .from('calls')
+                    .insert([{
+                        caller_id: currentUser.id,
+                        receiver_id: userId,
+                        status: 'initiated'
+                    }])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                currentCall = data;
+                
+                // Start call as caller
+                await startCall(true);
+                
+            } catch (error) {
+                showError('Failed to start call: ' + error.message);
+            }
+        }
+
+        async function handleAcceptCall() {
+            try {
+                // Update call status
+                const { error } = await supabase
+                    .from('calls')
+                    .update({ status: 'accepted' })
+                    .eq('id', currentCall.id);
+
+                if (error) throw error;
+
+                document.getElementById('incomingCall').classList.remove('show');
+                await startCall(false);
+                
+            } catch (error) {
+                showError('Failed to accept call: ' + error.message);
+            }
+        }
+
+        async function handleDeclineCall() {
+            try {
+                // Update call status
+                await supabase
+                    .from('calls')
+                    .update({ status: 'ended' })
+                    .eq('id', currentCall.id);
+
+                document.getElementById('incomingCall').classList.remove('show');
+                currentCall = null;
+                
+            } catch (error) {
+                console.error('Error declining call:', error);
+            }
+        }
+
+        async function startCall(isCaller) {
+            try {
+                showPage('callPage');
+                
+                // Get user media
+                localStream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: true
+                });
+
+                document.getElementById('localVideo').srcObject = localStream;
+
+                // Create peer connection
+                peerConnection = new RTCPeerConnection(rtcConfig);
+
+                // Add local stream to peer connection
+                localStream.getTracks().forEach(track => {
+                    peerConnection.addTrack(track, localStream);
+                });
+
+                // Handle remote stream
+                peerConnection.ontrack = (event) => {
+                    remoteStream = event.streams[0];
+                    document.getElementById('remoteVideo').srcObject = remoteStream;
+                };
+
+                // Handle ICE candidates
+                peerConnection.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        sendSignal('ice-candidate', {
+                            candidate: event.candidate
+                        });
+                    }
+                };
+
+                // Subscribe to signaling
+                subscribeToSignaling();
+
+                if (isCaller) {
+                    // Create and send offer
+                    const offer = await peerConnection.createOffer();
+                    await peerConnection.setLocalDescription(offer);
+                    
+                    sendSignal('offer', {
+                        offer: offer
+                    });
+                }
+
+                // Update UI
+                const otherUserId = isCaller ? currentCall.receiver_id : currentCall.caller_id;
+                const { data: otherUser } = await supabase
+                    .from('users')
+                    .select('username')
+                    .eq('id', otherUserId)
+                    .single();
+
+                document.getElementById('callWithUser').textContent = `Call with ${otherUser.username}`;
+                
+            } catch (error) {
+                showError('Failed to start call: ' + error.message);
+                endCall();
+            }
+        }
+
+        function subscribeToSignaling() {
+            supabase
+                .channel(`call_${currentCall.id}`)
+                .on('broadcast', { event: 'signal' }, handleSignal)
+                .subscribe();
+        }
+
+        async function handleSignal(payload) {
+            const { type, data } = payload.payload;
+
+            try {
+                switch (type) {
+                    case 'offer':
+                        await peerConnection.setRemoteDescription(data.offer);
+                        const answer = await peerConnection.createAnswer();
+                        await peerConnection.setLocalDescription(answer);
+                        sendSignal('answer', { answer });
+                        break;
+
+                    case 'answer':
+                        await peerConnection.setRemoteDescription(data.answer);
+                        break;
+
+                    case 'ice-candidate':
+                        await peerConnection.addIceCandidate(data.candidate);
+                        break;
+                }
+            } catch (error) {
+                console.error('Error handling signal:', error);
+            }
+        }
+
+        function sendSignal(type, data) {
+            supabase
+                .channel(`call_${currentCall.id}`)
+                .send({
+                    type: 'broadcast',
+                    event: 'signal',
+                    payload: { type, data }
+                });
+        }
+
+        async function handleEndCall() {
+            try {
+                // Update call status
+                if (currentCall) {
+                    await supabase
+                        .from('calls')
+                        .update({ status: 'ended' })
+                        .eq('id', currentCall.id);
+                }
+
+                endCall();
+                
+            } catch (error) {
+                console.error('Error ending call:', error);
+                endCall();
+            }
+        }
+
+        function endCall() {
+            // Clean up WebRTC
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+
+            // Clean up UI
+            document.getElementById('localVideo').srcObject = null;
+            document.getElementById('remoteVideo').srcObject = null;
+            document.getElementById('incomingCall').classList.remove('show');
+
+            // Reset state
+            currentCall = null;
+            isAudioMuted = false;
+            isVideoMuted = false;
+            
+            document.getElementById('muteBtn').classList.remove('active');
+            document.getElementById('videoBtn').classList.remove('active');
+
+            // Return to dashboard
+            showPage('dashboardPage');
+            loadCallHistory();
+        }
+
+        function toggleAudio() {
+            if (localStream) {
+                const audioTrack = localStream.getAudioTracks()[0];
+                if (audioTrack) {
+                    audioTrack.enabled = !audioTrack.enabled;
+                    isAudioMuted = !audioTrack.enabled;
+                    
+                    const btn = document.getElementById('muteBtn');
+                    if (isAudioMuted) {
+                        btn.classList.add('active');
+                        btn.textContent = '🔇';
+                    } else {
+                        btn.classList.remove('active');
+                        btn.textContent = '🎤';
+                    }
+                }
+            }
+        }
+
+        function toggleVideo() {
+            if (localStream) {
+                const videoTrack = localStream.getVideoTracks()[0];
+                if (videoTrack) {
+                    videoTrack.enabled = !videoTrack.enabled;
+                    isVideoMuted = !videoTrack.enabled;
+                    
+                    const btn = document.getElementById('videoBtn');
+                    if (isVideoMuted) {
+                        btn.classList.add('active');
+                        btn.textContent = '📹';
+                    } else {
+                        btn.classList.remove('active');
+                        btn.textContent = '📹';
+                    }
+                }
+            }
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+
+            // Update status bar
+            const statusText = document.getElementById('statusText');
+            switch (pageId) {
+                case 'loginPage':
+                case 'registerPage':
+                    statusText.textContent = 'CallConnect';
+                    break;
+                case 'dashboardPage':
+                    statusText.textContent = 'Dashboard';
+                    break;
+                case 'callPage':
+                    statusText.textContent = 'In Call';
+                    break;
+            }
+        }
+
+        function showError(message, elementId = 'errorMessage') {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message, elementId = 'successMessage') {
+            const successElement = document.getElementById(elementId);
+            if (successElement) {
+                successElement.textContent = message;
+                successElement.style.display = 'block';
+                setTimeout(() => {
+                    successElement.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        function setLoading(buttonId, isLoading) {
+            const button = document.getElementById(buttonId);
+            const textSpan = button.querySelector('.btn-text');
+            
+            if (isLoading) {
+                button.disabled = true;
+                textSpan.innerHTML = '<span class="loading"></span>';
+            } else {
+                button.disabled = false;
+                if (buttonId === 'loginBtn') {
+                    textSpan.textContent = 'Sign In';
+                } else if (buttonId === 'registerBtn') {
+                    textSpan.textContent = 'Create Account';
+                }
+            }
+        }
+
+        // Global function to call user from online users list
+        window.callUser = callUser;
+
+        // Handle page visibility changes
+        document.addEventListener('visibilitychange', async () => {
+            if (currentUser) {
+                const status = document.hidden ? 'offline' : 'online';
+                await supabase
+                    .from('users')
+                    .update({ status })
+                    .eq('id', currentUser.id);
+                
+                if (!document.hidden) {
+                    loadOnlineUsers();
+                }
+            }
+        });
+
+        // Handle beforeunload
+window.addEventListener('beforeunload', () => {
+    if (currentUser) {
+        supabase
+            .from('users')
+            .update({ status: 'offline' })
+            .eq('id', currentUser.id);
+    }
+});
     </script>
 </body>
 </html>
