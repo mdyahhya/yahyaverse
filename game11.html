@@ -3,814 +3,1343 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SecureChat</title>
+    <title>ChatApp</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* CSS will be in styles.css */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        :root {
-            --bg-primary: #f0f2f5;
-            --bg-secondary: #ffffff;
-            --bg-chat: #e5ddd5;
-            --text-primary: #111b21;
-            --text-secondary: #667781;
-            --accent: #00a884;
-            --accent-hover: #017561;
-            --border: #e9edef;
-            --message-sent: #d9fdd3;
-            --message-received: #ffffff;
-            --shadow: rgba(0, 0, 0, 0.1);
-        }
-
-        [data-theme="dark"] {
-            --bg-primary: #111b21;
-            --bg-secondary: #202c33;
-            --bg-chat: #0b141a;
-            --text-primary: #e9edef;
-            --text-secondary: #8696a0;
-            --border: #313a42;
-            --message-sent: #005c4b;
-            --message-received: #202c33;
-            --shadow: rgba(0, 0, 0, 0.3);
-        }
-
-        .screen {
-            display: none;
-            height: 100vh;
-        }
-
-        .screen.active {
-            display: flex;
-        }
-
-        /* Auth Screen */
-        #auth-screen {
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, var(--accent), #128c7e);
-        }
-
-        .auth-container {
-            background: var(--bg-secondary);
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px var(--shadow);
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .logo {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .logo i {
-            font-size: 3rem;
-            color: var(--accent);
-            margin-bottom: 0.5rem;
-        }
-
-        .logo h1 {
-            color: var(--text-primary);
-            font-weight: 300;
-        }
-
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 0.75rem;
-            border: none;
-            background: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .tab-btn.active {
-            color: var(--accent);
-            border-bottom: 2px solid var(--accent);
-        }
-
-        .auth-form {
-            display: none;
-        }
-
-        .auth-form.active {
-            display: block;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-
-        .auth-btn, .btn {
-            width: 100%;
-            padding: 0.75rem;
-            border: none;
-            border-radius: 4px;
-            background: var(--accent);
-            color: white;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .auth-btn:hover, .btn:hover {
-            background: var(--accent-hover);
-        }
-
-        .btn.primary {
-            background: var(--accent);
-        }
-
-        .btn.danger {
-            background: #dc3545;
-        }
-
-        .btn.danger:hover {
-            background: #c82333;
-        }
-
-        /* Main App */
-        #app-screen {
-            background: var(--bg-primary);
-        }
-
-        .sidebar {
-            width: 350px;
-            background: var(--bg-secondary);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar-header {
-            padding: 1rem;
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .avatar.large {
-            width: 80px;
-            height: 80px;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .icon-btn {
-            width: 36px;
-            height: 36px;
-            border: none;
-            background: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-
-        .icon-btn:hover {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-        }
-
-        .search-container {
-            position: relative;
-            padding: 1rem;
-        }
-
-        .search-container input {
-            width: 100%;
-            padding: 0.75rem 0.75rem 0.75rem 2.5rem;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 1.75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-        }
-
-        .chat-list {
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .chat-item, .contact-item, .user-search-item {
-            display: flex;
-            align-items: center;
-            padding: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .chat-item:hover, .contact-item:hover, .user-search-item:hover {
-            background: var(--bg-primary);
-        }
-
-        .chat-info, .contact-info, .user-info {
-            flex: 1;
-            margin-left: 0.75rem;
-        }
-
-        .chat-name, .contact-name, .user-name {
-            font-weight: 500;
-            margin-bottom: 0.25rem;
-        }
-
-        .last-message, .contact-username, .user-username {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .chat-meta {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 0.25rem;
-        }
-
-        .time {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-
-        .unread-count {
-            background: var(--accent);
-            color: white;
-            border-radius: 10px;
-            padding: 0.25rem 0.5rem;
-            font-size: 0.8rem;
-            min-width: 20px;
-            text-align: center;
-        }
-
-        /* Chat Area */
-        .chat-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .welcome-screen {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg-chat);
-        }
-
-        .welcome-content {
-            text-align: center;
-            color: var(--text-secondary);
-        }
-
-        .welcome-content i {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-
-        .chat-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chat-header {
-            padding: 1rem;
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .chat-info {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .chat-details {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chat-name {
-            font-weight: 500;
-        }
-
-        .status {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-
-        .chat-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .messages-container {
-            flex: 1;
-            background: var(--bg-chat);
-            overflow-y: auto;
-            padding: 1rem;
-        }
-
-        .message {
-            margin-bottom: 0.5rem;
-            display: flex;
-        }
-
-        .message.sent {
-            justify-content: flex-end;
-        }
-
-        .message-content {
-            max-width: 70%;
-            padding: 0.5rem 0.75rem;
-            border-radius: 8px;
-            position: relative;
-        }
-
-        .message.sent .message-content {
-            background: var(--message-sent);
-            border-bottom-right-radius: 2px;
-        }
-
-        .message.received .message-content {
-            background: var(--message-received);
-            border-bottom-left-radius: 2px;
-        }
-
-        .message-text {
-            word-wrap: break-word;
-        }
-
-        .message-meta {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 0.25rem;
-            margin-top: 0.25rem;
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-        }
-
-        .typing-indicator {
-            padding: 1rem;
-            color: var(--text-secondary);
-            font-style: italic;
-        }
-
-        .message-composer {
-            padding: 1rem;
-            background: var(--bg-secondary);
-            border-top: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .input-container {
-            flex: 1;
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .input-container input {
-            flex: 1;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-        }
-
-        .send-btn {
-            width: 40px;
-            height: 40px;
-            border: none;
-            background: var(--accent);
-            color: white;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s;
-        }
-
-        .send-btn:hover {
-            background: var(--accent-hover);
-        }
-
-        /* Modals */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal {
-            background: var(--bg-secondary);
-            border-radius: 8px;
-            box-shadow: 0 4px 20px var(--shadow);
-            width: 90%;
-            max-width: 500px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-body {
-            padding: 1rem;
-        }
-
-        .tab-buttons {
-            display: flex;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .contacts-list {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .qr-section {
-            text-align: center;
-            padding: 1rem 0;
-        }
-
-        .qr-section canvas {
-            margin: 1rem 0;
-        }
-
-        .setting-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .setting-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .avatar-upload {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        /* Loading */
-        .loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid var(--border);
-            border-top: 4px solid var(--accent);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                position: absolute;
-                z-index: 10;
-                transform: translateX(-100%);
-                transition: transform 0.3s;
-            }
-            
-            .sidebar.active {
-                transform: translateX(0);
-            }
-            
-            .chat-area {
-                width: 100%;
-            }
-        }
-    </style>
+        /* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    overflow-x: hidden;
+}
+
+#app {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+}
+
+/* Screen Management */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    transition: transform 0.3s ease;
+}
+
+.screen.active {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Auth Screen */
+#auth-screen {
+    background: linear-gradient(135deg, #25d366, #128c7e);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.auth-container {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo i {
+    font-size: 60px;
+    color: #25d366;
+    margin-bottom: 10px;
+}
+
+.logo h1 {
+    color: #128c7e;
+    font-size: 28px;
+    font-weight: 300;
+}
+
+.auth-form {
+    display: none;
+}
+
+.auth-form.active {
+    display: block;
+}
+
+.auth-form h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-weight: 300;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.username-field {
+    position: relative;
+}
+
+.username-field input {
+    padding-right: 40px;
+}
+
+.status-indicator {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.status-indicator.valid {
+    color: #25d366;
+}
+
+.status-indicator.invalid {
+    color: #dc3545;
+}
+
+.username-hint {
+    font-size: 12px;
+    color: #666;
+    margin-top: -10px;
+}
+
+input, textarea {
+    padding: 15px;
+    border: 2px solid #e1e8ed;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+    font-family: inherit;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: #25d366;
+}
+
+.btn-primary {
+    background: #25d366;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-primary:hover {
+    background: #128c7e;
+}
+
+.btn-primary:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.auth-form p {
+    text-align: center;
+    margin-top: 20px;
+    color: #666;
+}
+
+.auth-form a {
+    color: #25d366;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-form a:hover {
+    text-decoration: underline;
+}
+
+/* Profile Setup */
+#profile-setup {
+    background: #f0f2f5;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.profile-container {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.profile-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.avatar-selection h3 {
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+.avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.avatar-option {
+    cursor: pointer;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid transparent;
+    transition: border-color 0.3s ease;
+}
+
+.avatar-option:hover {
+    border-color: #25d366;
+}
+
+.avatar-option.selected {
+    border-color: #25d366;
+    box-shadow: 0 0 15px rgba(37, 211, 102, 0.3);
+}
+
+.avatar-option img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    display: block;
+}
+
+/* Main App Header */
+.app-header {
+    background: #075e54;
+    color: white;
+    padding: 15px 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.header-content h1 {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.header-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.header-actions button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.header-actions button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.tabs {
+    display: flex;
+    gap: 0;
+}
+
+.tab {
+    flex: 1;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.tab.active {
+    color: white;
+    border-bottom-color: #25d366;
+}
+
+/* Search Bar */
+.search-container {
+    background: white;
+    padding: 15px 20px;
+    border-bottom: 1px solid #e1e8ed;
+    transition: all 0.3s ease;
+}
+
+.search-container.hidden {
+    max-height: 0;
+    padding: 0 20px;
+    overflow: hidden;
+}
+
+#search-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e1e8ed;
+    border-radius: 25px;
+    font-size: 14px;
+}
+
+/* Content Container */
+.content-container {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.tab-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    flex-direction: column;
+}
+
+.tab-content.active {
+    display: flex;
+}
+
+/* Chats List */
+.chats-list {
+    flex: 1;
+    overflow-y: auto;
+    background: white;
+}
+
+.chat-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f2f5;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.chat-item:hover {
+    background: #f8f9fa;
+}
+
+.chat-item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+    object-fit: cover;
+}
+
+.chat-info {
+    flex: 1;
+}
+
+.chat-info h4 {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.chat-info p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 3px;
+}
+
+.chat-info small {
+    font-size: 12px;
+    color: #999;
+}
+
+.chat-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+}
+
+.chat-time {
+    font-size: 12px;
+    color: #999;
+}
+
+.unread-count {
+    background: #25d366;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Contacts */
+.contacts-header, .groups-header {
+    padding: 20px;
+    background: white;
+    border-bottom: 1px solid #f0f2f5;
+    display: flex;
+    gap: 10px;
+}
+
+.btn-secondary {
+    background: #f0f2f5;
+    color: #333;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-secondary:hover {
+    background: #e1e8ed;
+}
+
+.contacts-list, .groups-list {
+    flex: 1;
+    overflow-y: auto;
+    background: white;
+}
+
+.contact-item, .group-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f2f5;
+    transition: background-color 0.3s ease;
+}
+
+.contact-item:hover, .group-item:hover {
+    background: #f8f9fa;
+}
+
+.contact-item img, .group-item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+    object-fit: cover;
+}
+
+.contact-info, .group-info {
+    flex: 1;
+}
+
+.contact-info h4, .group-info h4 {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.contact-info p, .group-info p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 3px;
+}
+
+.group-info small {
+    font-size: 12px;
+    color: #999;
+}
+
+.btn-chat {
+    background: #25d366;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-chat:hover {
+    background: #128c7e;
+}
+
+/* Floating Action Button */
+.fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    background: #25d366;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.fab:hover {
+    background: #128c7e;
+    transform: scale(1.1);
+}
+
+/* Chat Screen */
+#chat-screen {
+    background: #e5ddd5;
+}
+
+.chat-header {
+    background: #075e54;
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#back-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+#back-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.chat-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+#chat-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.chat-info div h3 {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+.chat-info div span {
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+.chat-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.chat-actions button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.chat-actions button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Messages Container */
+.messages-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="chat-bg" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="2" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23chat-bg)"/></svg>');
+}
+
+.message {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.message.own {
+    flex-direction: row-reverse;
+}
+
+.message-bubble {
+    max-width: 70%;
+    padding: 8px 12px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.4;
+    position: relative;
+}
+
+.message.own .message-bubble {
+    background: #dcf8c6;
+    border-bottom-right-radius: 4px;
+}
+
+.message:not(.own) .message-bubble {
+    background: white;
+    border-bottom-left-radius: 4px;
+}
+
+.message-time {
+    font-size: 11px;
+    color: #666;
+    margin-top: 4px;
+    text-align: right;
+}
+
+.message.own .message-time {
+    color: #4a4a4a;
+}
+
+/* Message Composer */
+.message-composer {
+    background: #f0f2f5;
+    padding: 10px 20px;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.composer-tools {
+    display: flex;
+    gap: 5px;
+}
+
+.composer-tools button {
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.composer-tools button:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.input-container {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+#message-input {
+    flex: 1;
+    border: none;
+    background: white;
+    border-radius: 20px;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: none;
+    max-height: 100px;
+    min-height: 40px;
+}
+
+#message-input:focus {
+    outline: none;
+}
+
+#send-btn {
+    background: #25d366;
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+#send-btn:hover {
+    background: #128c7e;
+}
+
+/* Modals */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 400px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #f0f2f5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #666;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+}
+
+.close-modal:hover {
+    color: #333;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-body input,
+.modal-body textarea {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.modal-body .btn-primary {
+    margin-top: 10px;
+}
+
+/* Group Creation */
+.group-avatar-selection {
+    margin-bottom: 20px;
+}
+
+.group-avatar-selection h4 {
+    margin-bottom: 15px;
+    color: #333;
+    text-align: center;
+}
+
+.group-image-upload {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.upload-button {
+    background: #f0f2f5;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-button:hover {
+    border-color: #25d366;
+    background: #f8fff8;
+}
+
+.upload-button input {
+    display: none;
+}
+
+.upload-text {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Contact Requests */
+.request-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #f0f2f5;
+}
+
+.request-item:last-child {
+    border-bottom: none;
+}
+
+.request-item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+    object-fit: cover;
+}
+
+.request-info {
+    flex: 1;
+}
+
+.request-info h4 {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.request-info p {
+    font-size: 14px;
+    color: #666;
+}
+
+.request-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-accept {
+    background: #25d366;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 15px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-accept:hover {
+    background: #128c7e;
+}
+
+.btn-decline {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 15px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-decline:hover {
+    background: #c82333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .auth-container {
+        padding: 30px 20px;
+    }
+    
+    .profile-container {
+        padding: 30px 20px;
+    }
+    
+    .avatar-grid {
+        grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+        gap: 10px;
+    }
+    
+    .avatar-option img {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .modal-content {
+        margin: 10px;
+        max-width: none;
+    }
+    
+    .fab {
+        bottom: 15px;
+        right: 15px;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-content h1 {
+        font-size: 18px;
+    }
+    
+    .chat-item img,
+    .contact-item img,
+    .group-item img {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .chat-info h4,
+    .contact-info h4,
+    .group-info h4 {
+        font-size: 15px;
+    }
+    
+    .message-bubble {
+        max-width: 85%;
+    }
+}
+
+/* Loading States */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    color: #666;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #25d366;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Online Status */
+.online-indicator {
+    width: 12px;
+    height: 12px;
+    background: #25d366;
+    border-radius: 50%;
+    border: 2px solid white;
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+}
+
+.profile-pic-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* Message Status Icons */
+.message-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: 5px;
+    font-size: 12px;
+    color: #666;
+}
+
+.message.own .message-status {
+    color: #4a4a4a;
+}
+
+.status-sent::before {
+    content: "✓";
+}
+
+.status-delivered::before {
+    content: "✓✓";
+}
+
+.status-read::before {
+    content: "✓✓";
+    color: #25d366;
+}
+
+/* Typing Indicator */
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    background: white;
+    border-radius: 18px;
+    margin: 10px 0;
+    max-width: 80px;
+}
+
+.typing-dots {
+    display: flex;
+    gap: 3px;
+}
+
+.typing-dot {
+    width: 6px;
+    height: 6px;
+    background: #666;
+    border-radius: 50%;
+    animation: typing 1.4s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typing {
+    0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Error States */
+.error-message {
+    background: #ffe6e6;
+    color: #d63031;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin: 10px 0;
+    font-size: 14px;
+    border-left: 4px solid #d63031;
+}
+
+/* Success States */
+.success-message {
+    background: #e6ffe6;
+    color: #00b894;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin: 10px 0;
+    font-size: 14px;
+    border-left: 4px solid #00b894;
+}
+</style>
 </head>
 <body>
-    <!-- Auth Screen -->
-    <div id="auth-screen" class="screen active">
-        <div class="auth-container">
-            <div class="logo">
-                <i class="fas fa-shield-alt"></i>
-                <h1>SecureChat</h1>
-            </div>
-            
-            <div class="auth-tabs">
-                <button class="tab-btn active" data-tab="login">Login</button>
-                <button class="tab-btn" data-tab="register">Register</button>
-            </div>
-            
-            <form id="login-form" class="auth-form active">
-                <div class="form-group">
-                    <input type="email" id="login-email" placeholder="Email" required>
+    <div id="app">
+        <!-- Auth Screen -->
+        <div id="auth-screen" class="screen active">
+            <div class="auth-container">
+                <div class="logo">
+                    <i class="fab fa-whatsapp"></i>
+                    <h1>ChatApp</h1>
                 </div>
-                <div class="form-group">
-                    <input type="password" id="login-password" placeholder="Password" required>
+                
+                <!-- Login Form -->
+                <div id="login-form" class="auth-form active">
+                    <h2>Welcome Back</h2>
+                    <div class="input-group">
+                        <input type="text" id="login-username" placeholder="Username" required>
+                        <input type="password" id="login-password" placeholder="Password" required>
+                    </div>
+                    <button id="login-btn" class="btn-primary">Login</button>
+                    <p>Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
                 </div>
-                <button type="submit" class="auth-btn">Login</button>
-            </form>
-            
-            <form id="register-form" class="auth-form">
-                <div class="form-group">
-                    <input type="text" id="register-username" placeholder="Username" required>
-                </div>
-                <div class="form-group">
-                    <input type="text" id="register-name" placeholder="Display Name" required>
-                </div>
-                <div class="form-group">
-                    <input type="email" id="register-email" placeholder="Email" required>
-                </div>
-                <div class="form-group">
-                    <input type="password" id="register-password" placeholder="Password" required>
-                </div>
-                <button type="submit" class="auth-btn">Register</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Main App -->
-    <div id="app-screen" class="screen">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <div class="user-info">
-                    <img id="user-avatar" src="https://via.placeholder.com/40" alt="Avatar" class="avatar">
-                    <span id="user-name">User</span>
-                </div>
-                <div class="header-actions">
-                    <button class="icon-btn" id="new-chat-btn"><i class="fas fa-plus"></i></button>
-                    <button class="icon-btn" id="settings-btn"><i class="fas fa-cog"></i></button>
-                </div>
-            </div>
-            
-            <div class="search-container">
-                <input type="text" id="search-input" placeholder="Search chats...">
-                <i class="fas fa-search search-icon"></i>
-            </div>
-            
-            <div class="chat-list" id="chat-list">
-                <!-- Chat items will be populated here -->
-            </div>
-        </div>
-
-        <!-- Chat Area -->
-        <div class="chat-area">
-            <div class="welcome-screen" id="welcome-screen">
-                <div class="welcome-content">
-                    <i class="fas fa-comments"></i>
-                    <h2>Welcome to SecureChat</h2>
-                    <p>Select a chat to start messaging securely</p>
-                </div>
-            </div>
-            
-            <div class="chat-container" id="chat-container" style="display: none;">
-                <div class="chat-header">
-                    <div class="chat-info">
-                        <img id="chat-avatar" src="https://via.placeholder.com/40" alt="Avatar" class="avatar">
-                        <div class="chat-details">
-                            <span id="chat-name">Chat Name</span>
-                            <span id="chat-status" class="status">last seen recently</span>
+                
+                <!-- Signup Form -->
+                <div id="signup-form" class="auth-form">
+                    <h2>Create Account</h2>
+                    <div class="input-group">
+                        <div class="username-field">
+                            <input type="text" id="signup-username" placeholder="Username (e.g. john_doe.123)" required>
+                            <span id="username-status" class="status-indicator"></span>
                         </div>
+                        <small class="username-hint">Use letters, numbers, dots (.) and underscores (_)</small>
+                        <input type="text" id="signup-display-name" placeholder="Display Name" required>
+                        <input type="email" id="signup-email" placeholder="Email" required>
+                        <input type="password" id="signup-password" placeholder="Password" required>
+                        <textarea id="signup-about" placeholder="About (optional)" rows="2"></textarea>
                     </div>
-                    <div class="chat-actions">
-                        <button class="icon-btn"><i class="fas fa-video"></i></button>
-                        <button class="icon-btn"><i class="fas fa-phone"></i></button>
-                        <button class="icon-btn" id="chat-menu-btn"><i class="fas fa-ellipsis-v"></i></button>
+                    <button id="signup-btn" class="btn-primary">Sign Up</button>
+                    <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Setup -->
+        <div id="profile-setup" class="screen">
+            <div class="profile-container">
+                <h2>Complete Your Profile</h2>
+                <div class="avatar-selection">
+                    <h3>Choose Your Avatar</h3>
+                    <div class="avatar-grid" id="avatar-grid">
+                        <!-- Avatar options will be populated here -->
                     </div>
                 </div>
-                
-                <div class="messages-container" id="messages-container">
-                    <div id="messages-list">
-                        <!-- Messages will be populated here -->
+                <button id="complete-profile-btn" class="btn-primary">Complete Setup</button>
+            </div>
+        </div>
+
+        <!-- Main App -->
+        <div id="main-screen" class="screen">
+            <!-- Header -->
+            <header class="app-header">
+                <div class="header-content">
+                    <h1>ChatApp</h1>
+                    <div class="header-actions">
+                        <button id="search-btn"><i class="fas fa-search"></i></button>
+                        <button id="menu-btn"><i class="fas fa-ellipsis-v"></i></button>
                     </div>
                 </div>
-                
-                <div class="typing-indicator" id="typing-indicator" style="display: none;">
-                    <span>Someone is typing...</span>
+                <div class="tabs">
+                    <button class="tab active" data-tab="chats">Chats</button>
+                    <button class="tab" data-tab="contacts">Contacts</button>
+                    <button class="tab" data-tab="groups">Groups</button>
                 </div>
-                
-                <div class="message-composer">
-                    <button class="icon-btn" id="attach-btn"><i class="fas fa-paperclip"></i></button>
-                    <div class="input-container">
-                        <input type="text" id="message-input" placeholder="Type a message...">
-                        <button class="icon-btn" id="emoji-btn"><i class="fas fa-smile"></i></button>
+            </header>
+
+            <!-- Search Bar -->
+            <div id="search-bar" class="search-container hidden">
+                <input type="text" id="search-input" placeholder="Search chats, contacts, groups...">
+            </div>
+
+            <!-- Content Areas -->
+            <div class="content-container">
+                <!-- Chats Tab -->
+                <div id="chats-tab" class="tab-content active">
+                    <div id="chats-list" class="chats-list">
+                        <!-- Chat items will be populated here -->
                     </div>
-                    <button class="send-btn" id="send-btn"><i class="fas fa-paper-plane"></i></button>
-                    <input type="file" id="file-input" multiple style="display: none;">
+                </div>
+
+                <!-- Contacts Tab -->
+                <div id="contacts-tab" class="tab-content">
+                    <div class="contacts-header">
+                        <button id="add-contact-btn" class="btn-secondary">
+                            <i class="fas fa-user-plus"></i> Add Contact
+                        </button>
+                    </div>
+                    <div id="contacts-list" class="contacts-list">
+                        <!-- Contacts will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Groups Tab -->
+                <div id="groups-tab" class="tab-content">
+                    <div class="groups-header">
+                        <button id="create-group-btn" class="btn-secondary">
+                            <i class="fas fa-users"></i> Create Group
+                        </button>
+                        <button id="join-group-btn" class="btn-secondary">
+                            <i class="fas fa-key"></i> Join Group
+                        </button>
+                    </div>
+                    <div id="groups-list" class="groups-list">
+                        <!-- Groups will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Floating Action Button -->
+            <button id="fab" class="fab">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+
+        <!-- Chat Screen -->
+        <div id="chat-screen" class="screen">
+            <div class="chat-header">
+                <button id="back-btn"><i class="fas fa-arrow-left"></i></button>
+                <div class="chat-info">
+                    <img id="chat-avatar" src="" alt="">
+                    <div>
+                        <h3 id="chat-title">Chat Name</h3>
+                        <span id="chat-status">Online</span>
+                    </div>
+                </div>
+                <div class="chat-actions">
+                    <button><i class="fas fa-video"></i></button>
+                    <button><i class="fas fa-phone"></i></button>
+                    <button><i class="fas fa-ellipsis-v"></i></button>
+                </div>
+            </div>
+            
+            <div id="messages-container" class="messages-container">
+                <!-- Messages will be populated here -->
+            </div>
+            
+            <div class="message-composer">
+                <div class="composer-tools">
+                    <button id="emoji-btn"><i class="fas fa-smile"></i></button>
+                    <button id="attach-btn"><i class="fas fa-paperclip"></i></button>
+                </div>
+                <div class="input-container">
+                    <textarea id="message-input" placeholder="Type a message..." rows="1"></textarea>
+                    <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Modals -->
-    <div id="modal-overlay" class="modal-overlay">
-        <!-- New Chat Modal -->
-        <div id="new-chat-modal" class="modal">
+    <!-- Add Contact Modal -->
+    <div id="add-contact-modal" class="modal">
+        <div class="modal-content">
             <div class="modal-header">
-                <h3>New Chat</h3>
-                <button class="close-btn" data-modal="new-chat-modal"><i class="fas fa-times"></i></button>
+                <h3>Add Contact</h3>
+                <button class="close-modal">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="tab-buttons">
-                    <button class="tab-btn active" data-tab="contacts">Contacts</button>
-                    <button class="tab-btn" data-tab="add-contact">Add Contact</button>
-                </div>
-                
-                <div id="contacts-tab" class="tab-content active">
-                    <div class="search-container">
-                        <input type="text" id="contact-search" placeholder="Search contacts...">
-                    </div>
-                    <div id="contacts-list" class="contacts-list">
-                        <!-- Contacts will be populated here -->
-                    </div>
-                </div>
-                
-                <div id="add-contact-tab" class="tab-content">
-                    <input type="text" id="username-search" placeholder="Enter username">
-                    <button id="search-user-btn" class="btn">Search</button>
-                    <div id="user-search-results"></div>
-                    
-                    <hr>
-                    
-                    <div class="qr-section">
-                        <h4>Share your QR Code</h4>
-                        <div id="qr-code"></div>
-                        <button id="scan-qr-btn" class="btn">Scan QR Code</button>
-                    </div>
-                </div>
+                <input type="text" id="contact-username" placeholder="Enter username">
+                <button id="send-request-btn" class="btn-primary">Send Request</button>
             </div>
         </div>
+    </div>
 
-        <!-- Settings Modal -->
-        <div id="settings-modal" class="modal">
+    <!-- Create Group Modal -->
+    <div id="create-group-modal" class="modal">
+        <div class="modal-content">
             <div class="modal-header">
-                <h3>Settings</h3>
-                <button class="close-btn" data-modal="settings-modal"><i class="fas fa-times"></i></button>
+                <h3>Create Group</h3>
+                <button class="close-modal">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="setting-group">
-                    <label>Profile Picture</label>
-                    <div class="avatar-upload">
-                        <img id="settings-avatar" src="https://via.placeholder.com/80" alt="Avatar" class="avatar large">
-                        <button id="upload-avatar-btn" class="btn">Change</button>
-                        <input type="file" id="avatar-input" accept="image/*" style="display: none;">
+                <div class="group-image-upload">
+                    <h4>Group Image</h4>
+                    <div class="upload-button">
+                        <input type="file" id="group-image-upload" accept="image/*">
+                        <div class="upload-text">
+                            <i class="fas fa-camera"></i>
+                            <p>Click to upload group image</p>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="setting-group">
-                    <label>Display Name</label>
-                    <input type="text" id="settings-name" placeholder="Your name">
-                </div>
-                
-                <div class="setting-group">
-                    <label>About</label>
-                    <textarea id="settings-about" placeholder="About yourself..."></textarea>
-                </div>
-                
-                <div class="setting-group">
-                    <label>Theme</label>
-                    <select id="theme-select">
-                        <option value="light">Light</option>
-                        <option value="dark">Dark</option>
-                    </select>
-                </div>
-                
-                <div class="setting-group">
-                    <button id="save-settings-btn" class="btn primary">Save Changes</button>
-                    <button id="logout-btn" class="btn danger">Logout</button>
+                <input type="text" id="group-name" placeholder="Group Name">
+                <textarea id="group-description" placeholder="Group Description (optional)" rows="2"></textarea>
+                <button id="create-group-submit" class="btn-primary">Create Group</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Join Group Modal -->
+    <div id="join-group-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Join Group</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="group-code" placeholder="Enter 8-digit group code" maxlength="8">
+                <button id="join-group-submit" class="btn-primary">Join Group</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Requests Modal -->
+    <div id="requests-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Contact Requests</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="requests-list">
+                    <!-- Contact requests will be populated here -->
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Loading Spinner -->
-    <div id="loading" class="loading">
-        <div class="spinner"></div>
-    </div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tweetnacl/1.0.3/nacl.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.9/dayjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.7/dayjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/idb/7.1.1/index.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/9.0.0/uuid.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
     
     <script>
         // Supabase initialization
         const SUPABASE_URL = 'https://nsnacwwcrszpjmanskti.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zbmFjd3djcnN6cGptYW5za3RpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5MTg2MTIsImV4cCI6MjA2ODQ5NDYxMn0.W01JADzAuGFvcAHAN6LPRIxc75J7A9Q76HIxvxkJDn4';
-       let supabase;
+        let supabase;
         
         function initializeSupabase() {
             try {
@@ -823,986 +1352,879 @@
             }
         }
 
-        // Global state
+        // Avatar URLs (20 options for user profiles)
+        const AVATAR_OPTIONS = [
+            'https://i.pravatar.cc/150?img=1',
+            'https://i.pravatar.cc/150?img=2',
+            'https://i.pravatar.cc/150?img=3',
+            'https://i.pravatar.cc/150?img=4',
+            'https://i.pravatar.cc/150?img=5',
+            'https://i.pravatar.cc/150?img=6',
+            'https://i.pravatar.cc/150?img=7',
+            'https://i.pravatar.cc/150?img=8',
+            'https://i.pravatar.cc/150?img=9',
+            'https://i.pravatar.cc/150?img=10',
+            'https://i.pravatar.cc/150?img=11',
+            'https://i.pravatar.cc/150?img=12',
+            'https://i.pravatar.cc/150?img=13',
+            'https://i.pravatar.cc/150?img=14',
+            'https://i.pravatar.cc/150?img=15',
+            'https://i.pravatar.cc/150?img=16',
+            'https://i.pravatar.cc/150?img=17',
+            'https://i.pravatar.cc/150?img=18',
+            'https://i.pravatar.cc/150?img=19',
+            'https://i.pravatar.cc/150?img=20'
+        ];
+
+        // Group avatar URLs (20 options for groups)
+        const GROUP_AVATAR_OPTIONS = [
+            'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=150&h=150&fit=crop&crop=faces',
+            'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=150&h=150&fit=crop&crop=faces',
+            'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=150&h=150&fit=crop&crop=faces',
+            'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=150&h=150&fit=crop&crop=faces',
+            'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=150&h=150&fit=crop&crop=faces',
+            'https://images.unsplash.com/photo-1556075798-4825dfaaf498?w=150&h=150&fit=crop&crop=faces',
+            'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=150&h=150&fit=crop&crop=faces',
+            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=faces',
+            'https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=150&h=150&fit=crop&crop=faces',
+            'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=150&h=150&fit=crop&crop=faces',
+            'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&h=150&fit=crop&crop=faces',
+            'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&crop=faces',
+            'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=faces',
+            'https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=150&h=150&fit=crop&crop=faces',
+            'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=150&h=150&fit=crop&crop=faces',
+            'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&h=150&fit=crop&crop=faces',
+            'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&h=150&fit=crop&crop=faces',
+            'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&h=150&fit=crop&crop=faces',
+            'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=faces',
+            'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150&h=150&fit=crop&crop=faces'
+        ];
+
+        // Global variables
         let currentUser = null;
         let currentChat = null;
-        let userKeyPair = null;
-        let chatKeys = new Map(); // chat_id -> symmetric key
-        let contacts = new Map();
-        let chats = new Map();
-        let realtimeChannels = new Map();
-        let typingTimeouts = new Map();
+        let selectedAvatar = null;
+        let selectedGroupAvatar = null;
 
-        // Crypto utilities
-        function generateKeyPair() {
-            return nacl.box.keyPair();
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!initializeSupabase()) {
+                alert('Failed to initialize Supabase. Please check your configuration.');
+                return;
+            }
+            
+            await checkAuthState();
+            setupEventListeners();
+            populateAvatarOptions();
+        });
+
+        // Check if user is already logged in
+        async function checkAuthState() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                const user = await getUserProfile(session.user.id);
+                if (user) {
+                    currentUser = user;
+                    showScreen('main-screen');
+                    loadChats();
+                    loadContacts();
+                    loadGroups();
+                }
+            }
         }
 
-        function generateSymmetricKey() {
-            return nacl.randomBytes(32);
+        // Show specific screen
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
         }
 
-        function encryptMessage(message, key) {
-            const nonce = nacl.randomBytes(24);
-            const messageBytes = new TextEncoder().encode(message);
-            const encrypted = nacl.secretbox(messageBytes, nonce, key);
-            return {
-                cipher: Array.from(encrypted),
-                nonce: Array.from(nonce)
+        // Populate avatar options
+        function populateAvatarOptions() {
+            const avatarGrid = document.getElementById('avatar-grid');
+            const groupAvatarGrid = document.getElementById('group-avatar-grid');
+            
+            // User avatars
+            AVATAR_OPTIONS.forEach((url, index) => {
+                const avatarOption = document.createElement('div');
+                avatarOption.className = 'avatar-option';
+                avatarOption.innerHTML = `<img src="${url}" alt="Avatar ${index + 1}">`;
+                avatarOption.addEventListener('click', () => selectAvatar(url, avatarOption));
+                avatarGrid.appendChild(avatarOption);
+            });
+
+            // Group avatars
+            GROUP_AVATAR_OPTIONS.forEach((url, index) => {
+                const avatarOption = document.createElement('div');
+                avatarOption.className = 'avatar-option';
+                avatarOption.innerHTML = `<img src="${url}" alt="Group Avatar ${index + 1}">`;
+                avatarOption.addEventListener('click', () => selectGroupAvatar(url, avatarOption));
+                groupAvatarGrid.appendChild(avatarOption);
+            });
+        }
+
+        function selectAvatar(url, element) {
+            document.querySelectorAll('#avatar-grid .avatar-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedAvatar = url;
+        }
+
+        function selectGroupAvatar(url, element) {
+            document.querySelectorAll('#group-avatar-grid .avatar-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedGroupAvatar = url;
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Auth form toggles
+            document.getElementById('show-signup').addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('login-form').classList.remove('active');
+                document.getElementById('signup-form').classList.add('active');
+            });
+
+            document.getElementById('show-login').addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('signup-form').classList.remove('active');
+                document.getElementById('login-form').classList.add('active');
+            });
+
+            // Username validation
+            document.getElementById('signup-username').addEventListener('input', debounce(checkUsernameAvailability, 500));
+
+            // Auth buttons
+            document.getElementById('signup-btn').addEventListener('click', handleSignup);
+            document.getElementById('login-btn').addEventListener('click', handleLogin);
+            document.getElementById('complete-profile-btn').addEventListener('click', completeProfile);
+
+            // Tab switching
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+            });
+
+            // Search functionality
+            document.getElementById('search-btn').addEventListener('click', toggleSearch);
+            document.getElementById('search-input').addEventListener('input', debounce(handleSearch, 300));
+
+            // Modal controls
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', closeModals);
+            });
+
+            // Action buttons
+            document.getElementById('add-contact-btn').addEventListener('click', () => {
+                document.getElementById('add-contact-modal').style.display = 'flex';
+            });
+
+            document.getElementById('create-group-btn').addEventListener('click', () => {
+                document.getElementById('create-group-modal').style.display = 'flex';
+            });
+
+            document.getElementById('join-group-btn').addEventListener('click', () => {
+                document.getElementById('join-group-modal').style.display = 'flex';
+            });
+
+            document.getElementById('send-request-btn').addEventListener('click', sendContactRequest);
+            document.getElementById('create-group-submit').addEventListener('click', createGroup);
+            document.getElementById('join-group-submit').addEventListener('click', joinGroup);
+
+            // Chat functionality
+            document.getElementById('back-btn').addEventListener('click', () => {
+                showScreen('main-screen');
+                currentChat = null;
+            });
+
+            document.getElementById('send-btn').addEventListener('click', sendMessage);
+            document.getElementById('message-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            // Group image upload
+            document.getElementById('group-image-upload').addEventListener('change', handleGroupImageUpload);
+
+            // Click outside modal to close
+            window.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    closeModals();
+                }
+            });
+        }
+
+        // Debounce function
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
             };
         }
 
-        function decryptMessage(encryptedData, key) {
+        // Check username availability
+        async function checkUsernameAvailability() {
+            const username = document.getElementById('signup-username').value.trim();
+            const statusElement = document.getElementById('username-status');
+            
+            if (!username) {
+                statusElement.textContent = '';
+                statusElement.className = 'status-indicator';
+                return;
+            }
+
+            // Validate username format
+            const usernameRegex = /^[a-zA-Z0-9_.]+$/;
+            if (!usernameRegex.test(username)) {
+                statusElement.textContent = '✗';
+                statusElement.className = 'status-indicator invalid';
+                return;
+            }
+
             try {
-                const cipher = new Uint8Array(encryptedData.cipher);
-                const nonce = new Uint8Array(encryptedData.nonce);
-                const decrypted = nacl.secretbox.open(cipher, nonce, key);
-                if (!decrypted) return null;
-                return new TextDecoder().decode(decrypted);
-            } catch (e) {
-                console.error('Decryption failed:', e);
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('username')
+                    .eq('username', username)
+                    .single();
+
+                if (error && error.code === 'PGRST116') {
+                    // Username not found, it's available
+                    statusElement.textContent = '✓';
+                    statusElement.className = 'status-indicator valid';
+                } else {
+                    // Username exists
+                    statusElement.textContent = '✗';
+                    statusElement.className = 'status-indicator invalid';
+                }
+            } catch (error) {
+                console.error('Error checking username:', error);
+            }
+        }
+
+        // Handle signup
+        // Handle signup
+// Handle signup - FIXED VERSION with UPSERT
+async function handleSignup() {
+    const username = document.getElementById('signup-username').value.trim();
+    const displayName = document.getElementById('signup-display-name').value.trim();
+    const email = document.getElementById('signup-email').value.trim();
+    const password = document.getElementById('signup-password').value;
+    const about = document.getElementById('signup-about').value.trim();
+
+    if (!username || !displayName || !email || !password) {
+        alert('Please fill in all required fields');
+        return;
+    }
+
+    // Validate username format
+    const usernameRegex = /^[a-zA-Z0-9_.]+$/;
+    if (!usernameRegex.test(username)) {
+        alert('Username can only contain letters, numbers, dots (.) and underscores (_)');
+        return;
+    }
+
+    try {
+        // Check if username is available
+        const { data: existingUser } = await supabase
+            .from('profiles')
+            .select('username')
+            .eq('username', username)
+            .single();
+
+        if (existingUser) {
+            alert('Username is already taken');
+            return;
+        }
+
+        // Sign up with Supabase Auth
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+            email: email,
+            password: password
+        });
+
+        if (authError) {
+            alert('Signup failed: ' + authError.message);
+            return;
+        }
+
+        // FIXED: Use upsert instead of insert to handle existing profiles
+        const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .upsert([
+                {
+                    id: authData.user.id,
+                    username: username,
+                    display_name: displayName,
+                    email: email,
+                    about: about,
+                    password: password
+                }
+            ], {
+                onConflict: 'id'
+            })
+            .select();
+
+        if (profileError) {
+            alert('Profile creation failed: ' + profileError.message);
+            return;
+        }
+
+        // Store user data temporarily and show profile setup
+        currentUser = {
+            id: authData.user.id,
+            username: username,
+            display_name: displayName,
+            email: email,
+            about: about
+        };
+
+        showScreen('profile-setup');
+        await loadAvatarOptions();
+
+    } catch (error) {
+        console.error('Signup error:', error);
+        alert('An error occurred during signup');
+    }
+}
+        // Handle login
+        async function handleLogin() {
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            if (!username || !password) {
+                alert('Please enter both username and password');
+                return;
+            }
+
+            try {
+                // Get user by username
+                const { data: profile, error: profileError } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('username', username)
+                    .single();
+
+                if (profileError || !profile) {
+                    alert('Username not found');
+                    return;
+                }
+
+                // Check password (direct comparison as requested)
+                if (profile.password !== password) {
+                    alert('Incorrect password');
+                    return;
+                }
+
+                // Sign in with email (get email from profile)
+                const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+                    email: profile.email || `${username}@temp.com`, // Fallback email
+                    password: password
+                });
+
+                if (authError) {
+                    // If auth fails, create a session manually or use a different approach
+                    currentUser = profile;
+                    showScreen('main-screen');
+                    await loadChats();
+                    await loadContacts();
+                    await loadGroups();
+                    return;
+                }
+
+                currentUser = profile;
+                showScreen('main-screen');
+                await loadChats();
+                await loadContacts();
+                await loadGroups();
+
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login failed');
+            }
+        }
+
+        // Load avatar options from Supabase
+        async function loadAvatarOptions() {
+            try {
+                const { data: avatars, error } = await supabase
+                    .from('avatar_options')
+                    .select('*')
+                    .order('id');
+
+                if (error) {
+                    console.error('Error loading avatars:', error);
+                    return;
+                }
+
+                const avatarGrid = document.getElementById('avatar-grid');
+                avatarGrid.innerHTML = '';
+
+                avatars.forEach(avatar => {
+                    const avatarOption = document.createElement('div');
+                    avatarOption.className = 'avatar-option';
+                    avatarOption.innerHTML = `<img src="${avatar.url}" alt="${avatar.name}">`;
+                    avatarOption.addEventListener('click', () => selectAvatar(avatar.url, avatarOption));
+                    avatarGrid.appendChild(avatarOption);
+                });
+            } catch (error) {
+                console.error('Error loading avatar options:', error);
+            }
+        }
+
+        // Complete profile setup
+        async function completeProfile() {
+            if (!selectedAvatar) {
+                alert('Please select an avatar');
+                return;
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('profiles')
+                    .update({ avatar_url: selectedAvatar })
+                    .eq('id', currentUser.id);
+
+                if (error) {
+                    alert('Failed to update profile: ' + error.message);
+                    return;
+                }
+
+                currentUser.avatar_url = selectedAvatar;
+                showScreen('main-screen');
+                await loadChats();
+                await loadContacts();
+                await loadGroups();
+
+            } catch (error) {
+                console.error('Profile completion error:', error);
+                alert('Failed to complete profile');
+            }
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+        }
+
+        // Toggle search
+        function toggleSearch() {
+            const searchBar = document.getElementById('search-bar');
+            searchBar.classList.toggle('hidden');
+            if (!searchBar.classList.contains('hidden')) {
+                document.getElementById('search-input').focus();
+            }
+        }
+
+        // Handle search
+        function handleSearch() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            // Implement search functionality
+            console.log('Searching for:', query);
+        }
+
+        // Close modals
+        function closeModals() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+
+        // Get user profile
+        async function getUserProfile(userId) {
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', userId)
+                    .single();
+
+                if (error) {
+                    console.error('Error fetching user profile:', error);
+                    return null;
+                }
+
+                return data;
+            } catch (error) {
+                console.error('Error getting user profile:', error);
                 return null;
             }
         }
 
-        function deriveSharedKey(theirPublicKey, myPrivateKey) {
-            const theirKey = new Uint8Array(atob(theirPublicKey).split('').map(c => c.charCodeAt(0)));
-            return nacl.box.before(theirKey, myPrivateKey);
-        }
-
-        // Utility functions
-        function showLoading(show = true) {
-            document.getElementById('loading').style.display = show ? 'flex' : 'none';
-        }
-
-        function showError(message) {
-            // Simple error display - could be enhanced with a toast system
-            alert(message);
-        }
-
-        function formatTime(timestamp) {
-            return dayjs(timestamp).format('HH:mm');
-        }
-
-        function formatDate(timestamp) {
-            const date = dayjs(timestamp);
-            const now = dayjs();
+        // Send contact request
+        async function sendContactRequest() {
+            const username = document.getElementById('contact-username').value.trim();
             
-            if (date.isSame(now, 'day')) return 'Today';
-            if (date.isSame(now.subtract(1, 'day'), 'day')) return 'Yesterday';
-            if (date.isSame(now, 'week')) return date.format('dddd');
-            return date.format('MM/DD/YYYY');
-        }
-
-        // IndexedDB cache
-        class CacheManager {
-            constructor() {
-                this.dbName = 'SecureChatCache';
-                this.version = 1;
-                this.db = null;
-            }
-
-            async init() {
-                return new Promise((resolve, reject) => {
-                    const request = indexedDB.open(this.dbName, this.version);
-                    
-                    request.onerror = () => reject(request.error);
-                    request.onsuccess = () => {
-                        this.db = request.result;
-                        resolve();
-                    };
-                    
-                    request.onupgradeneeded = (event) => {
-                        const db = event.target.result;
-                        
-                        if (!db.objectStoreNames.contains('chats')) {
-                            db.createObjectStore('chats', { keyPath: 'id' });
-                        }
-                        
-                        if (!db.objectStoreNames.contains('messages')) {
-                            const messageStore = db.createObjectStore('messages', { keyPath: 'id' });
-                            messageStore.createIndex('chat_id', 'chat_id');
-                        }
-                        
-                        if (!db.objectStoreNames.contains('keys')) {
-                            db.createObjectStore('keys', { keyPath: 'id' });
-                        }
-                    };
-                });
-            }
-
-            async saveKeys(keys) {
-                const transaction = this.db.transaction(['keys'], 'readwrite');
-                const store = transaction.objectStore('keys');
-                await store.put({ id: 'userKeys', ...keys });
-            }
-
-            async loadKeys() {
-                const transaction = this.db.transaction(['keys'], 'readonly');
-                const store = transaction.objectStore('keys');
-                const result = await store.get('userKeys');
-                return result;
-            }
-        }
-
-        const cache = new CacheManager();
-
-        // Authentication
-        class AuthManager {
-            async login(email, password) {
-                showLoading();
-                try {
-                    const { data, error } = await supabase.auth.signInWithPassword({
-                        email,
-                        password
-                    });
-                    
-                    if (error) throw error;
-                    
-                    await this.loadUserProfile();
-                    await this.loadOrGenerateKeys();
-                    return true;
-                } catch (error) {
-                    showError(error.message);
-                    return false;
-                } finally {
-                    showLoading(false);
-                }
-            }
-
-            async register(username, displayName, email, password) {
-                showLoading();
-                try {
-                    // Generate keypair for E2E encryption
-                    const keyPair = generateKeyPair();
-                    const publicKeyB64 = btoa(String.fromCharCode(...keyPair.publicKey));
-                    
-                    const { data, error } = await supabase.auth.signUp({
-                        email,
-                        password
-                    });
-                    
-                    if (error) throw error;
-                    
-                    // Create profile
-                    const { error: profileError } = await supabase
-                        .from('profiles')
-                        .insert({
-                            id: data.user.id,
-                            username,
-                            display_name: displayName,
-                            public_key: publicKeyB64
-                        });
-                    
-                    if (profileError) throw profileError;
-                    
-                    // Store keys locally
-                    userKeyPair = keyPair;
-                    await cache.saveKeys({
-                        publicKey: Array.from(keyPair.publicKey),
-                        secretKey: Array.from(keyPair.secretKey)
-                    });
-                    
-                    await this.loadUserProfile();
-                    return true;
-                } catch (error) {
-                    showError(error.message);
-                    return false;
-                } finally {
-                    showLoading(false);
-                }
-            }
-
-            async loadUserProfile() {
-                const { data: { user } } = await supabase.auth.getUser();
-                if (!user) return;
-
-                const { data: profile } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', user.id)
-                    .single();
-
-                currentUser = { ...user, ...profile };
-                this.updateUI();
-            }
-
-            async loadOrGenerateKeys() {
-                let keys = await cache.loadKeys();
-                
-                if (!keys) {
-                    // Generate new keys if not found
-                    userKeyPair = generateKeyPair();
-                    await cache.saveKeys({
-                        publicKey: Array.from(userKeyPair.publicKey),
-                        secretKey: Array.from(userKeyPair.secretKey)
-                    });
-                } else {
-                    userKeyPair = {
-                        publicKey: new Uint8Array(keys.publicKey),
-                        secretKey: new Uint8Array(keys.secretKey)
-                    };
-                }
-            }
-
-            updateUI() {
-                document.getElementById('user-name').textContent = currentUser.display_name;
-                document.getElementById('user-avatar').src = currentUser.avatar_url || 'https://via.placeholder.com/40';
-                document.getElementById('settings-name').value = currentUser.display_name;
-                document.getElementById('settings-about').value = currentUser.about || '';
-                document.getElementById('settings-avatar').src = currentUser.avatar_url || 'https://via.placeholder.com/80';
-            }
-
-            async logout() {
-                await supabase.auth.signOut();
-                currentUser = null;
-                userKeyPair = null;
-                chatKeys.clear();
-                this.showAuthScreen();
-            }
-
-            showAuthScreen() {
-                document.getElementById('auth-screen').classList.add('active');
-                document.getElementById('app-screen').classList.remove('active');
-            }
-
-            showAppScreen() {
-                document.getElementById('auth-screen').classList.remove('active');
-                document.getElementById('app-screen').classList.add('active');
-            }
-        }
-
-        const auth = new AuthManager();
-
-        // Chat Manager
-        class ChatManager {
-            async loadChats() {
-                const { data: chatMembers } = await supabase
-                    .from('chat_members')
-                    .select(`
-                        chat_id,
-                        chats (
-                            id,
-                            type,
-                            title,
-                            avatar_url,
-                            created_at,
-                            updated_at
-                        )
-                    `)
-                    .eq('user_id', currentUser.id);
-
-                for (const member of chatMembers || []) {
-                    const chat = member.chats;
-                    chats.set(chat.id, chat);
-                    
-                    // Load chat key or derive it
-                    await this.loadChatKey(chat.id);
-                }
-
-                this.renderChatList();
-            }
-
-            async loadChatKey(chatId) {
-                // For DM chats, derive key from other participant's public key
-                // For groups, could use a shared key exchange mechanism
-                // Simplified implementation here
-                
-                if (!chatKeys.has(chatId)) {
-                    // Generate a temporary key for demo purposes
-                    // In production, implement proper key exchange
-                    const key = generateSymmetricKey();
-                    chatKeys.set(chatId, key);
-                }
-            }
-
-            async createDMChat(contactId) {
-                try {
-                    // Check if DM already exists
-                    const { data: existingChat } = await supabase
-                        .from('chat_members')
-                        .select('chat_id, chats(*)')
-                        .eq('user_id', currentUser.id)
-                        .in('chat_id', 
-                            supabase.from('chat_members')
-                                .select('chat_id')
-                                .eq('user_id', contactId)
-                        );
-
-                    if (existingChat && existingChat.length > 0) {
-                        const dmChat = existingChat.find(c => c.chats.type === 'dm');
-                        if (dmChat) {
-                            this.openChat(dmChat.chat_id);
-                            return;
-                        }
-                    }
-
-                    // Create new DM
-                    const { data: chat, error } = await supabase
-                        .from('chats')
-                        .insert({
-                            type: 'dm',
-                            created_by: currentUser.id
-                        })
-                        .select()
-                        .single();
-
-                    if (error) throw error;
-
-                    // Add members
-                    await supabase
-                        .from('chat_members')
-                        .insert([
-                            { chat_id: chat.id, user_id: currentUser.id },
-                            { chat_id: chat.id, user_id: contactId }
-                        ]);
-
-                    chats.set(chat.id, chat);
-                    await this.loadChatKey(chat.id);
-                    this.renderChatList();
-                    this.openChat(chat.id);
-                } catch (error) {
-                    showError('Failed to create chat: ' + error.message);
-                }
-            }
-
-            renderChatList() {
-                const chatList = document.getElementById('chat-list');
-                chatList.innerHTML = '';
-
-                for (const [chatId, chat] of chats) {
-                    const item = document.createElement('div');
-                    item.className = 'chat-item';
-                    item.onclick = () => this.openChat(chatId);
-                    
-                    item.innerHTML = `
-                        <img src="${chat.avatar_url || 'https://via.placeholder.com/50'}" alt="Avatar" class="avatar">
-                        <div class="chat-info">
-                            <div class="chat-name">${chat.title || 'Direct Message'}</div>
-                            <div class="last-message">Last message preview...</div>
-                        </div>
-                        <div class="chat-meta">
-                            <span class="time">${formatTime(chat.updated_at)}</span>
-                            <span class="unread-count">3</span>
-                        </div>
-                    `;
-                    
-                    chatList.appendChild(item);
-                }
-            }
-
-            async openChat(chatId) {
-                currentChat = chatId;
-                
-                // Update UI
-                document.getElementById('welcome-screen').style.display = 'none';
-                document.getElementById('chat-container').style.display = 'flex';
-                
-                // Load chat details
-                const chat = chats.get(chatId);
-                document.getElementById('chat-name').textContent = chat.title || 'Direct Message';
-                
-                // Setup realtime
-                this.setupRealtimeChannel(chatId);
-                
-                // Load messages
-                await this.loadMessages(chatId);
-            }
-
-            setupRealtimeChannel(chatId) {
-                // Clean up existing channel
-                if (realtimeChannels.has(chatId)) {
-                    realtimeChannels.get(chatId).unsubscribe();
-                }
-
-                const channel = supabase
-                    .channel(`chat-${chatId}`)
-                    .on('postgres_changes', 
-                        { 
-                            event: 'INSERT', 
-                            schema: 'public', 
-                            table: 'messages',
-                            filter: `chat_id=eq.${chatId}`
-                        }, 
-                        (payload) => this.handleNewMessage(payload.new)
-                    )
-                    .on('presence', { event: 'sync' }, () => {
-                        // Handle presence updates
-                    })
-                    .subscribe();
-
-                realtimeChannels.set(chatId, channel);
-            }
-
-            async loadMessages(chatId) {
-                const { data: messages } = await supabase
-                    .from('messages')
-                    .select('*')
-                    .eq('chat_id', chatId)
-                    .order('created_at', { ascending: true })
-                    .limit(50);
-
-                this.renderMessages(messages || []);
-            }
-
-            renderMessages(messages) {
-                const messagesList = document.getElementById('messages-list');
-                messagesList.innerHTML = '';
-
-                for (const message of messages) {
-                    const decryptedContent = this.decryptMessage(message);
-                    const messageEl = this.createMessageElement(message, decryptedContent);
-                    messagesList.appendChild(messageEl);
-                }
-
-                messagesList.scrollTop = messagesList.scrollHeight;
-            }
-
-            decryptMessage(message) {
-                const chatKey = chatKeys.get(message.chat_id);
-                if (!chatKey) return 'Decryption failed';
-                
-                try {
-                    const encryptedData = JSON.parse(message.body_cipher);
-                    return decryptMessage(encryptedData, chatKey);
-                } catch (error) {
-                    console.error('Message decryption failed:', error);
-                    return 'Decryption failed';
-                }
-            }
-
-            createMessageElement(message, content) {
-                const messageEl = document.createElement('div');
-                messageEl.className = `message ${message.sender_id === currentUser.id ? 'sent' : 'received'}`;
-                
-                messageEl.innerHTML = `
-                    <div class="message-content">
-                        <div class="message-text">${this.escapeHtml(content)}</div>
-                        <div class="message-meta">
-                            <span class="message-time">${formatTime(message.created_at)}</span>
-                            ${message.sender_id === currentUser.id ? '<i class="fas fa-check"></i>' : ''}
-                        </div>
-                    </div>
-                `;
-                
-                return messageEl;
-            }
-
-            escapeHtml(text) {
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
-            }
-
-            async sendMessage(content) {
-                if (!currentChat || !content.trim()) return;
-
-                const chatKey = chatKeys.get(currentChat);
-                if (!chatKey) {
-                    showError('Chat key not available');
-                    return;
-                }
-
-                try {
-                    const encryptedContent = encryptMessage(content.trim(), chatKey);
-                    
-                    const { error } = await supabase
-                        .from('messages')
-                        .insert({
-                            chat_id: currentChat,
-                            sender_id: currentUser.id,
-                            body_cipher: JSON.stringify(encryptedContent)
-                        });
-
-                    if (error) throw error;
-                    
-                    // Clear input
-                    document.getElementById('message-input').value = '';
-                } catch (error) {
-                    showError('Failed to send message: ' + error.message);
-                }
-            }
-
-            handleNewMessage(message) {
-                if (message.chat_id === currentChat) {
-                    const decryptedContent = this.decryptMessage(message);
-                    const messageEl = this.createMessageElement(message, decryptedContent);
-                    document.getElementById('messages-list').appendChild(messageEl);
-                    document.getElementById('messages-list').scrollTop = document.getElementById('messages-list').scrollHeight;
-                }
-            }
-        }
-
-        const chatManager = new ChatManager();
-
-        // Contact Manager
-        class ContactManager {
-            async loadContacts() {
-                const { data: contactsData } = await supabase
-                    .from('contacts')
-                    .select(`
-                        contact_id,
-                        alias,
-                        profiles (
-                            id,
-                            username,
-                            display_name,
-                            avatar_url,
-                            public_key
-                        )
-                    `)
-                    .eq('owner_id', currentUser.id);
-
-                contacts.clear();
-                for (const contact of contactsData || []) {
-                    contacts.set(contact.contact_id, {
-                        ...contact.profiles,
-                        alias: contact.alias
-                    });
-                }
-
-                this.renderContacts();
-            }
-
-            renderContacts() {
-                const contactsList = document.getElementById('contacts-list');
-                contactsList.innerHTML = '';
-
-                for (const [contactId, contact] of contacts) {
-                    const item = document.createElement('div');
-                    item.className = 'contact-item';
-                    item.onclick = () => chatManager.createDMChat(contactId);
-                    
-                    item.innerHTML = `
-                        <img src="${contact.avatar_url || 'https://via.placeholder.com/40'}" alt="Avatar" class="avatar">
-                        <div class="contact-info">
-                            <div class="contact-name">${contact.alias || contact.display_name}</div>
-                            <div class="contact-username">@${contact.username}</div>
-                        </div>
-                    `;
-                    
-                    contactsList.appendChild(item);
-                }
-            }
-
-            async searchUser(username) {
-                const { data: users } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .ilike('username', `%${username}%`)
-                    .neq('id', currentUser.id)
-                    .limit(10);
-
-                this.renderUserSearchResults(users || []);
-            }
-
-            renderUserSearchResults(users) {
-                const resultsEl = document.getElementById('user-search-results');
-                resultsEl.innerHTML = '';
-
-                for (const user of users) {
-                    const item = document.createElement('div');
-                    item.className = 'user-search-item';
-                    
-                    item.innerHTML = `
-                        <img src="${user.avatar_url || 'https://via.placeholder.com/40'}" alt="Avatar" class="avatar">
-                        <div class="user-info">
-                            <div class="user-name">${user.display_name}</div>
-                            <div class="user-username">@${user.username}</div>
-                        </div>
-                        <button class="btn" onclick="contactManager.addContact('${user.id}')">Add</button>
-                    `;
-                    
-                    resultsEl.appendChild(item);
-                }
-            }
-
-            async addContact(userId) {
-                try {
-                    const { error } = await supabase
-                        .from('contacts')
-                        .insert({
-                            owner_id: currentUser.id,
-                            contact_id: userId
-                        });
-
-                    if (error) throw error;
-                    
-                    await this.loadContacts();
-                    showError('Contact added successfully!');
-                } catch (error) {
-                    showError('Failed to add contact: ' + error.message);
-                }
-            }
-
-            generateQRCode() {
-                const qrData = JSON.stringify({
-                    type: 'contact',
-                    userId: currentUser.id,
-                    username: currentUser.username
-                });
-                
-                QRCode.toCanvas(document.getElementById('qr-code'), qrData, {
-                    width: 200,
-                    margin: 2
-                });
-            }
-        }
-
-        const contactManager = new ContactManager();
-
-        // File Manager
-        class FileManager {
-            async uploadFile(file) {
-                try {
-                    showLoading();
-                    
-                    // Encrypt file before upload
-                    const fileBuffer = await file.arrayBuffer();
-                    const fileKey = generateSymmetricKey();
-                    
-                    // Simple file encryption (in production, use streaming encryption)
-                    const nonce = nacl.randomBytes(24);
-                    const encrypted = nacl.secretbox(new Uint8Array(fileBuffer), nonce, fileKey);
-                    
-                    const fileName = `${uuidv4()}.encrypted`;
-                    
-                    const { data, error } = await supabase.storage
-                        .from('attachments')
-                        .upload(fileName, encrypted);
-
-                    if (error) throw error;
-
-                    return {
-                        path: data.path,
-                        originalName: file.name,
-                        size: file.size,
-                        type: file.type,
-                        key: Array.from(fileKey),
-                        nonce: Array.from(nonce)
-                    };
-                } catch (error) {
-                    showError('Failed to upload file: ' + error.message);
-                    return null;
-                } finally {
-                    showLoading(false);
-                }
-            }
-
-            async downloadFile(attachment) {
-                try {
-                    const { data, error } = await supabase.storage
-                        .from('attachments')
-                        .download(attachment.path);
-
-                    if (error) throw error;
-
-                    const encrypted = new Uint8Array(await data.arrayBuffer());
-                    const fileKey = new Uint8Array(attachment.key);
-                    const nonce = new Uint8Array(attachment.nonce);
-                    
-                    const decrypted = nacl.secretbox.open(encrypted, nonce, fileKey);
-                    if (!decrypted) throw new Error('Decryption failed');
-
-                    const blob = new Blob([decrypted], { type: attachment.type });
-                    const url = URL.createObjectURL(blob);
-                    
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = attachment.originalName;
-                    a.click();
-                    
-                    URL.revokeObjectURL(url);
-                } catch (error) {
-                    showError('Failed to download file: ' + error.message);
-                }
-            }
-        }
-
-        const fileManager = new FileManager();
-
-        // Theme Manager
-        class ThemeManager {
-            constructor() {
-                this.currentTheme = localStorage.getItem('theme') || 'light';
-                this.applyTheme();
-            }
-
-            applyTheme() {
-                document.body.setAttribute('data-theme', this.currentTheme);
-                const themeSelect = document.getElementById('theme-select');
-                if (themeSelect) themeSelect.value = this.currentTheme;
-            }
-
-            setTheme(theme) {
-                this.currentTheme = theme;
-                localStorage.setItem('theme', theme);
-                this.applyTheme();
-            }
-        }
-
-        const themeManager = new ThemeManager();
-
-        // Initialize app
-        async function initApp() {
-            if (!initializeSupabase()) {
-                showError('Failed to initialize Supabase');
+            if (!username) {
+                alert('Please enter a username');
                 return;
             }
 
-            await cache.init();
+            try {
+                // Find user by username
+                const { data: targetUser, error: userError } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('username', username)
+                    .single();
 
-            // Check if user is already logged in
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                await auth.loadUserProfile();
-                await auth.loadOrGenerateKeys();
-                auth.showAppScreen();
-                await chatManager.loadChats();
-                await contactManager.loadContacts();
-                contactManager.generateQRCode();
-            }
-
-            setupEventListeners();
-        }
-
-        function setupEventListeners() {
-            // Auth form handling
-            document.getElementById('login-form').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const email = document.getElementById('login-email').value;
-                const password = document.getElementById('login-password').value;
-                
-                if (await auth.login(email, password)) {
-                    auth.showAppScreen();
-                    await chatManager.loadChats();
-                    await contactManager.loadContacts();
-                    contactManager.generateQRCode();
+                if (userError || !targetUser) {
+                    alert('User not found');
+                    return;
                 }
-            });
 
-            document.getElementById('register-form').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const username = document.getElementById('register-username').value;
-                const name = document.getElementById('register-name').value;
-                const email = document.getElementById('register-email').value;
-                const password = document.getElementById('register-password').value;
-                
-                if (await auth.register(username, name, email, password)) {
-                    auth.showAppScreen();
-                    await chatManager.loadChats();
-                    await contactManager.loadContacts();
-                    contactManager.generateQRCode();
+                if (targetUser.id === currentUser.id) {
+                    alert('You cannot add yourself');
+                    return;
                 }
-            });
 
-            // Auth tab switching
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const tab = e.target.dataset.tab;
-                    if (tab === 'login' || tab === 'register') {
-                        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                        document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-                        e.target.classList.add('active');
-                        document.getElementById(`${tab}-form`).classList.add('active');
-                    }
-                });
-            });
+                // Send contact request
+                const { error: requestError } = await supabase
+                    .from('contact_requests')
+                    .insert([
+                        {
+                            from_user_id: currentUser.id,
+                            to_user_id: targetUser.id,
+                            status: 'pending'
+                        }
+                    ]);
 
-            // Message sending
-            document.getElementById('send-btn').addEventListener('click', () => {
-                const input = document.getElementById('message-input');
-                chatManager.sendMessage(input.value);
-            });
-
-            document.getElementById('message-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    chatManager.sendMessage(e.target.value);
+                if (requestError) {
+                    alert('Failed to send request: ' + requestError.message);
+                    return;
                 }
-            });
 
-            // File attachment
-            document.getElementById('attach-btn').addEventListener('click', () => {
-                document.getElementById('file-input').click();
-            });
+                alert('Contact request sent!');
+                closeModals();
+                document.getElementById('contact-username').value = '';
 
-            document.getElementById('file-input').addEventListener('change', async (e) => {
-                const files = Array.from(e.target.files);
-                for (const file of files) {
-                    const attachment = await fileManager.uploadFile(file);
-                    if (attachment) {
-                        // Send attachment message
-                        const attachmentMessage = {
-                            type: 'attachment',
-                            attachment: attachment
-                        };
-                        chatManager.sendMessage(JSON.stringify(attachmentMessage));
-                    }
-                }
-                e.target.value = '';
-            });
-
-            // Modal handling
-            document.getElementById('new-chat-btn').addEventListener('click', () => {
-                showModal('new-chat-modal');
-            });
-
-            document.getElementById('settings-btn').addEventListener('click', () => {
-                showModal('settings-modal');
-            });
-
-            document.querySelectorAll('.close-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    hideModal(e.target.dataset.modal);
-                });
-            });
-
-            // Modal tab switching
-            document.addEventListener('click', (e) => {
-                if (e.target.classList.contains('tab-btn') && e.target.dataset.tab) {
-                    const modal = e.target.closest('.modal');
-                    if (modal) {
-                        modal.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                        modal.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                        e.target.classList.add('active');
-                        modal.querySelector(`#${e.target.dataset.tab}-tab`).classList.add('active');
-                    }
-                }
-            });
-
-            // Contact search
-            document.getElementById('search-user-btn').addEventListener('click', () => {
-                const username = document.getElementById('username-search').value;
-                if (username.trim()) {
-                    contactManager.searchUser(username.trim());
-                }
-            });
-
-            // Settings
-            document.getElementById('save-settings-btn').addEventListener('click', async () => {
-                const name = document.getElementById('settings-name').value;
-                const about = document.getElementById('settings-about').value;
-                
-                try {
-                    const { error } = await supabase
-                        .from('profiles')
-                        .update({
-                            display_name: name,
-                            about: about
-                        })
-                        .eq('id', currentUser.id);
-
-                    if (error) throw error;
-                    
-                    currentUser.display_name = name;
-                    currentUser.about = about;
-                    auth.updateUI();
-                    hideModal('settings-modal');
-                    showError('Settings saved successfully!');
-                } catch (error) {
-                    showError('Failed to save settings: ' + error.message);
-                }
-            });
-
-            document.getElementById('logout-btn').addEventListener('click', () => {
-                auth.logout();
-            });
-
-            document.getElementById('theme-select').addEventListener('change', (e) => {
-                themeManager.setTheme(e.target.value);
-            });
-
-            // Avatar upload
-            document.getElementById('upload-avatar-btn').addEventListener('click', () => {
-                document.getElementById('avatar-input').click();
-            });
-
-            document.getElementById('avatar-input').addEventListener('change', async (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    try {
-                        const fileName = `avatar-${currentUser.id}-${Date.now()}`;
-                        const { data, error } = await supabase.storage
-                            .from('avatars')
-                            .upload(fileName, file);
-
-                        if (error) throw error;
-
-                        const { data: { publicUrl } } = supabase.storage
-                            .from('avatars')
-                            .getPublicUrl(fileName);
-
-                        await supabase
-                            .from('profiles')
-                            .update({ avatar_url: publicUrl })
-                            .eq('id', currentUser.id);
-
-                        currentUser.avatar_url = publicUrl;
-                        auth.updateUI();
-                    } catch (error) {
-                        showError('Failed to upload avatar: ' + error.message);
-                    }
-                }
-            });
-
-            // Search functionality
-            document.getElementById('search-input').addEventListener('input', _.debounce((e) => {
-                const query = e.target.value.toLowerCase();
-                const chatItems = document.querySelectorAll('.chat-item');
-                
-                chatItems.forEach(item => {
-                    const name = item.querySelector('.chat-name').textContent.toLowerCase();
-                    item.style.display = name.includes(query) ? 'flex' : 'none';
-                });
-            }, 300));
-
-            document.getElementById('contact-search').addEventListener('input', _.debounce((e) => {
-                const query = e.target.value.toLowerCase();
-                const contactItems = document.querySelectorAll('.contact-item');
-                
-                contactItems.forEach(item => {
-                    const name = item.querySelector('.contact-name').textContent.toLowerCase();
-                    const username = item.querySelector('.contact-username').textContent.toLowerCase();
-                    item.style.display = (name.includes(query) || username.includes(query)) ? 'flex' : 'none';
-                });
-            }, 300));
-
-            // Typing indicator
-            let typingTimer;
-            document.getElementById('message-input').addEventListener('input', () => {
-                if (currentChat) {
-                    clearTimeout(typingTimer);
-                    // Send typing indicator
-                    typingTimer = setTimeout(() => {
-                        // Stop typing indicator
-                    }, 1000);
-                }
-            });
-        }
-
-        function showModal(modalId) {
-            document.getElementById('modal-overlay').style.display = 'flex';
-            document.getElementById(modalId).style.display = 'block';
-        }
-
-        function hideModal(modalId) {
-            document.getElementById('modal-overlay').style.display = 'none';
-            if (modalId) {
-                document.getElementById(modalId).style.display = 'none';
-            } else {
-                document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+            } catch (error) {
+                console.error('Error sending contact request:', error);
+                alert('Failed to send contact request');
             }
         }
 
-        // Handle auth state changes
-        supabase.auth.onAuthStateChange(async (event, session) => {
-            if (event === 'SIGNED_OUT') {
-                auth.showAuthScreen();
-            }
-        });
+        // Handle group image upload
+        async function handleGroupImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-        // Start the app
-        initApp();
+            try {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${uuidv4()}.${fileExt}`;
+                const filePath = `group-avatars/${fileName}`;
+
+                const { data, error } = await supabase.storage
+                    .from('avatars')
+                    .upload(filePath, file);
+
+                if (error) {
+                    alert('Failed to upload image: ' + error.message);
+                    return;
+                }
+
+                const { data: urlData } = supabase.storage
+                    .from('avatars')
+                    .getPublicUrl(filePath);
+
+                selectedGroupAvatar = urlData.publicUrl;
+                
+                // Show preview
+                const preview = document.createElement('img');
+                preview.src = selectedGroupAvatar;
+                preview.style.width = '50px';
+                preview.style.height = '50px';
+                preview.style.borderRadius = '50%';
+                preview.style.marginTop = '10px';
+                
+                const uploadContainer = event.target.parentNode;
+                const existingPreview = uploadContainer.querySelector('img');
+                if (existingPreview) {
+                    uploadContainer.removeChild(existingPreview);
+                }
+                uploadContainer.appendChild(preview);
+
+            } catch (error) {
+                console.error('Error uploading group image:', error);
+                alert('Failed to upload image');
+            }
+        }
+
+        // Create group
+        async function createGroup() {
+            const groupName = document.getElementById('group-name').value.trim();
+            const groupDescription = document.getElementById('group-description').value.trim();
+
+            if (!groupName) {
+                alert('Please enter a group name');
+                return;
+            }
+
+            try {
+                // Generate 8-digit group code
+                const groupCode = Math.floor(10000000 + Math.random() * 90000000).toString();
+
+                const { data: group, error: groupError } = await supabase
+                    .from('groups')
+                    .insert([
+                        {
+                            name: groupName,
+                            description: groupDescription,
+                            avatar_url: selectedGroupAvatar,
+                            group_code: groupCode,
+                            created_by: currentUser.id,
+                            admin_id: currentUser.id
+                        }
+                    ])
+                    .select()
+                    .single();
+
+                if (groupError) {
+                    alert('Failed to create group: ' + groupError.message);
+                    return;
+                }
+
+                // Add creator as member
+                const { error: memberError } = await supabase
+                    .from('group_members')
+                    .insert([
+                        {
+                            group_id: group.id,
+                            user_id: currentUser.id,
+                            role: 'admin',
+                            status: 'approved'
+                        }
+                    ]);
+
+                if (memberError) {
+                    console.error('Error adding creator as member:', memberError);
+                }
+
+                alert(`Group created! Group code: ${groupCode}`);
+                closeModals();
+                clearGroupForm();
+                await loadGroups();
+
+            } catch (error) {
+                console.error('Error creating group:', error);
+                alert('Failed to create group');
+            }
+        }
+
+        // Join group
+        async function joinGroup() {
+            const groupCode = document.getElementById('group-code').value.trim();
+
+            if (!groupCode || groupCode.length !== 8) {
+                alert('Please enter a valid 8-digit group code');
+                return;
+            }
+
+            try {
+                // Find group by code
+                const { data: group, error: groupError } = await supabase
+                    .from('groups')
+                    .select('*')
+                    .eq('group_code', groupCode)
+                    .single();
+
+                if (groupError || !group) {
+                    alert('Invalid group code');
+                    return;
+                }
+
+                // Check if already a member
+                const { data: existingMember, error: memberError } = await supabase
+                    .from('group_members')
+                    .select('*')
+                    .eq('group_id', group.id)
+                    .eq('user_id', currentUser.id)
+                    .single();
+
+                if (existingMember) {
+                    alert('You are already a member of this group');
+                    return;
+                }
+
+                // Send join request
+                const { error: requestError } = await supabase
+                    .from('group_members')
+                    .insert([
+                        {
+                            group_id: group.id,
+                            user_id: currentUser.id,
+                            role: 'member',
+                            status: 'pending'
+                        }
+                    ]);
+
+                if (requestError) {
+                    alert('Failed to send join request: ' + requestError.message);
+                    return;
+                }
+
+                alert('Join request sent! Wait for admin approval.');
+                closeModals();
+                document.getElementById('group-code').value = '';
+
+            } catch (error) {
+                console.error('Error joining group:', error);
+                alert('Failed to join group');
+            }
+        }
+
+        // Clear group form
+        function clearGroupForm() {
+            document.getElementById('group-name').value = '';
+            document.getElementById('group-description').value = '';
+            selectedGroupAvatar = null;
+            const preview = document.querySelector('#create-group-modal img');
+            if (preview) preview.remove();
+        }
+
+        // Load chats
+        async function loadChats() {
+            // Implementation for loading chats
+            console.log('Loading chats...');
+        }
+
+        // Load contacts
+        async function loadContacts() {
+            try {
+                const { data: contacts, error } = await supabase
+                    .from('contacts')
+                    .select(`
+                        *,
+                        contact:profiles!contacts_contact_id_fkey(*)
+                    `)
+                    .eq('owner_id', currentUser.id)
+                    .eq('status', 'approved');
+
+                if (error) {
+                    console.error('Error loading contacts:', error);
+                    return;
+                }
+
+                const contactsList = document.getElementById('contacts-list');
+                contactsList.innerHTML = '';
+
+                contacts.forEach(contact => {
+                    const contactElement = createContactElement(contact.contact);
+                    contactsList.appendChild(contactElement);
+                });
+
+            } catch (error) {
+                console.error('Error loading contacts:', error);
+            }
+        }
+
+        // Load groups
+        async function loadGroups() {
+            try {
+                const { data: groups, error } = await supabase
+                    .from('group_members')
+                    .select(`
+                        *,
+                        group:groups(*)
+                    `)
+                    .eq('user_id', currentUser.id)
+                    .eq('status', 'approved');
+
+                if (error) {
+                    console.error('Error loading groups:', error);
+                    return;
+                }
+
+                const groupsList = document.getElementById('groups-list');
+                groupsList.innerHTML = '';
+
+                groups.forEach(groupMember => {
+                    const groupElement = createGroupElement(groupMember.group);
+                    groupsList.appendChild(groupElement);
+                });
+
+            } catch (error) {
+                console.error('Error loading groups:', error);
+            }
+        }
+
+        // Create contact element
+        function createContactElement(contact) {
+            const div = document.createElement('div');
+            div.className = 'contact-item';
+            div.innerHTML = `
+                <img src="${contact.avatar_url || '/default-avatar.png'}" alt="${contact.display_name}">
+                <div class="contact-info">
+                    <h4>${contact.display_name}</h4>
+                    <p>@${contact.username}</p>
+                </div>
+                <button class="btn-chat" onclick="startChat('${contact.id}')">
+                    <i class="fas fa-comment"></i>
+                </button>
+            `;
+            return div;
+        }
+
+        // Create group element
+        function createGroupElement(group) {
+            const div = document.createElement('div');
+            div.className = 'group-item';
+            div.innerHTML = `
+                <img src="${group.avatar_url || '/default-group.png'}" alt="${group.name}">
+                <div class="group-info">
+                    <h4>${group.name}</h4>
+                    <p>${group.description || 'No description'}</p>
+                    <small>Code: ${group.group_code}</small>
+                </div>
+                <button class="btn-chat" onclick="openGroup('${group.id}')">
+                    <i class="fas fa-comments"></i>
+                </button>
+            `;
+            return div;
+        }
+
+        // Start chat with contact
+        function startChat(contactId) {
+            console.log('Starting chat with:', contactId);
+            // Implementation for starting individual chat
+        }
+
+        // Open group chat
+        function openGroup(groupId) {
+            console.log('Opening group:', groupId);
+            // Implementation for opening group chat
+        }
+
+        // Send message
+        function sendMessage() {
+            const messageInput = document.getElementById('message-input');
+            const message = messageInput.value.trim();
+            
+            if (!message) return;
+            
+            console.log('Sending message:', message);
+            messageInput.value = '';
+            // Implementation for sending message
+        }
     </script>
-
-    
+</body>
+</html>
