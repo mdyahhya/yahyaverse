@@ -1136,55 +1136,33 @@ remoteAudio.play().catch(e => console.log('Audio autoplay prevented:', e));
     setLoading('registerBtn', true);
     
     try {
-        // First create auth user
-        const { data: authData, error: authError } = await supabase.auth.signUp({
+        // Try to sign up
+        const { error } = await supabase.auth.signUp({
             email: email,
             password: password
         });
 
-        if (authError) throw authError;
+        // Ignore confirmation errors and try to login immediately
+        const { data, error: loginError } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
 
-        // If no session but user created, it means confirmation is required
-        if (authData.user && !authData.session) {
-            // Auto-confirm the user (bypass email confirmation)
-            const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        if (loginError) throw loginError;
+
+        // Create user record (use upsert to avoid conflicts)
+        const { error: dbError } = await supabase
+            .from('users')
+            .upsert([{
+                id: data.user.id,
+                username: username,
                 email: email,
-                password: password
-            });
-            
-            if (signInError) {
-                throw new Error('Account created but auto-login failed. Please try logging in manually.');
-            }
-            
-            // Create user record
-            const { error: dbError } = await supabase
-                .from('users')
-                .insert([{
-                    id: signInData.user.id,
-                    username: username,
-                    email: email,
-                    status: 'online'
-                }]);
+                status: 'online'
+            }], { onConflict: 'id' });
 
-            if (dbError) throw dbError;
-            
-            await loadUserData(signInData.user);
-        } else {
-            // Normal flow if confirmation is disabled
-            const { error: dbError } = await supabase
-                .from('users')
-                .insert([{
-                    id: authData.user.id,
-                    username: username,
-                    email: email,
-                    status: 'online'
-                }]);
+        if (dbError) throw dbError;
 
-            if (dbError) throw dbError;
-            
-            await loadUserData(authData.user);
-        }
-
+        await loadUserData(data.user);
         showPage('dashboardPage');
         
     } catch (error) {
