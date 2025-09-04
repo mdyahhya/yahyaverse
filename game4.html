@@ -830,7 +830,7 @@
                 
                 // Create auth user with magic link
                 const { error: authError } = await supabase.auth.signInWithOtp({
-                    email: `${rollNumber}@tempmail.trip`,
+                    email: `${rollNumber}`,
                     options: { shouldCreateUser: true }
                 });
                 
