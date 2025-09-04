@@ -3,601 +3,926 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finger-Controlled Block Game</title>
-    
-    <!-- Loading essential AI/ML libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675469240/camera_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils@0.6.1675469240/control_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1675469240/drawing_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    
+    <title>Live Tracker - Continental Group</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --primary: #3b82f6;
+            --secondary: #1e40af;
+            --accent: #06b6d4;
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --glass: rgba(15, 23, 42, 0.8);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            overflow: hidden;
-            height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white; overflow: hidden; height: 100vh;
         }
 
-        .game-container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        /* Futuristic Grid Background */
+        .bg-grid {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -1;
+            background-image: 
+                linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+        @keyframes gridMove { 0% { transform: translate(0, 0); } 100% { transform: translate(50px, 50px); } }
+
+        .container { height: 100vh; display: flex; flex-direction: column; position: relative; }
+
+        /* Header */
+        .header {
+            padding: 15px 20px; background: var(--glass); backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 32px rgba(0, 0, 0, 0.3);
+        }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo i { font-size: 24px; color: var(--accent); }
+        .logo h1 { font-size: 20px; font-weight: 700; background: linear-gradient(45deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .create-account-btn {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            border: none; padding: 10px 20px; border-radius: 25px; color: white;
+            font-weight: 600; cursor: pointer; transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        .create-account-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4); }
+
+        /* Canvas Container */
+        .canvas-container {
+            flex: 1; position: relative; display: flex; align-items: center; justify-content: center;
+            background: radial-gradient(circle at center, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+        }
+        
+        #mapCanvas {
+            border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 15px;
+            max-width: 95%; max-height: 85%; cursor: crosshair;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            background: rgba(15, 23, 42, 0.9);
         }
 
-        .video-canvas-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
+        /* Account Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 2000;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px);
+            display: none; align-items: center; justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+        
+        .modal {
+            background: var(--glass); backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 20px;
+            padding: 30px; max-width: 450px; width: 90%; max-height: 90vh; overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: modalSlide 0.3s ease-out;
+        }
+        @keyframes modalSlide { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .modal h2 { margin-bottom: 25px; color: var(--accent); font-size: 24px; text-align: center; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 14px; font-weight: 600; color: #cbd5e1; margin-bottom: 8px; }
+        .form-group input {
+            width: 100%; padding: 12px 16px; background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 10px;
+            color: white; font-size: 14px; transition: all 0.3s;
+        }
+        .form-group input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1); }
+
+        /* Image Upload & Crop */
+        .image-upload {
+            border: 2px dashed rgba(59, 130, 246, 0.5); border-radius: 15px;
+            padding: 30px; text-align: center; cursor: pointer; transition: all 0.3s;
+            background: rgba(30, 41, 59, 0.3);
+        }
+        .image-upload:hover { border-color: var(--accent); background: rgba(30, 41, 59, 0.5); }
+        .image-upload i { font-size: 48px; color: var(--accent); margin-bottom: 15px; display: block; }
+        
+        .crop-container { margin-top: 20px; display: none; }
+        .crop-preview { width: 200px; height: 200px; margin: 15px auto; border-radius: 50%; overflow: hidden; border: 3px solid var(--accent); }
+        #cropCanvas { max-width: 100%; border-radius: 10px; }
+        
+        .crop-controls { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
+        .crop-btn { padding: 8px 16px; background: rgba(59, 130, 246, 0.8); border: none; border-radius: 20px; color: white; cursor: pointer; font-size: 12px; }
+        
+        .btn { padding: 12px 24px; border: none; border-radius: 25px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.3s; }
+        .btn-primary { background: linear-gradient(45deg, var(--primary), var(--accent)); color: white; }
+        .btn-secondary { background: rgba(107, 114, 128, 0.8); color: white; margin-left: 10px; }
+        .btn:hover { transform: translateY(-2px); }
+
+        /* Controls */
+        .controls {
+            position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+            display: flex; gap: 15px; flex-direction: column;
+        }
+        .control-btn {
+            width: 60px; height: 60px; border-radius: 50%; border: none;
+            background: var(--glass); backdrop-filter: blur(20px);
+            color: var(--accent); font-size: 20px; cursor: pointer; transition: all 0.3s;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .control-btn:hover { transform: scale(1.1); background: rgba(59, 130, 246, 0.2); }
+
+        /* Legend */
+        .legend {
+            position: fixed; top: 80px; right: 20px; z-index: 1000;
+            background: var(--glass); backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 15px;
+            padding: 15px; font-size: 12px;
+        }
+        .legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .legend-dot { width: 12px; height: 12px; border-radius: 50%; box-shadow: 0 0 10px currentColor; }
+        .online { background: var(--success); }
+        .recent { background: var(--warning); }
+        .offline { background: var(--danger); }
+
+        /* Status */
+        .status {
+            position: fixed; bottom: 20px; left: 20px; z-index: 1000;
+            background: var(--glass); backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 15px;
+            padding: 12px 16px; font-size: 12px; color: #cbd5e1;
         }
 
-        #videoElement {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transform: scaleX(-1);
-            z-index: 1;
+        /* Student Info Popup */
+        .student-popup {
+            position: absolute; z-index: 3000; display: none;
+            background: var(--glass); backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 15px;
+            padding: 20px; min-width: 250px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            animation: popupSlide 0.2s ease-out;
+        }
+        @keyframes popupSlide { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        
+        .student-popup .avatar { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 15px; border: 3px solid var(--accent); overflow: hidden; }
+        .student-popup .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .student-popup .name { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 8px; color: var(--accent); }
+        .student-popup .details { font-size: 12px; color: #cbd5e1; text-align: center; }
+        .student-popup .close-btn { position: absolute; top: 10px; right: 15px; background: none; border: none; color: #64748b; cursor: pointer; font-size: 18px; }
+
+        /* Footer */
+        .footer {
+            padding: 15px 20px; text-align: center; font-size: 12px; color: #64748b;
+            background: var(--glass); backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        .footer .logo-text { color: var(--accent); font-weight: 600; }
+
+        /* Install Prompt */
+        #installPrompt {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: var(--glass); backdrop-filter: blur(20px); z-index: 3000;
+            border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 20px;
+            padding: 30px; text-align: center; display: none; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
         }
 
-        #canvasElement {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 3;
-            pointer-events: none;
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header { padding: 10px 15px; }
+            .logo h1 { font-size: 16px; }
+            .create-account-btn { padding: 8px 16px; font-size: 12px; }
+            .modal { padding: 20px; }
+            .legend { right: 10px; font-size: 10px; }
+            .controls { bottom: 15px; right: 15px; }
+            .control-btn { width: 50px; height: 50px; font-size: 16px; }
         }
 
-        #gameCanvas {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 2;
-            background: rgba(0, 0, 0, 0.3);
-        }
-
-        .ui-overlay {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            z-index: 4;
-            color: white;
-            font-size: 18px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 15px;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-        }
-
-        .level-info {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 4;
-            color: white;
-            font-size: 24px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 15px;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-        }
-
-        .game-complete {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 5;
-            color: white;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 30px;
-            border-radius: 15px;
-            backdrop-filter: blur(15px);
-            display: none;
-        }
-
-        .block {
-            position: absolute;
-            border-radius: 8px;
-            border: 2px solid white;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-        }
-
-        .block.level-1 { background: rgba(255, 107, 107, 0.8); }
-        .block.level-2 { background: rgba(78, 205, 196, 0.8); }
-        .block.level-3 { background: rgba(255, 195, 0, 0.8); }
-        .block.level-4 { background: rgba(199, 121, 208, 0.8); }
-        .block.level-5 { background: rgba(119, 221, 119, 0.8); }
-
-        .finger-cursor {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: radial-gradient(circle, #ff6b6b, #ee5a24);
-            border-radius: 50%;
-            box-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
-            z-index: 4;
-            pointer-events: none;
-            transition: all 0.1s ease;
-        }
-
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-            color: white;
-            font-size: 24px;
-        }
-
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top: 4px solid #fff;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin-right: 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        /* Loading Animation */
+        .loading { display: inline-block; width: 20px; height: 20px; border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 50%; border-top: 2px solid var(--accent); animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-    <div class="loading-screen" id="loadingScreen">
-        <div class="spinner"></div>
-        <div>Loading AI Models & Camera...</div>
+    <div class="bg-grid"></div>
+    
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-satellite-dish"></i>
+                <h1>Live Tracker</h1>
+            </div>
+            <button class="create-account-btn" onclick="openAccountModal()">
+                <i class="fas fa-user-plus"></i> Join Trip
+            </button>
+        </header>
+
+        <!-- Canvas Container -->
+        <div class="canvas-container">
+            <canvas id="mapCanvas" width="800" height="600"></canvas>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button class="control-btn" onclick="refreshMap()" title="Refresh">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+            <button class="control-btn" onclick="toggleLocation()" title="Toggle Location">
+                <i class="fas fa-location-arrow"></i>
+            </button>
+            <button class="control-btn" onclick="centerMap()" title="Center Map">
+                <i class="fas fa-crosshairs"></i>
+            </button>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-dot online"></div>
+                <span>Online (≤10s)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot recent"></div>
+                <span>Recent (10-20s)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot offline"></div>
+                <span>Offline (>20s)</span>
+            </div>
+        </div>
+
+        <!-- Status -->
+        <div class="status" id="status">
+            <i class="fas fa-circle" style="color: var(--success);"></i>
+            <span>Connected • 0 students online</span>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div>© 2025 Live Tracker by <span class="logo-text">Yahya Mundewadi</span> - Founder Continental Group</div>
+        </footer>
     </div>
 
-    <div class="game-container">
-        <div class="video-canvas-container">
-            <video id="videoElement" autoplay muted playsinline></video>
-            <canvas id="canvasElement"></canvas>
-            <canvas id="gameCanvas"></canvas>
+    <!-- Account Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <h2><i class="fas fa-user-astronaut"></i> Join the Mission</h2>
+            <form id="accountForm">
+                <div class="form-group">
+                    <label><i class="fas fa-id-card"></i> Roll Number</label>
+                    <input type="text" id="rollNumber" required placeholder="e.g., CS001">
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Full Name</label>
+                    <input type="text" id="studentName" required placeholder="Enter your name">
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-phone"></i> Phone Number</label>
+                    <input type="tel" id="phone" required placeholder="+91 9876543210">
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-camera"></i> Profile Picture</label>
+                    <div class="image-upload" onclick="document.getElementById('imageInput').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <div>Click to upload your photo</div>
+                        <small style="color: #64748b;">JPG, PNG, WebP (Max 5MB)</small>
+                    </div>
+                    <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+                </div>
+                
+                <div class="crop-container" id="cropContainer">
+                    <canvas id="cropCanvas"></canvas>
+                    <div class="crop-preview" id="cropPreview"></div>
+                    <div class="crop-controls">
+                        <button type="button" class="crop-btn" onclick="rotateCrop()">↻ Rotate</button>
+                        <button type="button" class="crop-btn" onclick="scaleCrop(1.1)">🔍 Zoom In</button>
+                        <button type="button" class="crop-btn" onclick="scaleCrop(0.9)">🔍 Zoom Out</button>
+                        <button type="button" class="crop-btn" onclick="resetCrop()">↺ Reset</button>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: center; gap: 15px; margin-top: 25px;">
+                    <button type="submit" class="btn btn-primary">
+                        <span class="loading" id="submitLoading" style="display: none;"></span>
+                        <i class="fas fa-rocket" id="submitIcon"></i> Launch Profile
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closeAccountModal()">Cancel</button>
+                </div>
+            </form>
         </div>
-
-        <div class="ui-overlay">
-            <div>🎮 Finger-Controlled Block Game</div>
-            <div>👆 Move your index finger to control blocks</div>
-            <div>✋ Open palm to grab, close fist to release</div>
-            <div id="handStatus">🔍 Detecting hands...</div>
-        </div>
-
-        <div class="level-info">
-            <div>Level: <span id="currentLevel">1</span></div>
-            <div>Score: <span id="score">0</span></div>
-            <div>Target: <span id="target">Move all blocks to goal zone</span></div>
-        </div>
-
-        <div class="game-complete" id="gameComplete">
-            <h2>🎉 Congratulations!</h2>
-            <p>You've completed all 5 levels!</p>
-            <p>Final Score: <span id="finalScore">0</span></p>
-            <button onclick="restartGame()">Play Again</button>
-        </div>
-
-        <div class="finger-cursor" id="fingerCursor"></div>
     </div>
 
-    <script>
-        // Game state management
-        class GameState {
-            constructor() {
-                this.level = 1;
-                this.score = 0;
-                this.blocks = [];
-                this.goalZone = { x: window.innerWidth - 200, y: 100, width: 150, height: 150 };
-                this.isGrabbing = false;
-                this.grabbedBlock = null;
-                this.fingerPosition = { x: 0, y: 0 };
-                this.handLandmarks = null;
-            }
+    <!-- Student Info Popup -->
+    <div class="student-popup" id="studentPopup">
+        <button class="close-btn" onclick="closeStudentPopup()">×</button>
+        <div class="avatar" id="popupAvatar">
+            <img src="" alt="Avatar" id="popupAvatarImg">
+        </div>
+        <div class="name" id="popupName"></div>
+        <div class="details">
+            <div><i class="fas fa-id-badge"></i> Roll: <span id="popupRoll"></span></div>
+            <div><i class="fas fa-phone"></i> <span id="popupPhone"></span></div>
+            <div><i class="fas fa-clock"></i> Last seen: <span id="popupLastSeen"></span></div>
+        </div>
+    </div>
 
-            nextLevel() {
-                if (this.level < 5) {
-                    this.level++;
-                    this.score += 100 * this.level;
-                    this.setupLevel();
-                } else {
-                    this.gameComplete();
+    <!-- Install Prompt -->
+    <div id="installPrompt">
+        <h3><i class="fas fa-download"></i> Install App</h3>
+        <p>Install Live Tracker for the best experience!</p>
+        <div style="margin-top: 20px;">
+            <button class="btn btn-primary" onclick="installApp()">Install</button>
+            <button class="btn btn-secondary" onclick="dismissInstall()">Later</button>
+        </div>
+    </div>
+     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.js"></script>
+
+    <script type="module">
+        // Environment Variables (Replace with your Supabase credentials)
+        const SUPABASE_URL = 'https://ktqwhwzbxyoplawjmbao.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0cXdod3pieHlvcGxhd2ptYmFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwMzQ2ODgsImV4cCI6MjA2ODYxMDY4OH0.mo0mu-k3b_saK3I4gAGr4OIZcGZdRF5ogFMTqeijKas';
+        
+        // Import Supabase
+        import { createClient } from 'https://cdn.skypack.dev/@supabase/supabase-js@2';
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // Global Variables
+        let canvas, ctx, students = new Map(), currentUser = null, watchId = null;
+        let bounds = { minLat: null, maxLat: null, minLon: null, maxLon: null };
+        let cropData = { img: null, x: 0, y: 0, scale: 1, rotation: 0 };
+        let deferredPrompt, realtimeChannel;
+        
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', initApp);
+        
+        async function initApp() {
+            canvas = document.getElementById('mapCanvas');
+            ctx = canvas.getContext('2d');
+            
+            setupCanvas();
+            await checkAuth();
+            setupRealtime();
+            setupGeolocation();
+            setupInstallPrompt();
+            startLocationUpdates();
+            
+            // Resize handler
+            window.addEventListener('resize', setupCanvas);
+        }
+        
+        function setupCanvas() {
+            const container = canvas.parentElement;
+            const rect = container.getBoundingClientRect();
+            canvas.width = Math.min(800, rect.width * 0.95);
+            canvas.height = Math.min(600, rect.height * 0.85);
+            drawBackground();
+        }
+        
+        function drawBackground() {
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Grid pattern
+            ctx.strokeStyle = 'rgba(59, 130, 246, 0.1)';
+            ctx.lineWidth = 1;
+            for (let x = 0; x < canvas.width; x += 40) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            for (let y = 0; y < canvas.height; y += 40) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+        }
+        
+        async function checkAuth() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .single();
+                
+                if (profile) {
+                    currentUser = profile;
+                    document.querySelector('.create-account-btn').innerHTML = '<i class="fas fa-user-check"></i> Joined';
                 }
             }
-
-            gameComplete() {
-                document.getElementById('finalScore').textContent = this.score;
-                document.getElementById('gameComplete').style.display = 'block';
-            }
-
-            setupLevel() {
-                this.blocks = [];
-                const gameCanvas = document.getElementById('gameCanvas');
-                const ctx = gameCanvas.getContext('2d');
+        }
+        
+        function setupRealtime() {
+            realtimeChannel = supabase.channel('trip-tracker')
+                .on('broadcast', { event: 'location-update' }, (payload) => {
+                    updateStudentLocation(payload.payload);
+                })
+                .subscribe();
+        }
+        
+        function setupGeolocation() {
+            canvas.addEventListener('click', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
                 
-                // Clear existing blocks
-                const existingBlocks = document.querySelectorAll('.block');
-                existingBlocks.forEach(block => block.remove());
-
-                // Create blocks based on level
-                const blockConfigs = [
-                    { count: 3, size: 80 },   // Level 1
-                    { count: 4, size: 70 },   // Level 2
-                    { count: 5, size: 60 },   // Level 3
-                    { count: 6, size: 55 },   // Level 4
-                    { count: 8, size: 50 }    // Level 5
-                ];
-
-                const config = blockConfigs[this.level - 1];
-                
-                for (let i = 0; i < config.count; i++) {
-                    this.createBlock(i, config.size);
-                }
-
-                // Update UI
-                document.getElementById('currentLevel').textContent = this.level;
-                document.getElementById('score').textContent = this.score;
-            }
-
-            createBlock(index, size) {
-                const block = document.createElement('div');
-                block.className = `block level-${this.level}`;
-                block.style.width = size + 'px';
-                block.style.height = size + 'px';
-                
-                // Position blocks in a pattern
-                const spacing = 120;
-                const startX = 100;
-                const startY = 200 + (index % 3) * spacing;
-                const offsetX = Math.floor(index / 3) * spacing;
-                
-                block.style.left = (startX + offsetX) + 'px';
-                block.style.top = startY + 'px';
-                
-                block.dataset.id = index;
-                block.dataset.inGoal = 'false';
-                
-                document.querySelector('.video-canvas-container').appendChild(block);
-                this.blocks.push(block);
-            }
-
-            checkLevelComplete() {
-                const blocksInGoal = this.blocks.filter(block => block.dataset.inGoal === 'true');
-                if (blocksInGoal.length === this.blocks.length) {
-                    setTimeout(() => {
-                        this.nextLevel();
-                    }, 1000);
-                }
-            }
-
-            updateFingerPosition(x, y) {
-                this.fingerPosition = { x, y };
-                const cursor = document.getElementById('fingerCursor');
-                cursor.style.left = (x - 10) + 'px';
-                cursor.style.top = (y - 10) + 'px';
-            }
-
-            handleGrab(isGrabbing) {
-                if (isGrabbing && !this.isGrabbing) {
-                    // Start grabbing
-                    this.isGrabbing = true;
-                    const block = this.getBlockAtPosition(this.fingerPosition.x, this.fingerPosition.y);
-                    if (block) {
-                        this.grabbedBlock = block;
-                        block.style.transform = 'scale(1.1)';
-                        block.style.zIndex = '10';
+                // Find clicked student
+                for (const [rollNumber, student] of students) {
+                    const screenPos = latLonToScreen(student.lat, student.lon);
+                    const distance = Math.sqrt(Math.pow(x - screenPos.x, 2) + Math.pow(y - screenPos.y, 2));
+                    if (distance < 15) {
+                        showStudentPopup(student, e.clientX, e.clientY);
+                        break;
                     }
-                } else if (!isGrabbing && this.isGrabbing) {
-                    // Stop grabbing
-                    this.isGrabbing = false;
-                    if (this.grabbedBlock) {
-                        this.grabbedBlock.style.transform = 'scale(1)';
-                        this.grabbedBlock.style.zIndex = '2';
-                        
-                        // Check if block is in goal zone
-                        const blockRect = this.grabbedBlock.getBoundingClientRect();
-                        const goalRect = {
-                            left: this.goalZone.x,
-                            top: this.goalZone.y,
-                            right: this.goalZone.x + this.goalZone.width,
-                            bottom: this.goalZone.y + this.goalZone.height
+                }
+            });
+        }
+        
+        function setupInstallPrompt() {
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                document.getElementById('installPrompt').style.display = 'block';
+            });
+            
+            window.addEventListener('appinstalled', () => {
+                deferredPrompt = null;
+                document.getElementById('installPrompt').style.display = 'none';
+            });
+        }
+        
+        async function startLocationUpdates() {
+            if (!currentUser) return;
+            
+            if (navigator.geolocation) {
+                watchId = navigator.geolocation.watchPosition(
+                    async (position) => {
+                        const location = {
+                            roll_number: currentUser.roll_number,
+                            lat: position.coords.latitude,
+                            lon: position.coords.longitude,
+                            timestamp: new Date().toISOString()
                         };
-
-                        if (blockRect.left >= goalRect.left && 
-                            blockRect.right <= goalRect.right &&
-                            blockRect.top >= goalRect.top && 
-                            blockRect.bottom <= goalRect.bottom) {
-                            this.grabbedBlock.dataset.inGoal = 'true';
-                            this.grabbedBlock.style.border = '3px solid #00ff00';
-                            this.score += 10;
-                            document.getElementById('score').textContent = this.score;
-                            this.checkLevelComplete();
-                        } else {
-                            this.grabbedBlock.dataset.inGoal = 'false';
-                            this.grabbedBlock.style.border = '2px solid white';
-                        }
                         
-                        this.grabbedBlock = null;
-                    }
-                }
-            }
-
-            updateBlockPosition() {
-                if (this.isGrabbing && this.grabbedBlock) {
-                    const rect = this.grabbedBlock.getBoundingClientRect();
-                    const newX = this.fingerPosition.x - rect.width / 2;
-                    const newY = this.fingerPosition.y - rect.height / 2;
-                    
-                    this.grabbedBlock.style.left = Math.max(0, Math.min(window.innerWidth - rect.width, newX)) + 'px';
-                    this.grabbedBlock.style.top = Math.max(0, Math.min(window.innerHeight - rect.height, newY)) + 'px';
-                }
-            }
-
-            getBlockAtPosition(x, y) {
-                for (let block of this.blocks) {
-                    const rect = block.getBoundingClientRect();
-                    if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
-                        return block;
-                    }
-                }
-                return null;
-            }
-        }
-
-        // Hand tracking with MediaPipe
-        class HandTracker {
-            constructor(gameState) {
-                this.gameState = gameState;
-                this.hands = null;
-                this.camera = null;
-                this.videoElement = document.getElementById('videoElement');
-                this.canvasElement = document.getElementById('canvasElement');
-                this.canvasCtx = this.canvasElement.getContext('2d');
-            }
-
-            async initialize() {
-                try {
-                    // Initialize MediaPipe Hands
-                    this.hands = new Hands({
-                        locateFile: (file) => {
-                            return `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${file}`;
-                        }
-                    });
-
-                    this.hands.setOptions({
-                        maxNumHands: 1,
-                        modelComplexity: 1,
-                        minDetectionConfidence: 0.7,
-                        minTrackingConfidence: 0.5
-                    });
-
-                    this.hands.onResults(this.onResults.bind(this));
-
-                    // Initialize camera
-                    this.camera = new Camera(this.videoElement, {
-                        onFrame: async () => {
-                            await this.hands.send({ image: this.videoElement });
-                        },
-                        width: 1280,
-                        height: 720
-                    });
-
-                    await this.camera.start();
-                    return true;
-                } catch (error) {
-                    console.error('Failed to initialize hand tracking:', error);
-                    return false;
-                }
-            }
-
-            onResults(results) {
-                // Clear canvas
-                this.canvasCtx.save();
-                this.canvasCtx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
-                
-                // Draw camera feed (flipped)
-                this.canvasCtx.scale(-1, 1);
-                this.canvasCtx.translate(-this.canvasElement.width, 0);
-                this.canvasCtx.drawImage(results.image, 0, 0, this.canvasElement.width, this.canvasElement.height);
-                this.canvasCtx.restore();
-
-                if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-                    const landmarks = results.multiHandLandmarks[0];
-                    this.gameState.handLandmarks = landmarks;
-                    
-                    // Get index finger tip (landmark 8)
-                    const indexTip = landmarks[8];
-                    const fingerX = (1 - indexTip.x) * this.canvasElement.width; // Flip X coordinate
-                    const fingerY = indexTip.y * this.canvasElement.height;
-                    
-                    this.gameState.updateFingerPosition(fingerX, fingerY);
-                    
-                    // Detect grabbing gesture (distance between thumb and index finger)
-                    const thumbTip = landmarks[4];
-                    const distance = this.calculateDistance(thumbTip, indexTip);
-                    const isGrabbing = distance < 0.05; // Threshold for grabbing
-                    
-                    this.gameState.handleGrab(isGrabbing);
-                    this.gameState.updateBlockPosition();
-                    
-                    // Draw hand landmarks
-                    this.drawLandmarks(landmarks);
-                    
-                    document.getElementById('handStatus').textContent = isGrabbing ? '✊ Grabbing' : '👋 Hand detected';
-                } else {
-                    document.getElementById('handStatus').textContent = '🔍 No hand detected';
-                }
-            }
-
-            calculateDistance(point1, point2) {
-                const dx = point1.x - point2.x;
-                const dy = point1.y - point2.y;
-                return Math.sqrt(dx * dx + dy * dy);
-            }
-
-            drawLandmarks(landmarks) {
-                // Draw hand skeleton
-                this.canvasCtx.strokeStyle = '#00ff00';
-                this.canvasCtx.lineWidth = 2;
-                
-                // Define hand connections
-                const connections = [
-                    [0, 1], [1, 2], [2, 3], [3, 4],     // Thumb
-                    [0, 5], [5, 6], [6, 7], [7, 8],     // Index
-                    [5, 9], [9, 10], [10, 11], [11, 12], // Middle
-                    [9, 13], [13, 14], [14, 15], [15, 16], // Ring
-                    [13, 17], [17, 18], [18, 19], [19, 20], // Pinky
-                    [0, 17]  // Palm base
-                ];
-
-                // Draw connections
-                connections.forEach(([start, end]) => {
-                    const startPoint = landmarks[start];
-                    const endPoint = landmarks[end];
-                    
-                    this.canvasCtx.beginPath();
-                    this.canvasCtx.moveTo(
-                        (1 - startPoint.x) * this.canvasElement.width,
-                        startPoint.y * this.canvasElement.height
-                    );
-                    this.canvasCtx.lineTo(
-                        (1 - endPoint.x) * this.canvasElement.width,
-                        endPoint.y * this.canvasElement.height
-                    );
-                    this.canvasCtx.stroke();
-                });
-
-                // Draw landmarks as circles
-                landmarks.forEach((landmark, index) => {
-                    const x = (1 - landmark.x) * this.canvasElement.width;
-                    const y = landmark.y * this.canvasElement.height;
-                    
-                    this.canvasCtx.fillStyle = index === 8 ? '#ff0000' : '#00ff00'; // Highlight index finger tip
-                    this.canvasCtx.beginPath();
-                    this.canvasCtx.arc(x, y, index === 8 ? 8 : 4, 0, 2 * Math.PI);
-                    this.canvasCtx.fill();
-                });
-            }
-        }
-
-        // Game renderer
-        class GameRenderer {
-            constructor(gameState) {
-                this.gameState = gameState;
-                this.gameCanvas = document.getElementById('gameCanvas');
-                this.ctx = this.gameCanvas.getContext('2d');
-                this.resize();
-                window.addEventListener('resize', () => this.resize());
-            }
-
-            resize() {
-                this.gameCanvas.width = window.innerWidth;
-                this.gameCanvas.height = window.innerHeight;
-                document.getElementById('canvasElement').width = window.innerWidth;
-                document.getElementById('canvasElement').height = window.innerHeight;
-            }
-
-            render() {
-                this.ctx.clearRect(0, 0, this.gameCanvas.width, this.gameCanvas.height);
-                
-                // Draw goal zone
-                this.ctx.strokeStyle = '#00ff00';
-                this.ctx.lineWidth = 3;
-                this.ctx.setLineDash([10, 5]);
-                this.ctx.strokeRect(
-                    this.gameState.goalZone.x,
-                    this.gameState.goalZone.y,
-                    this.gameState.goalZone.width,
-                    this.gameState.goalZone.height
+                        // Broadcast to other users
+                        await realtimeChannel.send({
+                            type: 'broadcast',
+                            event: 'location-update',
+                            payload: location
+                        });
+                        
+                        // Update local display
+                        updateStudentLocation(location);
+                        
+                        // Save to database
+                        await supabase.from('locations').insert(location);
+                    },
+                    (error) => console.error('Geolocation error:', error),
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000 }
                 );
-                
-                // Draw goal zone label
-                this.ctx.fillStyle = '#00ff00';
-                this.ctx.font = '16px Arial';
-                this.ctx.fillText(
-                    'GOAL ZONE',
-                    this.gameState.goalZone.x + 10,
-                    this.gameState.goalZone.y - 10
-                );
-                
-                this.ctx.setLineDash([]);
-                
-                requestAnimationFrame(() => this.render());
             }
         }
-
-        // Initialize game
-        let gameState, handTracker, gameRenderer;
-
-        async function initializeGame() {
+        
+        function updateStudentLocation(data) {
+            const student = students.get(data.roll_number) || {};
+            student.lat = data.lat;
+            student.lon = data.lon;
+            student.lastUpdate = new Date(data.timestamp);
+            student.roll_number = data.roll_number;
+            
+            students.set(data.roll_number, student);
+            updateBounds();
+            drawMap();
+            updateStatus();
+        }
+        
+        function updateBounds() {
+            if (students.size === 0) return;
+            
+            const locations = Array.from(students.values());
+            bounds.minLat = Math.min(...locations.map(s => s.lat));
+            bounds.maxLat = Math.max(...locations.map(s => s.lat));
+            bounds.minLon = Math.min(...locations.map(s => s.lon));
+            bounds.maxLon = Math.max(...locations.map(s => s.lon));
+            
+            // Add padding
+            const latPadding = (bounds.maxLat - bounds.minLat) * 0.1 || 0.001;
+            const lonPadding = (bounds.maxLon - bounds.minLon) * 0.1 || 0.001;
+            
+            bounds.minLat -= latPadding;
+            bounds.maxLat += latPadding;
+            bounds.minLon -= lonPadding;
+            bounds.maxLon += lonPadding;
+        }
+        
+        function latLonToScreen(lat, lon) {
+            if (!bounds.minLat) return { x: canvas.width / 2, y: canvas.height / 2 };
+            
+            const x = ((lon - bounds.minLon) / (bounds.maxLon - bounds.minLon)) * (canvas.width - 40) + 20;
+            const y = canvas.height - (((lat - bounds.minLat) / (bounds.maxLat - bounds.minLat)) * (canvas.height - 40) + 20);
+            
+            return { x, y };
+        }
+        
+        function drawMap() {
+            drawBackground();
+            
+            const now = new Date();
+            
+            for (const [rollNumber, student] of students) {
+                const pos = latLonToScreen(student.lat, student.lon);
+                const timeDiff = (now - student.lastUpdate) / 1000;
+                
+                // Determine color based on time
+                let color = '#ef4444'; // red - offline
+                if (timeDiff <= 10) color = '#10b981'; // green - online
+                else if (timeDiff <= 20) color = '#f59e0b'; // yellow - recent
+                
+                // Draw dot with glow effect
+                ctx.shadowColor = color;
+                ctx.shadowBlur = 15;
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, 8, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Draw pulsing ring for online users
+                if (timeDiff <= 10) {
+                    const pulse = Math.sin(Date.now() * 0.005) * 0.5 + 0.5;
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 2;
+                    ctx.globalAlpha = pulse * 0.5;
+                    ctx.beginPath();
+                    ctx.arc(pos.x, pos.y, 15, 0, 2 * Math.PI);
+                    ctx.stroke();
+                    ctx.globalAlpha = 1;
+                }
+                
+                ctx.shadowBlur = 0;
+                
+                // Draw roll number
+                ctx.fillStyle = 'white';
+                ctx.font = '10px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillText(rollNumber, pos.x, pos.y - 15);
+            }
+        }
+        
+        function updateStatus() {
+            const onlineCount = Array.from(students.values()).filter(s => 
+                (new Date() - s.lastUpdate) / 1000 <= 10
+            ).length;
+            
+            document.getElementById('status').innerHTML = `
+                <i class="fas fa-circle" style="color: var(--success);"></i>
+                <span>Connected • ${onlineCount} students online</span>
+            `;
+        }
+        
+        async function showStudentPopup(student, x, y) {
+            // Get full profile data
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('roll_number', student.roll_number)
+                .single();
+            
+            if (!profile) return;
+            
+            const popup = document.getElementById('studentPopup');
+            const timeDiff = (new Date() - student.lastUpdate) / 1000;
+            const lastSeen = timeDiff < 60 ? `${Math.floor(timeDiff)}s ago` : `${Math.floor(timeDiff/60)}m ago`;
+            
+            // Update popup content
+            document.getElementById('popupName').textContent = profile.name;
+            document.getElementById('popupRoll').textContent = profile.roll_number;
+            document.getElementById('popupPhone').textContent = profile.phone;
+            document.getElementById('popupLastSeen').textContent = lastSeen;
+            
+            const avatarImg = document.getElementById('popupAvatarImg');
+            if (profile.avatar_url) {
+                avatarImg.src = profile.avatar_url;
+                avatarImg.style.display = 'block';
+            } else {
+                avatarImg.style.display = 'none';
+                document.getElementById('popupAvatar').innerHTML = `<i class="fas fa-user" style="font-size: 40px; color: var(--accent); line-height: 80px;"></i>`;
+            }
+            
+            // Position popup
+            popup.style.left = Math.min(x, window.innerWidth - 270) + 'px';
+            popup.style.top = Math.min(y, window.innerHeight - 200) + 'px';
+            popup.style.display = 'block';
+        }
+        
+        // Global functions
+        window.openAccountModal = () => {
+            document.getElementById('modalOverlay').classList.add('active');
+        };
+        
+        window.closeAccountModal = () => {
+            document.getElementById('modalOverlay').classList.remove('active');
+            resetForm();
+        };
+        
+        window.closeStudentPopup = () => {
+            document.getElementById('studentPopup').style.display = 'none';
+        };
+        
+        window.refreshMap = () => {
+            students.clear();
+            drawMap();
+            updateStatus();
+        };
+        
+        window.toggleLocation = () => {
+            if (watchId) {
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+                document.querySelector('.fa-location-arrow').style.color = '#64748b';
+            } else {
+                startLocationUpdates();
+                document.querySelector('.fa-location-arrow').style.color = 'var(--accent)';
+            }
+        };
+        
+        window.centerMap = () => {
+            updateBounds();
+            drawMap();
+        };
+        
+        window.installApp = async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                document.getElementById('installPrompt').style.display = 'none';
+            }
+        };
+        
+        window.dismissInstall = () => {
+            document.getElementById('installPrompt').style.display = 'none';
+        };
+        
+        // Image handling functions
+        window.handleImageUpload = (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File too large! Please select an image under 5MB.');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    cropData.img = img;
+                    cropData.x = 0;
+                    cropData.y = 0;
+                    cropData.scale = Math.min(300 / img.width, 300 / img.height);
+                    cropData.rotation = 0;
+                    
+                    document.getElementById('cropContainer').style.display = 'block';
+                    updateCropPreview();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+        
+        window.updateCropPreview = () => {
+            const canvas = document.getElementById('cropCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 300;
+            canvas.height = 300;
+            
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(0, 0, 300, 300);
+            
+            if (cropData.img) {
+                ctx.save();
+                ctx.translate(150 + cropData.x, 150 + cropData.y);
+                ctx.rotate(cropData.rotation);
+                ctx.scale(cropData.scale, cropData.scale);
+                ctx.drawImage(cropData.img, -cropData.img.width/2, -cropData.img.height/2);
+                ctx.restore();
+                
+                // Crop circle overlay
+                ctx.strokeStyle = 'var(--accent)';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(150, 150, 100, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                // Generate preview
+                const previewCanvas = document.createElement('canvas');
+                const previewCtx = previewCanvas.getContext('2d');
+                previewCanvas.width = 200;
+                previewCanvas.height = 200;
+                
+                previewCtx.beginPath();
+                previewCtx.arc(100, 100, 100, 0, 2 * Math.PI);
+                previewCtx.clip();
+                
+                previewCtx.save();
+                previewCtx.translate(100 + cropData.x * 0.67, 100 + cropData.y * 0.67);
+                previewCtx.rotate(cropData.rotation);
+                previewCtx.scale(cropData.scale * 0.67, cropData.scale * 0.67);
+                previewCtx.drawImage(cropData.img, -cropData.img.width/2, -cropData.img.height/2);
+                previewCtx.restore();
+                
+                document.getElementById('cropPreview').innerHTML = `<img src="${previewCanvas.toDataURL()}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            }
+        };
+        
+        window.rotateCrop = () => {
+            cropData.rotation += Math.PI / 4;
+            updateCropPreview();
+        };
+        
+        window.scaleCrop = (factor) => {
+            cropData.scale *= factor;
+            updateCropPreview();
+        };
+        
+        window.resetCrop = () => {
+            if (cropData.img) {
+                cropData.x = 0;
+                cropData.y = 0;
+                cropData.scale = Math.min(300 / cropData.img.width, 300 / cropData.img.height);
+                cropData.rotation = 0;
+                updateCropPreview();
+            }
+        };
+        
+        // Form submission
+        document.getElementById('accountForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const loading = document.getElementById('submitLoading');
+            const icon = document.getElementById('submitIcon');
+            
+            loading.style.display = 'inline-block';
+            icon.style.display = 'none';
+            submitBtn.disabled = true;
+            
             try {
-                // Initialize game components
-                gameState = new GameState();
-                handTracker = new HandTracker(gameState);
-                gameRenderer = new GameRenderer(gameState);
-
-                // Start camera and hand tracking
-                const success = await handTracker.initialize();
-                if (!success) {
-                    throw new Error('Failed to initialize camera or hand tracking');
-                }
-
-                // Setup first level
-                gameState.setupLevel();
+                const rollNumber = document.getElementById('rollNumber').value.trim();
+                const name = document.getElementById('studentName').value.trim();
+                const phone = document.getElementById('phone').value.trim();
                 
-                // Start rendering
-                gameRenderer.render();
-
-                // Hide loading screen
-                document.getElementById('loadingScreen').style.display = 'none';
-
+                // Check if roll number exists
+                const { data: existing } = await supabase
+                    .from('profiles')
+                    .select('roll_number')
+                    .eq('roll_number', rollNumber)
+                    .single();
+                
+                if (existing) {
+                    throw new Error('Roll number already exists!');
+                }
+                
+                let avatarUrl = null;
+                
+                // Upload cropped image if available
+                if (cropData.img) {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 200;
+                    canvas.height = 200;
+                    
+                    ctx.beginPath();
+                    ctx.arc(100, 100, 100, 0, 2 * Math.PI);
+                    ctx.clip();
+                    
+                    ctx.save();
+                    ctx.translate(100 + cropData.x * 0.67, 100 + cropData.y * 0.67);
+                    ctx.rotate(cropData.rotation);
+                    ctx.scale(cropData.scale * 0.67, cropData.scale * 0.67);
+                    ctx.drawImage(cropData.img, -cropData.img.width/2, -cropData.img.height/2);
+                    ctx.restore();
+                    
+                    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.8));
+                    const fileName = `avatars/${rollNumber}_${Date.now()}.jpg`;
+                    
+                    const { data: uploadData, error: uploadError } = await supabase.storage
+                        .from('student-pictures')
+                        .upload(fileName, blob);
+                    
+                    if (uploadError) throw uploadError;
+                    
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('student-pictures')
+                        .getPublicUrl(fileName);
+                    
+                    avatarUrl = publicUrl;
+                }
+                
+                // Create auth user with magic link
+                const { error: authError } = await supabase.auth.signInWithOtp({
+                    email: `${rollNumber}@tempmail.trip`,
+                    options: { shouldCreateUser: true }
+                });
+                
+                if (authError) throw authError;
+                
+                // Create profile (will be linked after email verification)
+                const profileData = {
+                    roll_number: rollNumber,
+                    name,
+                    phone,
+                    avatar_url: avatarUrl,
+                    created_at: new Date().toISOString()
+                };
+                
+                const { error: profileError } = await supabase
+                    .from('profiles')
+                    .insert(profileData);
+                
+                if (profileError) throw profileError;
+                
+                currentUser = profileData;
+                closeAccountModal();
+                
+                // Update button
+                document.querySelector('.create-account-btn').innerHTML = '<i class="fas fa-user-check"></i> Joined';
+                
+                // Start location tracking
+                await startLocationUpdates();
+                
+                alert('Profile created successfully! You are now being tracked.');
+                
             } catch (error) {
-                console.error('Game initialization failed:', error);
-                document.getElementById('loadingScreen').innerHTML = 
-                    '<div>❌ Failed to initialize camera or AI models</div><div>Please allow camera access and refresh</div>';
-            }
-        }
-
-        function restartGame() {
-            document.getElementById('gameComplete').style.display = 'none';
-            gameState.level = 1;
-            gameState.score = 0;
-            gameState.setupLevel();
-        }
-
-        // Start the game when page loads
-        window.addEventListener('load', initializeGame);
-
-        // Handle page visibility changes
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden && handTracker && handTracker.camera) {
-                handTracker.camera.stop();
-            } else if (!document.hidden && handTracker && handTracker.camera) {
-                handTracker.camera.start();
+                console.error('Error creating profile:', error);
+                alert(error.message || 'Failed to create profile. Please try again.');
+            } finally {
+                loading.style.display = 'none';
+                icon.style.display = 'inline-block';
+                submitBtn.disabled = false;
             }
         });
+        
+        function resetForm() {
+            document.getElementById('accountForm').reset();
+            document.getElementById('cropContainer').style.display = 'none';
+            cropData = { img: null, x: 0, y: 0, scale: 1, rotation: 0 };
+        }
+        
+        // Auto-refresh map
+        setInterval(drawMap, 1000);
+        
+        // Drag functionality for crop
+        let isDragging = false;
+        let lastMousePos = { x: 0, y: 0 };
+        
+        document.getElementById('cropCanvas').addEventListener('mousedown', (e) => {
+            isDragging = true;
+            const rect = e.target.getBoundingClientRect();
+            lastMousePos = {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            const canvas = document.getElementById('cropCanvas');
+            const rect = canvas.getBoundingClientRect();
+            const currentMousePos = {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+            
+            cropData.x += currentMousePos.x - lastMousePos.x;
+            cropData.y += currentMousePos.y - lastMousePos.y;
+            
+            lastMousePos = currentMousePos;
+            updateCropPreview();
+        });
+        
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+        
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => console.log('SW registered'))
+                    .catch(error => console.log('SW registration failed'));
+            });
+        }
     </script>
 </body>
 </html>
