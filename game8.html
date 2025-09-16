@@ -3,737 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JobCenter Authentication</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Shadow Flip - Level 1</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            user-select: none;
         }
-
+        
         body {
-            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #1a1a2e 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(0, 229, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 0, 150, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(0, 255, 135, 0.05) 0%, transparent 50%);
-            animation: pulse 8s ease-in-out infinite alternate;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.3; }
-            100% { opacity: 0.6; }
-        }
-
-        body.loaded {
-            opacity: 1;
-        }
-
-        .container {
-            width: 100vw;
-            max-width: 375px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(180deg, #2c3e50 0%, #34495e 50%, #ecf0f1 50%, #bdc3c7 100%);
             height: 100vh;
-            max-height: 770px;
-            margin: 0 auto;
-            background: transparent;  /* Instead of the gradient */
-    backdrop-filter: none;    /* Remove blur effect */
-    border: none;            /* Remove border */
-    box-shadow: none;
+            overflow: hidden;
             display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-            overflow-y: auto;
-            position: relative;
-            padding: 20px;
-            border-radius: 0;
-        }
-
-        .switch-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: linear-gradient(135deg, rgba(0, 229, 255, 0.2) 0%, rgba(0, 150, 255, 0.3) 100%);
-            color: #00e5ff;
-            border: 1px solid rgba(0, 229, 255, 0.3);
-            padding: 5px 7px;
-            border-radius: 8px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 5px;
-            backdrop-filter: blur(10px);
+        }
+        
+        canvas {
+            border: 2px solid #333;
+            background: transparent;
+            touch-action: none;
+        }
+        
+        .ui {
+            position: absolute;
+            top: 2vh;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 4vw;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
             z-index: 10;
         }
-
-        .switch-btn::before {
-            content: '⇄';
-            font-size: 1rem;
-            font-weight: bold;
-        }
-
-        .switch-btn:hover {
-            background: linear-gradient(135deg, rgba(0, 229, 255, 0.3) 0%, rgba(0, 150, 255, 0.4) 100%);
-            border-color: rgba(0, 229, 255, 0.5);
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
-            transform: translateY(-1px);
-        }
-
-        .header {
-            text-align: center;
-            margin: 60px 0 40px 0;
-        }
-
-        .title {
-            color: #ffffff;
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 8px;
-            text-shadow: none;
-            background: linear-gradient(135deg, #ffffff 0%, #00e5ff 50%, #ffffff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .subtitle {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 1rem;
-            font-weight: 400;
-            letter-spacing: 0.5px;
-        }
-
-        .form-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group {
-            margin-bottom: 24px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: rgba(255, 255, 255, 0.9);
-            font-weight: 600;
-            font-size: 0.9rem;
-            letter-spacing: 0.3px;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 16px 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.05);
-            color: #ffffff;
-            backdrop-filter: blur(10px);
-        }
-
-        input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #00e5ff;
-            background: rgba(0, 229, 255, 0.1);
-            box-shadow: 
-                0 0 0 2px rgba(0, 229, 255, 0.2),
-                0 0 20px rgba(0, 229, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
-        select {
-            cursor: pointer;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2300e5ff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 16px center;
-            background-repeat: no-repeat;
-            background-size: 16px;
-            padding-right: 50px;
-        }
-
-        select option {
-            background: #1a1a2e;
-            color: #ffffff;
-        }
-
-        .submit-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #00e5ff 0%, #0066cc 100%);
-            color: #000000;
-            padding: 15px;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 5px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .submit-btn::before {
-            content: '';
+        
+        .modal {
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.6s;
-        }
-
-        .submit-btn:hover::before {
-            left: 100%;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 
-                0 10px 30px rgba(0, 229, 255, 0.4),
-                0 0 20px rgba(0, 229, 255, 0.6);
-        }
-
-        .submit-btn:active {
-            transform: translateY(-1px);
-        }
-
-        .field-group {
-            transition: all 0.4s ease;
-        }
-
-        .field-group.hidden {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 6vh 8vw;
+            border-radius: 20px;
+            text-align: center;
+            font-size: 5vw;
+            z-index: 100;
             display: none;
         }
-
-        .page {
-            display: none;
-            flex: 1;
-            flex-direction: column;
+        
+        .modal button {
+            padding: 3vh 6vw;
+            margin: 2vh 2vw;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 4vw;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-
-        .page.active {
-            display: flex;
+        
+        .modal button:hover, .modal button:active {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
         }
-
-        /* Loading animation */
-        .loading {
-            opacity: 0.7;
-            pointer-events: none;
+        
+        .modal .win-btn {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
         }
-
-        .loading .submit-btn {
-            background: linear-gradient(135deg, #666666 0%, #444444 100%);
+        
+        .modal .retry-btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
         }
-
-        /* Notification styles */
-        .notification {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            right: 20px;
-            padding: 16px 20px;
-            border-radius: 12px;
-            font-weight: 600;
-            z-index: 1000;
-            transform: translateY(-100px);
-            transition: all 0.4s ease;
-            backdrop-filter: blur(20px);
-            border: 1px solid;
+        
+        .modal .home-btn {
+            background: linear-gradient(45deg, #95a5a6, #7f8c8d);
         }
-
-        .notification.show {
-            transform: translateY(0);
-        }
-
-        .notification.success {
-            background: linear-gradient(135deg, rgba(0, 255, 135, 0.2) 0%, rgba(0, 200, 100, 0.3) 100%);
-            color: #00ff87;
-            border-color: rgba(0, 255, 135, 0.3);
-        }
-
-        .notification.error {
-            background: linear-gradient(135deg, rgba(255, 0, 100, 0.2) 0%, rgba(200, 0, 80, 0.3) 100%);
-            color: #ff0064;
-            border-color: rgba(255, 0, 100, 0.3);
-        }
-
-        .notification.info {
-            background: linear-gradient(135deg, rgba(0, 229, 255, 0.2) 0%, rgba(0, 150, 255, 0.3) 100%);
-            color: #00e5ff;
-            border-color: rgba(0, 229, 255, 0.3);
-        }
-
-       
-
-        /* Mobile optimizations */
-        @media (max-width: 375px) {
-            .container {
-                padding: 16px;
-            }
-            
-            .title {
-                font-size: 2.2rem;
-            }
-
-            .switch-btn {
-                top: 16px;
-                right: 16px;
-                padding: 8px 12px;
-                font-size: 0.75rem;
-            }
-
-            .header {
-                margin: 50px 0 30px 0;
-            }
-        }
-
-
-        * {
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* Disable highlight on Android Chrome/WebView */
-    tap-highlight-color: rgba(0, 0, 0, 0);        /* Disable highlight on other Android browsers */
-    outline: none;                                /* Remove outline for better UI */
-    touch-action: manipulation;                  /* Optimize touch behavior */
-    -webkit-user-select: none;                   /* Prevent selection */
-    user-select: none;                           /* Prevent selection for other browsers */
-    -webkit-touch-callout: none;                 /* Disable callout menu on long press */
-}
-
-        /* Scrollbar styling */
-        /* .container::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .container::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .container::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #00e5ff 0%, #0066cc 100%);
-            border-radius: 2px; 
-        }*/
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Registration Page -->
-        <div id="register-page" class="page active">
-            <button class="switch-btn" onclick="switchToLogin()">Switch to Login</button>
-            
-            <div class="header">
-                <h1 class="title">JobCenter</h1>
-                <p class="subtitle">Registration Portal</p>
-            </div>
-            
-            <div class="form-container">
-                <form id="registration-form">
-                    <div class="form-group">
-                        <label for="reg-user-type">Registration Type</label>
-                        <select id="reg-user-type" required>
-                            <option value="student">Student</option>
-                            <option value="hr">HR Professional</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="reg-name">Full Name</label>
-                        <input type="text" id="reg-name" placeholder="Enter your full name" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="reg-email">Email Address</label>
-                        <input type="email" id="reg-email" placeholder="Enter your email address" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="reg-password">Password</label>
-                        <input type="password" id="reg-password" placeholder="Create a secure password" required>
-                    </div>
-                    
-                    <div id="reg-student-fields" class="field-group">
-                        <div class="form-group">
-                            <label for="reg-whatsapp">WhatsApp Number</label>
-                            <input type="text" id="reg-whatsapp" placeholder="Enter your WhatsApp number">
-                        </div>
-                    </div>
-                    
-                    <div id="reg-hr-fields" class="field-group hidden">
-                        <div class="form-group">
-                            <label for="reg-company">Company Name</label>
-                            <input type="text" id="reg-company" placeholder="Enter your company name">
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="submit-btn">Create Account</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Login Page -->
-        <div id="login-page" class="page">
-            <button class="switch-btn" onclick="switchToRegister()">Switch to Register</button>
-            
-            <div class="header">
-                <h1 class="title">JobCenter</h1>
-                <p class="subtitle">Login Portal</p>
-            </div>
-            
-            <div class="form-container">
-                <form id="login-form">
-                    <div class="form-group">
-                        <label for="login-user-type">Login Type</label>
-                        <select id="login-user-type" required>
-                            <option value="student">Student</option>
-                            <option value="hr">HR Professional</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="login-email">Email Address</label>
-                        <input type="email" id="login-email" placeholder="Enter your email address" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="login-password">Password</label>
-                        <input type="password" id="login-password" placeholder="Enter your password" required>
-                    </div>
-                    
-                    <button type="submit" class="submit-btn">Login</button>
-                </form>
-            </div>
-        </div>
+    <div class="ui" id="ui">Time: 0s</div>
+    <canvas id="gameCanvas"></canvas>
+    
+    <div id="gameOverModal" class="modal">
+        <div>Game Over!</div>
+        <button class="retry-btn" onclick="restartGame()">Retry</button>
+        <button class="home-btn" onclick="goHome()">Home</button>
+    </div>
+    
+    <div id="winModal" class="modal">
+        <div>You Win!</div>
+        <button class="win-btn" onclick="nextLevel()">Next Level</button>
+        <button class="retry-btn" onclick="restartGame()">Retry</button>
+        <button class="home-btn" onclick="goHome()">Home</button>
     </div>
 
-<script>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const ui = document.getElementById('ui');
         
-        // INDEX.HTML JS
-        // Your database credentials
-const SUPABASE_URL = 'https://hyrdvlqgtkxtabpamdmc.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5cmR2bHFndGt4dGFicGFtZG1jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgwMDM0NjYsImV4cCI6MjA2MzU3OTQ2Nn0.UVO41KHOPQATqNJy5VnHaEaeGER3vXp0pqYqwigt5rE';
-
-// Initialize Supabase client
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// Session management using localStorage for persistence
-function setUserSession(userType, userData) {
-    localStorage.setItem('jobcenter_user_type', userType);
-    localStorage.setItem('jobcenter_user_data', JSON.stringify(userData));
-}
-
-function getUserSession() {
-    const userType = localStorage.getItem('jobcenter_user_type');
-    const userData = localStorage.getItem('jobcenter_user_data');
-    return {
-        userType: userType,
-        userData: userData ? JSON.parse(userData) : null
-    };
-}
-
-function clearUserSession() {
-    localStorage.removeItem('jobcenter_user_type');
-    localStorage.removeItem('jobcenter_user_data');
-}
-
-// Check session on page load and redirect immediately to prevent flicker
-// In index.html, modify the checkUserSession function:
-function checkUserSession() {
-    const session = getUserSession();
-    if (session.userType && session.userData) {
-        // NEW: Hide body immediately to prevent blink
-        document.body.style.display = 'none';
-        
-        // Redirect immediately without showing auth page
-        if (session.userType === 'student') {
-            window.location.replace('students.html');
-        } else if (session.userType === 'hr') {
-            window.location.replace('hr.html');
+        // Responsive canvas sizing
+        function resizeCanvas() {
+            const size = Math.min(window.innerWidth, window.innerHeight) * 0.9;
+            canvas.width = size;
+            canvas.height = size;
         }
-        return true;
-    }
-    return false;
-}
-
-// Notification system
-function showNotification(message, type = 'info') {
-    // Remove existing notifications
-    const existing = document.querySelector('.notification');
-    if (existing) {
-        existing.remove();
-    }
-    
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.textContent = message;
-    document.body.appendChild(notification);
-    
-    // Trigger animation
-    setTimeout(() => {
-        notification.classList.add('show');
-    }, 100);
-    
-    // Auto remove after 4 seconds
-    setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => {
-            notification.remove();
-        }, 300);
-    }, 4000);
-}
-
-// Page switching functions
-function switchToLogin() {
-    document.getElementById('register-page').classList.remove('active');
-    document.getElementById('login-page').classList.add('active');
-}
-
-function switchToRegister() {
-    document.getElementById('login-page').classList.remove('active');
-    document.getElementById('register-page').classList.add('active');
-}
-
-// Check if email exists
-async function checkEmailExists(email, userType) {
-    const tableNames = userType === 'student' 
-        ? ['students_login', 'Students_login', 'students', 'Students']
-        : ['hr_login', 'HR_login', 'hr', 'HR'];
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
         
-    for (const tableName of tableNames) {
-        try {
-            const { data, error } = await supabase
-                .from(tableName)
-                .select('email')
-                .eq('email', email)
-                .limit(1);    
-            
-            if (!error && data && data.length > 0) {
-                return true;
-            }
-        } catch (err) {
-            console.log(`Error checking ${tableName}:`, err);
-        }
-    }
-    return false;
-}
-
-// Registration form handler
-document.getElementById('registration-form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const form = this;
-    const submitBtn = form.querySelector('.submit-btn');
-    const originalText = submitBtn.textContent;
-    
-    form.classList.add('loading');
-    submitBtn.textContent = 'Creating Account...';
-    
-    const userType = document.getElementById('reg-user-type').value;
-    const name = document.getElementById('reg-name').value;
-    const email = document.getElementById('reg-email').value;
-    const password = document.getElementById('reg-password').value;
-    const whatsapp = document.getElementById('reg-whatsapp').value;
-    const company = document.getElementById('reg-company').value;
-    
-    try {
-        // Check if email already exists
-        const emailExists = await checkEmailExists(email, userType);
-        if (emailExists) {
-            showNotification('Email already exists! Please use a different email or login.', 'error');
-            form.classList.remove('loading');
-            submitBtn.textContent = originalText;
-            return;
-        }
-        
-        let registrationData = {
-            name: name,
-            email: email,
-            password: password
+        // Game state
+        let game = {
+            player: { x: 100, y: 0, size: 30, onCeiling: false, rotation: 0 },
+            obstacles: [],
+            gameSpeed: 2,
+            time: 0,
+            gameRunning: true,
+            lastObstacle: 0
         };
         
-        if (userType === 'student') {
-            registrationData.whatsapp_number = whatsapp;
-        } else {
-            registrationData.company_name = company;
+        const GROUND_Y = canvas.height - 50;
+        const CEILING_Y = 50;
+        const WIN_TIME = 20000; // 20 seconds
+        
+        // Input handling
+        function handleInput() {
+            if (!game.gameRunning) return;
+            
+            game.player.onCeiling = !game.player.onCeiling;
+            game.player.rotation = game.player.onCeiling ? 180 : 0;
         }
         
-        const tableNames = userType === 'student' 
-            ? ['students_login', 'Students_login', 'students', 'Students']
-            : ['hr_login', 'HR_login', 'hr', 'HR'];
+        canvas.addEventListener('click', handleInput);
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            handleInput();
+        });
         
-        let registered = false;
-        for (const tableName of tableNames) {
-            try {
-                const { data, error } = await supabase
-                    .from(tableName)
-                    .insert([registrationData])
-                    .select();
+        // Create obstacle
+        function createObstacle() {
+            const now = Date.now();
+            if (now - game.lastObstacle < 1500) return; // Level 1: slower obstacles
+            
+            game.obstacles.push({
+                x: canvas.width,
+                y: Math.random() < 0.5 ? GROUND_Y : CEILING_Y,
+                width: 20,
+                height: 40
+            });
+            game.lastObstacle = now;
+        }
+        
+        // Collision detection
+        function checkCollision(player, obstacle) {
+            return player.x < obstacle.x + obstacle.width &&
+                   player.x + player.size > obstacle.x &&
+                   player.y < obstacle.y + obstacle.height &&
+                   player.y + player.size > obstacle.y;
+        }
+        
+        // Update game
+        function update() {
+            if (!game.gameRunning) return;
+            
+            // Update player position
+            game.player.y = game.player.onCeiling ? CEILING_Y - game.player.size : GROUND_Y - game.player.size;
+            
+            // Create obstacles
+            createObstacle();
+            
+            // Update obstacles
+            game.obstacles = game.obstacles.filter(obstacle => {
+                obstacle.x -= game.gameSpeed;
                 
-                if (!error && data && data.length > 0) {
-                    showNotification(`Welcome to JobCenter, ${name}! Registration successful! Please login to continue.`, 'success');
-                    
-                    // Clear form
-                    form.reset();
-                    
-                    // Switch to login page after successful registration
-                    setTimeout(() => {
-                        switchToLogin();
-                        // Pre-fill login form with registered email
-                        document.getElementById('login-email').value = email;
-                        document.getElementById('login-user-type').value = userType;
-                    }, 2000);
-                    
-                    registered = true;
-                    break;
+                // Check collision
+                if (checkCollision(game.player, obstacle)) {
+                    gameOver();
+                    return false;
                 }
-            } catch (err) {
-                console.log(`Error with ${tableName}:`, err);
+                
+                return obstacle.x + obstacle.width > 0;
+            });
+            
+            // Update time
+            game.time += 16; // ~60fps
+            if (game.time >= WIN_TIME) {
+                winGame();
             }
         }
         
-        if (!registered) {
-            showNotification('Registration failed. Please try again.', 'error');
+        // Draw game
+        function draw() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw ground and ceiling
+            ctx.fillStyle = '#34495e';
+            ctx.fillRect(0, 0, canvas.width, CEILING_Y);
+            ctx.fillStyle = '#ecf0f1';
+            ctx.fillRect(0, GROUND_Y, canvas.width, canvas.height - GROUND_Y);
+            
+            // Draw player with rotation
+            ctx.save();
+            ctx.translate(game.player.x + game.player.size/2, game.player.y + game.player.size/2);
+            ctx.rotate(game.player.rotation * Math.PI / 180);
+            ctx.fillStyle = '#e74c3c';
+            ctx.fillRect(-game.player.size/2, -game.player.size/2, game.player.size, game.player.size);
+            ctx.restore();
+            
+            // Draw obstacles
+            ctx.fillStyle = '#2c3e50';
+            game.obstacles.forEach(obstacle => {
+                ctx.fillRect(obstacle.x, obstacle.y - obstacle.height, obstacle.width, obstacle.height);
+            });
+            
+            // Update UI
+            ui.textContent = `Time: ${Math.floor(game.time / 1000)}s`;
         }
         
-    } catch (error) {
-        showNotification('Registration error: ' + error.message, 'error');
-    }
-    
-    form.classList.remove('loading');
-    submitBtn.textContent = originalText;
-});
-
-// Login form handler
-document.getElementById('login-form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const form = this;
-    const submitBtn = form.querySelector('.submit-btn');
-    const originalText = submitBtn.textContent;
-    
-    form.classList.add('loading');
-    submitBtn.textContent = 'Logging In...';
-    
-    const userType = document.getElementById('login-user-type').value;
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    
-    try {
-        const tableNames = userType === 'student' 
-            ? ['students_login', 'Students_login', 'students', 'Students']
-            : ['hr_login', 'HR_login', 'hr', 'HR'];
+        // Game loop
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
         
-        let loginSuccessful = false;
-        for (const tableName of tableNames) {
-            try {
-                const { data, error } = await supabase
-                    .from(tableName)
-                    .select('*')
-                    .eq('email', email)
-                    .eq('password', password)
-                    .limit(1);
-                
-                if (!error && data && data.length > 0) {
-                    showNotification(`Welcome back, ${data[0].name}!`, 'success');
-                    
-                    // Set session and redirect
-                    setUserSession(userType, data[0]);
-                    
-                    setTimeout(() => {
-                        if (userType === 'student') {
-                            window.location.replace('students.html');
-                        } else {
-                            window.location.replace('hr.html');
-                        }
-                    }, 1500);
-                    
-                    loginSuccessful = true;
-                    break;
-                }
-            } catch (err) {
-                console.log(`Error with ${tableName}:`, err);
+        function gameOver() {
+            game.gameRunning = false;
+            document.getElementById('gameOverModal').style.display = 'block';
+        }
+        
+        function winGame() {
+            game.gameRunning = false;
+            document.getElementById('winModal').style.display = 'block';
+        }
+        
+        function restartGame() {
+            game = {
+                player: { x: 100, y: 0, size: 30, onCeiling: false, rotation: 0 },
+                obstacles: [],
+                gameSpeed: 2,
+                time: 0,
+                gameRunning: true,
+                lastObstacle: 0
+            };
+            document.getElementById('gameOverModal').style.display = 'none';
+            document.getElementById('winModal').style.display = 'none';
+        }
+        
+        function nextLevel() {
+            window.location.href = 'level2.html';
+        }
+        
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+        
+        // Start game
+        gameLoop();
+        
+        // Prevent zoom on mobile
+        document.addEventListener('touchstart', function(e) {
+            if (e.touches.length > 1) {
+                e.preventDefault();
             }
-        }
+        });
         
-        if (!loginSuccessful) {
-            showNotification('Invalid email or password. Please try again.', 'error');
-        }
-        
-    } catch (error) {
-        showNotification('Login error: ' + error.message, 'error');
-    }
-    
-    form.classList.remove('loading');
-    submitBtn.textContent = originalText;
-});
-
-
-document.getElementById('reg-user-type').addEventListener('change', function() {
-    const studentFields = document.getElementById('reg-student-fields');
-    const hrFields = document.getElementById('reg-hr-fields');
-    
-    if (this.value === 'student') {
-        studentFields.classList.remove('hidden');
-        hrFields.classList.add('hidden');
-    } else {
-        studentFields.classList.add('hidden');
-        hrFields.classList.remove('hidden');
-    }
-});
-
-// Initialize page - Check session immediately when DOM loads
-document.addEventListener('DOMContentLoaded', function() {
-    // Check if user is already logged in before showing anything
-    if (!checkUserSession()) {
-        // Only show the auth page if no session exists
-        document.body.classList.add('loaded');
-    }
-});
-
-// Also check on window load as backup
-window.addEventListener('load', function() {
-    // Double check session in case DOMContentLoaded didn't fire properly
-    if (!checkUserSession()) {
-        document.body.classList.add('loaded');
-    }
-});
-
-// Expose logout function globally for use in other pages
-window.jobCenterLogout = function() {
-    clearUserSession();
-    window.location.replace(window.location.pathname.split('/').pop() || 'index.html');
-};
-
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(e) {
+            let now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
     </script>
 </body>
 </html>
