@@ -13,108 +13,290 @@
         }
 
         body {
-            background: #000000;
+            background: #000011;
+            background-image: 
+                radial-gradient(at 40% 20%, hsla(28,100%,74%,0.03) 0px, transparent 25%),
+                radial-gradient(at 80% 0%, hsla(189,100%,56%,0.05) 0px, transparent 25%),
+                radial-gradient(at 0% 50%, hsla(355,100%,93%,0.02) 0px, transparent 25%),
+                radial-gradient(at 80% 50%, hsla(340,100%,76%,0.03) 0px, transparent 25%),
+                radial-gradient(at 0% 100%, hsla(22,100%,77%,0.02) 0px, transparent 25%),
+                radial-gradient(at 80% 100%, hsla(242,100%,70%,0.04) 0px, transparent 25%),
+                radial-gradient(at 0% 0%, hsla(343,100%,76%,0.02) 0px, transparent 25%);
             color: #FFFFFF;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
-            padding-bottom: 70px;
+            padding-bottom: 80px;
+            overflow-x: hidden;
         }
 
-        .header {
-            padding: 20px;
-            border-bottom: 1px solid #1DB954;
+        .nav-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(0, 0, 17, 0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(29, 185, 84, 0.15);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            color: #1DB954;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .menu-btn:hover {
+            background: rgba(29, 185, 84, 0.1);
+            transform: scale(1.05);
+        }
+
+        .nav-title {
+            font-size: 18px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #ffffff 0%, #1DB954 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .install-indicator {
+            width: 8px;
+            height: 8px;
+            background: #1DB954;
+            border-radius: 50%;
+            display: none;
+        }
+
+        .main-header {
+            margin-top: 70px;
+            padding: 30px 20px 20px;
             text-align: center;
         }
 
-        .header h1 {
-            font-size: 24px;
-            font-weight: 300;
-            margin-bottom: 8px;
+        .main-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #ffffff 0%, #1DB954 50%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
         }
 
-        .header p {
-            font-size: 14px;
-            opacity: 0.8;
+        .main-header p {
+            font-size: 16px;
+            opacity: 0.85;
             cursor: pointer;
-            transition: text-decoration 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            display: inline-block;
         }
 
-        .header p:hover {
-            text-decoration: underline;
+        .main-header p:hover {
+            opacity: 1;
+            color: #1DB954;
+            transform: translateY(-1px);
+        }
+
+        .main-header p::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #1DB954, transparent);
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .main-header p:hover::after {
+            width: 100%;
+        }
+
+        .pull-refresh {
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #1DB954;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+
+        .pull-refresh.visible {
+            opacity: 1;
+            top: 80px;
         }
 
         .main-content {
-            padding: 20px;
+            padding: 0 20px;
             max-width: 100%;
         }
 
         .section-title {
-            font-size: 16px;
-            font-weight: 500;
-            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: 600;
+            margin: 30px 0 20px;
+            padding-left: 4px;
+            position: relative;
             opacity: 0.9;
         }
 
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 20px;
+            background: linear-gradient(180deg, #1DB954, transparent);
+            border-radius: 2px;
+        }
+
+        .loading-skeleton {
+            background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+            border-radius: 12px;
+            height: 120px;
+            margin-bottom: 20px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
         .post {
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 16px;
-            background: #111;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px) saturate(180%);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .post::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(29, 185, 84, 0.05), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .post:hover::before {
+            left: 100%;
+        }
+
+        .post:hover {
+            border-color: rgba(29, 185, 84, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(29, 185, 84, 0.1);
         }
 
         .post.pinned {
-            border-color: #1DB954;
+            border-color: rgba(29, 185, 84, 0.6);
+            background: rgba(29, 185, 84, 0.04);
+            box-shadow: 0 8px 32px rgba(29, 185, 84, 0.15);
+        }
+
+        .post.pinned::after {
+            content: '📌';
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            font-size: 16px;
+            opacity: 0.8;
         }
 
         .post-header {
             display: flex;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
 
         .user-dp {
-            width: 32px;
-            height: 32px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            background: #333;
-            margin-right: 12px;
+            background: linear-gradient(135deg, #1DB954, #17a047);
+            margin-right: 16px;
+            background-size: cover;
+            background-position: center;
+            border: 2px solid rgba(29, 185, 84, 0.2);
+        }
+
+        .user-info {
+            flex: 1;
         }
 
         .user-name {
-            font-weight: 500;
-            font-size: 14px;
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .post-time {
+            font-size: 12px;
+            opacity: 0.6;
         }
 
         .post-message {
-            margin-bottom: 12px;
-            line-height: 1.4;
+            margin-bottom: 16px;
+            line-height: 1.6;
+            font-size: 15px;
         }
 
         .post-image {
             width: 100%;
-            max-width: 400px;
-            border-radius: 6px;
-            margin-bottom: 12px;
+            max-width: 500px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .post-image:hover {
+            transform: scale(1.02);
         }
 
         .post-content {
             font-size: 14px;
-            line-height: 1.5;
-            opacity: 0.9;
+            line-height: 1.6;
+            opacity: 0.85;
         }
 
         .side-menu {
             position: fixed;
             top: 0;
-            left: -280px;
-            width: 280px;
+            left: -320px;
+            width: 320px;
             height: 100vh;
-            background: #111;
-            border-right: 1px solid #333;
-            transition: left 0.3s ease;
-            z-index: 1000;
-            padding: 20px;
+            background: rgba(0, 0, 17, 0.98);
+            backdrop-filter: blur(30px) saturate(180%);
+            border-right: 1px solid rgba(29, 185, 84, 0.15);
+            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2000;
+            padding: 80px 0 20px;
+            overflow-y: auto;
         }
 
         .side-menu.active {
@@ -127,36 +309,77 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 999;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1999;
             display: none;
+            backdrop-filter: blur(4px);
         }
 
         .menu-overlay.active {
             display: block;
         }
 
+        .menu-section {
+            padding: 0 24px;
+            margin-bottom: 32px;
+        }
+
+        .menu-section h3 {
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0.6;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
         .menu-item {
-            padding: 12px 0;
-            border-bottom: 1px solid #333;
+            padding: 16px 0;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            margin-bottom: 8px;
         }
 
         .menu-item:hover {
-            opacity: 0.8;
+            background: rgba(29, 185, 84, 0.08);
+            padding-left: 12px;
+            transform: translateX(4px);
+        }
+
+        .menu-item-content {
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-item-icon {
+            margin-right: 12px;
+            font-size: 18px;
         }
 
         .pin-btn {
-            background: none;
-            border: 1px solid #1DB954;
+            background: rgba(29, 185, 84, 0.1);
+            border: 1px solid rgba(29, 185, 84, 0.3);
             color: #1DB954;
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 6px 12px;
+            border-radius: 6px;
             font-size: 12px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .pin-btn:hover {
+            background: rgba(29, 185, 84, 0.2);
+            transform: scale(1.05);
+        }
+
+        .pin-btn.pinned {
+            background: #1DB954;
+            color: #000;
         }
 
         .taskbar {
@@ -164,10 +387,12 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: #111;
-            border-top: 1px solid #333;
+            background: rgba(0, 0, 17, 0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-top: 1px solid rgba(29, 185, 84, 0.15);
             display: flex;
-            height: 60px;
+            height: 70px;
+            padding: 8px;
         }
 
         .taskbar-btn {
@@ -175,18 +400,28 @@
             background: none;
             border: none;
             color: #FFFFFF;
-            padding: 8px;
+            padding: 8px 4px;
             cursor: pointer;
-            font-size: 12px;
-            transition: background 0.2s;
+            font-size: 11px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            border-radius: 12px;
+            margin: 0 2px;
         }
 
         .taskbar-btn:hover {
-            background: #222;
+            background: rgba(29, 185, 84, 0.12);
+            color: #1DB954;
+            transform: translateY(-2px);
         }
 
-        .taskbar-btn.menu-toggle {
-            border-right: 1px solid #333;
+        .taskbar-btn span:first-child {
+            font-size: 18px;
         }
 
         .popup {
@@ -195,8 +430,9 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.8);
-            z-index: 2000;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 3000;
             display: none;
             align-items: center;
             justify-content: center;
@@ -207,20 +443,22 @@
         }
 
         .popup-content {
-            background: #111;
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 24px;
+            background: rgba(0, 0, 17, 0.95);
+            backdrop-filter: blur(30px) saturate(180%);
+            border: 1px solid rgba(29, 185, 84, 0.2);
+            border-radius: 16px;
+            padding: 32px;
             max-width: 90%;
             max-height: 80%;
             overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
 
         .member {
             display: flex;
             align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #333;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .member:last-child {
@@ -228,11 +466,14 @@
         }
 
         .member-dp {
-            width: 48px;
-            height: 48px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
-            background: #333;
-            margin-right: 16px;
+            background: linear-gradient(135deg, #1DB954, #17a047);
+            margin-right: 20px;
+            background-size: cover;
+            background-position: center;
+            border: 2px solid rgba(29, 185, 84, 0.2);
         }
 
         .member-info {
@@ -240,51 +481,96 @@
         }
 
         .member-name {
-            font-weight: 500;
+            font-weight: 600;
             margin-bottom: 4px;
+            font-size: 16px;
         }
 
         .member-role {
-            font-size: 12px;
+            font-size: 13px;
             opacity: 0.7;
+            margin-bottom: 4px;
+        }
+
+        .member-bio {
+            font-size: 12px;
+            opacity: 0.6;
+            line-height: 1.4;
         }
 
         .member-actions {
             display: flex;
-            gap: 8px;
+            gap: 12px;
         }
 
         .action-btn {
-            width: 32px;
-            height: 32px;
-            border: 1px solid #1DB954;
-            background: none;
-            border-radius: 4px;
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(29, 185, 84, 0.3);
+            background: rgba(29, 185, 84, 0.1);
+            border-radius: 10px;
             color: #1DB954;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .action-btn:hover {
+            background: #1DB954;
+            color: #000;
+            transform: scale(1.1);
         }
 
         .install-banner {
-            background: #1DB954;
+            background: linear-gradient(135deg, #1DB954, #17a047);
             color: #000;
-            padding: 12px 20px;
+            padding: 16px 20px;
             text-align: center;
             cursor: pointer;
-            font-weight: 500;
+            font-weight: 600;
             display: none;
+            font-size: 14px;
+            position: sticky;
+            top: 60px;
+            z-index: 999;
+        }
+
+        .close-btn {
+            background: rgba(29, 185, 84, 0.1);
+            border: 1px solid rgba(29, 185, 84, 0.3);
+            color: #1DB954;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-top: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #1DB954;
+            color: #000;
         }
 
         @media (max-width: 770px) {
             .main-content {
-                padding: 16px;
+                padding: 0 16px;
             }
             
             .popup-content {
                 max-width: 95%;
-                padding: 20px;
+                padding: 24px;
+            }
+
+            .taskbar-btn {
+                font-size: 10px;
+            }
+
+            .taskbar-btn span:first-child {
+                font-size: 16px;
             }
         }
     </style>
@@ -294,62 +580,109 @@
         📱 Install Code Club App - Tap to Install
     </div>
 
-    <div class="header">
+    <div class="nav-header">
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+        <div class="nav-title">Code Club</div>
+        <div class="install-indicator" id="installIndicator"></div>
+    </div>
+
+    <div class="pull-refresh" id="pullRefresh">↻</div>
+
+    <div class="main-header">
         <h1>Code Club</h1>
-        <p onclick="showAboutPopup()">About Code Club</p>
+        <p onclick="showAboutPopup()">President's Vision: Empowering Future Developers</p>
     </div>
 
     <div class="main-content">
         <div class="section-title">📌 Pinned</div>
-        <div id="pinnedFeed"></div>
+        <div id="pinnedFeed">
+            <div class="loading-skeleton"></div>
+        </div>
         
         <div class="section-title">📰 Feed</div>
-        <div id="mainFeed"></div>
+        <div id="mainFeed">
+            <div class="loading-skeleton"></div>
+            <div class="loading-skeleton"></div>
+        </div>
     </div>
 
     <div class="side-menu" id="sideMenu">
-        <h3 style="margin-bottom: 20px;">Topics</h3>
-        <div class="menu-item" onclick="window.location='logic-hub.html'">
-            Logic Hub
-            <button class="pin-btn" onclick="togglePin(event, 'logic-hub')">Pin</button>
+        <div class="menu-section">
+            <h3>Learning Tracks</h3>
+            <div class="menu-item" onclick="navigateToTopic('logic-hub')">
+                <div class="menu-item-content">
+                    <div class="menu-item-icon">🧠</div>
+                    <div>Logic Hub</div>
+                </div>
+                <button class="pin-btn" onclick="togglePin(event, 'logic-hub')" data-topic="logic-hub">Pin</button>
+            </div>
+            <div class="menu-item" onclick="navigateToTopic('coding-core')">
+                <div class="menu-item-content">
+                    <div class="menu-item-icon">💻</div>
+                    <div>Coding Core</div>
+                </div>
+                <button class="pin-btn" onclick="togglePin(event, 'coding-core')" data-topic="coding-core">Pin</button>
+            </div>
+            <div class="menu-item" onclick="navigateToTopic('sql-stories')">
+                <div class="menu-item-content">
+                    <div class="menu-item-icon">🗄️</div>
+                    <div>SQL Stories</div>
+                </div>
+                <button class="pin-btn" onclick="togglePin(event, 'sql-stories')" data-topic="sql-stories">Pin</button>
+            </div>
+            <div class="menu-item" onclick="navigateToTopic('ai-affairs')">
+                <div class="menu-item-content">
+                    <div class="menu-item-icon">🤖</div>
+                    <div>AI Affairs</div>
+                </div>
+                <button class="pin-btn" onclick="togglePin(event, 'ai-affairs')" data-topic="ai-affairs">Pin</button>
+            </div>
+            <div class="menu-item" onclick="navigateToTopic('speakup')">
+                <div class="menu-item-content">
+                    <div class="menu-item-icon">🎤</div>
+                    <div>SpeakUp</div>
+                </div>
+                <button class="pin-btn" onclick="togglePin(event, 'speakup')" data-topic="speakup">Pin</button>
+            </div>
         </div>
-        <div class="menu-item" onclick="window.location='coding-core.html'">
-            Coding Core
-            <button class="pin-btn" onclick="togglePin(event, 'coding-core')">Pin</button>
-        </div>
-        <div class="menu-item" onclick="window.location='sql-stories.html'">
-            SQL Stories
-            <button class="pin-btn" onclick="togglePin(event, 'sql-stories')">Pin</button>
-        </div>
-        <div class="menu-item" onclick="window.location='ai-affairs.html'">
-            AI Affairs
-            <button class="pin-btn" onclick="togglePin(event, 'ai-affairs')">Pin</button>
-        </div>
-        <div class="menu-item" onclick="window.location='speakup.html'">
-            SpeakUp
-            <button class="pin-btn" onclick="togglePin(event, 'speakup')">Pin</button>
-        </div>
-        <div class="menu-item" onclick="showAboutPopup()">
-            About Code Club
+        
+        <div class="menu-section">
+            <h3>More</h3>
+            <div class="menu-item" onclick="showAboutPopup()">
+                <div class="menu-item-content">
+                    <div class="menu-item-icon">ℹ️</div>
+                    <div>About Code Club</div>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
 
     <div class="taskbar">
-        <button class="taskbar-btn menu-toggle" onclick="toggleMenu()">☰</button>
-        <button class="taskbar-btn" onclick="window.location='logic-hub.html'">Logic Hub</button>
-        <button class="taskbar-btn" onclick="window.location='coding-core.html'">Coding Core</button>
-        <button class="taskbar-btn" onclick="window.location='sql-stories.html'">SQL Stories</button>
-        <button class="taskbar-btn" onclick="window.location='ai-affairs.html'">AI Affairs</button>
-        <button class="taskbar-btn" onclick="window.location='speakup.html'">SpeakUp</button>
+        <button class="taskbar-btn" onclick="window.location='about-us.html'">
+            <span>👥</span>
+            <span>About Us</span>
+        </button>
+        <button class="taskbar-btn" onclick="window.location='contact.html'">
+            <span>📞</span>
+            <span>Contact</span>
+        </button>
+        <button class="taskbar-btn" onclick="window.location='suggestions.html'">
+            <span>💡</span>
+            <span>Suggestions</span>
+        </button>
+        <button class="taskbar-btn" onclick="window.location='notes.html'">
+            <span>📝</span>
+            <span>Notes</span>
+        </button>
     </div>
 
     <div class="popup" id="aboutPopup">
         <div class="popup-content">
-            <h3 style="margin-bottom: 20px;">Code Club Members</h3>
+            <h3 style="margin-bottom: 24px; font-size: 24px; font-weight: 600;">Code Club Members</h3>
             <div id="membersContainer"></div>
-            <button onclick="closeAboutPopup()" style="margin-top: 20px; background: #1DB954; color: #000; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Close</button>
+            <button class="close-btn" onclick="closeAboutPopup()">Close</button>
         </div>
     </div>
 
@@ -372,14 +705,55 @@
             }
         }
 
+        // Pin functionality with localStorage
+        let pinnedTopics = JSON.parse(localStorage.getItem('pinnedTopics') || '[]');
+
+        function togglePin(event, topicSlug) {
+            event.stopPropagation();
+            const btn = event.target;
+            const isPinned = pinnedTopics.includes(topicSlug);
+            
+            if (isPinned) {
+                pinnedTopics = pinnedTopics.filter(slug => slug !== topicSlug);
+                btn.textContent = 'Pin';
+                btn.classList.remove('pinned');
+            } else {
+                pinnedTopics.push(topicSlug);
+                btn.textContent = 'Unpin';
+                btn.classList.add('pinned');
+            }
+            
+            localStorage.setItem('pinnedTopics', JSON.stringify(pinnedTopics));
+            updatePinButtons();
+        }
+
+        function updatePinButtons() {
+            document.querySelectorAll('.pin-btn').forEach(btn => {
+                const topic = btn.getAttribute('data-topic');
+                if (pinnedTopics.includes(topic)) {
+                    btn.textContent = 'Unpin';
+                    btn.classList.add('pinned');
+                } else {
+                    btn.textContent = 'Pin';
+                    btn.classList.remove('pinned');
+                }
+            });
+        }
+
+        function navigateToTopic(slug) {
+            window.location.href = `${slug}.html`;
+        }
+
         // PWA Installation
         let deferredPrompt;
         const installBanner = document.getElementById('installBanner');
+        const installIndicator = document.getElementById('installIndicator');
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
             installBanner.style.display = 'block';
+            installIndicator.style.display = 'block';
         });
 
         installBanner.addEventListener('click', async () => {
@@ -388,12 +762,72 @@
                 const { outcome } = await deferredPrompt.userChoice;
                 deferredPrompt = null;
                 installBanner.style.display = 'none';
+                installIndicator.style.display = 'none';
             }
         });
 
         window.addEventListener('appinstalled', () => {
             installBanner.style.display = 'none';
+            installIndicator.style.display = 'none';
         });
+
+        // Pull to refresh
+        let startY = 0;
+        let currentY = 0;
+        let pullDistance = 0;
+        let isRefreshing = false;
+
+        function initPullToRefresh() {
+            document.addEventListener('touchstart', handleTouchStart, { passive: true });
+            document.addEventListener('touchmove', handleTouchMove, { passive: false });
+            document.addEventListener('touchend', handleTouchEnd, { passive: true });
+        }
+
+        function handleTouchStart(e) {
+            startY = e.touches[0].clientY;
+        }
+
+        function handleTouchMove(e) {
+            if (window.scrollY > 0) return;
+            
+            currentY = e.touches[0].clientY;
+            pullDistance = currentY - startY;
+            
+            if (pullDistance > 0 && pullDistance < 80) {
+                e.preventDefault();
+                const refreshEl = document.getElementById('pullRefresh');
+                refreshEl.style.transform = `translateY(${pullDistance}px) translateX(-50%)`;
+                refreshEl.classList.add('visible');
+            }
+        }
+
+        function handleTouchEnd(e) {
+            const refreshEl = document.getElementById('pullRefresh');
+            
+            if (pullDistance > 60 && !isRefreshing) {
+                isRefreshing = true;
+                refreshEl.innerHTML = '⟳';
+                refreshFeed();
+            }
+            
+            refreshEl.style.transform = 'translateX(-50%)';
+            refreshEl.classList.remove('visible');
+            pullDistance = 0;
+        }
+
+        async function refreshFeed() {
+            try {
+                await loadFeed();
+                setTimeout(() => {
+                    isRefreshing = false;
+                    document.getElementById('pullRefresh').innerHTML = '↻';
+                }, 1000);
+            } catch (error) {
+                console.error('Refresh failed:', error);
+                isRefreshing = false;
+                document.getElementById('pullRefresh').innerHTML = '↻';
+            }
+        }
 
         // Menu functions
         function toggleMenu() {
@@ -401,11 +835,6 @@
             const overlay = document.getElementById('menuOverlay');
             menu.classList.toggle('active');
             overlay.classList.toggle('active');
-        }
-
-        function togglePin(event, topic) {
-            event.stopPropagation();
-            console.log('Toggle pin for:', topic);
         }
 
         // Popup functions
@@ -418,47 +847,77 @@
             document.getElementById('aboutPopup').classList.remove('active');
         }
 
-        // Load data functions
+        // Optimized feed loading
         async function loadFeed() {
             if (!supabase) return;
             
             try {
-                const { data: pinnedPost } = await supabase
-                    .from('feed')
-                    .select('*')
-                    .eq('pinned', true)
-                    .limit(1)
-                    .single();
+                // Load pinned and regular posts in parallel
+                const [pinnedResult, postsResult] = await Promise.all([
+                    supabase
+                        .from('feed')
+                        .select('*')
+                        .eq('pinned', true)
+                        .limit(1)
+                        .single(),
+                    supabase
+                        .from('feed')
+                        .select('*')
+                        .eq('pinned', false)
+                        .order('created_at', { ascending: false })
+                        .limit(10)
+                ]);
 
-                if (pinnedPost) {
-                    document.getElementById('pinnedFeed').innerHTML = createPostHTML(pinnedPost, true);
+                // Update pinned feed
+                if (pinnedResult.data) {
+                    document.getElementById('pinnedFeed').innerHTML = createPostHTML(pinnedResult.data, true);
+                } else {
+                    document.getElementById('pinnedFeed').innerHTML = '<p style="opacity: 0.6; text-align: center; padding: 20px;">No pinned posts yet</p>';
                 }
 
-                const { data: posts } = await supabase
-                    .from('feed')
-                    .select('*')
-                    .eq('pinned', false)
-                    .order('created_at', { ascending: false });
-
-                if (posts) {
-                    document.getElementById('mainFeed').innerHTML = posts.map(post => createPostHTML(post, false)).join('');
+                // Update main feed
+                if (postsResult.data && postsResult.data.length > 0) {
+                    document.getElementById('mainFeed').innerHTML = postsResult.data.map(post => createPostHTML(post, false)).join('');
+                } else {
+                    document.getElementById('mainFeed').innerHTML = '<p style="opacity: 0.6; text-align: center; padding: 20px;">No posts yet</p>';
                 }
             } catch (error) {
                 console.error('Error loading feed:', error);
+                document.getElementById('pinnedFeed').innerHTML = '<p style="opacity: 0.6; text-align: center; padding: 20px; color: #ff6b6b;">Error loading pinned posts</p>';
+                document.getElementById('mainFeed').innerHTML = '<p style="opacity: 0.6; text-align: center; padding: 20px; color: #ff6b6b;">Error loading feed</p>';
             }
         }
 
         function createPostHTML(post, isPinned) {
+            const timeAgo = getTimeAgo(post.created_at);
+            const userDp = post.user_dp || `https://ui-avatars.com/api/?name=${encodeURIComponent(post.user_name)}&background=1DB954&color=000&size=44`;
+            
             return `
                 <div class="post ${isPinned ? 'pinned' : ''}">
                     <div class="post-header">
-                        <div class="user-dp" style="background-image: url('${post.user_dp}'); background-size: cover;"></div>
-                        <div class="user-name">${post.user_name}</div>
+                        <div class="user-dp" style="background-image: url('${userDp}');"></div>
+                        <div class="user-info">
+                            <div class="user-name">${post.user_name}</div>
+                            <div class="post-time">${timeAgo}</div>
+                        </div>
                     </div>
                     <div class="post-message">${post.message}</div>
-                    ${post.image_url ? `<img src="${post.image_url}" class="post-image" alt="Post image">` : ''}
+                    ${post.image_url ? `<img src="${post.image_url}" class="post-image" alt="Post image" loading="lazy">` : ''}
+                    ${post.long_content ? `<div class="post-content">${post.long_content}</div>` : ''}
                 </div>
             `;
+        }
+
+        function getTimeAgo(timestamp) {
+            const now = new Date();
+            const postTime = new Date(timestamp);
+            const diffInSeconds = Math.floor((now - postTime) / 1000);
+            
+            if (diffInSeconds < 60) return 'Just now';
+            if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+            if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+            if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`;
+            return postTime.toLocaleDateString();
         }
 
         async function loadMembers() {
@@ -470,38 +929,68 @@
                     .select('*')
                     .order('created_at');
 
-                if (members) {
-                    document.getElementById('membersContainer').innerHTML = members.map(member => `
-                        <div class="member">
-                            <div class="member-dp" style="background-image: url('${member.dp_url}'); background-size: cover;"></div>
-                            <div class="member-info">
-                                <div class="member-name">${member.name}</div>
-                                <div class="member-role">${member.role}</div>
+                if (members && members.length > 0) {
+                    document.getElementById('membersContainer').innerHTML = members.map(member => {
+                        const memberDp = member.dp_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=1DB954&color=000&size=56`;
+                        
+                        return `
+                            <div class="member">
+                                <div class="member-dp" style="background-image: url('${memberDp}');"></div>
+                                <div class="member-info">
+                                    <div class="member-name">${member.name}</div>
+                                    <div class="member-role">${member.role}</div>
+                                    ${member.bio ? `<div class="member-bio">${member.bio}</div>` : ''}
+                                </div>
+                                <div class="member-actions">
+                                    ${member.whatsapp ? `<button class="action-btn" onclick="window.open('https://wa.me/${member.whatsapp}', '_blank')" title="WhatsApp">💬</button>` : ''}
+                                    ${member.phone ? `<button class="action-btn" onclick="window.open('tel:${member.phone}', '_blank')" title="Call">📞</button>` : ''}
+                                    ${member.linkedin ? `<button class="action-btn" onclick="window.open('${member.linkedin}', '_blank')" title="LinkedIn">💼</button>` : ''}
+                                </div>
                             </div>
-                            <div class="member-actions">
-                                ${member.whatsapp ? `<button class="action-btn" onclick="window.open('https://wa.me/${member.whatsapp}', '_blank')">💬</button>` : ''}
-                                ${member.phone ? `<button class="action-btn" onclick="window.open('tel:${member.phone}', '_blank')">📞</button>` : ''}
-                                ${member.linkedin ? `<button class="action-btn" onclick="window.open('${member.linkedin}', '_blank')">💼</button>` : ''}
-                            </div>
-                        </div>
-                    `).join('');
+                        `;
+                    }).join('');
+                } else {
+                    document.getElementById('membersContainer').innerHTML = '<p style="opacity: 0.6; text-align: center; padding: 20px;">No members found</p>';
                 }
             } catch (error) {
                 console.error('Error loading members:', error);
+                document.getElementById('membersContainer').innerHTML = '<p style="opacity: 0.6; text-align: center; padding: 20px; color: #ff6b6b;">Error loading members</p>';
             }
         }
 
         // Initialize app
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             if (initializeSupabase()) {
-                loadFeed();
+                await loadFeed();
+                updatePinButtons();
             }
+            initPullToRefresh();
         });
 
         // Register service worker
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
+            navigator.serviceWorker.register('sw.js').catch(console.error);
         }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('sideMenu');
+            const menuBtn = document.querySelector('.menu-btn');
+            
+            if (!menu.contains(e.target) && !menuBtn.contains(e.target) && menu.classList.contains('active')) {
+                toggleMenu();
+            }
+        });
+
+        // Escape key to close popups
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeAboutPopup();
+                if (document.getElementById('sideMenu').classList.contains('active')) {
+                    toggleMenu();
+                }
+            }
+        });
     </script>
 </body>
 </html>
