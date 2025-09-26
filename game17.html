@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dino Forest Adventure Game</title>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      margin: 0;
+      padding: 0;
+    }
+
+    .gameScene {
+      display: block;
+      cursor: crosshair;
+    }
+  </style>
+</head>
+<body>
+  <canvas class="gameScene"></canvas>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+  <script>
+    var c = $('.gameScene')[0],
+        ctx = c.getContext("2d"),
+        cw = (c.width = window.innerWidth),
+        ch = (c.height = window.innerHeight),
+        bg = [],
+        fg = {img:new Image(), x:cw, top:540},
+        dino = {img:new Image(), spriteOffsetX:0, x:cw/2, top:402},
+        eyeLid = {img:new Image(), spriteOffsetX:0},
+        dinoJump = {img:new Image(), spriteOffsetX:0, show:false},
+        dinoJumpGlow = {img:new Image(), spriteOffsetX:0, show:false},
+        dust1 = {img:new Image(), spriteOffsetX:0, x:0, y:0},
+        dust2 = {img:new Image(), spriteOffsetX:0, x:0, y:0},
+        coin = {img:new Image(), spriteOffsetX:0, top:265, right:250, show:true};
+
+    window.onmousemove = function(e){
+      gsap.to(dino, {duration:2, x:e.clientX-250, overwrite:'auto'});
+    }
+
+    $(c).on('click', jump);
+    $(window).on('keydown', function(e){
+      if (e.keyCode == 32) {
+        e.preventDefault();
+        jump();
+      }
+    });
+
+    function jump(e){
+      if (dinoJump.show) return;
+      dinoJump.show=true;
+
+      gsap.timeline({ onComplete:function(){dinoJump.show=false} })
+        .fromTo(dinoJump, {spriteOffsetX:0}, {duration:0.5, spriteOffsetX:1250, ease:'steps(5)'})
+        .call(function(){ 
+        if (cw-dino.x<475&&cw-dino.x>325) {
+          coin.show=false;
+          gsap.to(dinoJumpGlow, {duration:0.3, spriteOffsetX:750, ease:'steps(3)'})
+        }
+      }, null, 0.25)
+    }
+
+    // Load images
+    dino.img.src='https://assets.codepen.io/721952/gameDino.png';
+    eyeLid.img.src='https://assets.codepen.io/721952/gameBlink.png';
+    dinoJump.img.src='https://assets.codepen.io/721952/gameJump.png';
+    dinoJumpGlow.img.src='https://assets.codepen.io/721952/gameJumpGlow.png';
+
+    // Dino walking animation
+    gsap.to(dino, {duration:0.55, spriteOffsetX:1400, ease:'steps(5)', repeat:-1, onRepeat:function(){
+      if (Math.random()<0.4) gsap.fromTo(eyeLid, {spriteOffsetX:0},{duration:0.55, spriteOffsetX:1400, ease:'steps(5)'}); //random blinking
+    }});
+    gsap.to(dino, {duration:1.2, top:416, ease:'power1.inOut', yoyo:true, repeat:-1});
+
+    // Dust effects
+    dust1.img.src=dust2.img.src='https://assets.codepen.io/721952/gameDust.png';
+    gsap.to(dust1, {duration:0.6, spriteOffsetX:975, ease:'steps(13)', repeat:-1});
+    gsap.fromTo(dust1, {x:function(){return dino.x+70}}, {duration:0.6, repeat:-1, ease:'sine', x:'-=100', repeatRefresh:true});
+    gsap.fromTo(dust1, {y:function(){return dino.top+95}}, {duration:0.6, repeat:-1, ease:'sine.in', y:'-=50', repeatRefresh:true});
+    gsap.to(dust2, {duration:0.6, delay:0.2, spriteOffsetX:975, ease:'steps(13)', repeat:-1});
+    gsap.fromTo(dust2, {x:function(){return dino.x+70}}, {delay:0.2, duration:0.6, repeat:-1, ease:'sine', x:'-=150', repeatRefresh:true});
+    gsap.fromTo(dust2, {y:function(){return dino.top+95}}, {delay:0.2, duration:0.6, repeat:-1, ease:'sine.in', y:'-=30', repeatRefresh:true});
+
+    // Foreground elements
+    fg.img.src='https://assets.codepen.io/721952/gameFg.png';
+    fg.img.onload = moveFg;
+    function moveFg(){
+      if (gsap.isTweening(fg)) return;
+      gsap.fromTo(fg, {x:cw}, {duration:gsap.utils.random(2,3), x:-350, ease:'none'});
+      gsap.delayedCall(gsap.utils.random(3,5), moveFg);
+    }
+
+    // Coin animation
+    coin.img.src='https://assets.codepen.io/721952/gameCoin.png';
+    var cTL = gsap.timeline({paused:true}).to(coin, {spriteOffsetX:400, ease:'steps(5)', repeat:4});
+    gsap.to(cTL, {progress:1, duration:1.2, ease:'sine.inOut', repeat:-1})
+    gsap.to(coin, {duration:0.6, yoyo:true, repeat:-1, top:310, ease:'sine.inOut'})
+
+    // Background layers
+    for (var i=0; i<5; i++){
+      var img = new Image();
+      img.id = i;
+      img.src = (i==0) ? 'https://assets.codepen.io/721952/gameLayer0.jpg' : 'https://assets.codepen.io/721952/gameLayer'+i+'.png';
+      img.onload = makeLayer;    
+    }
+
+    function makeLayer(e){ 
+      var l = {
+        img:e.currentTarget,
+        fill:ctx.createPattern(e.currentTarget, 'repeat'),
+        x:0,
+        y:[55,55,55,0,525][Number(e.currentTarget.id)],
+        width:e.currentTarget.width,
+        height:e.currentTarget.height
+      }
+      bg.push(l);
+      l.tl = gsap.timeline({repeat:-1}).to(l, {x:-e.currentTarget.width, ease:'none', duration:6-Number(e.currentTarget.id)});
+
+      bg.sort(function(a,b){// sort layers to maintain correct z-stacking
+        return (a.img.id>b.img.id) ? 1:-1;
+      })
+    }
+
+    // Main game loop
+    gsap.ticker.add((a,b,c)=>{
+      cw = ($('.gameScene')[0].width = window.innerWidth);
+      ch = ($('.gameScene')[0].height = window.innerHeight);
+
+      // Draw background layers
+      for (var i=0; i<bg.length; i++){
+        ctx.fillStyle = bg[i].fill;
+        ctx.translate(bg[i].x, bg[i].y);
+        ctx.fillRect(0, 0, cw+bg[i].width, bg[i].height);
+        ctx.translate(-bg[i].x, -bg[i].y);      
+      }
+
+      // Draw dust effects
+      if (!dinoJump.show) ctx.drawImage(dust1.img, dust1.spriteOffsetX,0,75,55, dust1.x,dust1.y,75,55);
+
+      // Draw dino
+      if (dinoJump.show) ctx.drawImage(dinoJump.img, dinoJump.spriteOffsetX,0,250,240, dino.x,dino.top-100,250,240);
+      else {
+        ctx.drawImage(dino.img, dino.spriteOffsetX,0,280,140, dino.x,dino.top,280,140);
+        ctx.drawImage(eyeLid.img, eyeLid.spriteOffsetX,0,280,140, dino.x,dino.top,280,140);
+      }
+      ctx.drawImage(dust2.img, dust2.spriteOffsetX,0,75,55, dust2.x,dust2.y,75,55);
+
+      // Draw coin and effects
+      if (coin.show) {
+        ctx.globalCompositeOperation = 'screen';
+        ctx.drawImage(coin.img, coin.spriteOffsetX,0,80,80,cw-coin.right,coin.top,80,80);
+        ctx.globalCompositeOperation = 'source-over';
+      } else {
+        ctx.drawImage(dinoJumpGlow.img, dinoJumpGlow.spriteOffsetX,0,250,240,dino.x,dino.top-100,250,240);
+      }
+
+      // Draw foreground
+      ctx.drawImage(fg.img, fg.x,fg.top,350,90);
+    });
+  </script>
+</body>
+</html>
