@@ -2,168 +2,531 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dino Forest Adventure Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape">
+  <title>Dino Game by Yahya</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     html, body {
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #000;
-      margin: 0;
-      padding: 0;
+      background: linear-gradient(135deg, #2c1810, #1a0f08);
+      font-family: 'Arial', sans-serif;
+      touch-action: none;
     }
 
-    .gameScene {
+    .screen {
+      display: none;
+      width: 100%;
+      height: 100vh;
+      position: relative;
+    }
+
+    .screen.active {
       display: block;
-      cursor: crosshair;
+    }
+
+    /* Home Screen */
+    .home-screen {
+      background: linear-gradient(135deg, #2c1810, #1a0f08);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+    }
+
+    .game-title {
+      font-size: 4rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px rgba(255, 165, 0, 0.8);
+      background: linear-gradient(45deg, #ff6b35, #f7931e, #ffd23f);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    .subtitle {
+      font-size: 1.5rem;
+      margin-bottom: 3rem;
+      color: #ffcc80;
+    }
+
+    .play-btn {
+      background: linear-gradient(45deg, #ff6b35, #f7931e);
+      border: none;
+      padding: 20px 50px;
+      font-size: 2rem;
+      color: white;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .play-btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(255, 107, 53, 0.6);
+    }
+
+    /* Levels Screen */
+    .levels-screen {
+      background: linear-gradient(135deg, #1a0f08, #2c1810);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .levels-header {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 30px;
+    }
+
+    .home-btn {
+      background: #8B4513;
+      border: none;
+      padding: 15px 30px;
+      color: white;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    .levels-title {
+      font-size: 3rem;
+      color: #ffcc80;
+      text-shadow: 0 0 15px rgba(255, 204, 128, 0.6);
+    }
+
+    .levels-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .level-btn {
+      width: 80px;
+      height: 80px;
+      border: 3px solid #ff6b35;
+      background: linear-gradient(45deg, #2c1810, #3d2415);
+      border-radius: 15px;
+      color: #ff6b35;
+      font-size: 1.5rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .level-btn:hover {
+      background: linear-gradient(45deg, #ff6b35, #f7931e);
+      color: white;
+      transform: scale(1.1);
+    }
+
+    .level-btn.locked {
+      opacity: 0.5;
+      cursor: not-allowed;
+      border-color: #666;
+      color: #666;
+    }
+
+    /* Game Screen */
+    .game-screen {
+      position: relative;
+    }
+
+    .game-canvas {
+      display: block;
+      width: 100%;
+      height: 100vh;
+    }
+
+    .game-ui {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 100;
+      color: white;
+      font-size: 1.5rem;
+      background: rgba(0,0,0,0.7);
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .game-complete {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.9);
+      color: white;
+      padding: 40px;
+      border-radius: 20px;
+      text-align: center;
+      z-index: 200;
+      display: none;
+    }
+
+    .complete-title {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: #4CAF50;
+    }
+
+    .complete-btn {
+      background: #4CAF50;
+      border: none;
+      padding: 15px 30px;
+      color: white;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      margin: 10px;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 20px rgba(255, 165, 0, 0.8); }
+      to { text-shadow: 0 0 30px rgba(255, 165, 0, 1), 0 0 40px rgba(255, 165, 0, 0.8); }
+    }
+
+    @media (orientation: portrait) {
+      .screen {
+        transform: rotate(90deg);
+        transform-origin: center;
+        width: 100vh;
+        height: 100vw;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        margin-top: -50vw;
+        margin-left: -50vh;
+      }
     }
   </style>
 </head>
 <body>
-  <canvas class="gameScene"></canvas>
+  <!-- Home Screen -->
+  <div class="screen active" id="homeScreen">
+    <div class="home-screen">
+      <canvas id="bgCanvas" style="position: absolute; top: 0; left: 0; z-index: -1;"></canvas>
+      <h1 class="game-title">DINO GAME</h1>
+      <p class="subtitle">by Yahya</p>
+      <button class="play-btn" onclick="showLevels()">PLAY</button>
+    </div>
+  </div>
+
+  <!-- Levels Screen -->
+  <div class="screen" id="levelsScreen">
+    <div class="levels-screen">
+      <div class="levels-header">
+        <button class="home-btn" onclick="showHome()">HOME</button>
+        <h2 class="levels-title">SELECT LEVEL</h2>
+        <div></div>
+      </div>
+      <div class="levels-grid" id="levelsGrid">
+        <!-- Levels will be generated by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Screen -->
+  <div class="screen" id="gameScreen">
+    <div class="game-screen">
+      <canvas class="game-canvas" id="gameCanvas"></canvas>
+      <div class="game-ui">
+        <div>Level: <span id="currentLevel">1</span></div>
+        <div>Coins: <span id="coinCount">0</span>/5</div>
+      </div>
+      <div class="game-complete" id="gameComplete">
+        <h2 class="complete-title">LEVEL COMPLETE!</h2>
+        <button class="complete-btn" onclick="showLevels()">LEVELS</button>
+        <button class="complete-btn" onclick="nextLevel()">NEXT LEVEL</button>
+      </div>
+    </div>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
   <script>
-    var c = $('.gameScene')[0],
-        ctx = c.getContext("2d"),
-        cw = (c.width = window.innerWidth),
-        ch = (c.height = window.innerHeight),
-        bg = [],
-        fg = {img:new Image(), x:cw, top:540},
-        dino = {img:new Image(), spriteOffsetX:0, x:cw/2, top:402},
-        eyeLid = {img:new Image(), spriteOffsetX:0},
-        dinoJump = {img:new Image(), spriteOffsetX:0, show:false},
-        dinoJumpGlow = {img:new Image(), spriteOffsetX:0, show:false},
-        dust1 = {img:new Image(), spriteOffsetX:0, x:0, y:0},
-        dust2 = {img:new Image(), spriteOffsetX:0, x:0, y:0},
-        coin = {img:new Image(), spriteOffsetX:0, top:265, right:250, show:true};
+    let currentLevel = 1;
+    let gameData = {
+      level: 1,
+      coins: 0,
+      unlockedLevels: 1
+    };
 
-    window.onmousemove = function(e){
-      gsap.to(dino, {duration:2, x:e.clientX-250, overwrite:'auto'});
+    // Screen management
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
     }
 
-    $(c).on('click', jump);
-    $(window).on('keydown', function(e){
-      if (e.keyCode == 32) {
-        e.preventDefault();
-        jump();
-      }
-    });
+    function showHome() {
+      showScreen('homeScreen');
+      initBackgroundAnimation();
+    }
 
-    function jump(e){
-      if (dinoJump.show) return;
-      dinoJump.show=true;
+    function showLevels() {
+      showScreen('levelsScreen');
+      generateLevels();
+    }
 
-      gsap.timeline({ onComplete:function(){dinoJump.show=false} })
-        .fromTo(dinoJump, {spriteOffsetX:0}, {duration:0.5, spriteOffsetX:1250, ease:'steps(5)'})
-        .call(function(){ 
-        if (cw-dino.x<475&&cw-dino.x>325) {
-          coin.show=false;
-          gsap.to(dinoJumpGlow, {duration:0.3, spriteOffsetX:750, ease:'steps(3)'})
+    function showGame(level) {
+      currentLevel = level;
+      gameData.level = level;
+      gameData.coins = 0;
+      showScreen('gameScreen');
+      initGame();
+    }
+
+    // Generate levels grid
+    function generateLevels() {
+      const grid = document.getElementById('levelsGrid');
+      grid.innerHTML = '';
+
+      for (let i = 1; i <= 10; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'level-btn';
+        btn.textContent = i;
+
+        if (i <= gameData.unlockedLevels) {
+          btn.onclick = () => showGame(i);
+        } else {
+          btn.classList.add('locked');
         }
-      }, null, 0.25)
-    }
 
-    // Load images
-    dino.img.src='https://assets.codepen.io/721952/gameDino.png';
-    eyeLid.img.src='https://assets.codepen.io/721952/gameBlink.png';
-    dinoJump.img.src='https://assets.codepen.io/721952/gameJump.png';
-    dinoJumpGlow.img.src='https://assets.codepen.io/721952/gameJumpGlow.png';
-
-    // Dino walking animation
-    gsap.to(dino, {duration:0.55, spriteOffsetX:1400, ease:'steps(5)', repeat:-1, onRepeat:function(){
-      if (Math.random()<0.4) gsap.fromTo(eyeLid, {spriteOffsetX:0},{duration:0.55, spriteOffsetX:1400, ease:'steps(5)'}); //random blinking
-    }});
-    gsap.to(dino, {duration:1.2, top:416, ease:'power1.inOut', yoyo:true, repeat:-1});
-
-    // Dust effects
-    dust1.img.src=dust2.img.src='https://assets.codepen.io/721952/gameDust.png';
-    gsap.to(dust1, {duration:0.6, spriteOffsetX:975, ease:'steps(13)', repeat:-1});
-    gsap.fromTo(dust1, {x:function(){return dino.x+70}}, {duration:0.6, repeat:-1, ease:'sine', x:'-=100', repeatRefresh:true});
-    gsap.fromTo(dust1, {y:function(){return dino.top+95}}, {duration:0.6, repeat:-1, ease:'sine.in', y:'-=50', repeatRefresh:true});
-    gsap.to(dust2, {duration:0.6, delay:0.2, spriteOffsetX:975, ease:'steps(13)', repeat:-1});
-    gsap.fromTo(dust2, {x:function(){return dino.x+70}}, {delay:0.2, duration:0.6, repeat:-1, ease:'sine', x:'-=150', repeatRefresh:true});
-    gsap.fromTo(dust2, {y:function(){return dino.top+95}}, {delay:0.2, duration:0.6, repeat:-1, ease:'sine.in', y:'-=30', repeatRefresh:true});
-
-    // Foreground elements
-    fg.img.src='https://assets.codepen.io/721952/gameFg.png';
-    fg.img.onload = moveFg;
-    function moveFg(){
-      if (gsap.isTweening(fg)) return;
-      gsap.fromTo(fg, {x:cw}, {duration:gsap.utils.random(2,3), x:-350, ease:'none'});
-      gsap.delayedCall(gsap.utils.random(3,5), moveFg);
-    }
-
-    // Coin animation
-    coin.img.src='https://assets.codepen.io/721952/gameCoin.png';
-    var cTL = gsap.timeline({paused:true}).to(coin, {spriteOffsetX:400, ease:'steps(5)', repeat:4});
-    gsap.to(cTL, {progress:1, duration:1.2, ease:'sine.inOut', repeat:-1})
-    gsap.to(coin, {duration:0.6, yoyo:true, repeat:-1, top:310, ease:'sine.inOut'})
-
-    // Background layers
-    for (var i=0; i<5; i++){
-      var img = new Image();
-      img.id = i;
-      img.src = (i==0) ? 'https://assets.codepen.io/721952/gameLayer0.jpg' : 'https://assets.codepen.io/721952/gameLayer'+i+'.png';
-      img.onload = makeLayer;    
-    }
-
-    function makeLayer(e){ 
-      var l = {
-        img:e.currentTarget,
-        fill:ctx.createPattern(e.currentTarget, 'repeat'),
-        x:0,
-        y:[55,55,55,0,525][Number(e.currentTarget.id)],
-        width:e.currentTarget.width,
-        height:e.currentTarget.height
+        grid.appendChild(btn);
       }
-      bg.push(l);
-      l.tl = gsap.timeline({repeat:-1}).to(l, {x:-e.currentTarget.width, ease:'none', duration:6-Number(e.currentTarget.id)});
-
-      bg.sort(function(a,b){// sort layers to maintain correct z-stacking
-        return (a.img.id>b.img.id) ? 1:-1;
-      })
     }
 
-    // Main game loop
-    gsap.ticker.add((a,b,c)=>{
-      cw = ($('.gameScene')[0].width = window.innerWidth);
-      ch = ($('.gameScene')[0].height = window.innerHeight);
+    // Background animation for home screen
+    function initBackgroundAnimation() {
+      const canvas = document.getElementById('bgCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
 
-      // Draw background layers
-      for (var i=0; i<bg.length; i++){
-        ctx.fillStyle = bg[i].fill;
-        ctx.translate(bg[i].x, bg[i].y);
-        ctx.fillRect(0, 0, cw+bg[i].width, bg[i].height);
-        ctx.translate(-bg[i].x, -bg[i].y);      
+      // Simple animated background
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw moving forest silhouettes
+        ctx.fillStyle = 'rgba(44, 24, 16, 0.3)';
+        for (let i = 0; i < 5; i++) {
+          ctx.fillRect((Date.now() * 0.01 * (i + 1)) % (canvas.width + 100) - 100, 
+                      canvas.height - 200 + i * 20, 80, 200);
+        }
+
+        requestAnimationFrame(animate);
+      }
+      animate();
+    }
+
+    // Game implementation
+    function initGame() {
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      let gameVars = {
+        bg: [],
+        fg: {img: new Image(), x: canvas.width, top: canvas.height - 150},
+        dino: {img: new Image(), spriteOffsetX: 0, x: canvas.width/2, top: canvas.height - 250},
+        eyeLid: {img: new Image(), spriteOffsetX: 0},
+        dinoJump: {img: new Image(), spriteOffsetX: 0, show: false},
+        dinoJumpGlow: {img: new Image(), spriteOffsetX: 0, show: false},
+        dust1: {img: new Image(), spriteOffsetX: 0, x: 0, y: 0},
+        dust2: {img: new Image(), spriteOffsetX: 0, x: 0, y: 0},
+        coins: []
+      };
+
+      // Generate multiple coins for the level
+      for (let i = 0; i < 7; i++) {
+        gameVars.coins.push({
+          img: new Image(),
+          spriteOffsetX: 0,
+          top: 200 + Math.random() * 100,
+          x: canvas.width + i * 400,
+          show: true,
+          collected: false
+        });
       }
 
-      // Draw dust effects
-      if (!dinoJump.show) ctx.drawImage(dust1.img, dust1.spriteOffsetX,0,75,55, dust1.x,dust1.y,75,55);
+      // Load images with brown tint filter
+      function loadImageWithTint(src, callback) {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = function() {
+          const tempCanvas = document.createElement('canvas');
+          const tempCtx = tempCanvas.getContext('2d');
+          tempCanvas.width = this.width;
+          tempCanvas.height = this.height;
 
-      // Draw dino
-      if (dinoJump.show) ctx.drawImage(dinoJump.img, dinoJump.spriteOffsetX,0,250,240, dino.x,dino.top-100,250,240);
-      else {
-        ctx.drawImage(dino.img, dino.spriteOffsetX,0,280,140, dino.x,dino.top,280,140);
-        ctx.drawImage(eyeLid.img, eyeLid.spriteOffsetX,0,280,140, dino.x,dino.top,280,140);
+          tempCtx.drawImage(this, 0, 0);
+          tempCtx.globalCompositeOperation = 'multiply';
+          tempCtx.fillStyle = '#8B4513'; // Dark brown tint
+          tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+          tempCtx.globalCompositeOperation = 'destination-atop';
+          tempCtx.drawImage(this, 0, 0);
+
+          callback(tempCanvas);
+        };
+        img.src = src;
       }
-      ctx.drawImage(dust2.img, dust2.spriteOffsetX,0,75,55, dust2.x,dust2.y,75,55);
 
-      // Draw coin and effects
-      if (coin.show) {
-        ctx.globalCompositeOperation = 'screen';
-        ctx.drawImage(coin.img, coin.spriteOffsetX,0,80,80,cw-coin.right,coin.top,80,80);
-        ctx.globalCompositeOperation = 'source-over';
+      // Load dino images with brown tint
+      loadImageWithTint('https://assets.codepen.io/721952/gameDino.png', (tintedImg) => {
+        gameVars.dino.img = tintedImg;
+      });
+
+      // Load other images normally
+      gameVars.eyeLid.img.src = 'https://assets.codepen.io/721952/gameBlink.png';
+      gameVars.dinoJump.img.src = 'https://assets.codepen.io/721952/gameJump.png';
+      gameVars.dinoJumpGlow.img.src = 'https://assets.codepen.io/721952/gameJumpGlow.png';
+      gameVars.dust1.img.src = gameVars.dust2.img.src = 'https://assets.codepen.io/721952/gameDust.png';
+      gameVars.fg.img.src = 'https://assets.codepen.io/721952/gameFg.png';
+
+      gameVars.coins.forEach(coin => {
+        coin.img.src = 'https://assets.codepen.io/721952/gameCoin.png';
+      });
+
+      // Touch and mouse controls
+      canvas.addEventListener('click', jump);
+      canvas.addEventListener('touchstart', jump);
+
+      canvas.addEventListener('mousemove', (e) => {
+        gsap.to(gameVars.dino, {duration: 2, x: e.clientX - 140, overwrite: 'auto'});
+      });
+
+      canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        gsap.to(gameVars.dino, {duration: 2, x: touch.clientX - 140, overwrite: 'auto'});
+      });
+
+      function jump(e) {
+        e.preventDefault();
+        if (gameVars.dinoJump.show) return;
+        gameVars.dinoJump.show = true;
+
+        gsap.timeline({onComplete: () => gameVars.dinoJump.show = false})
+          .fromTo(gameVars.dinoJump, {spriteOffsetX: 0}, {duration: 0.5, spriteOffsetX: 1250, ease: 'steps(5)'});
+      }
+
+      // Animations
+      gsap.to(gameVars.dino, {duration: 0.55, spriteOffsetX: 1400, ease: 'steps(5)', repeat: -1});
+      gsap.to(gameVars.dino, {duration: 1.2, top: gameVars.dino.top + 14, ease: 'power1.inOut', yoyo: true, repeat: -1});
+
+      // Coin animations
+      gameVars.coins.forEach((coin, i) => {
+        gsap.to(coin, {duration: 0.6, spriteOffsetX: 400, ease: 'steps(5)', repeat: -1, delay: i * 0.1});
+        gsap.to(coin, {duration: 0.8, top: coin.top + 20, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: i * 0.1});
+      });
+
+      // Background layers
+      for (let i = 0; i < 3; i++) {
+        const layer = {
+          x: 0,
+          y: [100, 200, canvas.height - 100][i],
+          speed: [1, 2, 3][i],
+          color: ['rgba(44, 24, 16, 0.3)', 'rgba(62, 39, 35, 0.5)', 'rgba(80, 52, 42, 0.7)'][i]
+        };
+        gameVars.bg.push(layer);
+      }
+
+      // Game loop
+      function gameLoop() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw parallax background
+        gameVars.bg.forEach(layer => {
+          layer.x -= layer.speed;
+          if (layer.x <= -200) layer.x = 0;
+
+          ctx.fillStyle = layer.color;
+          for (let x = layer.x; x < canvas.width + 200; x += 200) {
+            ctx.fillRect(x, layer.y, 150, 100);
+          }
+        });
+
+        // Draw dino
+        if (gameVars.dinoJump.show) {
+          ctx.drawImage(gameVars.dinoJump.img, gameVars.dinoJump.spriteOffsetX, 0, 250, 240, 
+                       gameVars.dino.x, gameVars.dino.top - 100, 250, 240);
+        } else {
+          ctx.drawImage(gameVars.dino.img, gameVars.dino.spriteOffsetX, 0, 280, 140, 
+                       gameVars.dino.x, gameVars.dino.top, 280, 140);
+        }
+
+        // Draw and move coins
+        gameVars.coins.forEach(coin => {
+          if (coin.show && !coin.collected) {
+            coin.x -= 3;
+
+            // Check collision
+            if (Math.abs(coin.x - gameVars.dino.x) < 100 && Math.abs(coin.top - gameVars.dino.top) < 100) {
+              coin.collected = true;
+              gameData.coins++;
+              document.getElementById('coinCount').textContent = gameData.coins;
+
+              if (gameData.coins >= 5) {
+                completeLevel();
+                return;
+              }
+            }
+
+            // Reset coin position when off screen
+            if (coin.x < -100) {
+              coin.x = canvas.width + Math.random() * 400;
+            }
+
+            ctx.drawImage(coin.img, coin.spriteOffsetX, 0, 80, 80, coin.x, coin.top, 80, 80);
+          }
+        });
+
+        // Update UI
+        document.getElementById('currentLevel').textContent = currentLevel;
+
+        requestAnimationFrame(gameLoop);
+      }
+
+      gameLoop();
+    }
+
+    function completeLevel() {
+      if (currentLevel < 10) {
+        gameData.unlockedLevels = Math.max(gameData.unlockedLevels, currentLevel + 1);
+      }
+      document.getElementById('gameComplete').style.display = 'block';
+    }
+
+    function nextLevel() {
+      document.getElementById('gameComplete').style.display = 'none';
+      if (currentLevel < 10) {
+        showGame(currentLevel + 1);
       } else {
-        ctx.drawImage(dinoJumpGlow.img, dinoJumpGlow.spriteOffsetX,0,250,240,dino.x,dino.top-100,250,240);
+        showLevels();
       }
+    }
 
-      // Draw foreground
-      ctx.drawImage(fg.img, fg.x,fg.top,350,90);
-    });
+    // Initialize
+    showHome();
+    generateLevels();
   </script>
 </body>
 </html>
