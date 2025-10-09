@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Futuristic Login</title>
     <style>
+
+        #main-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
 html,
 body {
     padding: 0;
@@ -125,6 +135,7 @@ svg {
     </style>
 </head>
 <body>
+<div id="main-container"></div>
     <div id="message" class="message"></div>
     
     <div class="container">
@@ -301,7 +312,7 @@ svg {
             </g>
         </svg>
     </div>
-    
+</div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
     <script>
