@@ -3,1582 +3,920 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>One Day Maid - Professional Maid Booking Service</title>
-    <link rel="manifest" href="manifest.json">
-    
-    <meta name="theme-color" content="#2563eb">
-    <link rel="apple-touch-icon" href="icon-192.png">
+    <title>Futuristic Login</title>
     <style>
-
-        * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-:root {
-    --primary-color: #2563eb;
-    --primary-light: #3b82f6;
-    --primary-dark: #1d4ed8;
-    --accent-color: #f8fafc;
-    --text-primary: #1f2937;
-    --text-secondary: #6b7280;
-    --border-color: #e5e7eb;
-    --success-color: #10b981;
-    --warning-color: #f59e0b;
-    --error-color: #ef4444;
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-}
-
+html,
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background-color: white;
-    color: var(--text-primary);
-    line-height: 1.6;
-    overflow-x: hidden;
+    padding: 0;
+    margin: 0;
+    font-family: sans-serif;
+    background-color: #000000;
 }
 
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* Header Styles */
-.header {
-    background: white;
-    box-shadow: var(--shadow-md);
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    transition: all 0.3s ease;
+    top: 38%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 0;
-}
-
-.logo-section {
-    display: flex;
-    flex-direction: column;
-}
-
-.logo-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--primary-color);
-    margin-bottom: 0.2rem;
-}
-
-.project-credits {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    font-weight: 500;
-}
-
-.nav-buttons {
-    display: flex;
-    gap: 0.5rem;
-}
-
-/* Button Styles */
-.btn {
-    padding: 0.6rem 1.2rem;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
-    font-size: 0.9rem;
-}
-
-.btn-primary {
-    background: var(--primary-color);
-    color: white;
-}
-
-.btn-primary:hover {
-    background: var(--primary-dark);
-    transform: translateY(-2px);
-}
-
-.btn-outline {
-    background: transparent;
-    color: var(--primary-color);
-    border: 2px solid var(--primary-color);
-}
-
-.btn-outline:hover {
-    background: var(--primary-color);
-    color: white;
-}
-
-.btn-large {
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
-}
-
-.btn-full {
-    width: 100%;
-}
-
-/* Main Content */
-.main-content {
-    margin-top: 100px;
-    min-height: calc(100vh - 100px);
-}
-
-.page {
-    display: none;
-    animation: fadeIn 0.5s ease;
-}
-
-.page.active {
-    display: block;
-}
-
-@keyframes fadeIn {
-    from { 
-        opacity: 0; 
-        transform: translateY(20px); 
-    }
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
-    }
-}
-
-/* Hero Section */
-.hero-section {
-    background: linear-gradient(135deg, var(--accent-color) 0%, #f1f5f9 100%);
-    padding: 4rem 0;
-    text-align: center;
-}
-
-.hero-title {
-    font-size: 3rem;
-    font-weight: 800;
-    color: var(--text-primary);
-    margin-bottom: 1rem;
-}
-
-.hero-subtitle {
-    font-size: 1.2rem;
-    color: var(--text-secondary);
-    margin-bottom: 2rem;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.cta-buttons {
-    margin-top: 2rem;
-}
-
-/* Search Section */
-.search-section {
-    background: white;
-    padding: 3rem 0;
-}
-
-.search-bar {
-    max-width: 600px;
-    margin: 0 auto 3rem;
-    position: relative;
-}
-
-.search-input {
-    width: 100%;
-    padding: 1rem 1.5rem;
-    border: 2px solid var(--border-color);
-    border-radius: 50px;
-    font-size: 1rem;
-    outline: none;
-    transition: all 0.3s ease;
-}
-
-.search-input:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-/* Maid Cards */
-.maids-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
-    padding: 2rem 0;
-}
-
-.maid-card {
-    background: white;
-    border-radius: 12px;
-    box-shadow: var(--shadow-lg);
-    overflow: hidden;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: 1px solid var(--border-color);
-}
-
-.maid-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-}
-
-.maid-avatar {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    margin: 1.5rem auto 1rem;
-    background: var(--primary-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 2rem;
-    font-weight: 700;
-    overflow: hidden;
-}
-
-.maid-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.maid-info {
-    padding: 0 1.5rem 1.5rem;
-    text-align: center;
-}
-
-.maid-name {
-    font-size: 1.3rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-}
-
-.maid-experience {
-    color: var(--text-secondary);
-    margin-bottom: 1rem;
-}
-
-.maid-pricing {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 1rem;
-}
-
-.price-item {
-    text-align: center;
-}
-
-.price-label {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-}
-
-.price-value {
-    font-weight: 700;
-    color: var(--primary-color);
-}
-
-.contact-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-}
-
-.contact-btn {
-    padding: 0.5rem;
-    border: 2px solid var(--primary-color);
-    border-radius: 8px;
-    background: transparent;
-    color: var(--primary-color);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.contact-btn:hover {
-    background: var(--primary-color);
-    color: white;
-}
-
-/* Auth Styles */
-.auth-section {
-    padding: 4rem 0;
-    background: var(--accent-color);
-    min-height: calc(100vh - 100px);
-    display: flex;
-    align-items: center;
-}
-
-.auth-container {
-    max-width: 400px;
-    margin: 0 auto;
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: var(--shadow-lg);
-}
-
-.auth-title {
-    text-align: center;
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 2rem;
-    color: var(--text-primary);
-}
-
-.auth-tabs {
-    display: flex;
-    margin-bottom: 2rem;
-    background: var(--accent-color);
-    border-radius: 8px;
-    padding: 0.25rem;
-}
-
-.tab-btn {
-    flex: 1;
-    padding: 0.75rem;
-    border: none;
-    background: transparent;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 600;
-}
-
-.tab-btn.active {
-    background: white;
-    color: var(--primary-color);
-    box-shadow: var(--shadow-sm);
-}
-
-.auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.auth-form input,
-.auth-form textarea {
-    padding: 0.75rem;
-    border: 2px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-}
-
-.auth-form input:focus,
-.auth-form textarea:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.auth-form textarea {
-    resize: vertical;
-    min-height: 80px;
-}
-
-.auth-link {
-    text-align: center;
-    margin-top: 1rem;
-    color: var(--text-secondary);
-}
-
-.auth-link a {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.auth-link a:hover {
-    text-decoration: underline;
-}
-
-/* Dashboard Styles */
-.dashboard-section {
-    padding: 2rem 0;
-}
-
-.dashboard-header {
-    margin-bottom: 2rem;
-}
-
-.dashboard-header h2 {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-}
-
-.dashboard-nav {
-    display: flex;
-    gap: 0.5rem;
-    border-bottom: 2px solid var(--border-color);
-}
-
-.dashboard-nav .tab-btn {
-    padding: 1rem 1.5rem;
-    border: none;
-    background: transparent;
-    border-bottom: 3px solid transparent;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 600;
-}
-
-.dashboard-nav .tab-btn.active {
-    color: var(--primary-color);
-    border-bottom-color: var(--primary-color);
-}
-
-.dashboard-content {
-    display: none;
-    padding: 2rem 0;
-}
-
-.dashboard-content.active {
-    display: block;
-}
-
-.profile-card {
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: var(--shadow-md);
-    border: 1px solid var(--border-color);
-}
-
-.profile-card h3 {
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
-    font-weight: 700;
-}
-
-/* Modal Styles */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 2000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    animation: fadeIn 0.3s ease;
-}
-
-.modal-content {
-    background-color: white;
-    margin: 5% auto;
-    padding: 2rem;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 600px;
-    max-height: 80vh;
-    overflow-y: auto;
-    position: relative;
-}
-
-.close {
+svg,
+.form-container {
     position: absolute;
-    right: 1rem;
-    top: 1rem;
-    color: var(--text-secondary);
-    font-size: 2rem;
-    font-weight: bold;
-    cursor: pointer;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
-.close:hover {
-    color: var(--text-primary);
+.form-container {
+    width: 270px;
 }
 
-/* PWA Install Notification */
-.install-notification {
-    position: fixed;
-    bottom: 2rem;
-    left: 2rem;
-    right: 2rem;
-    background: white;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: var(--shadow-lg);
-    border: 1px solid var(--border-color);
-    display: none;
-    z-index: 1500;
-    animation: slideUp 0.3s ease;
+svg {
+    width: 1000px;
+    pointer-events: none;
 }
 
-@keyframes slideUp {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
-}
-
-.install-content h4 {
-    margin-bottom: 0.5rem;
-    font-weight: 700;
-}
-
-.install-content p {
-    color: var(--text-secondary);
-    margin-bottom: 1rem;
-}
-
-.install-buttons {
-    display: flex;
-    gap: 0.5rem;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .container {
-        padding: 0 15px;
-    }
-
-    .header-content {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-    }
-
-    .hero-title {
-        font-size: 2rem;
-    }
-
-    .hero-subtitle {
-        font-size: 1rem;
-    }
-
-    .maids-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-
-    .auth-container {
-        margin: 1rem;
-        padding: 1.5rem;
-    }
-
-    .modal-content {
-        margin: 2% auto;
-        width: 95%;
-    }
-
-    .install-notification {
-        left: 1rem;
-        right: 1rem;
-    }
-
-    .dashboard-nav {
-        flex-direction: column;
-    }
-
-    .contact-buttons {
-        flex-wrap: wrap;
-    }
-}
-
-@media (max-width: 480px) {
-    .logo-title {
-        font-size: 1.5rem;
-    }
-
-    .project-credits {
-        font-size: 0.7rem;
-    }
-
-    .nav-buttons {
-        flex-direction: column;
-        width: 100%;
-    }
-
-    .hero-section {
-        padding: 2rem 0;
-    }
-
-    .hero-title {
-        font-size: 1.8rem;
-    }
-}
-
-/* Utility Classes */
-.text-center {
-    text-align: center;
-}
-
-.mt-1 { margin-top: 0.5rem; }
-.mt-2 { margin-top: 1rem; }
-.mt-3 { margin-top: 1.5rem; }
-.mt-4 { margin-top: 2rem; }
-
-.mb-1 { margin-bottom: 0.5rem; }
-.mb-2 { margin-bottom: 1rem; }
-.mb-3 { margin-bottom: 1.5rem; }
-.mb-4 { margin-bottom: 2rem; }
-
-.p-1 { padding: 0.5rem; }
-.p-2 { padding: 1rem; }
-.p-3 { padding: 1.5rem; }
-.p-4 { padding: 2rem; }
-
-.d-none { display: none; }
-.d-block { display: block; }
-.d-flex { display: flex; }
-.d-grid { display: grid; }
-
-.flex-center {
+.form-container .form-row {
+    width: 100%;
+    height: 60px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
-.text-primary { color: var(--primary-color); }
-.text-secondary { color: var(--text-secondary); }
-.text-success { color: var(--success-color); }
-.text-error { color: var(--error-color); }
+.form-container .form-row input {
+    width: 100%;
+    height: 30px;
+    margin: 0;
+    padding: 5px;
+    outline: none;
+    border: 2px solid #1e3a8a;
+    background-color: #0a0e1a;
+    color: #60a5fa;
+}
 
-.bg-primary { background-color: var(--primary-color); }
-.bg-accent { background-color: var(--accent-color); }
-.bg-white { background-color: white; }
+.form-container .form-row input.valid {
+    border-color: #3b82f6;
+    box-shadow: 0 0 10px #3b82f6;
+}
 
+.form-container .form-row input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin: 0 10px 0 0;
+    padding: 0;
+    border: 2px solid #1e3a8a;
+    background-color: #0a0e1a;
+    accent-color: #3b82f6;
+}
+
+.form-container .form-row input[type="submit"] {
+    height: 40px;
+    cursor: pointer;
+    border: none;
+    background-color: #1e3a8a;
+    color: #60a5fa;
+    transition: all 0.3s ease;
+}
+
+.form-container input[type="submit"]:hover {
+    background-color: #3b82f6;
+    box-shadow: 0 0 20px #3b82f6;
+    color: #ffffff;
+}
+
+.form-container label,
+.form-container input,
+.form-container input::placeholder {
+    font-size: 15px;
+    font-family: inherit;
+    color: #60a5fa;
+}
+
+svg {
+    stroke-width: 1.2px;
+    stroke: #3b82f6;
+    fill: none;
+    filter: drop-shadow(0 0 8px #3b82f688);
+}
+
+.message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    display: none;
+    z-index: 1000;
+}
+
+.message.success {
+    background-color: #10b981;
+    box-shadow: 0 0 20px #10b98166;
+}
+
+.message.error {
+    background-color: #ef4444;
+    box-shadow: 0 0 20px #ef444466;
+}
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo-section">
-                    <h1 class="logo-title">One Day Maid</h1>
-                    <p class="project-credits">Project by: [Your Name 1], [Your Name 2], [Your Name 3]</p>
-                </div>
-                <nav class="nav-buttons">
-                    <button class="btn btn-outline" onclick="showLogin()">Login</button>
-                    <button class="btn btn-primary" onclick="showRegister()">Register</button>
-                    <button class="btn btn-outline" onclick="logout()" id="logoutBtn" style="display:none;">Logout</button>
-                </nav>
-            </div>
+    <div id="message" class="message"></div>
+    
+    <div class="container">
+        <div class="form-container">
+    <h3 id="form-title" style="color: #60a5fa; text-align: center; margin-bottom: 20px;">REGISTER</h3>
+    
+    <!-- Registration Form -->
+    <div id="register-form">
+        <label class="form-row">
+            <input autocomplete="off" type="email" id="reg-email" name="reg-email" placeholder="email" required>
+        </label>
+        <label class="form-row">
+            <input autocomplete="off" type="password" id="reg-password" name="reg-password" placeholder="password (5+ chars)" required>
+        </label>
+        <label class="form-row">
+            <input type="checkbox" id="reg-agree" name="reg-agree"> agree to terms
+        </label>
+        <div class="form-row">
+            <input type="button" id="register-btn" value="REGISTER">
         </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Home Page -->
-        <div id="homePage" class="page active">
-            <section class="hero-section">
-                <div class="container">
-                    <h1 class="hero-title">Professional Maid Services</h1>
-                    <p class="hero-subtitle">Connect with trusted, experienced maids in your area. Book instantly and get professional cleaning services delivered to your doorstep.</p>
-                    <div class="cta-buttons">
-                        <button class="btn btn-primary btn-large" onclick="showRegister()">Get Started</button>
-                    </div>
-                </div>
-            </section>
-
-            <section class="search-section">
-                <div class="container">
-                    <div class="search-bar">
-                        <input type="text" class="search-input" id="searchInput" placeholder="Search for maids by name, location, or experience..." oninput="searchMaids()">
-                    </div>
-                    <div id="maidsGrid" class="maids-grid">
-                        <!-- Maids will be populated here -->
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <!-- Login Page -->
-        <div id="loginPage" class="page">
-            <section class="auth-section">
-                <div class="container">
-                    <div class="auth-container">
-                        <h2 class="auth-title">Login to Your Account</h2>
-                        <div class="auth-tabs">
-                            <button class="tab-btn active" onclick="switchLoginTab('customer')">Customer Login</button>
-                            <button class="tab-btn" onclick="switchLoginTab('maid')">Maid Login</button>
-                        </div>
-                        <form class="auth-form" onsubmit="handleLogin(event)">
-                            <input type="email" id="loginEmail" placeholder="Email Address" required>
-                            <input type="password" id="loginPassword" placeholder="Password" required>
-                            <button type="submit" class="btn btn-primary btn-full">Login</button>
-                        </form>
-                        <p class="auth-link">Don't have an account? <a href="#" onclick="showRegister()">Register here</a></p>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <!-- Register Page -->
-        <div id="registerPage" class="page">
-            <section class="auth-section">
-                <div class="container">
-                    <div class="auth-container">
-                        <h2 class="auth-title">Create Your Account</h2>
-                        <div class="auth-tabs">
-                            <button class="tab-btn active" onclick="switchRegisterTab('customer')">Customer Register</button>
-                            <button class="tab-btn" onclick="switchRegisterTab('maid')">Maid Register</button>
-                        </div>
-                        <form class="auth-form" onsubmit="handleRegister(event)">
-                            <input type="text" id="registerName" placeholder="Full Name" required>
-                            <input type="email" id="registerEmail" placeholder="Email Address" required>
-                            <input type="tel" id="registerPhone" placeholder="Phone Number" required>
-                            <input type="password" id="registerPassword" placeholder="Password" required>
-                            
-                            <!-- Maid-specific fields -->
-                            <div id="maidFields" style="display: none;">
-                                <input type="text" id="registerAddress" placeholder="Complete Address">
-                                <input type="number" id="registerExperience" placeholder="Experience (in years)">
-                                <input type="number" id="registerDailyRate" placeholder="Daily Rate (₹)">
-                                <input type="number" id="registerMonthlyRate" placeholder="Monthly Rate (₹)">
-                                <textarea id="registerBio" placeholder="Brief description about your services"></textarea>
-                                <input type="file" id="registerPhoto" accept="image/*">
-                            </div>
-                            
-                            <button type="submit" class="btn btn-primary btn-full">Register</button>
-                        </form>
-                        <p class="auth-link">Already have an account? <a href="#" onclick="showLogin()">Login here</a></p>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <!-- Customer Dashboard -->
-        <div id="customerDashboard" class="page">
-            <section class="dashboard-section">
-                <div class="container">
-                    <div class="dashboard-header">
-                        <h2>Customer Dashboard</h2>
-                        <div class="dashboard-nav">
-                            <button class="tab-btn active" onclick="switchDashboardTab('profile')">Profile</button>
-                            <button class="tab-btn" onclick="switchDashboardTab('bookings')">My Bookings</button>
-                            <button class="tab-btn" onclick="switchDashboardTab('browse')">Browse Maids</button>
-                        </div>
-                    </div>
-
-                    <div id="customerProfile" class="dashboard-content active">
-                        <div class="profile-card">
-                            <h3>Profile Information</h3>
-                            <div id="customerProfileData"></div>
-                        </div>
-                    </div>
-
-                    <div id="customerBookings" class="dashboard-content">
-                        <div class="bookings-container">
-                            <h3>Your Bookings</h3>
-                            <div id="bookingsList"></div>
-                        </div>
-                    </div>
-
-                    <div id="customerBrowse" class="dashboard-content">
-                        <div class="browse-container">
-                            <h3>Available Maids</h3>
-                            <div id="customerMaidsGrid" class="maids-grid"></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <!-- Maid Dashboard -->
-        <div id="maidDashboard" class="page">
-            <section class="dashboard-section">
-                <div class="container">
-                    <div class="dashboard-header">
-                        <h2>Maid Dashboard</h2>
-                        <div class="dashboard-nav">
-                            <button class="tab-btn active" onclick="switchMaidTab('profile')">Profile</button>
-                            <button class="tab-btn" onclick="switchMaidTab('bookings')">Received Bookings</button>
-                        </div>
-                    </div>
-
-                    <div id="maidProfile" class="dashboard-content active">
-                        <div class="profile-card">
-                            <h3>Your Profile</h3>
-                            <div id="maidProfileData"></div>
-                        </div>
-                    </div>
-
-                    <div id="maidBookings" class="dashboard-content">
-                        <div class="bookings-container">
-                            <h3>Booking Requests</h3>
-                            <div id="maidBookingsList"></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <!-- Maid Detail Modal -->
-    <div id="maidModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeMaidModal()">&times;</span>
-            <div id="maidModalContent"></div>
-        </div>
+        <p style="color: #60a5fa; text-align: center; cursor: pointer; margin-top: 10px;" onclick="switchToLogin()">
+            Already have an account? <span style="color: #3b82f6; text-decoration: underline;">Login</span>
+        </p>
     </div>
+    
+    <!-- Login Form (hidden by default) -->
+    <div id="login-form" style="display: none;">
+        <label class="form-row">
+            <input autocomplete="off" type="email" id="login-email" name="login-email" placeholder="email" required>
+        </label>
+        <label class="form-row">
+            <input autocomplete="off" type="password" id="login-password" name="login-password" placeholder="password" required>
+        </label>
+        <label class="form-row">
+    <input type="checkbox" id="login-agree" name="login-agree"> I'm ready to login
+</label>
+<div class="form-row">
+    <input type="button" id="login-btn" value="LOGIN">
+</div>
 
-    <!-- PWA Install Notification -->
-    <div id="installNotification" class="install-notification">
-        <div class="install-content">
-            <h4>Install One Day Maid</h4>
-            <p>Get the full app experience on your device</p>
-            <div class="install-buttons">
-                <button class="btn btn-primary" onclick="installPWA()">Install</button>
-                <button class="btn btn-outline" onclick="dismissInstall()">Maybe Later</button>
-            </div>
-        </div>
+        <p style="color: #60a5fa; text-align: center; cursor: pointer; margin-top: 10px;" onclick="switchToRegister()">
+            Don't have an account? <span style="color: #3b82f6; text-decoration: underline;">Register</span>
+        </p>
     </div>
+    
+    <!-- Welcome Screen (hidden by default) -->
+    <div id="welcome-screen" style="display: none; text-align: center;">
+        <h2 style="color: #3b82f6; margin-bottom: 20px;">Welcome!</h2>
+        <p id="welcome-user" style="color: #60a5fa; font-size: 18px; margin-bottom: 30px;"></p>
+        <input type="button" id="logout-btn" value="LOGOUT" style="background-color: #ef4444; color: white; padding: 10px 30px; border: none; border-radius: 6px; cursor: pointer;">
+    </div>
+</div>
 
+    
+        <svg viewBox="0 0 1000 1000" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="710" y="527" width="16" height="47" rx="10" ry="10"></rect>
+            <g class="grabbing-hand">
+                <path d="M48.89,54.39c-3.51.76-15.72,3-22.83-.68a14,14,0,0,0-6.41-1.52h0A3.79,3.79,0,0,1,17,51.09a3.7,3.7,0,0,1-1.1-2.64V27.75A3.75,3.75,0,0,1,19.63,24H24.1"/>
+                <path class="grabbing-hand-finger-open" d="M57.05,29.76l24.82,0a4.07,4.07,0,0,0,4.11-4h0a4.07,4.07,0,0,0-4-4.11L48.69,21.3"/>
+                <path class="grabbing-hand-finger-open" d="M59.34,37.74l28.81.61a4.06,4.06,0,0,0,4.14-4h0a4.06,4.06,0,0,0-4-4.15L57,29.64"/>
+                <path class="grabbing-hand-finger-open" d="M57.13,45.9l26.94.78a4.07,4.07,0,0,0,4.15-4h0a4.07,4.07,0,0,0-4-4.14l-24.84-.8"/>
+                <path class="grabbing-hand-finger-open" d="M48.89,54.39l27.82.36a4.06,4.06,0,0,0,4.2-3.93h0A4.06,4.06,0,0,0,77,46.62l-19.88-.78"/>
+                <path class="grabbing-hand-finger-open" d="M40.78,28c5.75-5.85,12.66-22,10.5-25.88-2.25-4.09-6,.1-14.73,8.66C30.84,16.36,30.91,17.1,24.32,24"/>
+            </g>
+            <g class="pull-system">
+                <line class="checkbox-pull-line" x1="0" y1="0" x2="0" y2="0"/>
+                <g class="checkbox-pull-circle">
+                    <circle cx="0" cy="0" r="10"/>
+                    <circle cx="0" cy="0" r="4" fill="#3b82f6"/>
+                </g>
+                <circle class="submit-btn-circle" cx="0" cy="0" r="3" stroke="none" fill="#3b82f6" />
+                <path class="submit-btn-connector" d=""></path>
+            </g>
+            <g class="spray-hand-container">
+                <g class="pushing-hand">
+                    <circle cx="18" cy="0" r="5" fill="#3b82f6"/>
+                    <circle cx="18" cy="-70" r="5" fill="#3b82f6"/>
+                    <path d="M18,-70 v70" stroke-width="4"/>
+                    <g>
+                        <path d="M25.3,32.9V60.2a4.2,4.2,0,0,0,4.2,4.2h0a4.2,4.2,0,0,0,4.2-4.2V26.7"/>
+                        <rect x="3.9" y="18.4" width="8.4" height="21.47" rx="3.7" transform="translate(10.2 -1) rotate(19.4)"/>
+                        <path d="M20.9,24a3.4,3.4,0,0,0-1.7-1.1h0a4.2,4.2,0,0,0-5.4,2.5L9.1,38.8a4.3,4.3,0,0,0,2.6,5.4h0a4.3,4.3,0,0,0,5.4-2.6l1.8-5.1"/>
+                        <path d="M18.4,37.9,17.3,43a4.2,4.2,0,0,0,3.4,4.9h0a4.3,4.3,0,0,0,4.5-2.3"/>
+                        <path fill="white" d="M29,16.8c-6.4,5-15,13.2-12.8,17.8s6,.7,15.8-6.7c6.4-4.8,7.4-12.6.5-19.2V4.2A3.8,3.8,0,0,0,28.7.5H8A3.5,3.5,0,0,0,5.4,1.6,3.7,3.7,0,0,0,4.3,4.2V8.7"/>
+                        <path d="M4.3,8.7c-5.8,6.4-3.6,20-2.2,24.8"/>
+                    </g>
+                </g>
+                <g class="sprayer">
+                    <g class="sprayer-head">
+                        <defs>
+                            <radialGradient id="grad1" cx="50%" cy="50%" r="50%" fx="100%" fy="50%">
+                                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0"/>
+                                <stop offset="100%" stop-color="#3b82f6" stop-opacity="1"/>
+                            </radialGradient>
+                        </defs>
+                        <rect x="82.39" y="19.85" width="13.06" height="16.79" rx="1.46"/>
+                        <rect x="74.55" y="22.56" width="7.84" height="6.1" rx="1.13"/>
+                        <line class="spray-line" stroke="#3b82f6" stroke-dasharray="8 5" x1="22.4" y1="14.76" x2="74.27" y2="25.2" />
+                        <line class="spray-line" stroke="#3b82f6" stroke-dasharray="8 5" x1="21.51" y1="21.12" x2="74.27" y2="25.2" />
+                        <line class="spray-line" stroke="#3b82f6" stroke-dasharray="8 5" x1="21.44" y1="28.26" x2="74.27" y2="25.2" />
+                        <line class="spray-line" stroke="#3b82f6" stroke-dasharray="8 5" x1="22.37" y1="35.54" x2="74.27" y2="25.2" />
+                        <line class="spray-line" stroke="#3b82f6" stroke-dasharray="8 5" x1="24.21" y1="42.36" x2="74.27" y2="25.2" />
+                        <line class="spray-line" stroke="#3b82f6" stroke-dasharray="8 5" x1="24.31" y1="7.78" x2="74.27" y2="25.2" />
+                        <circle fill="url(#grad1)" stroke="none" class="spray-bubble" cx="25.43" cy="12.97" r="12.47" />
+                        <circle fill="url(#grad1)" stroke="none" class="spray-bubble" cx="15.6" cy="25.43" r="15.1" />
+                        <circle fill="url(#grad1)" stroke="none" class="spray-bubble" cx="33.24" cy="37.13" r="9.21" />
+                        <circle fill="url(#grad1)" stroke="none" class="spray-bubble" cx="35.92" cy="19.5" r="11.89" />
+                        <circle fill="url(#grad1)" stroke="none" class="spray-bubble" cx="18.82" cy="34.45" r="11.89" />
+                    </g>
+                    <path d="M89,42h0a21.3,21.3,0,0,1,21.3,21.3v56.48a5.06,5.06,0,0,1-5.06,5.06H72.6a5.06,5.06,0,0,1-5.06-5.06V63.4A21.45,21.45,0,0,1,89,42Z" fill="#1e3a8a"/>
+                    <rect x="78.3" y="36.64" width="21.24" height="6.15" rx="1.93" fill="#1e3a8a"/>
+                    <rect x="76.33" y="71.46" width="33.96" height="23.23" fill="#3b82f6"/>
+                </g>
+            </g>
+            <g>
+                <line class="gear-connector" x1="0" x2="0" y1="0" y2="0"/>
+                <g class="gears"></g>
+            </g>
+            <g class="grabbing-hand">
+                <g fill="#1e3a8a">
+                    <rect class="grabbing-hand-finger-closed" x="44.79" y="13.38" width="8.42" height="22.15" rx="3.67" transform="translate(20.57 71.26) rotate(-85.25)"/>
+                    <rect class="grabbing-hand-finger-closed" x="44.08" y="39.17" width="8.42" height="21.47" rx="3.67" transform="translate(-5.44 93.9) rotate(-85.25)"/>
+                    <rect class="grabbing-hand-finger-closed" x="45.68" y="30.71" width="8.42" height="22.57" rx="3.67" transform="matrix(0.08, -1, 1, 0.08, 3.91, 88.24)"/>
+                    <rect class="grabbing-hand-finger-closed" x="44.98" y="22.21" width="8.42" height="22.57" rx="3.67" transform="matrix(0.08, -1, 1, 0.08, 11.74, 79.74)"/>
+                    <path class="grabbing-hand-finger-closed" d="M32.18,27.42c5,6.46,13.22,15.06,17.76,12.81,4.18-2.07.69-6-6.66-15.74C38.46,18.1,30.69,17.1,24.1,24"/>
+                </g>
+            </g>
+            <g class="spiral-container">
+                <path stroke-width=".8" class="spiral-path" d=""/>
+            </g>
+            <g class="weight-big-container">
+                <line x1="14" x2="60" y1="14" y2="14"></line>
+                <line x1="14" x2="60" y1="14" y2="55"></line>
+                <circle cx="14" cy="14" r="5" fill="#3b82f6" stroke="none"/>
+                <g class="weight-big" stroke="none">
+                    <path d="M25.5,16.7c.2-.6.5-1.3.7-2C31.1,3.1,23.2,0,14.3,0S-1.6,4.2,2.4,14.7a22.5,22.5,0,0,1,.8,2.4A14.4,14.4,0,0,0,0,26.2c0,8,6.5,11.6,14.5,11.6S29,34.2,29,26.2A14.6,14.6,0,0,0,25.5,16.7ZM14.4,5c5.6,0,9.3,1.9,7.1,8.5a13.5,13.5,0,0,0-7-1.8,14.6,14.6,0,0,0-7.2,1.9C5.5,7.5,8.8,5,14.4,5Z" fill="#1e3a8a"/>
+                    <path d="M15.1,15.6l-1.8-.2a9.2,9.2,0,0,0-9.1,9.2,6.2,6.2,0,0,0,.2,1.9A13.3,13.3,0,0,1,15.1,15.6Z" fill="#3b82f6"/>
+                </g>
+            </g>
+            <g class="scales-container">
+                <defs>
+                    <marker id="ball" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="strokeWidth" markerWidth="5" markerHeight="5" orient="auto">
+                        <circle cx="5" cy="5" r="3" fill="#3b82f6"/>
+                    </marker>
+                </defs>
+                <rect x="10" y="-19" width="30" height="90" rx="15" ry="15" stroke-width="10" stroke="#1e3a8a" />
+                <rect class="timing-chain" x="10" y="-19" width="30" height="90" rx="15" ry="15" stroke="#3b82f6" />
+                <rect x="-31" y="-19" width="30" height="144" rx="15" ry="15" stroke-width="10" stroke="#1e3a8a"/>
+                <rect class="timing-chain" x="-31" y="-19" width="30" height="144" rx="15" ry="15" stroke="#3b82f6"/>
+                <g class="reels-connector">
+                    <rect x="-8" y="3.2" width="25" height="10" rx="5" ry="5" />
+                    <circle cx="-1" cy="8.5" r="3" fill="#3b82f6" stroke="none"/>
+                    <circle cx="9.9" cy="8.5" r="3" fill="#3b82f6" stroke="none"/>
+                </g>
+                <g class="car-weight-connector">
+                    <rect x="-36" y="97" width="10" height="95" rx="5" ry="5" />
+                    <circle cx="-31" cy="103" r="3" fill="#3b82f6" stroke="none"/>
+                    <circle cx="-31" cy="186" r="3" fill="#3b82f6" stroke="none"/>
+                </g>
+                <line class="scales-moving-line" x1="147.6" y1="30.52" x2="40" y2="12" stroke-width="2" marker-start="url(#ball)" marker-end="url(#ball)"/>
+                <path fill="#3b82f6" d="M102.45,30.68,92,20.26c-9.89,9.9-9.89,10.47-9.89,10.47Z" />
+            </g>
+            <g class="car-container">
+                <g>
+                    <g class="car">
+                        <circle cx="17" cy="88" r="5" />
+                        <circle cx="17" cy="88" r="2" fill="#3b82f6" />
+                        <circle cx="32" cy="88" r="5" />
+                        <circle cx="32" cy="88" r="2" fill="#3b82f6" />
+                        <path d="M10,65 h30 l-5,15 h-20 l-5,-15 " fill="#3b82f6" />
+                    </g>
+                    <line x1="-51" y1="95" x2="145" y2="95"/>
+                </g>
+            </g>
+        </svg>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
     <script>
 
+// Initialize Supabase
+const sb = supabase.createClient('https://nsnacwwcrszpjmanskti.supabase.co', 
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zbmFjd3djcnN6cGptYW5za3RpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5MTg2MTIsImV4cCI6MjA2ODQ5NDYxMn0.W01JADzAuGFvcAHAN6LPRIxc75J7A9Q76HIxvxkJDn4');
 
-        // Global Variables
-let currentUser = null;
-let currentUserType = null;
-let currentLoginType = 'customer';
-let currentRegisterType = 'customer';
-let deferredPrompt = null;
-let isInstalled = false;
+// DOM Elements
+const containerEl = document.querySelector('.container');
+const messageEl = document.getElementById('message');
+const formTitle = document.getElementById('form-title');
 
-// Initialize App
-document.addEventListener('DOMContentLoaded', function() {
-    initializeApp();
-    registerServiceWorker();
-    setupPWAInstall();
-    loadMaidsData();
-    checkUserLogin();
+// Registration Form
+const registerForm = document.getElementById('register-form');
+const regEmailEl = document.getElementById('reg-email');
+const regPasswordEl = document.getElementById('reg-password');
+const regAgreeEl = document.getElementById('reg-agree');
+const registerBtn = document.getElementById('register-btn');
+
+// Login Form
+const loginForm = document.getElementById('login-form');
+const loginEmailEl = document.getElementById('login-email');
+const loginPasswordEl = document.getElementById('login-password');
+const loginBtn = document.getElementById('login-btn');
+
+// Welcome Screen
+const welcomeScreen = document.getElementById('welcome-screen');
+const welcomeUser = document.getElementById('welcome-user');
+const logoutBtn = document.getElementById('logout-btn');
+
+// SVG Elements
+const sprayer = document.querySelector('.sprayer');
+const sprayHandContainer = document.querySelector('.spray-hand-container');
+const sprayLines = Array.from(document.querySelectorAll('.spray-line'));
+const sprayBubbles = Array.from(document.querySelectorAll('.spray-bubble'));
+const pushingHand = document.querySelector('.pushing-hand');
+const sprayerHead = document.querySelector('.sprayer-head');
+const gearsContainer = document.querySelector('svg .gears');
+const gearConnector = document.querySelector('.gear-connector');
+const pullSystemContainer = document.querySelector('.pull-system');
+const checkboxPullLine = document.querySelector('.checkbox-pull-line');
+const checkboxPullCircle = document.querySelector('.checkbox-pull-circle');
+const btnPullLine = document.querySelector('.submit-btn-connector');
+const btnHandlerCircle = document.querySelector('.submit-btn-circle');
+const spiralContainer = document.querySelector('.spiral-container');
+const weightBigContainer = document.querySelector('.weight-big-container');
+const scalesContainer = document.querySelector('.scales-container');
+const scalesLine = document.querySelector('.scales-moving-line');
+const weightBig = document.querySelector('.weight-big');
+const spiralPath = document.querySelector('.spiral-path');
+const carContainer = document.querySelector('.car-container');
+const car = document.querySelector('.car');
+const carInclineWrapper = document.querySelector('.car-container g');
+const timingChains = Array.from(document.querySelectorAll('.timing-chain'));
+const reelsConnector = document.querySelector('.reels-connector');
+const carWeightConnector = document.querySelector('.car-weight-connector');
+const grabbingHand = document.querySelectorAll('.grabbing-hand');
+const grabbingHandOpenFingers = Array.from(document.querySelectorAll('.grabbing-hand-finger-open'));
+const grabbingHandClosedFingers = Array.from(document.querySelectorAll('.grabbing-hand-finger-closed'));
+
+// Show message function
+function showMessage(text, type) {
+    messageEl.textContent = text;
+    messageEl.className = `message ${type}`;
+    messageEl.style.display = 'block';
+    setTimeout(() => {
+        messageEl.style.display = 'none';
+    }, 4000);
+}
+
+// Switch between forms
+function switchToLogin() {
+    registerForm.style.display = 'none';
+    loginForm.style.display = 'block';
+    formTitle.textContent = 'LOGIN';
+    resetAnimations();
+}
+
+function switchToRegister() {
+    loginForm.style.display = 'none';
+    registerForm.style.display = 'block';
+    formTitle.textContent = 'REGISTER';
+    resetAnimations();
+}
+
+function resetAnimations() {
+    loginEmailValid = false;
+    loginPasswordValid = false;
+    if (emailTl) emailTl.progress(0).pause();
+    gearsTls.forEach(tl => tl.pause());
+}
+
+// Check if user is already logged in
+function checkLoginStatus() {
+    const loggedInUser = localStorage.getItem('loggedInUser');
+    if (loggedInUser) {
+        const userData = JSON.parse(loggedInUser);
+        showWelcomeScreen(userData.email);
+    }
+}
+
+function showWelcomeScreen(email) {
+    registerForm.style.display = 'none';
+    loginForm.style.display = 'none';
+    welcomeScreen.style.display = 'block';
+    formTitle.style.display = 'none';
+    welcomeUser.textContent = `Welcome, ${email}`;
+}
+
+logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('loggedInUser');
+    welcomeScreen.style.display = 'none';
+    registerForm.style.display = 'none';
+    loginForm.style.display = 'block';
+    formTitle.style.display = 'block';
+    formTitle.textContent = 'LOGIN';
+    loginEmailEl.value = '';
+    loginPasswordEl.value = '';
+    
+    // Restore SVG animations
+    gsap.to("svg > *", {
+        duration: .3,
+        opacity: 1
+    });
+    
+    resetAnimations();
+    showMessage('Logged out successfully', 'success');
 });
 
-// App Initialization
-function initializeApp() {
-    // Initialize localStorage if not exists
-    if (!localStorage.getItem('maids')) {
-        localStorage.setItem('maids', JSON.stringify([]));
-    }
-    if (!localStorage.getItem('customers')) {
-        localStorage.setItem('customers', JSON.stringify([]));
-    }
-    if (!localStorage.getItem('bookings')) {
-        localStorage.setItem('bookings', JSON.stringify([]));
-    }
-    
-    // Add some demo data if empty
-    addDemoData();
-}
 
-// Add Demo Data
-function addDemoData() {
-    const maids = JSON.parse(localStorage.getItem('maids') || '[]');
-    if (maids.length === 0) {
-        const demoMaids = [
-            {
-                id: 'maid_1',
-                name: 'Priya Sharma',
-                email: 'priya@example.com',
-                phone: '9876543210',
-                address: 'Sector 15, Noida, UP',
-                experience: 5,
-                dailyRate: 500,
-                monthlyRate: 12000,
-                bio: 'Experienced in household cleaning, cooking, and childcare.',
-                photo: null,
-                whatsapp: '9876543210'
-            },
-            {
-                id: 'maid_2',
-                name: 'Sunita Devi',
-                email: 'sunita@example.com',
-                phone: '9123456789',
-                address: 'Lajpat Nagar, New Delhi',
-                experience: 8,
-                dailyRate: 600,
-                monthlyRate: 15000,
-                bio: 'Specialist in deep cleaning and organization.',
-                photo: null,
-                whatsapp: '9123456789'
-            },
-            {
-                id: 'maid_3',
-                name: 'Meera Kumari',
-                email: 'meera@example.com',
-                phone: '9988776655',
-                address: 'Koramangala, Bangalore',
-                experience: 3,
-                dailyRate: 450,
-                monthlyRate: 10000,
-                bio: 'Young and energetic, good with pets and plants.',
-                photo: null,
-                whatsapp: '9988776655'
-            }
-        ];
-        localStorage.setItem('maids', JSON.stringify(demoMaids));
+layoutPreparation();
+
+scaleToFit();
+window.onresize = scaleToFit;
+
+function scaleToFit() {
+    const h = 800;
+    if (window.innerHeight < h) {
+        gsap.set(containerEl, {
+            scale: window.innerHeight / h,
+            transformOrigin: "50% 75%"
+        })
     }
 }
 
-// Service Worker Registration
-function registerServiceWorker() {
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js')
-            .then(registration => {
-                console.log('Service Worker registered successfully');
-            })
-            .catch(error => {
-                console.log('Service Worker registration failed');
-            });
-    }
+let sprayRepeatCounter = 0;
+const state = {
+    handClosed: false,
+    sumbitBtnOnPlace: false,
+    sumbitBtnTextOpacity: 0,
+    pullProgress: 0
 }
 
-// PWA Installation Setup
-function setupPWAInstall() {
-    // Check if already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-        isInstalled = true;
+let loginEmailValid = false;
+let loginPasswordValid = false;
+
+const emailTl = createEmailTl();
+const gearsTls = createGearsTimelines();
+const checkboxEl = document.getElementById('login-agree');
+
+createPullingTimeline(state.handClosed, false);
+
+if (checkboxEl) {
+    checkboxEl.addEventListener('change', () => {
+        createPullingTimeline(state.handClosed, checkboxEl.checked);
+    });
+}
+
+
+
+
+// REGISTRATION LOGIC
+registerBtn.addEventListener('click', async () => {
+    const email = regEmailEl.value;
+    const password = regPasswordEl.value;
+    const agreed = regAgreeEl.checked;
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    if (!emailRegex.test(email)) {
+        showMessage('Please enter a valid email', 'error');
         return;
     }
 
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        
-        // Show install notification after 3 seconds if not installed
+    if (password.length <= 4) {
+        showMessage('Password must be more than 4 characters', 'error');
+        return;
+    }
+
+    if (!agreed) {
+        showMessage('Please agree to terms', 'error');
+        return;
+    }
+
+    const { data, error } = await sb
+        .from('users')
+        .insert([{ email: email, password: password, agreed: agreed }])
+        .select();
+
+    if (error) {
+        if (error.message.includes('duplicate')) {
+            showMessage('Email already registered. Please login.', 'error');
+        } else {
+            showMessage('Registration failed: ' + error.message, 'error');
+        }
+    } else {
+        showMessage('Registration successful! Please login.', 'success');
         setTimeout(() => {
-            if (!isInstalled && !localStorage.getItem('installDismissed')) {
-                showInstallNotification();
+            switchToLogin();
+        }, 2000);
+    }
+});
+
+// LOGIN LOGIC WITH ANIMATIONS
+
+// Email validation triggers gear animation
+loginEmailEl.addEventListener('input', () => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    loginEmailValid = emailRegex.test(loginEmailEl.value);
+
+    if (loginEmailValid) {
+        loginEmailEl.classList.add("valid");
+        // Start gear animation
+        gearsTls.forEach(tl => {
+            if (tl.paused()) {
+                tl.play();
+                gsap.fromTo(tl, {
+                    timeScale: 0
+                }, {
+                    timeScale: 1
+                })
             }
-        }, 3000);
-    });
-
-    window.addEventListener('appinstalled', () => {
-        isInstalled = true;
-        hideInstallNotification();
-        deferredPrompt = null;
-    });
-}
-
-// Show Install Notification
-function showInstallNotification() {
-    document.getElementById('installNotification').style.display = 'block';
-}
-
-// Hide Install Notification
-function hideInstallNotification() {
-    document.getElementById('installNotification').style.display = 'none';
-}
-
-// Install PWA
-function installPWA() {
-    if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then((result) => {
-            if (result.outcome === 'accepted') {
-                console.log('User accepted PWA install');
+        })
+    } else {
+        loginEmailEl.classList.remove("valid");
+        // Stop gear animation
+        gearsTls.forEach(tl => {
+            if (!tl.paused()) {
+                gsap.to(tl, {
+                    timeScale: 0,
+                    onComplete: () => {
+                        tl.pause();
+                    }
+                })
             }
-            deferredPrompt = null;
-            hideInstallNotification();
+        })
+        sprayRepeatCounter = 0;
+    }
+});
+
+// Password validation triggers weight/spiral animation
+loginPasswordEl.addEventListener('input', () => {
+    loginPasswordValid = loginPasswordEl.value.length > 4;
+
+    if (loginPasswordValid) {
+        loginPasswordEl.classList.add("valid");
+        // Start weight dropping animation
+        emailTl.play();
+    } else {
+        loginPasswordEl.classList.remove("valid");
+        // Reverse weight animation
+        emailTl.reverse();
+    }
+});
+
+// Login button
+loginBtn.addEventListener('click', async () => {
+    const email = loginEmailEl.value;
+    const password = loginPasswordEl.value;
+
+    if (!loginEmailValid) {
+        showMessage('Please enter a valid email', 'error');
+        return;
+    }
+
+    if (!loginPasswordValid) {
+        showMessage('Password must be more than 4 characters', 'error');
+        return;
+    }
+
+    // Check credentials in Supabase
+    const { data, error } = await sb
+        .from('users')
+        .select('*')
+        .eq('email', email)
+        .eq('password', password)
+        .single();
+
+    if (error || !data) {
+        showMessage('Invalid email or password', 'error');
+    } else {
+        showMessage('Login successful!', 'success');
+
+        // Save login to localStorage
+        const loginData = {
+            email: data.email,
+            loginTime: new Date().toISOString()
+        };
+        localStorage.setItem('loggedInUser', JSON.stringify(loginData));
+
+        // Animate out and show welcome
+        gsap.to("svg > *", {
+            duration: .1,
+            opacity: 0,
+            stagger: {
+                each: 0.03,
+                from: 'random',
+                ease: 'none',
+            }
         });
+
+        setTimeout(() => {
+            showWelcomeScreen(data.email);
+        }, 1000);
     }
+});
+
+function layoutPreparation() {
+    gsap.set(pullSystemContainer, { x: 375, y: 646 })
+    gsap.set(sprayHandContainer, { x: 700, y: 621 })
+    gsap.set(sprayer, { x: -59.5, y: 53 })
+    gsap.set(carContainer, { x: 190, y: 802, })
+    gsap.set(scalesContainer, { x: 170, y: 710, })
+    gsap.set(grabbingHand, { x: 297, y: 830 })
+    gsap.set(grabbingHandClosedFingers, { opacity: 0 })
+    gsap.set(spiralContainer, { x: 305, y: 435, svgOrigin: "14 14", scaleX: -1, })
+    gsap.set(weightBigContainer, { x: 305, y: 435, })
+    gsap.set([sprayLines, sprayBubbles], { opacity: 0 })
+    gsap.set(timingChains[0], { attr: { "stroke-width": "5", "stroke-dasharray": "0 12", } })
+    gsap.set(timingChains[1], { attr: { "stroke-width": "5", "stroke-dasharray": "0 12", } })
+    gsap.set(checkboxPullLine, { attr: { y1: -105, y2: 44 } });
+    gsap.set(checkboxPullCircle, { y: 44 });
+    gsap.set(loginBtn, { transformOrigin: "100% 0%", rotation: -90 })
+
 }
 
-// Dismiss Install
-function dismissInstall() {
-    localStorage.setItem('installDismissed', 'true');
-    hideInstallNotification();
-}
+function updateSpiralPath(centerX, centerY, radius, coils, points, offset) {
+    let path = "";
+    let thetaMax = coils * 2 * Math.PI;
+    const awayStep = radius / thetaMax;
+    const chord = 2 * Math.PI / points;
+    thetaMax -= offset * points * chord;
 
-// Navigation Functions
-function showPage(pageId) {
-    document.querySelectorAll('.page').forEach(page => {
-        page.classList.remove('active');
-    });
-    document.getElementById(pageId).classList.add('active');
-}
+    for (let theta = 0; theta <= thetaMax; theta += chord) {
+        const away = awayStep * theta;
+        const x = centerX + Math.cos(theta) * away;
+        const y = centerY + Math.sin(theta) * away;
 
-function showHome() {
-    showPage('homePage');
-    loadMaidsData();
-}
-
-function showLogin() {
-    showPage('loginPage');
-}
-
-function showRegister() {
-    showPage('registerPage');
-}
-
-function showCustomerDashboard() {
-    showPage('customerDashboard');
-    loadCustomerProfile();
-    loadCustomerBookings();
-    loadMaidsForCustomer();
-}
-
-function showMaidDashboard() {
-    showPage('maidDashboard');
-    loadMaidProfile();
-    loadMaidBookings();
-}
-
-// Auth Tab Switching
-function switchLoginTab(type) {
-    currentLoginType = type;
-    document.querySelectorAll('#loginPage .tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    event.target.classList.add('active');
-}
-
-function switchRegisterTab(type) {
-    currentRegisterType = type;
-    document.querySelectorAll('#registerPage .tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    event.target.classList.add('active');
-    
-    const maidFields = document.getElementById('maidFields');
-    if (type === 'maid') {
-        maidFields.style.display = 'block';
-    } else {
-        maidFields.style.display = 'none';
-    }
-}
-
-// Dashboard Tab Switching
-function switchDashboardTab(tab) {
-    document.querySelectorAll('#customerDashboard .tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    document.querySelectorAll('#customerDashboard .dashboard-content').forEach(content => {
-        content.classList.remove('active');
-    });
-    
-    event.target.classList.add('active');
-    
-    if (tab === 'profile') {
-        document.getElementById('customerProfile').classList.add('active');
-    } else if (tab === 'bookings') {
-        document.getElementById('customerBookings').classList.add('active');
-    } else if (tab === 'browse') {
-        document.getElementById('customerBrowse').classList.add('active');
-    }
-}
-
-function switchMaidTab(tab) {
-    document.querySelectorAll('#maidDashboard .tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    document.querySelectorAll('#maidDashboard .dashboard-content').forEach(content => {
-        content.classList.remove('active');
-    });
-    
-    event.target.classList.add('active');
-    
-    if (tab === 'profile') {
-        document.getElementById('maidProfile').classList.add('active');
-    } else if (tab === 'bookings') {
-        document.getElementById('maidBookings').classList.add('active');
-    }
-}
-
-// Authentication Functions
-function handleLogin(event) {
-    event.preventDefault();
-    
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-    
-    let users = [];
-    let userType = '';
-    
-    if (currentLoginType === 'customer') {
-        users = JSON.parse(localStorage.getItem('customers') || '[]');
-        userType = 'customer';
-    } else {
-        users = JSON.parse(localStorage.getItem('maids') || '[]');
-        userType = 'maid';
-    }
-    
-    const user = users.find(u => u.email === email && u.password === password);
-    
-    if (user) {
-        currentUser = user;
-        currentUserType = userType;
-        localStorage.setItem('currentUser', JSON.stringify({user, userType}));
-        
-        updateNavigation();
-        
-        if (userType === 'customer') {
-            showCustomerDashboard();
+        if (theta === 0) {
+            path += `M${x},${y}`;
         } else {
-            showMaidDashboard();
+            const prevAway = awayStep * (theta - chord);
+            const arcRadius = (away + prevAway) / 2;
+            path += ` A${arcRadius},${arcRadius} 0 0,1 ${x},${y}`;
         }
-        
-        showNotification('Login successful!', 'success');
-    } else {
-        showNotification('Invalid credentials!', 'error');
     }
+
+    const outerAngle = thetaMax + .5 * Math.PI;
+    const outerLength = 50 + 25 * offset
+    const endPoint = [
+        Math.cos(outerAngle) * outerLength,
+        Math.sin(outerAngle) * outerLength,
+    ]
+    path += (' l' + endPoint[0] + ',' + endPoint[1]);
+
+    gsap.set(spiralPath, { attr: { d: path }, })
+    gsap.set(weightBig, { x: -47 + 3 * offset, y: 12 + outerLength })
 }
 
-function handleRegister(event) {
-    event.preventDefault();
-    
-    const name = document.getElementById('registerName').value;
-    const email = document.getElementById('registerEmail').value;
-    const phone = document.getElementById('registerPhone').value;
-    const password = document.getElementById('registerPassword').value;
-    
-    let users = [];
-    let storageKey = '';
-    
-    if (currentRegisterType === 'customer') {
-        users = JSON.parse(localStorage.getItem('customers') || '[]');
-        storageKey = 'customers';
-    } else {
-        users = JSON.parse(localStorage.getItem('maids') || '[]');
-        storageKey = 'maids';
+function createEmailTl() {
+    const spiralTurnsNumber = 8;
+    const spiralProgress = {v: 0}
+    const hammerTimeStart = 1.85;
+    const fingersDelay = .5;
+    const fingersTimeDelta = .03;
+    const tl = gsap.timeline({
+        paused: true,
+        defaults: { ease: "none", duration: 2 },
+        onUpdate: () => {
+            updateSpiralPath(14, 14, 45, 17, 200, spiralTurnsNumber * spiralProgress.v);
+        },
+    })
+        .to(spiralProgress, { v: 1 }, 0)
+        .to(spiralContainer, { rotation: -spiralTurnsNumber * 360, }, 0)
+        .fromTo(scalesLine, { rotation: -20, svgOrigin: "92 20" }, { duration: .15, rotation: -1, svgOrigin: "92 20" }, hammerTimeStart)
+        .fromTo(timingChains[0], { attr: { "stroke-dashoffset": 2 } }, { duration: .15, attr: { "stroke-dashoffset": 20 } }, hammerTimeStart)
+        .fromTo(timingChains[1], { attr: { "stroke-dashoffset": 24 } }, { duration: .15, attr: { "stroke-dashoffset": 6 } }, hammerTimeStart)
+        .to(reelsConnector, { duration: .15, y: 18 }, hammerTimeStart)
+        .to(carWeightConnector, { duration: .15, y: -18 }, hammerTimeStart)
+        .to(carInclineWrapper, { duration: .15, rotation: 6, svgOrigin: "120 93" }, hammerTimeStart)
+        .fromTo(car, { x: -50, }, { duration: .6, x: 95, ease: "power2.in", }, hammerTimeStart)
+
+    for (let i = 0; i < 5; i++) {
+        tl
+            .set(grabbingHandOpenFingers[i], { opacity: 0 }, hammerTimeStart + fingersDelay + fingersTimeDelta * (i + 1))
+            .set(grabbingHandClosedFingers[i], { opacity: 1 }, hammerTimeStart + fingersDelay + fingersTimeDelta * (i + 1))
     }
-    
-    // Check if user already exists
-    if (users.find(u => u.email === email)) {
-        showNotification('User already exists with this email!', 'error');
-        return;
+
+    tl
+        .fromTo(state, { handClosed: false }, { duration: .01, handClosed: true }, ">")
+        .to(grabbingHand, { duration: fingersTimeDelta * 5, x: "+=20" }, hammerTimeStart + fingersDelay)
+
+    tl.progress(0.001);
+    return tl;
+}
+
+function createGearsTimelines() {
+    const tls = []
+    const params = {
+        baseSize: 15,
+        pitch: 11,
+        teethCurve: .6,
+        startPos: {x: 634, y: 389},
+        speed: .2
     }
-    
-    const newUser = {
-        id: generateId(currentRegisterType),
-        name,
-        email,
-        phone,
-        password
-    };
-    
-    // Add maid-specific fields
-    if (currentRegisterType === 'maid') {
-        newUser.address = document.getElementById('registerAddress').value;
-        newUser.experience = parseInt(document.getElementById('registerExperience').value) || 0;
-        newUser.dailyRate = parseInt(document.getElementById('registerDailyRate').value) || 0;
-        newUser.monthlyRate = parseInt(document.getElementById('registerMonthlyRate').value) || 0;
-        newUser.bio = document.getElementById('registerBio').value;
-        newUser.whatsapp = phone;
-        
-        // Handle photo upload
-        const photoFile = document.getElementById('registerPhoto').files[0];
-        if (photoFile) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                newUser.photo = e.target.result;
-                saveUser();
-            };
-            reader.readAsDataURL(photoFile);
+    const data = [{
+        angle: 0, teethNumber: 10, hasHole: true
+    }, {
+        angle: -.5, teethNumber: 32, hasHole: true
+    }, {
+        angle: 1.65, teethNumber: 12, hasHole: false
+    }];
+
+    const handleRadius = 14;
+    const gears = [];
+
+    data.forEach((d, dIdx) => {
+        const radius = (d.teethNumber * params.baseSize) / (2 * Math.PI);
+        let x, y, startAngle;
+
+        if (dIdx === 0) {
+            startAngle = 0;
+            x = params.startPos.x;
+            y = params.startPos.y;
         } else {
-            newUser.photo = null;
-            saveUser();
+            const parent = gears[dIdx - 1];
+            const size = parent.teethNumber / d.teethNumber;
+            x = parent.center.x + Math.cos(d.angle) * (parent.radius + radius);
+            y = parent.center.y + Math.sin(d.angle) * (parent.radius + radius);
+            startAngle = (1 + size) * d.angle - size * parent.angle;
         }
-    } else {
-        saveUser();
-    }
-    
-    function saveUser() {
-        users.push(newUser);
-        localStorage.setItem(storageKey, JSON.stringify(users));
-        
-        showNotification('Registration successful!', 'success');
-        
-        // Auto login
-        currentUser = newUser;
-        currentUserType = currentRegisterType;
-        localStorage.setItem('currentUser', JSON.stringify({user: newUser, userType: currentRegisterType}));
-        
-        updateNavigation();
-        
-        if (currentRegisterType === 'customer') {
-            showCustomerDashboard();
-        } else {
-            showMaidDashboard();
+
+        const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        gearsContainer.appendChild(group);
+        group.appendChild(path);
+
+        const gear = {
+            idx: dIdx,
+            center: {x, y},
+            radius,
+            angle: startAngle,
+            teethNumber: d.teethNumber,
+            hasHole: d.hasHole,
+            toothAngle: 2 * Math.PI / d.teethNumber,
+            toothCurveAngle: params.teethCurve / d.teethNumber,
+            group
         }
-        
-        // Reset form
-        event.target.reset();
-        if (currentRegisterType === 'maid') {
-            document.getElementById('maidFields').style.display = 'none';
-            switchRegisterTab('customer');
+
+        const rOut = gear.radius + .25 * params.pitch;
+        const rIn = rOut - .75 * params.pitch;
+        let pathD = "M" + (gear.center.x + Math.cos(gear.angle - gear.toothAngle + gear.toothCurveAngle) * rOut) + ", " + (gear.center.y + Math.sin(gear.angle - gear.toothAngle + gear.toothCurveAngle) * rOut) + " ";
+
+        for (let a = gear.angle; a < (gear.angle + 2 * Math.PI - .5 * gear.toothAngle); a += gear.toothAngle) {
+            const pa = (a - .5 * gear.toothAngle);
+            pathD += ("L" + (gear.center.x + Math.cos(pa - gear.toothCurveAngle) * rOut) + ", " + (gear.center.y + Math.sin(pa - gear.toothCurveAngle) * rOut) + " ");
+            pathD += ("L" + (gear.center.x + Math.cos(pa) * rIn) + ", " + (gear.center.y + Math.sin(pa) * rIn) + " ");
+            pathD += ("L" + (gear.center.x + Math.cos(a) * rIn) + ", " + (gear.center.y + Math.sin(a) * rIn) + " ");
+            pathD += ("L" + (gear.center.x + Math.cos(a + gear.toothCurveAngle) * rOut) + ", " + (gear.center.y + Math.sin(a + gear.toothCurveAngle) * rOut) + " ");
         }
-    }
+
+        if (gear.hasHole) {
+            const holeRadius = .5 * rIn;
+            pathD += ("M" + (gear.center.x - holeRadius) + ", " + (gear.center.y) + " ");
+            pathD += `A ${holeRadius} ${holeRadius} 1 1 0 ${gear.center.x + holeRadius} ${gear.center.y}`;
+            pathD += `A ${holeRadius} ${holeRadius} 1 1 0 ${gear.center.x - holeRadius} ${gear.center.y}`;
+        }
+
+        if (dIdx === 0) {
+            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            gsap.set(circle, { attr: { cx: gear.center.x, cy: gear.center.y, r: 5, fill: "#3b82f6" } })
+            gearsContainer.appendChild(circle);
+            gsap.set(path, { attr: { fill: "#3b82f6", "fill-opacity": .25 } })
+        } else if (dIdx === (data.length - 1)) {
+            gsap.set(path, { attr: { fill: "#3b82f6", "fill-opacity": .25 } })
+            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            gsap.set(circle, { attr: { cx: gear.center.x + handleRadius, cy: gear.center.y, r: 5, fill: "#3b82f6" } })
+            gear.group.appendChild(circle);
+        }
+
+        path.setAttribute("d", pathD);
+
+        const tl = gsap.timeline({ repeat: -1, paused: true, })
+            .to(group, {
+                duration: params.speed * gear.teethNumber,
+                rotation: 360 * (gear.idx % 2 ? -1 : 1),
+                svgOrigin: gear.center.x + " " + gear.center.y,
+                ease: "none",
+            });
+
+        if (dIdx === (data.length - 1)) {
+            tl.eventCallback("onUpdate", () => {
+                const angle = tl.progress() * 2 * Math.PI;
+                const deltaY = Math.sin(angle) * handleRadius;
+                gsap.set(pushingHand, { y: deltaY, })
+
+                if (deltaY > 8) {
+                    const d = Math.max(0, deltaY - 8);
+                    gsap.set(sprayerHead, { y: d })
+
+                    let sprayProgress = Math.max(0, tl.progress() - .1);
+                    sprayProgress *= (1 / .2);
+
+                    let bubblesOpacity = (sprayProgress > 1) ? 0 : sprayProgress;
+                    bubblesOpacity *= (1 - Math.pow(bubblesOpacity, 8));
+
+                    gsap.set(sprayLines, {
+                        attr: { "stroke-dashoffset": 70 * sprayProgress },
+                        opacity: Math.pow(bubblesOpacity, 2)
+                    })
+
+                    sprayBubbles.forEach((b, bIdx) => {
+                        gsap.set(b, {
+                            x: 25 * (1 - sprayProgress) * (1 + .1 * bIdx),
+                            scale: .5 + 1.4 * Math.pow(sprayProgress, 2),
+                            transformOrigin: "center center",
+                            opacity: bubblesOpacity
+                        })
+                    })
+                }
+
+                gsap.set(gearConnector, {
+                    attr: {
+                        x1: gear.center.x + handleRadius * Math.cos(angle),
+                        y1: gear.center.y + handleRadius * Math.sin(angle),
+                        x2: 700 + 18,
+                        y2: 646 - 100 + deltaY
+                    }
+                })
+            });
+
+            tl.eventCallback("onRepeat", () => {
+                sprayRepeatCounter++;
+            });
+        }
+
+        tl.progress(0.6)
+        tls.push(tl);
+        gears.push(gear);
+    })
+
+    return tls;
 }
 
-function logout() {
-    currentUser = null;
-    currentUserType = null;
-    localStorage.removeItem('currentUser');
-    updateNavigation();
-    showHome();
-    showNotification('Logged out successfully!', 'success');
-}
+// Check login status on page load
+checkLoginStatus();
 
-function checkUserLogin() {
-    const savedUser = localStorage.getItem('currentUser');
-    if (savedUser) {
-        const userData = JSON.parse(savedUser);
-        currentUser = userData.user;
-        currentUserType = userData.userType;
-        updateNavigation();
-    }
-}
-
-function updateNavigation() {
-    const loginBtn = document.querySelector('[onclick="showLogin()"]');
-    const registerBtn = document.querySelector('[onclick="showRegister()"]');
-    const logoutBtn = document.getElementById('logoutBtn');
-    
-    if (currentUser) {
-        loginBtn.style.display = 'none';
-        registerBtn.style.display = 'none';
-        logoutBtn.style.display = 'inline-block';
-        logoutBtn.textContent = `Logout (${currentUser.name})`;
-    } else {
-        loginBtn.style.display = 'inline-block';
-        registerBtn.style.display = 'inline-block';
-        logoutBtn.style.display = 'none';
-    }
-}
-
-// Utility Functions
-function generateId(type) {
-    return type + '_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-}
-
-function generateAvatar(name) {
-    const firstLetter = name.charAt(0).toUpperCase();
-    return `<div class="maid-avatar">${firstLetter}</div>`;
-}
-
-function showNotification(message, type = 'info') {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.textContent = message;
-    notification.style.cssText = `
-        position: fixed;
-        top: 120px;
-        right: 20px;
-        padding: 1rem 1.5rem;
-        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
-        color: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        z-index: 2000;
-        animation: slideInRight 0.3s ease;
-    `;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.remove();
-    }, 3000);
-}
-
-// Maid Data Functions
-function loadMaidsData() {
-    const maids = JSON.parse(localStorage.getItem('maids') || '[]');
-    displayMaids(maids, 'maidsGrid');
-}
-
-function loadMaidsForCustomer() {
-    const maids = JSON.parse(localStorage.getItem('maids') || '[]');
-    displayMaids(maids, 'customerMaidsGrid');
-}
-
-function displayMaids(maids, containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    
-    container.innerHTML = '';
-    
-    maids.forEach(maid => {
-        const maidCard = createMaidCard(maid);
-        container.appendChild(maidCard);
+function createPullingTimeline(isFixed, BtnPulled) {
+    let tl = gsap.timeline({
+        defaults: { ease: "power1.inOut", duration: 1 },
+        onUpdate: animatePullingLine
     });
-}
 
-function createMaidCard(maid) {
-    const card = document.createElement('div');
-    card.className = 'maid-card';
-    card.onclick = () => openMaidModal(maid);
-    
-    const avatarContent = maid.photo ? 
-        `<img src="${maid.photo}" alt="${maid.name}">` : 
-        maid.name.charAt(0).toUpperCase();
-    
-    card.innerHTML = `
-        <div class="maid-avatar">${avatarContent}</div>
-        <div class="maid-info">
-            <h3 class="maid-name">${maid.name}</h3>
-            <p class="maid-experience">${maid.experience} years experience</p>
-            <div class="maid-pricing">
-                <div class="price-item">
-                    <div class="price-label">Daily</div>
-                    <div class="price-value">₹${maid.dailyRate}</div>
-                </div>
-                <div class="price-item">
-                    <div class="price-label">Monthly</div>
-                    <div class="price-value">₹${maid.monthlyRate}</div>
-                </div>
-            </div>
-            <div class="contact-buttons">
-                <a href="tel:${maid.phone}" class="contact-btn" title="Call">📞</a>
-                <a href="https://wa.me/91${maid.whatsapp}" class="contact-btn" title="WhatsApp">💬</a>
-                <a href="https://maps.google.com/?q=${encodeURIComponent(maid.address)}" class="contact-btn" title="Location">📍</a>
-            </div>
-        </div>
-    `;
-    
-    return card;
-}
-
-function searchMaids() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const maids = JSON.parse(localStorage.getItem('maids') || '[]');
-    
-    const filteredMaids = maids.filter(maid => 
-        maid.name.toLowerCase().includes(searchTerm) ||
-        maid.address.toLowerCase().includes(searchTerm) ||
-        maid.bio.toLowerCase().includes(searchTerm)
-    );
-    
-    displayMaids(filteredMaids, 'maidsGrid');
-}
-
-// Modal Functions
-function openMaidModal(maid) {
-    const modal = document.getElementById('maidModal');
-    const modalContent = document.getElementById('maidModalContent');
-    
-    const avatarContent = maid.photo ? 
-        `<img src="${maid.photo}" alt="${maid.name}" style="width: 100%; height: 100%; object-fit: cover;">` : 
-        maid.name.charAt(0).toUpperCase();
-    
-    modalContent.innerHTML = `
-        <div style="text-align: center; margin-bottom: 2rem;">
-            <div class="maid-avatar" style="margin: 0 auto 1rem;">${avatarContent}</div>
-            <h2>${maid.name}</h2>
-            <p style="color: var(--text-secondary);">${maid.experience} years of experience</p>
-        </div>
-        
-        <div style="margin-bottom: 2rem;">
-            <h4>About</h4>
-            <p>${maid.bio}</p>
-        </div>
-        
-        <div style="margin-bottom: 2rem;">
-            <h4>Location</h4>
-            <p>${maid.address}</p>
-        </div>
-        
-        <div style="margin-bottom: 2rem;">
-            <h4>Pricing</h4>
-            <div style="display: flex; justify-content: space-around; background: var(--accent-color); padding: 1rem; border-radius: 8px;">
-                <div style="text-align: center;">
-                    <div style="font-weight: 700; color: var(--primary-color); font-size: 1.2rem;">₹${maid.dailyRate}</div>
-                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Per Day</div>
-                </div>
-                <div style="text-align: center;">
-                    <div style="font-weight: 700; color: var(--primary-color); font-size: 1.2rem;">₹${maid.monthlyRate}</div>
-                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Per Month</div>
-                </div>
-            </div>
-        </div>
-        
-        <div style="margin-bottom: 2rem;">
-            <h4>Contact</h4>
-            <div style="display: flex; gap: 1rem; justify-content: center;">
-                <a href="tel:${maid.phone}" class="btn btn-outline">📞 Call</a>
-                <a href="https://wa.me/91${maid.whatsapp}" class="btn btn-outline">💬 WhatsApp</a>
-                <a href="https://maps.google.com/?q=${encodeURIComponent(maid.address)}" class="btn btn-outline">📍 Location</a>
-            </div>
-        </div>
-        
-        ${currentUser && currentUserType === 'customer' ? `
-            <div style="text-align: center;">
-                <button class="btn btn-primary btn-large" onclick="bookMaid('${maid.id}')">Book Now</button>
-            </div>
-        ` : ''}
-    `;
-    
-    modal.style.display = 'block';
-}
-
-function closeMaidModal() {
-    document.getElementById('maidModal').style.display = 'none';
-}
-
-// Booking Functions
-function bookMaid(maidId) {
-    if (!currentUser || currentUserType !== 'customer') {
-        showNotification('Please login as customer to book!', 'error');
-        return;
+    if (isFixed && BtnPulled) {
+        tl.to(state, { pullProgress: 1 }, 0)
+          .to(loginBtn, { rotation: 0 }, 0)
+          .to(state, { duration: .1, sumbitBtnOnPlace: 1 }, .9)
+          .to(checkboxPullLine, { attr: {y2: 44 - 130} }, 0)
+          .to(checkboxPullCircle, { y: 44 - 130 }, 0)
+    } else if (!isFixed && BtnPulled) {
+        tl.to(state, { pullProgress: 1 }, 0)
+          .to(checkboxPullLine, { attr: {y2: 44 - 130} }, 0)
+          .to(checkboxPullCircle, { y: 44 - 130 }, 0)
+    } else if (isFixed && !BtnPulled) {
+        tl.to(state, { pullProgress: 0 }, 0)
+          .to(loginBtn, { rotation: -90 }, 0)
+          .to(state, { duration: .1, sumbitBtnOnPlace: 0 }, 0)
+          .to(checkboxPullLine, { attr: {y2: 44} }, 0)
+          .to(checkboxPullCircle, { y: 44 }, 0)
+    } else {
+        tl.to(state, { pullProgress: 0 }, 0)
+          .to(checkboxPullLine, { attr: {y2: 44} }, 0)
+          .to(checkboxPullCircle, { y: 44 }, 0)
     }
-    
-    const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
-    const maids = JSON.parse(localStorage.getItem('maids') || '[]');
-    const maid = maids.find(m => m.id === maidId);
-    
-    const booking = {
-        id: generateId('booking'),
-        customerId: currentUser.id,
-        maidId: maidId,
-        maidName: maid.name,
-        customerName: currentUser.name,
-        date: new Date().toISOString().split('T')[0],
-        status: 'pending',
-        createdAt: new Date().toISOString()
-    };
-    
-    bookings.push(booking);
-    localStorage.setItem('bookings', JSON.stringify(bookings));
-    
-    closeMaidModal();
-    showNotification('Booking request sent successfully!', 'success');
-    
-    if (document.getElementById('customerDashboard').classList.contains('active')) {
-        loadCustomerBookings();
+
+    function animatePullingLine() {
+        const buttonOriginPoint = [260, -76];
+        const btnWidth = 270;
+        const deg = (gsap.getProperty(loginBtn, "rotation") - 4) * Math.PI / 180;
+        const btnEnd = [
+            buttonOriginPoint[0] - (btnWidth - 20) * Math.cos(deg),
+            buttonOriginPoint[1] - (btnWidth - 20) * Math.sin(deg),
+        ]
+        gsap.set(btnHandlerCircle, { attr: { cx: btnEnd[0], cy: btnEnd[1] } })
+
+        const handle = 7;
+        const r = 10;
+        let btnPullLinePath = "M" + (-r - handle) + "," + (250 - (isFixed ? 0 : state.pullProgress * 300));
+        btnPullLinePath += "h" + (2 * handle) + "h" + (-handle);
+        btnPullLinePath += " V" + (44 - state.pullProgress * 130);
+        const slideAngle = .3 * Math.PI * (1 - (isFixed ? 1 : .5) * state.pullProgress);
+        const dx = r * Math.cos(slideAngle);
+        const dy = -r * Math.sin(slideAngle);
+        btnPullLinePath += "a" + r + ', ' + r + " 0 0 1 " + (r + dx) + " " + dy;
+        btnPullLinePath += " L" + btnEnd[0] + "," + btnEnd[1];
+        gsap.set(btnPullLine, { attr: { d: btnPullLinePath }, strokeWidth: 3 })
     }
+    return tl;
 }
 
-// Dashboard Functions
-function loadCustomerProfile() {
-    const profileContainer = document.getElementById('customerProfileData');
-    if (!currentUser || !profileContainer) return;
-    
-    profileContainer.innerHTML = `
-        <div style="display: grid; gap: 1rem;">
-            <div><strong>Name:</strong> ${currentUser.name}</div>
-            <div><strong>Email:</strong> ${currentUser.email}</div>
-            <div><strong>Phone:</strong> ${currentUser.phone}</div>
-            <div><strong>Member Since:</strong> ${new Date().toLocaleDateString()}</div>
-        </div>
-    `;
-}
 
-function loadMaidProfile() {
-    const profileContainer = document.getElementById('maidProfileData');
-    if (!currentUser || !profileContainer) return;
-    
-    const avatarContent = currentUser.photo ? 
-        `<img src="${currentUser.photo}" alt="${currentUser.name}" style="width: 100%; height: 100%; object-fit: cover;">` : 
-        currentUser.name.charAt(0).toUpperCase();
-    
-    profileContainer.innerHTML = `
-        <div style="text-align: center; margin-bottom: 2rem;">
-            <div class="maid-avatar" style="margin: 0 auto 1rem;">${avatarContent}</div>
-            <h3>${currentUser.name}</h3>
-        </div>
-        <div style="display: grid; gap: 1rem;">
-            <div><strong>Email:</strong> ${currentUser.email}</div>
-            <div><strong>Phone:</strong> ${currentUser.phone}</div>
-            <div><strong>Address:</strong> ${currentUser.address}</div>
-            <div><strong>Experience:</strong> ${currentUser.experience} years</div>
-            <div><strong>Daily Rate:</strong> ₹${currentUser.dailyRate}</div>
-            <div><strong>Monthly Rate:</strong> ₹${currentUser.monthlyRate}</div>
-            <div><strong>Bio:</strong> ${currentUser.bio}</div>
-        </div>
-    `;
-}
-
-function loadCustomerBookings() {
-    const bookingsContainer = document.getElementById('bookingsList');
-    if (!currentUser || !bookingsContainer) return;
-    
-    const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
-    const customerBookings = bookings.filter(b => b.customerId === currentUser.id);
-    
-    if (customerBookings.length === 0) {
-        bookingsContainer.innerHTML = '<p>No bookings found.</p>';
-        return;
-    }
-    
-    bookingsContainer.innerHTML = customerBookings.map(booking => `
-        <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: var(--shadow-md); margin-bottom: 1rem; border: 1px solid var(--border-color);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <h4>${booking.maidName}</h4>
-                <span style="padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; 
-                    ${booking.status === 'pending' ? 'background: #fef3c7; color: #d97706;' : 
-                      booking.status === 'confirmed' ? 'background: #dcfce7; color: #16a34a;' : 
-                      'background: #fee2e2; color: #dc2626;'}">${booking.status.toUpperCase()}</span>
-            </div>
-            <div><strong>Booking Date:</strong> ${new Date(booking.createdAt).toLocaleDateString()}</div>
-            <div><strong>Service Date:</strong> ${booking.date}</div>
-        </div>
-    `).join('');
-}
-
-function loadMaidBookings() {
-    const bookingsContainer = document.getElementById('maidBookingsList');
-    if (!currentUser || !bookingsContainer) return;
-    
-    const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
-    const maidBookings = bookings.filter(b => b.maidId === currentUser.id);
-    
-    if (maidBookings.length === 0) {
-        bookingsContainer.innerHTML = '<p>No booking requests found.</p>';
-        return;
-    }
-    
-    bookingsContainer.innerHTML = maidBookings.map(booking => `
-        <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: var(--shadow-md); margin-bottom: 1rem; border: 1px solid var(--border-color);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <h4>${booking.customerName}</h4>
-                <span style="padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; 
-                    ${booking.status === 'pending' ? 'background: #fef3c7; color: #d97706;' : 
-                      booking.status === 'confirmed' ? 'background: #dcfce7; color: #16a34a;' : 
-                      'background: #fee2e2; color: #dc2626;'}">${booking.status.toUpperCase()}</span>
-            </div>
-            <div><strong>Booking Date:</strong> ${new Date(booking.createdAt).toLocaleDateString()}</div>
-            <div><strong>Service Date:</strong> ${booking.date}</div>
-            ${booking.status === 'pending' ? `
-                <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
-                    <button class="btn btn-primary" onclick="updateBookingStatus('${booking.id}', 'confirmed')">Accept</button>
-                    <button class="btn btn-outline" onclick="updateBookingStatus('${booking.id}', 'rejected')">Reject</button>
-                </div>
-            ` : ''}
-        </div>
-    `).join('');
-}
-
-function updateBookingStatus(bookingId, status) {
-    const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
-    const booking = bookings.find(b => b.id === bookingId);
-    
-    if (booking) {
-        booking.status = status;
-        localStorage.setItem('bookings', JSON.stringify(bookings));
-        showNotification(`Booking ${status} successfully!`, 'success');
-        loadMaidBookings();
-    }
-}
-
-// Close modal when clicking outside
-window.onclick = function(event) {
-    const modal = document.getElementById('maidModal');
-    if (event.target === modal) {
-        closeMaidModal();
-    }
-}
+// Make switch functions global
+window.switchToLogin = switchToLogin;
+window.switchToRegister = switchToRegister;
 
     </script>
 </body>
