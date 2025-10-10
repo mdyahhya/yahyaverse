@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="style.css" />
     <style>
 
-      *{
+*{
   padding: 0;
   margin: 0;
   box-sizing: border-box;
@@ -20,6 +20,9 @@
 }
 body {
   background-color: #f4c531;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
 }
 .container {
   height: 31.25em;
@@ -29,45 +32,24 @@ body {
   top: 50%;
   left: 50%;
 }
-
 form {
   width: 23.75em;
-  height: 18.75em;
+  min-height: 26em;
   background-color: #ffffff;
   position: absolute;
   transform: translate(-50%, -50%);
   top: calc(50% + 3.1em);
   left: 50%;
-  padding: 0 3.1em;
+  padding: 1.5em 3.1em;
   display: flex;
   flex-direction: column;
   justify-content: center;
   border-radius: 0.5em;
+  z-index: 10;
 }
-/* Move h3 down */
 form h3 {
-  margin-top: 2.2em;
+  margin-top: 1.5em;
 }
-
-/* Mobile responsive - fit everything in viewport */
-@media screen and (max-width: 500px) {
-  .container {
-    font-size: 12px;
-    height: 100vh;
-    width: 100vw;
-  }
-  
-  body {
-    overflow: hidden;
-    height: 100vh;
-    width: 100vw;
-  }
-  
-  form {
-    font-size: 0.9em;
-  }
-}
-
 form label {
   display: block;
   margin-bottom: 0.2em;
@@ -102,9 +84,27 @@ form button {
   font-weight: 600;
   letter-spacing: 0.15em;
   margin-top: 0.8em;
-  transition: 0.5s ;
+  transition: 0.5s;
 }
-
+.message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 25px;
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  display: none;
+  z-index: 1000;
+}
+.message.success {
+  background-color: #10b981;
+  box-shadow: 0 0 20px #10b98166;
+}
+.message.error {
+  background-color: #ef4444;
+  box-shadow: 0 0 20px #ef444466;
+}
 .panda-face {
   height: 7.5em;
   width: 8.4em;
@@ -116,9 +116,9 @@ form button {
   margin: auto;
   left: 0;
   right: 0;
+  z-index: 8;
 }
-.ear-l,
-.ear-r {
+.ear-l, .ear-r {
   background-color: #3f3554;
   height: 2.5em;
   width: 2.81em;
@@ -126,6 +126,7 @@ form button {
   border-radius: 2.5em 2.5em 0 0;
   top: 1.75em;
   position: absolute;
+  z-index: 8;
 }
 .ear-l {
   transform: rotate(-38deg);
@@ -135,8 +136,7 @@ form button {
   transform: rotate(38deg);
   right: 10.75em;
 }
-.blush-l,
-.blush-r {
+.blush-l, .blush-r {
   background-color: #ff8bb1;
   height: 1em;
   width: 1.37em;
@@ -152,8 +152,7 @@ form button {
   transform: rotate(-25deg);
   right: 1em;
 }
-.eye-l,
-.eye-r {
+.eye-l, .eye-r {
   background-color: #3f3554;
   height: 2.18em;
   width: 2em;
@@ -169,8 +168,7 @@ form button {
   right: 1.37em;
   transform: rotate(20deg);
 }
-.eyeball-l,
-.eyeball-r {
+.eyeball-l, .eyeball-r {
   height: 0.6em;
   width: 0.6em;
   background-color: #ffffff;
@@ -208,8 +206,7 @@ form button {
   top: 0.75em;
   left: 1em;
 }
-.mouth,
-.mouth:before {
+.mouth, .mouth:before {
   height: 0.75em;
   width: 0.93em;
   background-color: transparent;
@@ -226,8 +223,7 @@ form button {
   position: absolute;
   left: 0.87em;
 }
-.hand-l,
-.hand-r {
+.hand-l, .hand-r {
   background-color: #3f3554;
   height: 2.81em;
   width: 2.5em;
@@ -236,6 +232,7 @@ form button {
   transition: 1s all;
   position: absolute;
   top: 8.4em;
+  z-index: 5;
 }
 .hand-l {
   left: 7.5em;
@@ -243,8 +240,7 @@ form button {
 .hand-r {
   right: 7.5em;
 }
-.paw-l,
-.paw-r {
+.paw-l, .paw-r {
   background-color: #3f3554;
   height: 3.12em;
   width: 3.12em;
@@ -252,6 +248,7 @@ form button {
   border-radius: 2.5em 2.5em 1.2em 1.2em;
   position: absolute;
   top: 26.56em;
+  z-index: 5;
 }
 .paw-l {
   left: 10em;
@@ -259,8 +256,7 @@ form button {
 .paw-r {
   right: 10em;
 }
-.paw-l:before,
-.paw-r:before {
+.paw-l:before, .paw-r:before {
   position: absolute;
   content: "";
   background-color: #ffffff;
@@ -270,8 +266,7 @@ form button {
   left: 0.55em;
   border-radius: 1.56em 1.56em 0.6em 0.6em;
 }
-.paw-l:after,
-.paw-r:after {
+.paw-l:after, .paw-r:after {
   position: absolute;
   content: "";
   background-color: #ffffff;
@@ -282,49 +277,39 @@ form button {
   left: 1.12em;
   box-shadow: 0.87em 0.37em #ffffff, -0.87em 0.37em #ffffff;
 }
+
+/* Mobile Responsive */
 @media screen and (max-width: 500px) {
   .container {
-    font-size: 14px;
+    font-size: 10px;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-      }
 
-      .message {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 15px 25px;
-    border-radius: 8px;
-    color: white;
-    font-size: 14px;
-    display: none;
-    z-index: 1000;
+  form {
+    font-size: 1em;
+    width: 90vw;
+    max-width: 23.75em;
+    padding: 1.2em 2em;
+  }
+
+  .message {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    font-size: 12px;
+    padding: 10px 15px;
+  }
 }
 
-.message.success {
-    background-color: #10b981;
-    box-shadow: 0 0 20px #10b98166;
+@media screen and (max-width: 400px) {
+  .container {
+    font-size: 9px;
+  }
 }
-
-.message.error {
-    background-color: #ef4444;
-    box-shadow: 0 0 20px #ef444466;
-}
-
-form {
-  width: 23.75em;
-  min-height: 22em;  /* Changed from fixed height */
-  background-color: #ffffff;
-  position: absolute;
-  transform: translate(-50%, -50%);
-  top: calc(50% + 3.1em);
-  left: 50%;
-  padding: 1.5em 3.1em;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border-radius: 0.5em;
-}
-
 
     </style>
   </head>
