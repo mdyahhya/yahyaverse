@@ -29,6 +29,7 @@ body {
   top: 50%;
   left: 50%;
 }
+
 form {
   width: 23.75em;
   height: 18.75em;
@@ -43,6 +44,30 @@ form {
   justify-content: center;
   border-radius: 0.5em;
 }
+/* Move h3 down */
+form h3 {
+  margin-top: 2.2em;
+}
+
+/* Mobile responsive - fit everything in viewport */
+@media screen and (max-width: 500px) {
+  .container {
+    font-size: 12px;
+    height: 100vh;
+    width: 100vw;
+  }
+  
+  body {
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+  
+  form {
+    font-size: 0.9em;
+  }
+}
+
 form label {
   display: block;
   margin-bottom: 0.2em;
@@ -262,17 +287,85 @@ form button {
     font-size: 14px;
   }
       }
+
+      .message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    display: none;
+    z-index: 1000;
+}
+
+.message.success {
+    background-color: #10b981;
+    box-shadow: 0 0 20px #10b98166;
+}
+
+.message.error {
+    background-color: #ef4444;
+    box-shadow: 0 0 20px #ef444466;
+}
+
+form {
+  width: 23.75em;
+  min-height: 22em;  /* Changed from fixed height */
+  background-color: #ffffff;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: calc(50% + 3.1em);
+  left: 50%;
+  padding: 1.5em 3.1em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 0.5em;
+}
+
+
     </style>
   </head>
   <body>
+    <div id="message" class="message"></div>
+    
     <div class="container">
-      <form>
-        <label for="username">Username:</label>
-        <input type="text" id="username" placeholder="Username here..." /><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" placeholder="Password here..." /><br>
-        <button>Login</button>
+      <!-- Registration Form -->
+      <form id="register-form">
+        <h3 style="text-align: center; color: #2e0d30; margin-bottom: 1em;">REGISTER</h3>
+        <label for="reg-email">Email:</label>
+        <input type="email" id="reg-email" placeholder="abc@xyz.com" required/>
+        <label for="reg-password">Password:</label>
+        <input type="password" id="reg-password" placeholder="Password (5+ chars)..." required/>
+       
+        <button type="button" id="register-btn">Register</button>
+        <p style="text-align: center; margin-top: 0.8em; font-size: 0.85em; cursor: pointer;" onclick="switchToLogin()">
+          Already have an account? <span style="color: white; text-decoration: underline;">Login</span>
+        </p>
       </form>
+      
+      <!-- Login Form (hidden by default) -->
+      <form id="login-form" style="display: none;">
+        <h3 style="text-align: center; color: #2e0d30; margin-bottom: 1em;">LOGIN</h3>
+        <label for="login-email">Email:</label>
+        <input type="email" id="login-email" placeholder="abc@xyz.com" required/>
+        <label for="login-password">Password:</label>
+        <input type="password" id="login-password" placeholder="Password here..." required/>
+        <button type="button" id="login-btn">Login</button>
+        <p style="text-align: center; margin-top: 0.8em; font-size: 0.85em; cursor: pointer;" onclick="switchToRegister()">
+          Don't have an account? <span style="color: white; text-decoration: underline;">Register</span>
+        </p>
+      </form>
+      
+      <!-- Welcome Screen (hidden by default) -->
+      <div id="welcome-screen" style="display: none; background: #ffffff; padding: 3em 2em; border-radius: 0.5em; position: absolute; top: calc(50% + 3.1em); left: 50%; transform: translate(-50%, -50%); width: 23.75em; text-align: center;">
+        <h2 style="color: #2e0d30; margin-bottom: 1em;">Welcome!</h2>
+        <p id="welcome-user" style="color: #3f3554; font-size: 1.1em; margin-bottom: 2em;"></p>
+        <button id="logout-btn" style="background-color: #ff4444; color: white; padding: 0.8em 2em; border: none; border-radius: 2em; cursor: pointer; font-weight: 600;">LOGOUT</button>
+      </div>
+      
       <div class="ear-l"></div>
       <div class="ear-r"></div>
       <div class="panda-face">
@@ -292,77 +385,231 @@ form button {
       <div class="paw-l"></div>
       <div class="paw-r"></div>
     </div>
+    
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Script -->
-    <script>
+  <script>
 
-      let usernameRef = document.getElementById("username");
-let passwordRef = document.getElementById("password");
+      
+// Initialize Supabase
+const sb = supabase.createClient('https://nsnacwwcrszpjmanskti.supabase.co', 
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zbmFjd3djcnN6cGptYW5za3RpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5MTg2MTIsImV4cCI6MjA2ODQ5NDYxMn0.W01JADzAuGFvcAHAN6LPRIxc75J7A9Q76HIxvxkJDn4');
+
+// DOM Elements
+const messageEl = document.getElementById('message');
+const registerForm = document.getElementById('register-form');
+const loginForm = document.getElementById('login-form');
+const welcomeScreen = document.getElementById('welcome-screen');
+const welcomeUser = document.getElementById('welcome-user');
+
+// Registration Elements
+const regEmailEl = document.getElementById('reg-email');
+const regPasswordEl = document.getElementById('reg-password');
+const registerBtn = document.getElementById('register-btn');
+
+// Login Elements
+const loginEmailEl = document.getElementById('login-email');
+const loginPasswordEl = document.getElementById('login-password');
+const loginBtn = document.getElementById('login-btn');
+
+// Logout
+const logoutBtn = document.getElementById('logout-btn');
+
+// Panda Elements
 let eyeL = document.querySelector(".eyeball-l");
 let eyeR = document.querySelector(".eyeball-r");
 let handL = document.querySelector(".hand-l");
 let handR = document.querySelector(".hand-r");
 
+// Message function
+function showMessage(text, type) {
+    messageEl.textContent = text;
+    messageEl.className = `message ${type}`;
+    messageEl.style.display = 'block';
+    setTimeout(() => {
+        messageEl.style.display = 'none';
+    }, 4000);
+}
+
+// Switch forms
+function switchToLogin() {
+    registerForm.style.display = 'none';
+    loginForm.style.display = 'flex';
+    normalEyeStyle();
+    normalHandStyle();
+}
+
+function switchToRegister() {
+    loginForm.style.display = 'none';
+    registerForm.style.display = 'flex';
+    normalEyeStyle();
+    normalHandStyle();
+}
+
+// Check if already logged in
+function checkLoginStatus() {
+    const loggedInUser = localStorage.getItem('loggedInUser');
+    if (loggedInUser) {
+        const userData = JSON.parse(loggedInUser);
+        showWelcomeScreen(userData.email);
+    }
+}
+
+function showWelcomeScreen(email) {
+    registerForm.style.display = 'none';
+    loginForm.style.display = 'none';
+    welcomeScreen.style.display = 'block';
+    welcomeUser.textContent = `Welcome, ${email}`;
+    normalEyeStyle();
+    normalHandStyle();
+}
+
+// Panda animation functions
 let normalEyeStyle = () => {
-  eyeL.style.cssText = `
-    left:0.6em;
-    top: 0.6em;
-  `;
-  eyeR.style.cssText = `
-  right:0.6em;
-  top:0.6em;
-  `;
+  eyeL.style.cssText = `left:0.6em; top: 0.6em;`;
+  eyeR.style.cssText = `right:0.6em; top:0.6em;`;
 };
 
 let normalHandStyle = () => {
-  handL.style.cssText = `
-        height: 2.81em;
-        top:8.4em;
-        left:7.5em;
-        transform: rotate(0deg);
-    `;
-  handR.style.cssText = `
-        height: 2.81em;
-        top: 8.4em;
-        right: 7.5em;
-        transform: rotate(0deg)
-    `;
+  handL.style.cssText = `height: 2.81em; top:8.4em; left:7.5em; transform: rotate(0deg);`;
+  handR.style.cssText = `height: 2.81em; top: 8.4em; right: 7.5em; transform: rotate(0deg)`;
 };
-//When clicked on username input
-usernameRef.addEventListener("focus", () => {
-  eyeL.style.cssText = `
-    left: 0.75em;
-    top: 1.12em;  
-  `;
-  eyeR.style.cssText = `
-    right: 0.75em;
-    top: 1.12em;
-  `;
+
+let hideEyesWithHands = () => {
+  handL.style.cssText = `height: 6.56em; top: 3.87em; left: 11.75em; transform: rotate(-155deg);`;
+  handR.style.cssText = `height: 6.56em; top: 3.87em; right: 11.75em; transform: rotate(155deg);`;
+  normalEyeStyle();
+};
+
+// Registration email focus
+regEmailEl.addEventListener("focus", () => {
+  eyeL.style.cssText = `left: 0.75em; top: 1.12em;`;
+  eyeR.style.cssText = `right: 0.75em; top: 1.12em;`;
   normalHandStyle();
 });
-//When clicked on password input
-passwordRef.addEventListener("focus", () => {
-  handL.style.cssText = `
-        height: 6.56em;
-        top: 3.87em;
-        left: 11.75em;
-        transform: rotate(-155deg);    
-    `;
-  handR.style.cssText = `
-    height: 6.56em;
-    top: 3.87em;
-    right: 11.75em;
-    transform: rotate(155deg);
-  `;
-  normalEyeStyle();
+
+// Registration password focus
+regPasswordEl.addEventListener("focus", () => {
+  hideEyesWithHands();
 });
-//When clicked outside username and password input
+
+// Login email focus
+loginEmailEl.addEventListener("focus", () => {
+  eyeL.style.cssText = `left: 0.75em; top: 1.12em;`;
+  eyeR.style.cssText = `right: 0.75em; top: 1.12em;`;
+  normalHandStyle();
+});
+
+// Login password focus
+loginPasswordEl.addEventListener("focus", () => {
+  hideEyesWithHands();
+});
+
+// Click outside
 document.addEventListener("click", (e) => {
   let clickedElem = e.target;
-  if (clickedElem != usernameRef && clickedElem != passwordRef) {
+  if (clickedElem != regEmailEl && clickedElem != regPasswordEl && 
+      clickedElem != loginEmailEl && clickedElem != loginPasswordEl) {
     normalEyeStyle();
     normalHandStyle();
   }
 });
+
+registerBtn.addEventListener('click', async () => {
+    const email = regEmailEl.value;
+    const password = regPasswordEl.value;
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    
+    if (!emailRegex.test(email)) {
+        showMessage('Please enter a valid email', 'error');
+        return;
+    }
+    
+    if (password.length <= 4) {
+        showMessage('Password must be more than 4 characters', 'error');
+        return;
+    }
+
+    const { data, error } = await sb
+        .from('users')
+        .insert([{ email: email, password: password, agreed: true }])
+        .select();
+
+    if (error) {
+        if (error.message.includes('duplicate')) {
+            showMessage('Email already registered. Please login.', 'error');
+        } else {
+            showMessage('Registration failed: ' + error.message, 'error');
+        }
+    } else {
+        showMessage('Registration successful! Please login.', 'success');
+        setTimeout(() => {
+            switchToLogin();
+        }, 2000);
+    }
+});
+
+// LOGIN
+loginBtn.addEventListener('click', async () => {
+    const email = loginEmailEl.value;
+    const password = loginPasswordEl.value;
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    
+    if (!emailRegex.test(email)) {
+        showMessage('Please enter a valid email', 'error');
+        return;
+    }
+    
+    if (password.length <= 4) {
+        showMessage('Password must be more than 4 characters', 'error');
+        return;
+    }
+
+    // Check credentials
+    const { data, error } = await sb
+        .from('users')
+        .select('*')
+        .eq('email', email)
+        .eq('password', password)
+        .single();
+
+    if (error || !data) {
+        showMessage('Invalid email or password', 'error');
+    } else {
+        showMessage('Login successful!', 'success');
+        
+        const loginData = {
+            email: data.email,
+            loginTime: new Date().toISOString()
+        };
+        localStorage.setItem('loggedInUser', JSON.stringify(loginData));
+        
+        setTimeout(() => {
+            showWelcomeScreen(data.email);
+        }, 1000);
+    }
+});
+
+// LOGOUT
+logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('loggedInUser');
+    welcomeScreen.style.display = 'none';
+    loginForm.style.display = 'flex';
+    loginEmailEl.value = '';
+    loginPasswordEl.value = '';
+    showMessage('Logged out successfully', 'success');
+});
+
+// Check login on page load
+checkLoginStatus();
+
+// Make switch functions global
+window.switchToLogin = switchToLogin;
+window.switchToRegister = switchToRegister;
+
     </script>
   </body>
 </html>
