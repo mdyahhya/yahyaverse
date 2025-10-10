@@ -482,7 +482,7 @@ registerBtn.addEventListener('click', async () => {
     }
 
     const { data, error } = await sb
-        .from('users')
+        .from('loginusers')
         .insert([{ email: email, password: password, agreed: true }])
         .select();
 
@@ -520,7 +520,7 @@ loginBtn.addEventListener('click', async () => {
 
     // Check credentials
     const { data, error } = await sb
-        .from('users')
+        .from('loginusers')
         .select('*')
         .eq('email', email)
         .eq('password', password)
