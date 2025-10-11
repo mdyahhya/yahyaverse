@@ -6,6 +6,14 @@
   <title>Shader Editor</title>
 
   <style>
+
+    html, body { margin:0; height:100vh; overflow:hidden; } /* keep viewport tight */ /* [web:104] */
+#landscape {
+  position: fixed; inset: 0;            /* pin to viewport */               /* [web:104] */
+  width: 100vh; height: 100vw;          /* swap dimensions after rotate */   /* [web:88] */
+  transform: rotate(90deg);             /* rotate content clockwise */       /* [web:89] */
+  transform-origin: top left;           /* pivot from top-left corner */     /* [web:101] */
+}
   ::-webkit-scrollbar {
     width: 0.625rem;
     height: 0.625rem;
@@ -194,9 +202,12 @@
   #btnReset::after {
     content: '⏮️';
   }
+  #controls { display: none !important; }
+
   </style>
 </head>
 <body>
+<div id="landscape"></div>
   <!-- HTML (verbatim) -->
   <canvas id="canvas"></canvas>
   <textarea id="codeEditor" class="editor" spellcheck="false" autocorrect="off" autocapitalize="off" translate="no" oninput="render()"></textarea>
@@ -209,6 +220,7 @@
       <input id="btnReset" class="icon" type="checkbox" name="reset" onclick="reset()">
     </div>
   </div>
+</div>
   <script type="x-shader/x-fragment">#version 300 es
 
 /*********
