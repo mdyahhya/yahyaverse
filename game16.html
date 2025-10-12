@@ -225,11 +225,10 @@ html, body { margin:0; height:100vh; overflow:hidden; } /* avoid scrollbars */
 
   </style>
 </head>
-<body>
-<button id="btnRotate" aria-label="Rotate">↻ Rotate</button>
-<div id="rotateWrap"></div>
-  <!-- HTML (verbatim) -->
-  <canvas id="canvas"></canvas>
+
+<div id="rotateWrap">
+ <body><button id="btnRotate" aria-label="Rotate">↻ Rotate</button>
+    <canvas id="canvas"></canvas>
   <textarea id="codeEditor" class="editor" spellcheck="false" autocorrect="off" autocapitalize="off" translate="no" oninput="render()"></textarea>
   <pre id="error"></pre>
   <div id="indicator"></div>
@@ -241,6 +240,7 @@ html, body { margin:0; height:100vh; overflow:hidden; } /* avoid scrollbars */
     </div>
   </div>
 </div>
+
   <script type="x-shader/x-fragment">#version 300 es
 
 /*********
