@@ -210,25 +210,26 @@
   position: fixed; left: 1rem; top: 1rem; z-index: 10000;
   padding: .5rem .75rem; background:#111c; color:#fff; border:0; border-radius:.5rem;
 }
+html, body { margin:0; height:100vh; overflow:hidden; }  /* viewport clamp [web:100] */
+
 #rotateWrap {
   position: fixed; inset: 0;
-  transform-origin: top left;
-  transition: transform .25s ease, width .25s ease, height .25s ease;
+  width: 100vw; height: 100vh;             /* unrotated size */
+  transform-origin: top left;               /* stable pivot [web:101] */
+  transition: transform .25s ease;
 }
-#rotateWrap.rotated {
-  transform: rotate(90deg);
-  width: 100vh;   /* swapped after rotate */  /* keep content fully visible */
-  height: 100vw;  /* swapped after rotate */
-}
-html, body { margin:0; height:100vh; overflow:hidden; } /* avoid scrollbars */
 
+#rotateWrap.rotated {
+  /* rotate clockwise and bring back into view */
+  transform: rotate(90deg) translate(0, -100vh);  /* order matters: rotate then translate */
+  width: 100vh; height: 100vw;                    /* swapped logical size after rotate */
+}
 
   </style>
 </head>
-
+<body><button id="btnRotate" aria-label="Rotate">↻ Rotate</button>
 <div id="rotateWrap">
- <body><button id="btnRotate" aria-label="Rotate">↻ Rotate</button>
-    <canvas id="canvas"></canvas>
+  <canvas id="canvas"></canvas>
   <textarea id="codeEditor" class="editor" spellcheck="false" autocorrect="off" autocapitalize="off" translate="no" oninput="render()"></textarea>
   <pre id="error"></pre>
   <div id="indicator"></div>
