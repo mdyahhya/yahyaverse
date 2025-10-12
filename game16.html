@@ -204,10 +204,30 @@
   }
   #controls { display: none !important; }
 
+
+
+  #btnRotate {
+  position: fixed; left: 1rem; top: 1rem; z-index: 10000;
+  padding: .5rem .75rem; background:#111c; color:#fff; border:0; border-radius:.5rem;
+}
+#rotateWrap {
+  position: fixed; inset: 0;
+  transform-origin: top left;
+  transition: transform .25s ease, width .25s ease, height .25s ease;
+}
+#rotateWrap.rotated {
+  transform: rotate(90deg);
+  width: 100vh;   /* swapped after rotate */  /* keep content fully visible */
+  height: 100vw;  /* swapped after rotate */
+}
+html, body { margin:0; height:100vh; overflow:hidden; } /* avoid scrollbars */
+
+
   </style>
 </head>
 <body>
-<div id="landscape"></div>
+<button id="btnRotate" aria-label="Rotate">↻ Rotate</button>
+<div id="rotateWrap"></div>
   <!-- HTML (verbatim) -->
   <canvas id="canvas"></canvas>
   <textarea id="codeEditor" class="editor" spellcheck="false" autocorrect="off" autocapitalize="off" translate="no" oninput="render()"></textarea>
@@ -294,6 +314,10 @@ void main(void) {
 
   <!-- JS (verbatim) -->
   <script>
+    document.getElementById('btnRotate').addEventListener('click', () => {
+  document.getElementById('rotateWrap').classList.toggle('rotated');
+});
+
   /*********
    * made by Matthias Hurrle (@atzedent)
    */
