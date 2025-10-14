@@ -1,1123 +1,376 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Realistic 3D Milky Way Galaxy</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            -khtml-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cat Login Form</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *{
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+    body {
+      background-color: #ffe3d7;
+    }
+    .container {
+      height: 31.25em;
+      width: 31.25em;
+      position: absolute;
+      transform: translate(-50%, -50%);
+      top: 40%;
+      left: 50%;
+    }
+    form {
+      width: 23.75em;
+      min-height: 26em;
+      background-color: #ffffff;
+      position: absolute;
+      transform: translate(-50%, -50%);
+      top: calc(50% + 3.1em);
+      left: 50%;
+      padding: 1.5em 3.1em;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-radius: 0.5em;
+      z-index: 10;
+    }
+    form h3 {
+      margin-top: 1.5em;
+    }
+    form label {
+      display: block;
+      margin-bottom: 0.2em;
+      font-weight: 600;
+      color: #6d4736;
+    }
+    form input {
+      font-size: 0.95em;
+      font-weight: 400;
+      color: #6d4736;
+      padding: 0.3em;
+      border: none;
+      border-bottom: 0.12em solid #6d4736;
+      outline: none;
+    }
+    form input:focus {
+      border-color: #f5b267;
+    }
+    form input:not(:last-child) {
+      margin-bottom: 0.9em;
+    }
+    form button {
+      font-size: 0.95em;
+      padding: 0.8em 0;
+      border-radius: 2em;
+      border: none;
+      cursor: pointer;
+      outline: none;
+      background-color: #f5b267;
+      color: #6d4736;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      margin-top: 0.8em;
+      transition: 0.5s;
+    }
+    .message {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+      display: none;
+      z-index: 1000;
+    }
+    .message.success {
+      background-color: #10b981;
+      box-shadow: 0 0 20px #10b98166;
+    }
+    .message.error {
+      background-color: #ef4444;
+      box-shadow: 0 0 20px #ef444466;
+    }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            overflow: hidden;
-            background: #000;
-            width: 100vw;
-            height: 100vh;
-            max-width: 375px;
-            max-height: 770px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        #container {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-            background: #000;
-        }
-
-        .parallax-layer {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            will-change: transform;
-        }
-
-        #three-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 2;
-        }
-
-        .space-dust {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            background: 
-                radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.005) 0%, transparent 40%),
-                radial-gradient(ellipse at 70% 80%, rgba(255, 255, 255, 0.003) 0%, transparent 50%),
-                radial-gradient(ellipse at 20% 70%, rgba(255, 255, 255, 0.002) 0%, transparent 60%);
-            opacity: 0.3;
-        }
-
-        .realistic-nebula {
-            position: absolute;
-            border-radius: 50%;
-            z-index: 1;
-            animation: nebulaRealistic 40s ease-in-out infinite;
-            filter: blur(3px);
-            opacity: 0.15;
-        }
-
-        .nebula-red {
-            width: 300px;
-            height: 200px;
-            top: 15%;
-            left: 10%;
-            background: radial-gradient(ellipse, rgba(255, 100, 100, 0.3) 0%, rgba(255, 150, 100, 0.2) 30%, transparent 70%);
-            animation-delay: 0s;
-        }
-
-        .nebula-blue {
-            width: 250px;
-            height: 180px;
-            top: 60%;
-            right: 20%;
-            background: radial-gradient(ellipse, rgba(100, 150, 255, 0.25) 0%, rgba(150, 200, 255, 0.15) 35%, transparent 70%);
-            animation-delay: 15s;
-        }
-
-        .nebula-purple {
-            width: 180px;
-            height: 160px;
-            bottom: 25%;
-            left: 25%;
-            background: radial-gradient(ellipse, rgba(200, 100, 255, 0.2) 0%, rgba(150, 100, 200, 0.1) 40%, transparent 70%);
-            animation-delay: 30s;
-        }
-
-        @keyframes nebulaRealistic {
-            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.15; }
-            33% { transform: scale(1.1) rotate(2deg); opacity: 0.25; }
-            66% { transform: scale(0.9) rotate(-2deg); opacity: 0.1; }
-        }
-
-        .distant-star {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            background: white;
-            border-radius: 50%;
-            animation: starTwinkle 4s ease-in-out infinite;
-            z-index: 1;
-        }
-
-        @keyframes starTwinkle {
-            0%, 100% { opacity: 0.4; transform: scale(1); }
-            25% { opacity: 0.8; transform: scale(1.2); }
-            50% { opacity: 0.6; transform: scale(1.1); }
-            75% { opacity: 0.9; transform: scale(1.3); }
-        }
-
-        .controls {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .control-btn {
-            padding: 10px 18px;
-            background: rgba(20, 20, 20, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            color: rgba(255, 255, 255, 0.9);
-            font-weight: 500;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            font-size: 12px;
-            min-width: 70px;
-            touch-action: manipulation;
-        }
-
-        .control-btn:hover, .control-btn:active {
-            background: rgba(40, 40, 40, 0.9);
-            border-color: rgba(255, 255, 255, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .control-btn.active {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.6);
-            color: white;
-        }
-
-        .speed-control {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 10;
-        }
-
-        .speed-slider {
-            width: 100px;
-            height: 4px;
-            border-radius: 2px;
-            background: rgba(255, 255, 255, 0.2);
-            outline: none;
-            -webkit-appearance: none;
-        }
-
-        .speed-slider::-webkit-slider-thumb {
-            appearance: none;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.9);
-            cursor: pointer;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .status-display {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 11px;
-            z-index: 10;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 8px 12px;
-            border-radius: 15px;
-            backdrop-filter: blur(5px);
-        }
-
-        .galaxy-title {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 16px;
-            font-weight: 300;
-            color: rgba(255, 255, 255, 0.7);
-            text-align: center;
-            z-index: 6;
-            letter-spacing: 2px;
-            font-family: 'Courier New', monospace;
-        }
-
-        .meteor {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            background: white;
-            border-radius: 50%;
-            z-index: 3;
-            animation: meteorTrail 12s linear infinite;
-        }
-
-        .meteor::before {
-            content: '';
-            position: absolute;
-            width: 30px;
-            height: 1px;
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
-            right: 0;
-            top: 0;
-            transform-origin: right;
-            animation: meteorFade 12s linear infinite;
-        }
-
-        @keyframes meteorTrail {
-            0% { 
-                transform: translateX(-50px) translateY(-50px);
-                opacity: 0;
-            }
-            5% { opacity: 1; }
-            95% { opacity: 1; }
-            100% { 
-                transform: translateX(400px) translateY(400px);
-                opacity: 0;
-            }
-        }
-
-        @keyframes meteorFade {
-            0%, 5% { opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-
-        .cosmic-ray {
-            position: absolute;
-            width: 1px;
-            height: 100%;
-            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.1), transparent);
-            animation: cosmicRayMove 15s linear infinite;
-            z-index: 1;
-            opacity: 0.3;
-        }
-
-        @keyframes cosmicRayMove {
-            0% { transform: translateY(-100%) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.3; }
-            90% { opacity: 0.3; }
-            100% { transform: translateY(100%) rotate(5deg); opacity: 0; }
-        }
-
-        @media (max-width: 375px) {
-            .controls {
-                bottom: 15px;
-                gap: 8px;
-            }
-            
-            .control-btn {
-                padding: 8px 14px;
-                font-size: 11px;
-                min-width: 60px;
-            }
-            
-            .galaxy-title {
-                font-size: 14px;
-            }
-        }
-    </style>
+    /* Cat Face */
+    .cat-face {
+      height: 7.5em;
+      width: 8.4em;
+      background-color: #faecd6;
+      border: 0.18em solid #6d4736;
+      border-radius: 7.5em 7.5em 6.62em 6.62em / 8em 7em 7em 8em;
+      position: absolute;
+      top: 2em;
+      margin: auto;
+      left: 0;
+      right: 0;
+      z-index: 8;
+    }
+    /* Cat Ears */
+    .cat-ear-l, .cat-ear-r {
+      position: absolute;
+      top: -2.6em;
+      width: 3em;
+      height: 4em;
+      background: #faecd6;
+      border: 0.18em solid #6d4736;
+      z-index: 9;
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    }
+    .cat-ear-l {
+      left: 0.3em;
+      transform: rotate(-19deg);
+    }
+    .cat-ear-r {
+      right: 0.3em;
+      transform: rotate(19deg);
+    }
+    /* Ear inner triangles */
+    .cat-ear-inner-l, .cat-ear-inner-r {
+      position: absolute;
+      background: #ffd4c7;
+      width: 1.4em;
+      height: 1.9em;
+      top: 0.7em;
+      left: 1.0em;
+      z-index: 10;
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    }
+    .cat-ear-inner-r {
+      right: 1.0em;
+      left: auto;
+    }
+    /* Cat Eyes */
+    .cat-eye-l, .cat-eye-r {
+      background: #6d4736;
+      height: 2em;
+      width: 1.5em;
+      border-radius: 50% 50% 40% 40%;
+      position: absolute;
+      top: 2.5em;
+    }
+    .cat-eye-l {
+      left: 1.6em;
+      transform: rotate(-10deg);
+      overflow: hidden;
+    }
+    .cat-eye-r {
+      right: 1.6em;
+      transform: rotate(10deg);
+      overflow: hidden;
+    }
+    .cat-eye-ball-l, .cat-eye-ball-r {
+      background: #fffbe7;
+      border-radius: 50%;
+      width: 0.65em;
+      height: 0.65em;
+      position: absolute;
+      left: 0.4em;
+      top: 0.45em;
+      transition: 0.2s;
+    }
+    .cat-eye-ball-r {
+      right: 0.4em;
+      left: auto;
+    }
+    /* Cat Nose */
+    .cat-nose {
+      width: 1em;
+      height: 0.7em;
+      background: #f47c5e;
+      position: absolute;
+      top: 4.6em;
+      left: calc(50% - 0.5em);
+      border-radius: 50% 50% 60% 60%;
+      border: 0.12em solid #6d4736;
+      z-index: 12;
+    }
+    /* Cat Mouth */
+    .cat-mouth {
+      width: 2.5em;
+      height: 1.7em;
+      position: absolute;
+      top: 5.1em;
+      left: calc(50% - 1.25em);
+      border-bottom: 0.18em solid #6d4736;
+      border-radius: 0 0 2.5em 2.5em;
+      z-index: 11;
+    }
+    .cat-mouth.smile {
+      border-bottom-width: 0.28em;
+      border-bottom-color: #d08047;
+      height: 2.2em;
+      top: 4.9em;
+    }
+    /* Cat Whiskers */
+    .cat-whisker-l, .cat-whisker-r {
+      position: absolute;
+      width: 3.5em;
+      height: 0.24em;
+      top: 5em;
+      background: #6d4736;
+      border-radius: 0.18em;
+      z-index: 11;
+    }
+    .cat-whisker-l {
+      left: 0.1em;
+      transform: rotate(-20deg);
+    }
+    .cat-whisker-r {
+      right: 0.1em;
+      transform: rotate(20deg);
+    }
+    /* Cat Hands/Paws */
+    .cat-paw-l, .cat-paw-r {
+      background: #f7dac2;
+      height: 3em;
+      width: 2em;
+      border-radius: 1.1em 1.1em 2.18em 2.18em;
+      border: 0.18em solid #6d4736;
+      position: absolute;
+      top: 8.4em;
+      z-index: 5;
+      transition: 0.5s;
+    }
+    .cat-paw-l {
+      left: 6em;
+    }
+    .cat-paw-r {
+      right: 6em;
+    }
+    .cat-paw-l.hide, .cat-paw-r.hide {
+      top: 4em;
+      background: #f5b267;
+    }
+    /* Cat Feet */
+    .cat-foot-l, .cat-foot-r {
+      background: #f5b267;
+      width: 2.2em;
+      height: 2.8em;
+      border-radius: 1.3em 1.3em 2em 2em;
+      border: 0.18em solid #6d4736;
+      position: absolute;
+      top: 26em;
+      z-index: 5;
+    }
+    .cat-foot-l {
+      left: 7em;
+    }
+    .cat-foot-r {
+      right: 7em;
+    }
+    /* Cat Tail */
+    .cat-tail {
+      width: 1.7em;
+      height: 5.5em;
+      position: absolute;
+      right: -1.7em;
+      top: 10em;
+      background: #f5b267;
+      border-radius: 2em 2em 2.5em 2.5em;
+      border: 0.18em solid #6d4736;
+      transform: rotate(-25deg);
+      z-index: 3;
+    }
+  </style>
 </head>
 <body>
-    <div id="container">
-        <!-- Status Display -->
-        <div class="status-display">
-            <div>Speed: <span id="speed-value">1.0x</span></div>
-            <div>Status: <span id="status">Observatory</span></div>
-        </div>
-
-        <!-- Speed Control -->
-        <div class="speed-control">
-            <input type="range" id="speedSlider" class="speed-slider" min="0.1" max="3" step="0.1" value="1">
-        </div>
-
-        <!-- Parallax Layers -->
-        <div class="parallax-layer layer-1">
-            <div class="space-dust"></div>
-            <div class="realistic-nebula nebula-red"></div>
-            <div class="realistic-nebula nebula-blue"></div>
-            <div class="realistic-nebula nebula-purple"></div>
-            <div class="cosmic-ray" style="left: 15%; animation-delay: 0s;"></div>
-            <div class="cosmic-ray" style="left: 60%; animation-delay: 5s;"></div>
-            <div class="cosmic-ray" style="left: 85%; animation-delay: 10s;"></div>
-        </div>
-        
-        
-        <canvas id="three-canvas" class="parallax-layer layer-2"></canvas>
-        
-        <div class="parallax-layer layer-3">
-            <div class="meteor" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
-            <div class="meteor" style="top: 60%; left: 40%; animation-delay: 4s;"></div>
-            <div class="meteor" style="top: 80%; left: 70%; animation-delay: 8s;"></div>
-        </div>
-        
-        <div class="parallax-layer layer-4">
-            <div class="galaxy-title" id="mainText">MILKY WAY</div>
-        </div>
-
-        <!-- Controls -->
-        <div class="controls">
-            <button class="control-btn" id="startBtn">OBSERVE</button>
-            <button class="control-btn" id="pauseBtn">PAUSE</button>
-            <button class="control-btn" id="resetBtn">RESET</button>
-            <button class="control-btn" id="telescopeBtn">TELESCOPE</button>
-        </div>
+  <div class="container">
+    <form>
+      <h3>CAT LOGIN</h3>
+      <label for="username">Gmail:</label>
+      <input type="text" id="username" placeholder="Enter Gmail..." />
+      <label for="password">Password:</label>
+      <input type="password" id="password" placeholder="Password here..." />
+      <button>Login</button>
+    </form>
+    <div class="cat-ear-l"></div>
+    <div class="cat-ear-inner-l"></div>
+    <div class="cat-ear-r"></div>
+    <div class="cat-ear-inner-r"></div>
+    <div class="cat-face">
+      <div class="cat-eye-l">
+        <div class="cat-eye-ball-l"></div>
+      </div>
+      <div class="cat-eye-r">
+        <div class="cat-eye-ball-r"></div>
+      </div>
+      <div class="cat-nose"></div>
+      <div class="cat-mouth"></div>
+      <div class="cat-whisker-l"></div>
+      <div class="cat-whisker-r"></div>
     </div>
+    <div class="cat-paw-l"></div>
+    <div class="cat-paw-r"></div>
+    <div class="cat-foot-l"></div>
+    <div class="cat-foot-r"></div>
+    <div class="cat-tail"></div>
+  </div>
+  <script>
+    const usernameRef = document.getElementById("username");
+    const passwordRef = document.getElementById("password");
+    const eyeBallL = document.querySelector(".cat-eye-ball-l");
+    const eyeBallR = document.querySelector(".cat-eye-ball-r");
+    const pawL = document.querySelector(".cat-paw-l");
+    const pawR = document.querySelector(".cat-paw-r");
+    const mouth = document.querySelector(".cat-mouth");
 
-    <script>
-        // Global variables
-let scene, camera, renderer;
-let galaxyGroup, spiralArms, centralBulge, starField, dustClouds, galaxyDisk;
-let isAnimating = false;
-let animationSpeed = 1;
-let telescopeMode = false;
-let rotationSpeed = 0.002;
-
-// Initialize everything
-document.addEventListener('DOMContentLoaded', function() {
-    initThreeJS();
-    initControls();
-    createRealisticStars();
-    createMeteors();
-    createCosmicRays();
-    animate3D();
-});
-
-// Create realistic distant stars
-function createRealisticStars() {
-    const container = document.getElementById('container');
-    for (let i = 0; i < 80; i++) {
-        const star = document.createElement('div');
-        star.className = 'distant-star';
-        star.style.left = Math.random() * 100 + '%';
-        star.style.top = Math.random() * 100 + '%';
-        star.style.animationDelay = Math.random() * 4 + 's';
-        
-        // Vary star brightness
-        const brightness = 0.3 + Math.random() * 0.7;
-        star.style.opacity = brightness;
-        
-        // Vary star size slightly
-        const size = 0.5 + Math.random() * 1.5;
-        star.style.width = size + 'px';
-        star.style.height = size + 'px';
-        
-        container.appendChild(star);
-    }
-}
-
-// Create meteors with correct trajectory
-function createMeteors() {
-    const container = document.getElementById('container');
-    for (let i = 0; i < 3; i++) {
-        const meteor = document.createElement('div');
-        meteor.className = 'meteor';
-        meteor.style.left = Math.random() * 100 + '%';
-        meteor.style.top = Math.random() * 30 + '%';
-        meteor.style.animationDelay = Math.random() * 10 + 's';
-        container.appendChild(meteor);
-    }
-}
-
-// Create cosmic rays
-function createCosmicRays() {
-    const container = document.getElementById('container');
-    for (let i = 0; i < 5; i++) {
-        const ray = document.createElement('div');
-        ray.className = 'cosmic-ray';
-        ray.style.left = Math.random() * 100 + '%';
-        ray.style.animationDelay = Math.random() * 15 + 's';
-        container.appendChild(ray);
-    }
-}
-
-// Three.js initialization with realistic rendering
-function initThreeJS() {
-    const canvas = document.getElementById('three-canvas');
-    
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(60, 375 / 770, 0.1, 2000);
-    renderer = new THREE.WebGLRenderer({ 
-        canvas: canvas, 
-        alpha: true,
-        antialias: true,
-        powerPreference: "high-performance"
-    });
-    renderer.setSize(375, 770);
-    renderer.setClearColor(0x000000, 0);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-    // Create galaxy group
-    galaxyGroup = new THREE.Group();
-    scene.add(galaxyGroup);
-
-    // Create realistic components
-    createRealisticStarField();
-    createGalaxyDisk();
-    createRealisticGalaxyCore();
-    createRealisticSpiralArms();
-    createDustClouds();
-    createGalacticHalo();
-
-    // Position camera for realistic view
-    camera.position.set(0, 100, 300);
-    camera.lookAt(0, 0, 0);
-}
-
-// Create the main galaxy disk structure
-function createGalaxyDisk() {
-    const diskGeometry = new THREE.RingGeometry(20, 180, 64);
-    const diskMaterial = new THREE.MeshBasicMaterial({
-        color: 0x4a4a6a,
-        transparent: true,
-        opacity: 0.1,
-        side: THREE.DoubleSide
-    });
-    
-    galaxyDisk = new THREE.Mesh(diskGeometry, diskMaterial);
-    galaxyDisk.rotation.x = Math.PI / 2;
-    galaxyGroup.add(galaxyDisk);
-    
-    // Create additional disk layers for depth
-    for (let i = 0; i < 3; i++) {
-        const layerGeometry = new THREE.RingGeometry(30 + i * 20, 160 - i * 15, 32);
-        const layerMaterial = new THREE.MeshBasicMaterial({
-            color: new THREE.Color().setHSL(0.6 + i * 0.1, 0.3, 0.3),
-            transparent: true,
-            opacity: 0.05 - i * 0.01,
-            side: THREE.DoubleSide
-        });
-        
-        const layer = new THREE.Mesh(layerGeometry, layerMaterial);
-        layer.rotation.x = Math.PI / 2;
-        layer.position.y = (i - 1) * 2;
-        galaxyGroup.add(layer);
-    }
-}
-
-// Create realistic star field with proper star colors and sizes
-function createRealisticStarField() {
-    const starGeometry = new THREE.BufferGeometry();
-    const starCount = 3000;
-    const positions = new Float32Array(starCount * 3);
-    const colors = new Float32Array(starCount * 3);
-    const sizes = new Float32Array(starCount);
-
-    for (let i = 0; i < starCount; i++) {
-        const i3 = i * 3;
-        
-        // Realistic star distribution
-        const radius = 1000 + Math.random() * 500;
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.acos(2 * Math.random() - 1);
-        
-        positions[i3] = radius * Math.sin(phi) * Math.cos(theta);
-        positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-        positions[i3 + 2] = radius * Math.cos(phi);
-
-        // Realistic stellar colors based on temperature
-        const stellarType = Math.random();
-        const color = new THREE.Color();
-        
-        if (stellarType < 0.1) {
-            // Blue giants
-            color.setRGB(0.7, 0.8, 1.0);
-            sizes[i] = 2.0 + Math.random() * 1.5;
-        } else if (stellarType < 0.3) {
-            // White stars
-            color.setRGB(1.0, 1.0, 0.9);
-            sizes[i] = 1.5 + Math.random() * 1.0;
-        } else if (stellarType < 0.7) {
-            // Yellow stars (like our Sun)
-            color.setRGB(1.0, 0.9, 0.7);
-            sizes[i] = 1.0 + Math.random() * 0.8;
-        } else {
-            // Red dwarfs
-            color.setRGB(1.0, 0.6, 0.4);
-            sizes[i] = 0.8 + Math.random() * 0.5;
-        }
-        
-        colors[i3] = color.r;
-        colors[i3 + 1] = color.g;
-        colors[i3 + 2] = color.b;
+    function normalEyes() {
+      eyeBallL.style.left = "0.4em";
+      eyeBallL.style.top = "0.45em";
+      eyeBallR.style.right = "0.4em";
+      eyeBallR.style.top = "0.45em";
     }
 
-    starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    starGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-    starGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+    function pawNormal() {
+      pawL.classList.remove("hide");
+      pawR.classList.remove("hide");
+    }
 
-    const starMaterial = new THREE.PointsMaterial({
-        vertexColors: true,
-        transparent: true,
-        opacity: 0.8,
-        sizeAttenuation: false
+    function smileMouth() {
+      mouth.classList.add("smile");
+    }
+    function normalMouth() {
+      mouth.classList.remove("smile");
+    }
+
+    usernameRef.addEventListener("focus", () => {
+      eyeBallL.style.left = "0.45em";
+      eyeBallL.style.top = "0.65em";
+      eyeBallR.style.right = "0.45em";
+      eyeBallR.style.top = "0.65em";
+      normalMouth();
+      pawNormal();
     });
 
-    starField = new THREE.Points(starGeometry, starMaterial);
-    scene.add(starField);
-}
-
-// Create realistic galaxy core with proper density distribution
-function createRealisticGalaxyCore() {
-    const coreGeometry = new THREE.BufferGeometry();
-    const coreCount = 5000;
-    const corePositions = new Float32Array(coreCount * 3);
-    const coreColors = new Float32Array(coreCount * 3);
-    const coreSizes = new Float32Array(coreCount);
-
-    for (let i = 0; i < coreCount; i++) {
-        const i3 = i * 3;
-        
-        // Realistic bulge distribution (elliptical)
-        const radius = Math.pow(Math.random(), 0.7) * 40;
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.acos(2 * Math.random() - 1);
-        
-        corePositions[i3] = radius * Math.sin(phi) * Math.cos(theta);
-        corePositions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta) * 0.4;
-        corePositions[i3 + 2] = radius * Math.cos(phi);
-
-        // Realistic core stellar population (older, redder stars)
-        const color = new THREE.Color();
-        const temp = Math.random();
-        
-        if (temp < 0.6) {
-            // K-type stars (orange)
-            color.setRGB(1.0, 0.8, 0.6);
-            coreSizes[i] = 1.2 + Math.random() * 0.8;
-        } else if (temp < 0.9) {
-            // G-type stars (yellow)
-            color.setRGB(1.0, 0.95, 0.8);
-            coreSizes[i] = 1.0 + Math.random() * 0.6;
-        } else {
-            // Red giants
-            color.setRGB(1.0, 0.7, 0.5);
-            coreSizes[i] = 2.0 + Math.random() * 1.0;
-        }
-        
-        coreColors[i3] = color.r;
-        coreColors[i3 + 1] = color.g;
-        coreColors[i3 + 2] = color.b;
-    }
-
-    coreGeometry.setAttribute('position', new THREE.BufferAttribute(corePositions, 3));
-    coreGeometry.setAttribute('color', new THREE.BufferAttribute(coreColors, 3));
-    coreGeometry.setAttribute('size', new THREE.BufferAttribute(coreSizes, 1));
-
-    const coreMaterial = new THREE.PointsMaterial({
-        vertexColors: true,
-        transparent: true,
-        opacity: 0.9,
-        sizeAttenuation: false
+    usernameRef.addEventListener("input", () => {
+      smileMouth();
     });
 
-    centralBulge = new THREE.Points(coreGeometry, coreMaterial);
-    galaxyGroup.add(centralBulge);
-}
-
-// Create realistic spiral arms with proper density waves
-function createRealisticSpiralArms() {
-    spiralArms = new THREE.Group();
-
-    // Create 2 major spiral arms (typical for Milky Way)
-    for (let arm = 0; arm < 2; arm++) {
-        const armGeometry = new THREE.BufferGeometry();
-        const armCount = 12000;
-        const armPositions = new Float32Array(armCount * 3);
-        const armColors = new Float32Array(armCount * 3);
-        const armSizes = new Float32Array(armCount);
-
-        const armOffset = arm * Math.PI;
-
-        for (let i = 0; i < armCount; i++) {
-            const i3 = i * 3;
-            
-            // Realistic logarithmic spiral equation
-            const t = (i / armCount) * Math.PI * 8;
-            const baseRadius = 25 + t * 10;
-            const angle = t * 0.3 + armOffset;
-            
-            // Add realistic density variations
-            const densityFactor = 1 + 0.5 * Math.sin(t * 2);
-            const radius = baseRadius * densityFactor;
-            
-            // Add thickness and random scatter
-            const scatter = (Math.random() - 0.5) * 12;
-            const thickness = (Math.random() - 0.5) * 6;
-            
-            armPositions[i3] = Math.cos(angle) * (radius + scatter);
-            armPositions[i3 + 1] = thickness;
-            armPositions[i3 + 2] = Math.sin(angle) * (radius + scatter);
-
-            // Realistic stellar population in arms (younger, bluer stars)
-            const color = new THREE.Color();
-            const stellarType = Math.random();
-            
-            if (stellarType < 0.15) {
-                // O and B type stars (blue)
-                color.setRGB(0.7, 0.8, 1.0);
-                armSizes[i] = 1.8 + Math.random() * 1.2;
-            } else if (stellarType < 0.4) {
-                // A type stars (white)
-                color.setRGB(1.0, 1.0, 0.95);
-                armSizes[i] = 1.3 + Math.random() * 0.7;
-            } else if (stellarType < 0.7) {
-                // F and G type stars (yellow-white)
-                color.setRGB(1.0, 0.95, 0.85);
-                armSizes[i] = 1.0 + Math.random() * 0.5;
-            } else {
-                // K type stars (orange)
-                color.setRGB(1.0, 0.85, 0.7);
-                armSizes[i] = 0.9 + Math.random() * 0.4;
-            }
-            
-            armColors[i3] = color.r;
-            armColors[i3 + 1] = color.g;
-            armColors[i3 + 2] = color.b;
-        }
-
-        armGeometry.setAttribute('position', new THREE.BufferAttribute(armPositions, 3));
-        armGeometry.setAttribute('color', new THREE.BufferAttribute(armColors, 3));
-        armGeometry.setAttribute('size', new THREE.BufferAttribute(armSizes, 1));
-
-        const armMaterial = new THREE.PointsMaterial({
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.8,
-            sizeAttenuation: false
-        });
-
-        const armPoints = new THREE.Points(armGeometry, armMaterial);
-        spiralArms.add(armPoints);
-    }
-
-    galaxyGroup.add(spiralArms);
-}
-
-// Create realistic dust clouds
-function createDustClouds() {
-    dustClouds = new THREE.Group();
-
-    // Create dark dust lanes
-    for (let i = 0; i < 3; i++) {
-        const dustGeometry = new THREE.BufferGeometry();
-        const dustCount = 2000;
-        const dustPositions = new Float32Array(dustCount * 3);
-        const dustColors = new Float32Array(dustCount * 3);
-        const dustSizes = new Float32Array(dustCount);
-
-        const dustOffset = i * Math.PI * 0.7;
-
-        for (let j = 0; j < dustCount; j++) {
-            const j3 = j * 3;
-            
-            const t = (j / dustCount) * Math.PI * 4;
-            const radius = 30 + t * 10;
-            const angle = t * 0.25 + dustOffset;
-            
-            const scatter = (Math.random() - 0.5) * 25;
-            const thickness = (Math.random() - 0.5) * 12;
-            
-            dustPositions[j3] = Math.cos(angle) * (radius + scatter);
-            dustPositions[j3 + 1] = thickness;
-            dustPositions[j3 + 2] = Math.sin(angle) * (radius + scatter);
-
-            // Dark dust colors
-            const color = new THREE.Color();
-            color.setRGB(0.15, 0.1, 0.08);
-            
-            dustColors[j3] = color.r;
-            dustColors[j3 + 1] = color.g;
-            dustColors[j3 + 2] = color.b;
-            
-            dustSizes[j] = 0.5 + Math.random() * 1.0;
-        }
-
-        dustGeometry.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
-        dustGeometry.setAttribute('color', new THREE.BufferAttribute(dustColors, 3));
-        dustGeometry.setAttribute('size', new THREE.BufferAttribute(dustSizes, 1));
-
-        const dustMaterial = new THREE.PointsMaterial({
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.6,
-            sizeAttenuation: false
-        });
-
-        const dustPoints = new THREE.Points(dustGeometry, dustMaterial);
-        dustClouds.add(dustPoints);
-    }
-
-    galaxyGroup.add(dustClouds);
-}
-
-// Create realistic galactic halo
-function createGalacticHalo() {
-    const haloGeometry = new THREE.BufferGeometry();
-    const haloCount = 1500;
-    const haloPositions = new Float32Array(haloCount * 3);
-    const haloColors = new Float32Array(haloCount * 3);
-    const haloSizes = new Float32Array(haloCount);
-
-    for (let i = 0; i < haloCount; i++) {
-        const i3 = i * 3;
-        
-        // Realistic halo distribution
-        const radius = 120 + Math.random() * 180;
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.acos(2 * Math.random() - 1);
-        
-        haloPositions[i3] = radius * Math.sin(phi) * Math.cos(theta);
-        haloPositions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta) * 0.8;
-        haloPositions[i3 + 2] = radius * Math.cos(phi);
-
-        // Old, metal-poor halo stars (very red)
-        const color = new THREE.Color();
-        color.setRGB(1.0, 0.6, 0.4);
-        
-        haloColors[i3] = color.r;
-        haloColors[i3 + 1] = color.g;
-        haloColors[i3 + 2] = color.b;
-        
-        haloSizes[i] = 0.5 + Math.random() * 0.3;
-    }
-
-    haloGeometry.setAttribute('position', new THREE.BufferAttribute(haloPositions, 3));
-    haloGeometry.setAttribute('color', new THREE.BufferAttribute(haloColors, 3));
-    haloGeometry.setAttribute('size', new THREE.BufferAttribute(haloSizes, 1));
-
-    const haloMaterial = new THREE.PointsMaterial({
-        vertexColors: true,
-        transparent: true,
-        opacity: 0.4,
-        sizeAttenuation: false
+    passwordRef.addEventListener("focus", () => {
+      pawL.classList.add("hide");
+      pawR.classList.add("hide");
+      normalEyes();
+      smileMouth();
     });
 
-    const halo = new THREE.Points(haloGeometry, haloMaterial);
-    galaxyGroup.add(halo);
-}
-
-// Add realistic physics to animations
-function addRealisticPhysics() {
-    // Gravitational effects on different components
-    const time = Date.now() * 0.001;
-    
-    if (centralBulge) {
-        // Slight pulsation of the galactic core
-        const pulseFactor = 1 + Math.sin(time * 0.1) * 0.05;
-        centralBulge.scale.setScalar(pulseFactor);
-    }
-    
-    if (spiralArms) {
-        // Differential rotation of spiral arms
-        spiralArms.rotation.y += 0.001 * animationSpeed;
-        
-        // Density wave propagation
-        spiralArms.children.forEach((arm, index) => {
-            const wave = Math.sin(time * 0.3 + index * Math.PI) * 0.02;
-            arm.scale.setScalar(1 + wave);
-        });
-    }
-    
-    if (dustClouds) {
-        // Dust cloud turbulence
-        dustClouds.children.forEach((cloud, index) => {
-            const turbulence = Math.sin(time * 0.2 + index * 0.5) * 0.03;
-            cloud.position.y = Math.sin(time * 0.15 + index) * 2;
-            cloud.scale.setScalar(1 + turbulence);
-        });
-    }
-    
-    if (galaxyDisk) {
-        // Subtle disk wobble
-        galaxyDisk.rotation.z = Math.sin(time * 0.1) * 0.02;
-    }
-}
-
-// Enhanced animation loop with physics
-function animate3D() {
-    requestAnimationFrame(animate3D);
-
-    if (isAnimating) {
-        // Slow, realistic galaxy rotation
-        galaxyGroup.rotation.y += rotationSpeed * animationSpeed;
-        
-        // Subtle precession
-        galaxyGroup.rotation.x = Math.sin(Date.now() * 0.0003) * 0.05;
-        
-        // Very slow star field rotation
-        if (starField) {
-            starField.rotation.y += 0.0002 * animationSpeed;
-        }
-
-        // Realistic camera movement (observational)
-        if (!telescopeMode) {
-            const time = Date.now() * 0.0003 * animationSpeed;
-            camera.position.x = Math.sin(time) * 30;
-            camera.position.z = Math.cos(time) * 300 + 270;
-            camera.lookAt(0, 0, 0);
-        }
-        
-        // Add realistic physics
-        addRealisticPhysics();
-    }
-
-    renderer.render(scene, camera);
-}
-
-// Control functions
-function initControls() {
-    const startBtn = document.getElementById('startBtn');
-    const pauseBtn = document.getElementById('pauseBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const telescopeBtn = document.getElementById('telescopeBtn');
-    const speedSlider = document.getElementById('speedSlider');
-
-    function updateStatus(status) {
-        document.getElementById('status').textContent = status;
-    }
-
-    function updateSpeedDisplay() {
-        document.getElementById('speed-value').textContent = animationSpeed.toFixed(1) + 'x';
-    }
-
-    // Start/Observe button
-    startBtn.addEventListener('click', function() {
-        isAnimating = true;
-        updateStatus('Observing');
-        startBtn.classList.add('active');
-        pauseBtn.classList.remove('active');
-        
-        // Animate parallax layers
-        gsap.to('.layer-1', { 
-            duration: 20, 
-            rotation: 360, 
-            repeat: -1, 
-            ease: "none",
-            transformOrigin: "center center"
-        });
-        
-        gsap.to('.layer-3', { 
-            duration: 15, 
-            rotation: -180, 
-            repeat: -1, 
-            ease: "none",
-            transformOrigin: "center center"
-        });
+    passwordRef.addEventListener("blur", () => {
+      pawNormal();
+      normalMouth();
+      normalEyes();
     });
 
-    // Pause button
-    pauseBtn.addEventListener('click', function() {
-        isAnimating = false;
-        updateStatus('Paused');
-        pauseBtn.classList.add('active');
-        startBtn.classList.remove('active');
-        
-        // Pause GSAP animations
-        if (typeof gsap !== 'undefined') {
-            gsap.globalTimeline.pause();
-        }
+    document.addEventListener("click", (e) => {
+      if (e.target !== usernameRef && e.target !== passwordRef) {
+        pawNormal();
+        normalMouth();
+        normalEyes();
+      }
     });
-
-    // Reset button
-    resetBtn.addEventListener('click', function() {
-        isAnimating = false;
-        updateStatus('Reset');
-        telescopeMode = false;
-        animationSpeed = 1;
-        speedSlider.value = 1;
-        updateSpeedDisplay();
-        
-        // Reset all button states
-        document.querySelectorAll('.control-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        
-        // Reset galaxy rotation
-        galaxyGroup.rotation.set(0, 0, 0);
-        
-        // Reset camera position
-        camera.position.set(0, 100, 300);
-        camera.lookAt(0, 0, 0);
-        
-        // Reset GSAP animations
-        if (typeof gsap !== 'undefined') {
-            gsap.killTweensOf('.layer-1');
-            gsap.killTweensOf('.layer-3');
-            gsap.set('.layer-1', { rotation: 0 });
-            gsap.set('.layer-3', { rotation: 0 });
-        }
-        
-        // Reset title
-        document.getElementById('mainText').textContent = 'MILKY WAY';
-    });
-
-    // Telescope mode
-    telescopeBtn.addEventListener('click', function() {
-        telescopeMode = !telescopeMode;
-        
-        if (telescopeMode) {
-            telescopeBtn.classList.add('active');
-            updateStatus('Telescope Mode');
-            
-            // Zoom in effect
-            if (typeof gsap !== 'undefined') {
-                gsap.to(camera.position, {
-                    duration: 2,
-                    x: 0,
-                    y: 50,
-                    z: 150,
-                    ease: "power2.inOut"
-                });
-            }
-            
-            // Change title
-            document.getElementById('mainText').textContent = 'DEEP SPACE VIEW';
-            
-            // Enhanced rotation speed
-            rotationSpeed = 0.005;
-            
-        } else {
-            telescopeBtn.classList.remove('active');
-            updateStatus('Observatory');
-            
-            // Zoom out effect
-            if (typeof gsap !== 'undefined') {
-                gsap.to(camera.position, {
-                    duration: 2,
-                    x: 0,
-                    y: 100,
-                    z: 300,
-                    ease: "power2.inOut"
-                });
-            }
-            
-            // Reset title
-            document.getElementById('mainText').textContent = 'MILKY WAY';
-            
-            // Normal rotation speed
-            rotationSpeed = 0.002;
-        }
-    });
-
-    // Speed control
-    speedSlider.addEventListener('input', function() {
-        animationSpeed = parseFloat(this.value);
-        updateSpeedDisplay();
-        
-        // Update CSS animation speeds
-        document.documentElement.style.setProperty('--animation-speed', animationSpeed);
-        
-        // Update GSAP animation speeds
-        if (typeof gsap !== 'undefined') {
-            gsap.globalTimeline.timeScale(animationSpeed);
-        }
-    });
-
-    // Touch/Mouse interactions for mobile
-    let isDragging = false;
-    let previousMousePosition = { x: 0, y: 0 };
-
-    function handlePointerStart(event) {
-        isDragging = true;
-        const pointer = event.touches ? event.touches[0] : event;
-        previousMousePosition = { x: pointer.clientX, y: pointer.clientY };
-    }
-
-    function handlePointerMove(event) {
-        if (!isDragging) return;
-        
-        event.preventDefault();
-        const pointer = event.touches ? event.touches[0] : event;
-        const deltaMove = {
-            x: pointer.clientX - previousMousePosition.x,
-            y: pointer.clientY - previousMousePosition.y
-        };
-
-        // Rotate galaxy based on mouse/touch movement
-        galaxyGroup.rotation.y += deltaMove.x * 0.005;
-        galaxyGroup.rotation.x += deltaMove.y * 0.005;
-
-        previousMousePosition = { x: pointer.clientX, y: pointer.clientY };
-    }
-
-    function handlePointerEnd() {
-        isDragging = false;
-    }
-
-    // Add event listeners for interaction
-    const canvas = document.getElementById('three-canvas');
-    canvas.addEventListener('mousedown', handlePointerStart);
-    canvas.addEventListener('mousemove', handlePointerMove);
-    canvas.addEventListener('mouseup', handlePointerEnd);
-    canvas.addEventListener('touchstart', handlePointerStart);
-    canvas.addEventListener('touchmove', handlePointerMove);
-    canvas.addEventListener('touchend', handlePointerEnd);
-
-    // Initialize display
-    updateSpeedDisplay();
-    updateStatus('Observatory');
-}
-
-// Responsive handling
-function handleResize() {
-    const width = Math.min(window.innerWidth, 375);
-    const height = Math.min(window.innerHeight, 770);
-    
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-    renderer.setSize(width, height);
-}
-
-window.addEventListener('resize', handleResize);
-
-// Add performance monitoring
-function monitorPerformance() {
-    let frameCount = 0;
-    let lastTime = performance.now();
-    
-    function checkFPS() {
-        const currentTime = performance.now();
-        frameCount++;
-        
-        if (currentTime - lastTime >= 1000) {
-            const fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
-            
-            // Adjust quality based on performance
-            if (fps < 30) {
-                // Reduce particle count for better performance
-                if (renderer.getPixelRatio() > 1) {
-                    renderer.setPixelRatio(1);
-                }
-            } else if (fps > 50) {
-                // Increase quality if performance allows
-                if (renderer.getPixelRatio() < 2) {
-                    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-                }
-            }
-            
-            frameCount = 0;
-            lastTime = currentTime;
-        }
-        
-        requestAnimationFrame(checkFPS);
-    }
-    
-    checkFPS();
-}
-
-// Start performance monitoring
-monitorPerformance();
-
-// Add keyboard shortcuts
-document.addEventListener('keydown', function(event) {
-    switch(event.key) {
-        case ' ':
-            event.preventDefault();
-            if (isAnimating) {
-                document.getElementById('pauseBtn').click();
-            } else {
-                document.getElementById('startBtn').click();
-            }
-            break;
-        case 'r':
-        case 'R':
-            document.getElementById('resetBtn').click();
-            break;
-        case 't':
-        case 'T':
-            document.getElementById('telescopeBtn').click();
-            break;
-        case 'ArrowUp':
-            event.preventDefault();
-            const speedSlider = document.getElementById('speedSlider');
-            speedSlider.value = Math.min(3, parseFloat(speedSlider.value) + 0.1);
-            speedSlider.dispatchEvent(new Event('input'));
-            break;
-        case 'ArrowDown':
-            event.preventDefault();
-            const speedSlider2 = document.getElementById('speedSlider');
-            speedSlider2.value = Math.max(0.1, parseFloat(speedSlider2.value) - 0.1);
-            speedSlider2.dispatchEvent(new Event('input'));
-            break;
-    }
-});
-
-    </script>
+  </script>
 </body>
 </html>
