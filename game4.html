@@ -69,19 +69,74 @@ svg {
 }
 
 /* MARK: ---0-490 Mobile */
-@media (max-width: 490px) {
-
+/* MARK: ---Mobile Optimization */
+@media (max-width: 768px) {
+    
+    body {
+        overflow-x: hidden;
+        width: 100%;
+    }
+    
+    svg {
+        width: 100%;
+        height: 100vh;
+        min-height: 100vh;
+    }
+    
+    .scrollElement {
+        height: 5000px;
+        width: 100%;
+    }
+    
+    /* Scale down text elements */
     #text,
     #arrow {
         transform-origin: 50% 50%;
-        transform: translateY(-120px) scale(0.8);
+        transform: translateY(-80px) scale(0.7);
     }
 
     #info2 {
         transform-origin: 50% 50%;
-        transform: translateY(-120px) scale(0.8);
+        transform: translateY(-80px) scale(0.7);
+    }
+    
+    /* Optimize buttons for mobile */
+    .btn {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.6rem;
+        bottom: 3%;
+        right: 5%;
+        transform: translateX(0);
+    }
+    
+    .btn_works {
+        left: 5%;
+        right: unset;
     }
 }
+
+/* Extra small screens */
+@media (max-width: 490px) {
+    
+    #text,
+    #arrow {
+        transform: translateY(-100px) scale(0.6);
+    }
+
+    #info2 {
+        transform: translateY(-100px) scale(0.6);
+    }
+    
+    .btn {
+        font-size: 0.7rem;
+        padding: 0.35rem 0.5rem;
+    }
+    
+    .scrollElement {
+        height: 4500px;
+    }
+}
+
 </style>
 </head>
 <body>
