@@ -779,6 +779,24 @@ window.onbeforeunload = function () {
     window.scrollTo(0, 0);
 };
 
+
+
+
+
+// Disable lazy loading globally
+document.addEventListener('DOMContentLoaded', function() {
+    // Remove lazy loading from images
+    const images = document.querySelectorAll('img[loading="lazy"]');
+    images.forEach(img => {
+        img.removeAttribute('loading');
+    });
+    
+    // Disable intersection observer based lazy loading
+    if ('IntersectionObserver' in window) {
+        IntersectionObserver.prototype.observe = function() {};
+    }
+});
+
 // function screenToSVG(svg, x, y) {
 //     var pt = svg.createSVGPoint();
 //     pt.x = x;
