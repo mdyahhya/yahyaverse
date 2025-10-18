@@ -3,285 +3,911 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shadow Flip - Level 1</title>
+    <title>Professional QR Code Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none;
         }
-        
+
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(180deg, #2c3e50 0%, #34495e 50%, #ecf0f1 50%, #bdc3c7 100%);
-            height: 100vh;
-            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
         }
-        
-        canvas {
-            border: 2px solid #333;
-            background: transparent;
-            touch-action: none;
-        }
-        
-        .ui {
-            position: absolute;
-            top: 2vh;
-            left: 50%;
-            transform: translateX(-50%);
-            color: white;
-            font-size: 4vw;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-            z-index: 10;
-        }
-        
-        .modal {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.9);
-            color: white;
-            padding: 6vh 8vw;
+
+        .container {
+            background: white;
             border-radius: 20px;
-            text-align: center;
-            font-size: 5vw;
-            z-index: 100;
-            display: none;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            width: 100%;
+            padding: 40px;
+            animation: fadeIn 0.5s ease-in;
         }
-        
-        .modal button {
-            padding: 3vh 6vw;
-            margin: 2vh 2vw;
-            background: linear-gradient(45deg, #3498db, #2980b9);
-            color: white;
-            border: none;
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #333;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .label-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        select, input[type="text"], input[type="url"], input[type="number"], textarea {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
             border-radius: 10px;
-            font-size: 4vw;
-            font-weight: bold;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: #f9f9f9;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
+        .color-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .color-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f9f9f9;
+        }
+
+        .color-option:hover {
+            border-color: #667eea;
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .color-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .color-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+
+        .logo-upload-area {
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            background: #f9f9f9;
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        
-        .modal button:hover, .modal button:active {
+
+        .logo-upload-area:hover {
+            background: #f0f0ff;
+            border-color: #764ba2;
+        }
+
+        .logo-upload-area.has-logo {
+            border-style: solid;
+            background: #e8f5e9;
+        }
+
+        #logoInput {
+            display: none;
+        }
+
+        .logo-preview {
+            max-width: 100px;
+            max-height: 100px;
+            margin: 10px auto;
+            display: none;
+            border-radius: 8px;
+        }
+
+        .logo-preview.show {
+            display: block;
+        }
+
+        .remove-logo-btn {
+            display: none;
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .remove-logo-btn:hover {
+            background: #cc0000;
+        }
+
+        .remove-logo-btn.show {
+            display: inline-block;
+        }
+
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #e0e0e0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            border: none;
+        }
+
+        .slider-value {
+            text-align: right;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .output-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .qr-display {
+            width: 100%;
+            min-height: 350px;
+            border: 3px solid #e0e0e0;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        #qrcodeContainer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #qrcode {
+            display: inline-block;
+        }
+
+        .placeholder {
+            color: #999;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .placeholder-icon {
+            font-size: 4em;
+            margin-bottom: 10px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .generate-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
         }
-        
-        .modal .win-btn {
-            background: linear-gradient(45deg, #2ecc71, #27ae60);
+
+        .generate-btn:active {
+            transform: translateY(0);
         }
-        
-        .modal .retry-btn {
-            background: linear-gradient(45deg, #e74c3c, #c0392b);
+
+        .download-btn {
+            background: #4CAF50;
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
         }
-        
-        .modal .home-btn {
-            background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+
+        .download-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+        }
+
+        .download-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .clear-btn {
+            background: #ff5252;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 82, 82, 0.4);
+        }
+
+        .clear-btn:hover {
+            background: #ff1744;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 82, 82, 0.6);
+        }
+
+        .info-card {
+            background: #f0f7ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .info-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .info-card p {
+            color: #555;
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 0.9em;
+        }
+
+        .feature-icon {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .color-options {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #333;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            display: none;
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        .toast.success {
+            background: #4CAF50;
+        }
+
+        .toast.error {
+            background: #ff5252;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
-    <div class="ui" id="ui">Time: 0s</div>
-    <canvas id="gameCanvas"></canvas>
-    
-    <div id="gameOverModal" class="modal">
-        <div>Game Over!</div>
-        <button class="retry-btn" onclick="restartGame()">Retry</button>
-        <button class="home-btn" onclick="goHome()">Home</button>
-    </div>
-    
-    <div id="winModal" class="modal">
-        <div>You Win!</div>
-        <button class="win-btn" onclick="nextLevel()">Next Level</button>
-        <button class="retry-btn" onclick="restartGame()">Retry</button>
-        <button class="home-btn" onclick="goHome()">Home</button>
+    <div class="container">
+        <h1>🎨QR Code Generator By Continent </h1>
+        <p class="subtitle">Create custom QR codes with logos and download instantly</p>
+
+        <div class="main-grid">
+            <!-- Input Section -->
+            <div class="input-section">
+                <div class="form-group">
+                    <label>
+                        <span class="label-icon"></span>
+                        QR Code Type
+                    </label>
+                    <select id="qrType">
+                        <option value="url">Website URL</option>
+                        <option value="text">Plain Text</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="urlGroup">
+                    <label>
+                        <span class="label-icon"></span>
+                        Enter Website URL
+                    </label>
+                    <input type="url" id="urlInput" placeholder="https://example.com">
+                </div>
+
+                <div class="form-group hidden" id="textGroup">
+                    <label>
+                        <span class="label-icon"></span>
+                        Enter Plain Text
+                    </label>
+                    <textarea id="textInput" placeholder="Enter your text here (up to 300 characters)" maxlength="300"></textarea>
+                    <small style="color: #999; text-align: right;">
+                        <span id="charCount">0</span>/300 characters
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <span class="label-icon"></span>
+                        QR Code Color Theme
+                    </label>
+                    <div class="color-options">
+                        <label class="color-option">
+                            <input type="radio" name="colorScheme" value="black" checked>
+                            <div class="color-preview" style="background: black;"></div>
+                            <span>Black on White</span>
+                        </label>
+                        <label class="color-option">
+                            <input type="radio" name="colorScheme" value="white">
+                            <div class="color-preview" style="background: white; border: 2px solid #333;"></div>
+                            <span>White on Black</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <span class="label-icon"></span>
+                        QR Code Size
+                    </label>
+                    <div class="slider-group">
+                        <input type="range" id="sizeSlider" min="128" max="512" value="256" step="32">
+                        <div class="slider-value"><span id="sizeValue">256</span> x <span id="sizeValue2">256</span> px</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <span class="label-icon"></span>
+                        Add Logo to QR Code (Optional)
+                    </label>
+                    <div class="logo-upload-area" id="logoUploadArea">
+                        <input type="file" id="logoInput" accept="image/*">
+                        <div id="uploadText">
+                            <p style="font-size: 2em; margin-bottom: 10px;">📷</p>
+                            <p><strong>Click to upload logo</strong></p>
+                            <p style="font-size: 0.9em; color: #999;">PNG, JPG, GIF (Max 2MB)</p>
+                        </div>
+                        <img id="logoPreview" class="logo-preview" alt="Logo preview">
+                        <button type="button" class="remove-logo-btn" id="removeLogo">Remove Logo</button>
+                    </div>
+                </div>
+
+                <div class="form-group" id="logoSizeGroup" style="display: none;">
+                    <label>
+                        <span class="label-icon"></span>
+                        Logo Size
+                    </label>
+                    <div class="slider-group">
+                        <input type="range" id="logoSizeSlider" min="10" max="40" value="25" step="5">
+                        <div class="slider-value"><span id="logoSizeValue">25</span>% of QR Code</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Output Section -->
+            <div class="output-section">
+                <div class="qr-display">
+                    <div id="qrcodeContainer">
+                        <div class="placeholder">
+                            <div class="placeholder-icon">📱</div>
+                            <p>Your QR code will appear here</p>
+                            <p style="font-size: 0.9em; color: #ccc;">Fill in the details and click Generate</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="generate-btn" id="generateBtn">
+                        <span>✨</span>
+                        Generate QR Code
+                    </button>
+                </div>
+
+                <div class="button-group">
+                    <button class="download-btn" id="downloadBtn" disabled>
+                        <span>⬇️</span>
+                        Download QR Code
+                    </button>
+                    <button class="clear-btn" id="clearBtn">
+                        <span>🗑️</span>
+                        Clear All
+                    </button>
+                </div>
+
+                <div class="info-card">
+                    <h3>✅ Features Included</h3>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>URL QR Codes</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Text QR Codes</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Custom Logos</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Color Themes</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Adjustable Size</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Instant Download</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <div class="toast" id="toast"></div>
+
     <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const ui = document.getElementById('ui');
-        
-        // Responsive canvas sizing
-        function resizeCanvas() {
-            const size = Math.min(window.innerWidth, window.innerHeight) * 0.9;
-            canvas.width = size;
-            canvas.height = size;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-        
-        // Game state
-        let game = {
-            player: { x: 100, y: 0, size: 30, onCeiling: false, rotation: 0 },
-            obstacles: [],
-            gameSpeed: 2,
-            time: 0,
-            gameRunning: true,
-            lastObstacle: 0
-        };
-        
-        const GROUND_Y = canvas.height - 50;
-        const CEILING_Y = 50;
-        const WIN_TIME = 20000; // 20 seconds
-        
-        // Input handling
-        function handleInput() {
-            if (!game.gameRunning) return;
-            
-            game.player.onCeiling = !game.player.onCeiling;
-            game.player.rotation = game.player.onCeiling ? 180 : 0;
-        }
-        
-        canvas.addEventListener('click', handleInput);
-        canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            handleInput();
-        });
-        
-        // Create obstacle
-        function createObstacle() {
-            const now = Date.now();
-            if (now - game.lastObstacle < 1500) return; // Level 1: slower obstacles
-            
-            game.obstacles.push({
-                x: canvas.width,
-                y: Math.random() < 0.5 ? GROUND_Y : CEILING_Y,
-                width: 20,
-                height: 40
-            });
-            game.lastObstacle = now;
-        }
-        
-        // Collision detection
-        function checkCollision(player, obstacle) {
-            return player.x < obstacle.x + obstacle.width &&
-                   player.x + player.size > obstacle.x &&
-                   player.y < obstacle.y + obstacle.height &&
-                   player.y + player.size > obstacle.y;
-        }
-        
-        // Update game
-        function update() {
-            if (!game.gameRunning) return;
-            
-            // Update player position
-            game.player.y = game.player.onCeiling ? CEILING_Y - game.player.size : GROUND_Y - game.player.size;
-            
-            // Create obstacles
-            createObstacle();
-            
-            // Update obstacles
-            game.obstacles = game.obstacles.filter(obstacle => {
-                obstacle.x -= game.gameSpeed;
-                
-                // Check collision
-                if (checkCollision(game.player, obstacle)) {
-                    gameOver();
-                    return false;
-                }
-                
-                return obstacle.x + obstacle.width > 0;
-            });
-            
-            // Update time
-            game.time += 16; // ~60fps
-            if (game.time >= WIN_TIME) {
-                winGame();
+        // Global variables
+        let currentQRCode = null;
+        let logoImage = null;
+
+        // DOM Elements
+        const qrType = document.getElementById('qrType');
+        const urlGroup = document.getElementById('urlGroup');
+        const textGroup = document.getElementById('textGroup');
+        const urlInput = document.getElementById('urlInput');
+        const textInput = document.getElementById('textInput');
+        const charCount = document.getElementById('charCount');
+        const sizeSlider = document.getElementById('sizeSlider');
+        const sizeValue = document.getElementById('sizeValue');
+        const sizeValue2 = document.getElementById('sizeValue2');
+        const logoInput = document.getElementById('logoInput');
+        const logoUploadArea = document.getElementById('logoUploadArea');
+        const logoPreview = document.getElementById('logoPreview');
+        const removeLogo = document.getElementById('removeLogo');
+        const logoSizeGroup = document.getElementById('logoSizeGroup');
+        const logoSizeSlider = document.getElementById('logoSizeSlider');
+        const logoSizeValue = document.getElementById('logoSizeValue');
+        const generateBtn = document.getElementById('generateBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const qrcodeContainer = document.getElementById('qrcodeContainer');
+        const toast = document.getElementById('toast');
+
+        // Event Listeners
+        qrType.addEventListener('change', handleTypeChange);
+        textInput.addEventListener('input', updateCharCount);
+        sizeSlider.addEventListener('input', updateSizeValue);
+        logoSizeSlider.addEventListener('input', updateLogoSizeValue);
+        logoUploadArea.addEventListener('click', () => logoInput.click());
+        logoInput.addEventListener('change', handleLogoUpload);
+        removeLogo.addEventListener('click', handleRemoveLogo);
+        generateBtn.addEventListener('click', generateQRCode);
+        downloadBtn.addEventListener('click', downloadQRCode);
+        clearBtn.addEventListener('click', clearAll);
+
+        // Handle QR type change
+        function handleTypeChange() {
+            if (qrType.value === 'url') {
+                urlGroup.classList.remove('hidden');
+                textGroup.classList.add('hidden');
+            } else {
+                urlGroup.classList.add('hidden');
+                textGroup.classList.remove('hidden');
             }
         }
-        
-        // Draw game
-        function draw() {
-            // Clear canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Draw ground and ceiling
-            ctx.fillStyle = '#34495e';
-            ctx.fillRect(0, 0, canvas.width, CEILING_Y);
-            ctx.fillStyle = '#ecf0f1';
-            ctx.fillRect(0, GROUND_Y, canvas.width, canvas.height - GROUND_Y);
-            
-            // Draw player with rotation
-            ctx.save();
-            ctx.translate(game.player.x + game.player.size/2, game.player.y + game.player.size/2);
-            ctx.rotate(game.player.rotation * Math.PI / 180);
-            ctx.fillStyle = '#e74c3c';
-            ctx.fillRect(-game.player.size/2, -game.player.size/2, game.player.size, game.player.size);
-            ctx.restore();
-            
-            // Draw obstacles
-            ctx.fillStyle = '#2c3e50';
-            game.obstacles.forEach(obstacle => {
-                ctx.fillRect(obstacle.x, obstacle.y - obstacle.height, obstacle.width, obstacle.height);
-            });
-            
-            // Update UI
-            ui.textContent = `Time: ${Math.floor(game.time / 1000)}s`;
+
+        // Update character count
+        function updateCharCount() {
+            charCount.textContent = textInput.value.length;
         }
-        
-        // Game loop
-        function gameLoop() {
-            update();
-            draw();
-            requestAnimationFrame(gameLoop);
+
+        // Update size slider value
+        function updateSizeValue() {
+            const size = sizeSlider.value;
+            sizeValue.textContent = size;
+            sizeValue2.textContent = size;
         }
-        
-        function gameOver() {
-            game.gameRunning = false;
-            document.getElementById('gameOverModal').style.display = 'block';
+
+        // Update logo size slider value
+        function updateLogoSizeValue() {
+            logoSizeValue.textContent = logoSizeSlider.value;
         }
-        
-        function winGame() {
-            game.gameRunning = false;
-            document.getElementById('winModal').style.display = 'block';
-        }
-        
-        function restartGame() {
-            game = {
-                player: { x: 100, y: 0, size: 30, onCeiling: false, rotation: 0 },
-                obstacles: [],
-                gameSpeed: 2,
-                time: 0,
-                gameRunning: true,
-                lastObstacle: 0
+
+        // Handle logo upload
+        function handleLogoUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Check file size (2MB limit)
+            if (file.size > 2 * 1024 * 1024) {
+                showToast('File size must be less than 2MB', 'error');
+                return;
+            }
+
+            // Check file type
+            if (!file.type.startsWith('image/')) {
+                showToast('Please upload a valid image file', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                logoImage = new Image();
+                logoImage.onload = function() {
+                    logoPreview.src = event.target.result;
+                    logoPreview.classList.add('show');
+                    removeLogo.classList.add('show');
+                    logoUploadArea.classList.add('has-logo');
+                    logoSizeGroup.style.display = 'flex';
+                    document.getElementById('uploadText').style.display = 'none';
+                    showToast('Logo uploaded successfully', 'success');
+                };
+                logoImage.src = event.target.result;
             };
-            document.getElementById('gameOverModal').style.display = 'none';
-            document.getElementById('winModal').style.display = 'none';
+            reader.readAsDataURL(file);
         }
-        
-        function nextLevel() {
-            window.location.href = 'level2.html';
+
+        // Handle remove logo
+        function handleRemoveLogo(e) {
+            e.stopPropagation();
+            logoImage = null;
+            logoPreview.src = '';
+            logoPreview.classList.remove('show');
+            removeLogo.classList.remove('show');
+            logoUploadArea.classList.remove('has-logo');
+            logoSizeGroup.style.display = 'none';
+            document.getElementById('uploadText').style.display = 'block';
+            logoInput.value = '';
+            showToast('Logo removed', 'success');
         }
-        
-        function goHome() {
-            window.location.href = 'index.html';
-        }
-        
-        // Start game
-        gameLoop();
-        
-        // Prevent zoom on mobile
-        document.addEventListener('touchstart', function(e) {
-            if (e.touches.length > 1) {
-                e.preventDefault();
+
+        // Generate QR Code
+        function generateQRCode() {
+            let qrData = '';
+
+            // Get QR data based on type
+            if (qrType.value === 'url') {
+                qrData = urlInput.value.trim();
+                if (!qrData) {
+                    showToast('Please enter a URL', 'error');
+                    return;
+                }
+                // Add https:// if not present
+                if (!qrData.startsWith('http://') && !qrData.startsWith('https://')) {
+                    qrData = 'https://' + qrData;
+                }
+            } else {
+                qrData = textInput.value.trim();
+                if (!qrData) {
+                    showToast('Please enter some text', 'error');
+                    return;
+                }
             }
+
+            // Get color scheme
+            const colorScheme = document.querySelector('input[name="colorScheme"]:checked').value;
+            const colorDark = colorScheme === 'black' ? '#000000' : '#ffffff';
+            const colorLight = colorScheme === 'black' ? '#ffffff' : '#000000';
+
+            // Get size
+            const size = parseInt(sizeSlider.value);
+
+            // Clear previous QR code
+            qrcodeContainer.innerHTML = '<div id="qrcode"></div>';
+
+            // Generate QR code
+            try {
+                currentQRCode = new QRCode(document.getElementById('qrcode'), {
+                    text: qrData,
+                    width: size,
+                    height: size,
+                    colorDark: colorDark,
+                    colorLight: colorLight,
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+
+                // If logo is present, add it after a short delay
+                if (logoImage) {
+                    setTimeout(() => {
+                        addLogoToQR();
+                    }, 100);
+                }
+
+                downloadBtn.disabled = false;
+                showToast('QR Code generated successfully', 'success');
+            } catch (error) {
+                showToast('Error generating QR code', 'error');
+                console.error(error);
+            }
+        }
+
+        // Add logo to QR code
+        function addLogoToQR() {
+            const qrCanvas = document.querySelector('#qrcode canvas');
+            if (!qrCanvas || !logoImage) return;
+
+            const ctx = qrCanvas.getContext('2d');
+            const qrSize = parseInt(sizeSlider.value);
+            const logoSizePercent = parseInt(logoSizeSlider.value);
+            const logoSize = (qrSize * logoSizePercent) / 100;
+
+            // Calculate logo position (center)
+            const x = (qrSize - logoSize) / 2;
+            const y = (qrSize - logoSize) / 2;
+
+            // Draw white background for logo
+            ctx.fillStyle = 'white';
+            ctx.fillRect(x - 5, y - 5, logoSize + 10, logoSize + 10);
+
+            // Draw logo
+            ctx.drawImage(logoImage, x, y, logoSize, logoSize);
+        }
+
+        // Download QR Code
+        function downloadQRCode() {
+            const qrCanvas = document.querySelector('#qrcode canvas');
+            if (!qrCanvas) {
+                showToast('Please generate a QR code first', 'error');
+                return;
+            }
+
+            try {
+                // Create download link
+                const url = qrCanvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                const timestamp = new Date().getTime();
+                const qrTypeName = qrType.value === 'url' ? 'URL' : 'Text';
+                link.download = `QRCode_${qrTypeName}_${timestamp}.png`;
+                link.href = url;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                showToast('QR Code downloaded successfully', 'success');
+            } catch (error) {
+                showToast('Error downloading QR code', 'error');
+                console.error(error);
+            }
+        }
+
+        // Clear all
+        function clearAll() {
+            // Clear inputs
+            urlInput.value = '';
+            textInput.value = '';
+            charCount.textContent = '0';
+
+            // Reset sliders
+            sizeSlider.value = 256;
+            updateSizeValue();
+            logoSizeSlider.value = 25;
+            updateLogoSizeValue();
+
+            // Reset color scheme
+            document.querySelector('input[name="colorScheme"][value="black"]').checked = true;
+
+            // Remove logo
+            if (logoImage) {
+                handleRemoveLogo(new Event('click'));
+            }
+
+            // Clear QR code
+            qrcodeContainer.innerHTML = `
+                <div class="placeholder">
+                    <div class="placeholder-icon">📱</div>
+                    <p>Your QR code will appear here</p>
+                    <p style="font-size: 0.9em; color: #ccc;">Fill in the details and click Generate</p>
+                </div>
+            `;
+
+            currentQRCode = null;
+            downloadBtn.disabled = true;
+
+            showToast('All fields cleared', 'success');
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            toast.textContent = message;
+            toast.className = 'toast show ' + type;
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Professional QR Code Generator initialized');
+            console.log('Ready to generate QR codes!');
         });
-        
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', function(e) {
-            let now = (new Date()).getTime();
-            if (now - lastTouchEnd <= 300) {
-                e.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
     </script>
 </body>
 </html>
