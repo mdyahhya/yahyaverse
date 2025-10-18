@@ -15,27 +15,20 @@ body {
     margin: 0;
     padding: 0;
     font-family: "Canva Sans", Arial, Helvetica, sans-serif;
-    width: 100%;
-    overflow-x: hidden; /* Add this */
 }
 
 .wrapper {
     position: relative;
-    width: 100%; /* Add this */
-    overflow-x: hidden; /* Add this */
 }
-
 
 svg {
     display: block;
     width: 100%;
-    min-width: 100vw; /* Add this */
     height: 100vh;
     position: fixed;
     z-index: 3;
     top: 0;
     left: 0;
-    overflow: visible; /* Add this */
 }
 
 .scrollElement {
@@ -147,7 +140,7 @@ svg {
 </style>
 </head>
 <body>
-   <svg class="parallax" viewBox="0 0 750 500" preserveAspectRatio="xMidYMid meet">
+    <svg class="parallax" viewBox="0 0 750 500" preserveAspectRatio="xMidYMax slice">
     <defs>
         <!-- Scene 1 Gradient -->
         <linearGradient id="grad1" x1="-154.32" y1="263.27" x2="-154.32" y2="374.3" gradientTransform="matrix(-1, 0, 0, 1.36, 231.36, -100.14)" gradientUnits="userSpaceOnUse">
