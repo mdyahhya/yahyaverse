@@ -11,6 +11,17 @@
     
     <style>
 
+        html {
+    overscroll-behavior: none;
+    overscroll-behavior-y: none;
+}
+
+body {
+    overscroll-behavior: none;
+    overscroll-behavior-y: none;
+}
+
+
 body {
     margin: 0;
     padding: 0;
@@ -782,15 +793,6 @@ window.onbeforeunload = function () {
 
 
 
-// Disable infinite scroll
-window.addEventListener('scroll', function(e) {
-    e.stopImmediatePropagation();
-}, true);
-
-// Or if using a specific infinite scroll library
-if (typeof infiniteScroll !== 'undefined') {
-    infiniteScroll.destroy(); // Destroy infinite scroll instance
-}
 
 
 // function screenToSVG(svg, x, y) {
