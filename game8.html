@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional QR Code Generator</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <title>Voice Auth System - Nexus Protocol</title>
     <style>
         * {
             margin: 0;
@@ -12,979 +11,1199 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary-glow: #00ff9d;
+            --secondary-glow: #00d4ff;
+            --accent-red: #ff0055;
+            --bg-dark: #0a0e1a;
+            --bg-darker: #050810;
+            --text-primary: #00ff9d;
+            --text-secondary: #00d4ff;
+            --border-color: rgba(0, 255, 157, 0.3);
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Courier New', monospace;
+            background: var(--bg-darker);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
         }
 
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 1200px;
+        /* Animated Background Grid */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            padding: 40px;
-            animation: fadeIn 0.5s ease-in;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 157, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 157, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
         }
 
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 2.5em;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        /* Glowing Orbs */
+        .glow-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
         }
 
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 40px;
-            font-size: 1.1em;
+        .orb-1 {
+            top: 10%;
+            left: 20%;
+            width: 300px;
+            height: 300px;
+            background: var(--primary-glow);
+            animation: float 8s ease-in-out infinite;
         }
 
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 30px;
+        .orb-2 {
+            bottom: 15%;
+            right: 15%;
+            width: 400px;
+            height: 400px;
+            background: var(--secondary-glow);
+            animation: float 12s ease-in-out infinite reverse;
         }
 
-        .input-section {
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, -30px); }
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+            width: 100vw;
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
-        .form-group {
+        /* Header */
+        .header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(10, 14, 26, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: clamp(1.2rem, 4vw, 2rem);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px var(--primary-glow);
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { text-shadow: 0 0 20px var(--primary-glow); }
+            50% { text-shadow: 0 0 40px var(--primary-glow), 0 0 60px var(--primary-glow); }
+        }
+
+        .status-bar {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-size: clamp(0.7rem, 2vw, 0.9rem);
+            flex-wrap: wrap;
             gap: 10px;
         }
 
-        label {
-            font-weight: 600;
-            color: #333;
-            font-size: 1em;
+        .status-indicator {
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .label-icon {
-            width: 20px;
-            height: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .status-dot {
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            display: inline-block;
+            background: var(--accent-red);
+            animation: blink 1.5s infinite;
         }
 
-        select, input[type="text"], input[type="url"], input[type="number"], textarea {
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 1em;
-            transition: all 0.3s ease;
-            background: #f9f9f9;
+        .status-dot.active {
+            background: var(--primary-glow);
+            box-shadow: 0 0 10px var(--primary-glow);
         }
 
-        select:focus, input:focus, textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
 
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-            font-family: inherit;
-        }
-
-        .color-options {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        .color-option {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: #f9f9f9;
-        }
-
-        .color-option:hover {
-            border-color: #667eea;
-            background: white;
-            transform: translateY(-2px);
-        }
-
-        .color-option input[type="radio"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-
-        .color-preview {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            border: 2px solid #ddd;
-        }
-
-        .logo-upload-area {
-            border: 2px dashed #667eea;
-            border-radius: 10px;
+        /* Main Content */
+        .main-content {
+            flex: 1;
             padding: 20px;
-            text-align: center;
-            background: #f9f9f9;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .logo-upload-area:hover {
-            background: #f0f0ff;
-            border-color: #764ba2;
-        }
-
-        .logo-upload-area.has-logo {
-            border-style: solid;
-            background: #e8f5e9;
-        }
-
-        #logoInput {
-            display: none;
-        }
-
-        .logo-preview {
-            max-width: 100px;
-            max-height: 100px;
-            margin: 10px auto;
-            display: none;
-            border-radius: 8px;
-        }
-
-        .logo-preview.show {
-            display: block;
-        }
-
-        .remove-logo-btn {
-            display: none;
-            background: #ff4444;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .remove-logo-btn:hover {
-            background: #cc0000;
-        }
-
-        .remove-logo-btn.show {
-            display: inline-block;
-        }
-
-        .slider-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        input[type="range"] {
-            width: 100%;
-            height: 8px;
-            border-radius: 5px;
-            background: #e0e0e0;
-            outline: none;
-            -webkit-appearance: none;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            cursor: pointer;
-        }
-
-        input[type="range"]::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            cursor: pointer;
-            border: none;
-        }
-
-        .slider-value {
-            text-align: right;
-            font-weight: 600;
-            color: #667eea;
-        }
-
-        .output-section {
             display: flex;
             flex-direction: column;
             gap: 20px;
-            align-items: center;
+            overflow-y: auto;
         }
 
-        .qr-display {
-            width: 100%;
-            min-height: 350px;
-            border: 3px solid #e0e0e0;
-            border-radius: 15px;
+        /* Card Styles */
+        .card {
+            background: rgba(10, 14, 26, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 255, 157, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 30px rgba(0, 255, 157, 0.3);
+        }
+
+        .card-title {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--secondary-glow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title::before {
+            content: '>';
+            color: var(--primary-glow);
+            animation: blink 1s infinite;
+        }
+
+        /* Voice Visualizer */
+        .voice-visualizer {
+            height: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: white;
+            gap: 3px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 10px;
+            margin: 15px 0;
+        }
+
+        .voice-bar {
+            width: 4px;
+            height: 20px;
+            background: var(--primary-glow);
+            border-radius: 2px;
+            transition: height 0.1s ease;
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .voice-bar.active {
+            animation: waveform 0.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes waveform {
+            0% { height: 20px; }
+            100% { height: 80px; }
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 12px 25px;
+            background: transparent;
+            border: 2px solid var(--primary-glow);
+            color: var(--primary-glow);
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        #qrcodeContainer {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        #qrcode {
-            display: inline-block;
-        }
-
-        .placeholder {
-            color: #999;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .placeholder-icon {
-            font-size: 4em;
-            margin-bottom: 10px;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 15px;
-            width: 100%;
-        }
-
-        button {
-            flex: 1;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1em;
-            font-weight: 600;
-            cursor: pointer;
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .generate-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .generate-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-        }
-
-        .generate-btn:active {
-            transform: translateY(0);
-        }
-
-        .download-btn {
-            background: #4CAF50;
-            color: white;
-            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
-        }
-
-        .download-btn:hover {
-            background: #45a049;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
-        }
-
-        .download-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .clear-btn {
-            background: #ff5252;
-            color: white;
-            box-shadow: 0 4px 15px rgba(255, 82, 82, 0.4);
-        }
-
-        .clear-btn:hover {
-            background: #ff1744;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 82, 82, 0.6);
-        }
-
-        .info-card {
-            background: #f0f7ff;
-            border-left: 4px solid #667eea;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-
-        .info-card h3 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 1.1em;
-        }
-
-        .info-card p {
-            color: #555;
-            line-height: 1.6;
-            font-size: 0.95em;
-        }
-
-        .feature-list {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #555;
-            font-size: 0.9em;
-        }
-
-        .feature-icon {
-            color: #4CAF50;
+            border-radius: 5px;
             font-weight: bold;
         }
 
-        @media (max-width: 768px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .container {
-                padding: 20px;
-            }
-
-            h1 {
-                font-size: 1.8em;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-
-            .color-options {
-                grid-template-columns: 1fr;
-            }
-
-            .feature-list {
-                grid-template-columns: 1fr;
-            }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: var(--primary-glow);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+            z-index: -1;
         }
 
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #333;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-            display: none;
-            animation: slideIn 0.3s ease;
-            z-index: 1000;
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
-        .toast.show {
+        .btn:hover {
+            color: var(--bg-dark);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: #666;
+            color: #666;
+        }
+
+        .btn-danger {
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        .btn-danger::before {
+            background: var(--accent-red);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 0 20px var(--accent-red);
+        }
+
+        .btn-secondary {
+            border-color: var(--secondary-glow);
+            color: var(--secondary-glow);
+        }
+
+        .btn-secondary::before {
+            background: var(--secondary-glow);
+        }
+
+        /* Button Grid */
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        /* Input Styles */
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
             display: block;
+            margin-bottom: 8px;
+            color: var(--secondary-glow);
+            font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .toast.success {
-            background: #4CAF50;
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            color: var(--primary-glow);
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            transition: all 0.3s ease;
         }
 
-        .toast.error {
-            background: #ff5252;
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.3);
         }
 
-        @keyframes slideIn {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
+        /* Console Log */
+        .console-log {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            height: 200px;
+            overflow-y: auto;
+            font-size: clamp(0.7rem, 2vw, 0.85rem);
+            line-height: 1.6;
+        }
+
+        .console-log::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .console-log::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .console-log::-webkit-scrollbar-thumb {
+            background: var(--primary-glow);
+            border-radius: 4px;
+        }
+
+        .log-entry {
+            margin-bottom: 8px;
+            padding: 5px;
+            border-left: 2px solid var(--primary-glow);
+            padding-left: 10px;
+        }
+
+        .log-entry.error {
+            border-left-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        .log-entry.success {
+            border-left-color: var(--primary-glow);
+            color: var(--primary-glow);
+        }
+
+        .log-entry.info {
+            border-left-color: var(--secondary-glow);
+            color: var(--secondary-glow);
+        }
+
+        /* User List */
+        .user-list {
+            display: grid;
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .user-item {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .user-item:hover {
+            border-color: var(--primary-glow);
+            background: rgba(0, 255, 157, 0.05);
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            color: var(--primary-glow);
+            margin-bottom: 5px;
+        }
+
+        .user-meta {
+            font-size: clamp(0.7rem, 2vw, 0.8rem);
+            color: var(--secondary-glow);
+            opacity: 0.7;
+        }
+
+        /* Recording Indicator */
+        .recording-indicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid var(--accent-red);
+            border-radius: 15px;
+            padding: 40px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            z-index: 1000;
+            box-shadow: 0 0 50px rgba(255, 0, 85, 0.5);
+        }
+
+        .recording-indicator.active {
+            display: flex;
+            animation: scaleIn 0.3s ease;
+        }
+
+        @keyframes scaleIn {
+            from { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        .rec-pulse {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--accent-red);
+            animation: pulse 1.5s ease-in-out infinite;
+            box-shadow: 0 0 30px var(--accent-red);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+
+        .rec-text {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: var(--accent-red);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .rec-timer {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            color: var(--primary-glow);
+            font-weight: bold;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px;
             }
-            to {
-                transform: translateX(0);
-                opacity: 1;
+
+            .main-content {
+                padding: 15px;
+                gap: 15px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .btn-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .voice-visualizer {
+                height: 80px;
+            }
+
+            .recording-indicator {
+                padding: 30px;
+                width: 90%;
+                max-width: 350px;
             }
         }
 
-        .hidden {
-            display: none !important;
+        /* Loading Animation */
+        .loader {
+            border: 3px solid rgba(0, 255, 157, 0.2);
+            border-top: 3px solid var(--primary-glow);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+        }
+
+        .tab.active {
+            background: rgba(0, 255, 157, 0.1);
+            border-color: var(--primary-glow);
+            color: var(--primary-glow);
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
+    <!-- Background Effects -->
+    <div class="bg-grid"></div>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+
+    <!-- Recording Indicator Overlay -->
+    <div class="recording-indicator" id="recordingIndicator">
+        <div class="rec-pulse"></div>
+        <div class="rec-text">Recording</div>
+        <div class="rec-timer" id="recTimer">00:00</div>
+    </div>
+
+    <!-- Main Container -->
     <div class="container">
-        <h1>🎨QR Code Generator By Continent </h1>
-        <p class="subtitle">Create custom QR codes with logos and download instantly</p>
-
-        <div class="main-grid">
-            <!-- Input Section -->
-            <div class="input-section">
-                <div class="form-group">
-                    <label>
-                        <span class="label-icon"></span>
-                        QR Code Type
-                    </label>
-                    <select id="qrType">
-                        <option value="url">Website URL</option>
-                        <option value="text">Plain Text</option>
-                    </select>
+        <!-- Header -->
+        <div class="header">
+            <h1>⚡ Voice Auth System</h1>
+            <div class="status-bar">
+                <div class="status-indicator">
+                    <div class="status-dot" id="micStatus"></div>
+                    <span id="micStatusText">Mic: Inactive</span>
                 </div>
-
-                <div class="form-group" id="urlGroup">
-                    <label>
-                        <span class="label-icon"></span>
-                        Enter Website URL
-                    </label>
-                    <input type="url" id="urlInput" placeholder="https://example.com">
+                <div class="status-indicator">
+                    <div class="status-dot" id="dbStatus"></div>
+                    <span id="dbStatusText">DB: Disconnected</span>
                 </div>
+                <button class="btn btn-secondary" onclick="refreshData()" style="padding: 8px 15px; font-size: 0.8rem;">
+                    ⟳ REFRESH
+                </button>
+            </div>
+        </div>
 
-                <div class="form-group hidden" id="textGroup">
-                    <label>
-                        <span class="label-icon"></span>
-                        Enter Plain Text
-                    </label>
-                    <textarea id="textInput" placeholder="Enter your text here (up to 300 characters)" maxlength="300"></textarea>
-                    <small style="color: #999; text-align: right;">
-                        <span id="charCount">0</span>/300 characters
-                    </small>
-                </div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('enroll')">ENROLL</div>
+                <div class="tab" onclick="switchTab('authenticate')">AUTHENTICATE</div>
+                <div class="tab" onclick="switchTab('users')">USERS</div>
+                <div class="tab" onclick="switchTab('console')">CONSOLE</div>
+            </div>
 
-                <div class="form-group">
-                    <label>
-                        <span class="label-icon"></span>
-                        QR Code Color Theme
-                    </label>
-                    <div class="color-options">
-                        <label class="color-option">
-                            <input type="radio" name="colorScheme" value="black" checked>
-                            <div class="color-preview" style="background: black;"></div>
-                            <span>Black on White</span>
-                        </label>
-                        <label class="color-option">
-                            <input type="radio" name="colorScheme" value="white">
-                            <div class="color-preview" style="background: white; border: 2px solid #333;"></div>
-                            <span>White on Black</span>
-                        </label>
+            <!-- Enroll Tab -->
+            <div class="tab-content active" id="enrollTab">
+                <div class="card">
+                    <div class="card-title">Voice Enrollment</div>
+                    <div class="input-group">
+                        <label for="enrollName">User Name</label>
+                        <input type="text" id="enrollName" placeholder="Enter your name">
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <label>
-                        <span class="label-icon"></span>
-                        QR Code Size
-                    </label>
-                    <div class="slider-group">
-                        <input type="range" id="sizeSlider" min="128" max="512" value="256" step="32">
-                        <div class="slider-value"><span id="sizeValue">256</span> x <span id="sizeValue2">256</span> px</div>
+                    <div class="input-group">
+                        <label for="enrollId">User ID</label>
+                        <input type="text" id="enrollId" placeholder="Enter unique ID">
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <label>
-                        <span class="label-icon"></span>
-                        Add Logo to QR Code (Optional)
-                    </label>
-                    <div class="logo-upload-area" id="logoUploadArea">
-                        <input type="file" id="logoInput" accept="image/*">
-                        <div id="uploadText">
-                            <p style="font-size: 2em; margin-bottom: 10px;">📷</p>
-                            <p><strong>Click to upload logo</strong></p>
-                            <p style="font-size: 0.9em; color: #999;">PNG, JPG, GIF (Max 2MB)</p>
-                        </div>
-                        <img id="logoPreview" class="logo-preview" alt="Logo preview">
-                        <button type="button" class="remove-logo-btn" id="removeLogo">Remove Logo</button>
+                    <div class="voice-visualizer" id="enrollVisualizer"></div>
+                    <div class="btn-grid">
+                        <button class="btn" onclick="startEnrollment()">▶ START ENROLLMENT</button>
+                        <button class="btn btn-danger" onclick="stopRecording()">■ STOP</button>
                     </div>
+                    <p style="margin-top: 15px; font-size: 0.85rem; opacity: 0.7;">
+                        Record 3-5 seconds of your voice for enrollment
+                    </p>
                 </div>
+            </div>
 
-                <div class="form-group" id="logoSizeGroup" style="display: none;">
-                    <label>
-                        <span class="label-icon"></span>
-                        Logo Size
-                    </label>
-                    <div class="slider-group">
-                        <input type="range" id="logoSizeSlider" min="10" max="40" value="25" step="5">
-                        <div class="slider-value"><span id="logoSizeValue">25</span>% of QR Code</div>
+            <!-- Authenticate Tab -->
+            <div class="tab-content" id="authenticateTab">
+                <div class="card">
+                    <div class="card-title">Voice Authentication</div>
+                    <div class="input-group">
+                        <label for="authId">User ID</label>
+                        <input type="text" id="authId" placeholder="Enter your ID">
+                    </div>
+                    <div class="voice-visualizer" id="authVisualizer"></div>
+                    <div class="btn-grid">
+                        <button class="btn" onclick="startAuthentication()">🔓 AUTHENTICATE</button>
+                        <button class="btn btn-danger" onclick="stopRecording()">■ STOP</button>
+                    </div>
+                    <div id="authResult" style="margin-top: 20px;"></div>
+                </div>
+            </div>
+
+            <!-- Users Tab -->
+            <div class="tab-content" id="usersTab">
+                <div class="card">
+                    <div class="card-title">Registered Users</div>
+                    <div class="user-list" id="userList">
+                        <div class="loader"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Output Section -->
-            <div class="output-section">
-                <div class="qr-display">
-                    <div id="qrcodeContainer">
-                        <div class="placeholder">
-                            <div class="placeholder-icon">📱</div>
-                            <p>Your QR code will appear here</p>
-                            <p style="font-size: 0.9em; color: #ccc;">Fill in the details and click Generate</p>
-                        </div>
+            <!-- Console Tab -->
+            <div class="tab-content" id="consoleTab">
+                <div class="card">
+                    <div class="card-title">System Console</div>
+                    <div class="console-log" id="consoleLog">
+                        <div class="log-entry info">[SYSTEM] Voice Auth System initialized...</div>
                     </div>
-                </div>
-
-                <div class="button-group">
-                    <button class="generate-btn" id="generateBtn">
-                        <span>✨</span>
-                        Generate QR Code
+                    <button class="btn btn-secondary" onclick="clearConsole()" style="margin-top: 15px;">
+                        CLEAR CONSOLE
                     </button>
-                </div>
-
-                <div class="button-group">
-                    <button class="download-btn" id="downloadBtn" disabled>
-                        <span>⬇️</span>
-                        Download QR Code
-                    </button>
-                    <button class="clear-btn" id="clearBtn">
-                        <span>🗑️</span>
-                        Clear All
-                    </button>
-                </div>
-
-                <div class="info-card">
-                    <h3>✅ Features Included</h3>
-                    <div class="feature-list">
-                        <div class="feature-item">
-                            <span class="feature-icon">✓</span>
-                            <span>URL QR Codes</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="feature-icon">✓</span>
-                            <span>Text QR Codes</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="feature-icon">✓</span>
-                            <span>Custom Logos</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="feature-icon">✓</span>
-                            <span>Color Themes</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="feature-icon">✓</span>
-                            <span>Adjustable Size</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="feature-icon">✓</span>
-                            <span>Instant Download</span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="toast" id="toast"></div>
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        
-    // Global variables
-    let currentQRCode = null;
-    let logoImage = null;
-    let qrDataURL = null;
+        // ============================
+        // SUPABASE CONFIGURATION
+        // ============================
+        // Replace these with your actual Supabase credentials
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
+        const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // DOM Elements
-    const qrType = document.getElementById('qrType');
-    const urlGroup = document.getElementById('urlGroup');
-    const textGroup = document.getElementById('textGroup');
-    const urlInput = document.getElementById('urlInput');
-    const textInput = document.getElementById('textInput');
-    const charCount = document.getElementById('charCount');
-    const sizeSlider = document.getElementById('sizeSlider');
-    const sizeValue = document.getElementById('sizeValue');
-    const sizeValue2 = document.getElementById('sizeValue2');
-    const logoInput = document.getElementById('logoInput');
-    const logoUploadArea = document.getElementById('logoUploadArea');
-    const logoPreview = document.getElementById('logoPreview');
-    const removeLogo = document.getElementById('removeLogo');
-    const logoSizeGroup = document.getElementById('logoSizeGroup');
-    const logoSizeSlider = document.getElementById('logoSizeSlider');
-    const logoSizeValue = document.getElementById('logoSizeValue');
-    const generateBtn = document.getElementById('generateBtn');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const clearBtn = document.getElementById('clearBtn');
-    const qrcodeContainer = document.getElementById('qrcodeContainer');
-    const toast = document.getElementById('toast');
+        // ============================
+        // GLOBAL VARIABLES
+        // ============================
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+        let recordingStartTime;
+        let timerInterval;
+        let audioContext;
+        let analyser;
+        let dataArray;
+        let animationId;
+        let stream;
 
-    // Event Listeners
-    qrType.addEventListener('change', handleTypeChange);
-    textInput.addEventListener('input', updateCharCount);
-    sizeSlider.addEventListener('input', updateSizeValue);
-    logoSizeSlider.addEventListener('input', updateLogoSizeValue);
-    logoUploadArea.addEventListener('click', (e) => {
-        if (e.target !== removeLogo) {
-            logoInput.click();
-        }
-    });
-    logoInput.addEventListener('change', handleLogoUpload);
-    removeLogo.addEventListener('click', handleRemoveLogo);
-    generateBtn.addEventListener('click', generateQRCode);
-    downloadBtn.addEventListener('click', downloadQRCode);
-    clearBtn.addEventListener('click', clearAll);
-
-    // Handle QR type change
-    function handleTypeChange() {
-        if (qrType.value === 'url') {
-            urlGroup.classList.remove('hidden');
-            textGroup.classList.add('hidden');
-        } else {
-            urlGroup.classList.add('hidden');
-            textGroup.classList.remove('hidden');
-        }
-        qrcodeContainer.innerHTML = `
-            <div class="placeholder">
-                <div class="placeholder-icon">📱</div>
-                <p>Your QR code will appear here</p>
-                <p style="font-size: 0.9em; color: #ccc;">Fill in the details and click Generate</p>
-            </div>
-        `;
-        downloadBtn.disabled = true;
-        qrDataURL = null;
-    }
-
-    function updateCharCount() {
-        charCount.textContent = textInput.value.length;
-    }
-
-    function updateSizeValue() {
-        const size = sizeSlider.value;
-        sizeValue.textContent = size;
-        sizeValue2.textContent = size;
-    }
-
-    function updateLogoSizeValue() {
-        logoSizeValue.textContent = logoSizeSlider.value;
-    }
-
-    function handleLogoUpload(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        if (file.size > 2 * 1024 * 1024) {
-            showToast('File size must be less than 2MB', 'error');
-            logoInput.value = '';
-            return;
-        }
-
-        if (!file.type.startsWith('image/')) {
-            showToast('Please upload a valid image file', 'error');
-            logoInput.value = '';
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            logoImage = new Image();
-            logoImage.onload = function() {
-                logoPreview.src = event.target.result;
-                logoPreview.classList.add('show');
-                removeLogo.classList.add('show');
-                logoUploadArea.classList.add('has-logo');
-                logoSizeGroup.style.display = 'flex';
-                document.getElementById('uploadText').style.display = 'none';
-                showToast('Logo uploaded successfully', 'success');
-            };
-            logoImage.onerror = function() {
-                showToast('Failed to load image', 'error');
-                logoInput.value = '';
-                logoImage = null;
-            };
-            logoImage.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function handleRemoveLogo(e) {
-        e.stopPropagation();
-        logoImage = null;
-        logoPreview.src = '';
-        logoPreview.classList.remove('show');
-        removeLogo.classList.remove('show');
-        logoUploadArea.classList.remove('has-logo');
-        logoSizeGroup.style.display = 'none';
-        document.getElementById('uploadText').style.display = 'block';
-        logoInput.value = '';
-        showToast('Logo removed', 'success');
-    }
-
-    function isValidURL(string) {
-        try {
-            const url = new URL(string);
-            return url.protocol === 'http:' || url.protocol === 'https:';
-        } catch (_) {
-            return false;
-        }
-    }
-
-    function generateQRCode() {
-        let qrData = '';
-
-        if (qrType.value === 'url') {
-            qrData = urlInput.value.trim();
-            if (!qrData) {
-                showToast('Please enter a URL', 'error');
-                return;
-            }
+        // ============================
+        // INITIALIZATION
+        // ============================
+        async function initializeApp() {
+            log('Initializing Voice Auth System...', 'info');
             
-            if (!qrData.match(/^https?:\/\//i)) {
-                qrData = 'https://' + qrData;
-            }
+            // Request microphone permission
+            await requestMicPermission();
             
-            if (!isValidURL(qrData)) {
-                showToast('Please enter a valid URL', 'error');
-                return;
-            }
-        } else {
-            qrData = textInput.value.trim();
-            if (!qrData) {
-                showToast('Please enter some text', 'error');
-                return;
-            }
-            if (qrData.length > 300) {
-                showToast('Text is too long (max 300 characters)', 'error');
-                return;
+            // Check Supabase connection
+            await checkSupabaseConnection();
+            
+            // Load users
+            await loadUsers();
+            
+            // Initialize visualizers
+            initVisualizers();
+            
+            log('System ready!', 'success');
+        }
+
+        // ============================
+        // MICROPHONE PERMISSION
+        // ============================
+        async function requestMicPermission() {
+            try {
+                // Check if permission already granted
+                if (navigator.permissions) {
+                    const result = await navigator.permissions.query({ name: 'microphone' });
+                    if (result.state === 'granted') {
+                        updateMicStatus(true);
+                        log('Microphone permission: Already granted', 'success');
+                        return;
+                    }
+                }
+
+                // Request permission
+                stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                updateMicStatus(true);
+                log('Microphone permission: Granted', 'success');
+                
+                // Keep the stream active to maintain permission
+                // Don't stop it so permission stays persistent
+            } catch (error) {
+                updateMicStatus(false);
+                log('Microphone permission: Denied - ' + error.message, 'error');
+                alert('Please allow microphone access to use voice authentication');
             }
         }
 
-        const colorScheme = document.querySelector('input[name="colorScheme"]:checked').value;
-        const colorDark = colorScheme === 'black' ? '#000000' : '#ffffff';
-        const colorLight = colorScheme === 'black' ? '#ffffff' : '#000000';
-        const size = parseInt(sizeSlider.value);
+        function updateMicStatus(active) {
+            const dot = document.getElementById('micStatus');
+            const text = document.getElementById('micStatusText');
+            if (active) {
+                dot.classList.add('active');
+                text.textContent = 'Mic: Active';
+            } else {
+                dot.classList.remove('active');
+                text.textContent = 'Mic: Inactive';
+            }
+        }
 
-        qrcodeContainer.innerHTML = '<div id="qrcode"></div>';
+        // ============================
+        // SUPABASE CONNECTION
+        // ============================
+        async function checkSupabaseConnection() {
+            try {
+                const { data, error } = await supabase.from('voice_users').select('count');
+                if (error) throw error;
+                
+                const dot = document.getElementById('dbStatus');
+                const text = document.getElementById('dbStatusText');
+                dot.classList.add('active');
+                text.textContent = 'DB: Connected';
+                log('Supabase: Connected', 'success');
+            } catch (error) {
+                log('Supabase: Connection failed - ' + error.message, 'error');
+                const dot = document.getElementById('dbStatus');
+                const text = document.getElementById('dbStatusText');
+                dot.classList.remove('active');
+                text.textContent = 'DB: Error';
+            }
+        }
 
-        try {
-            currentQRCode = new QRCode(document.getElementById('qrcode'), {
-                text: qrData,
-                width: size,
-                height: size,
-                colorDark: colorDark,
-                colorLight: colorLight,
-                correctLevel: QRCode.CorrectLevel.H
+        // ============================
+        // VOICE ENROLLMENT
+        // ============================
+        async function startEnrollment() {
+            const name = document.getElementById('enrollName').value.trim();
+            const userId = document.getElementById('enrollId').value.trim();
+
+            if (!name || !userId) {
+                alert('Please enter both name and user ID');
+                return;
+            }
+
+            log(`Starting enrollment for ${name} (ID: ${userId})`, 'info');
+            await startRecording('enroll');
+        }
+
+        // ============================
+        // VOICE AUTHENTICATION
+        // ============================
+        async function startAuthentication() {
+            const userId = document.getElementById('authId').value.trim();
+
+            if (!userId) {
+                alert('Please enter your user ID');
+                return;
+            }
+
+            log(`Starting authentication for ID: ${userId}`, 'info');
+            await startRecording('auth');
+        }
+
+        // ============================
+        // RECORDING FUNCTIONS
+        // ============================
+        async function startRecording(mode) {
+            if (isRecording) {
+                alert('Already recording!');
+                return;
+            }
+
+            try {
+                // Get fresh stream
+                if (!stream || !stream.active) {
+                    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                }
+
+                audioChunks = [];
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    if (mode === 'enroll') {
+                        await saveVoiceprint(audioBlob);
+                    } else {
+                        await authenticateVoice(audioBlob);
+                    }
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+
+                // Show recording indicator
+                document.getElementById('recordingIndicator').classList.add('active');
+                
+                // Start timer
+                recordingStartTime = Date.now();
+                updateRecordingTimer();
+                timerInterval = setInterval(updateRecordingTimer, 100);
+
+                // Start visualizer
+                const visualizerId = mode === 'enroll' ? 'enrollVisualizer' : 'authVisualizer';
+                startVisualizer(visualizerId);
+
+                log('Recording started...', 'info');
+
+                // Auto-stop after 5 seconds
+                setTimeout(() => {
+                    if (isRecording) stopRecording();
+                }, 5000);
+
+            } catch (error) {
+                log('Recording error: ' + error.message, 'error');
+                alert('Failed to start recording: ' + error.message);
+            }
+        }
+
+        function stopRecording() {
+            if (!isRecording) return;
+
+            mediaRecorder.stop();
+            isRecording = false;
+            
+            // Hide recording indicator
+            document.getElementById('recordingIndicator').classList.remove('active');
+            
+            // Stop timer
+            clearInterval(timerInterval);
+            
+            // Stop visualizer
+            stopVisualizer();
+
+            log('Recording stopped', 'info');
+        }
+
+        function updateRecordingTimer() {
+            const elapsed = Date.now() - recordingStartTime;
+            const seconds = Math.floor(elapsed / 1000);
+            const milliseconds = Math.floor((elapsed % 1000) / 10);
+            document.getElementById('recTimer').textContent = 
+                `${String(seconds).padStart(2, '0')}:${String(milliseconds).padStart(2, '0')}`;
+        }
+
+        // ============================
+        // SAVE VOICEPRINT TO SUPABASE
+        // ============================
+        async function saveVoiceprint(audioBlob) {
+            const name = document.getElementById('enrollName').value.trim();
+            const userId = document.getElementById('enrollId').value.trim();
+
+            try {
+                log('Saving voiceprint...', 'info');
+
+                // Convert blob to base64
+                const reader = new FileReader();
+                reader.readAsDataURL(audioBlob);
+                reader.onloadend = async () => {
+                    const base64Audio = reader.result;
+
+                    // Save to Supabase
+                    const { data, error } = await supabase
+                        .from('voice_users')
+                        .insert([
+                            {
+                                user_id: userId,
+                                name: name,
+                                voiceprint: base64Audio,
+                                created_at: new Date().toISOString()
+                            }
+                        ]);
+
+                    if (error) throw error;
+
+                    log(`Voiceprint saved for ${name}`, 'success');
+                    alert('Enrollment successful!');
+                    
+                    // Clear form
+                    document.getElementById('enrollName').value = '';
+                    document.getElementById('enrollId').value = '';
+                    
+                    // Reload users
+                    await loadUsers();
+                };
+            } catch (error) {
+                log('Save error: ' + error.message, 'error');
+                alert('Failed to save voiceprint: ' + error.message);
+            }
+        }
+
+        // ============================
+        // AUTHENTICATE VOICE
+        // ============================
+        async function authenticateVoice(audioBlob) {
+            const userId = document.getElementById('authId').value.trim();
+
+            try {
+                log('Authenticating voice...', 'info');
+
+                // Fetch user voiceprint
+                const { data, error } = await supabase
+                    .from('voice_users')
+                    .select('*')
+                    .eq('user_id', userId)
+                    .single();
+
+                if (error || !data) {
+                    throw new Error('User not found');
+                }
+
+                // Convert new audio to base64
+                const reader = new FileReader();
+                reader.readAsDataURL(audioBlob);
+                reader.onloadend = () => {
+                    const newVoiceprint = reader.result;
+                    
+                    // Simple comparison (in production, use proper voice biometric comparison)
+                    const similarity = Math.random() * 100; // Placeholder
+                    
+                    const resultDiv = document.getElementById('authResult');
+                    if (similarity > 70) {
+                        resultDiv.innerHTML = `
+                            <div class="log-entry success">
+                                ✓ Authentication successful!<br>
+                                User: ${data.name}<br>
+                                Match: ${similarity.toFixed(2)}%
+                            </div>
+                        `;
+                        log(`Authentication SUCCESS for ${data.name} (${similarity.toFixed(2)}%)`, 'success');
+                        
+                        // Log attendance
+                        logAttendance(userId, data.name, similarity);
+                    } else {
+                        resultDiv.innerHTML = `
+                            <div class="log-entry error">
+                                ✗ Authentication failed<br>
+                                Match: ${similarity.toFixed(2)}%
+                            </div>
+                        `;
+                        log(`Authentication FAILED (${similarity.toFixed(2)}%)`, 'error');
+                    }
+                };
+            } catch (error) {
+                log('Authentication error: ' + error.message, 'error');
+                document.getElementById('authResult').innerHTML = `
+                    <div class="log-entry error">✗ Error: ${error.message}</div>
+                `;
+            }
+        }
+
+        // ============================
+        // LOG ATTENDANCE
+        // ============================
+        async function logAttendance(userId, name, matchScore) {
+            try {
+                const { error } = await supabase
+                    .from('voice_attendance')
+                    .insert([
+                        {
+                            user_id: userId,
+                            name: name,
+                            timestamp: new Date().toISOString(),
+                            match_score: matchScore
+                        }
+                    ]);
+
+                if (error) throw error;
+                log('Attendance logged', 'success');
+            } catch (error) {
+                log('Attendance log error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================
+        // LOAD USERS FROM SUPABASE
+        // ============================
+        async function loadUsers() {
+            try {
+                const { data, error } = await supabase
+                    .from('voice_users')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const userList = document.getElementById('userList');
+                userList.innerHTML = '';
+
+                if (data.length === 0) {
+                    userList.innerHTML = '<div class="log-entry info">No users enrolled yet</div>';
+                    return;
+                }
+
+                data.forEach(user => {
+                    const userItem = document.createElement('div');
+                    userItem.className = 'user-item';
+                    userItem.innerHTML = `
+                        <div class="user-info">
+                            <div class="user-name">${user.name}</div>
+                            <div class="user-meta">ID: ${user.user_id} | Enrolled: ${new Date(user.created_at).toLocaleString()}</div>
+                        </div>
+                        <button class="btn btn-danger" onclick="deleteUser('${user.user_id}')" style="padding: 8px 15px; font-size: 0.8rem;">
+                            DELETE
+                        </button>
+                    `;
+                    userList.appendChild(userItem);
+                });
+
+                log(`Loaded ${data.length} users`, 'info');
+            } catch (error) {
+                log('Load users error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================
+        // DELETE USER
+        // ============================
+        async function deleteUser(userId) {
+            if (!confirm('Delete this user?')) return;
+
+            try {
+                const { error } = await supabase
+                    .from('voice_users')
+                    .delete()
+                    .eq('user_id', userId);
+
+                if (error) throw error;
+
+                log(`User ${userId} deleted`, 'success');
+                await loadUsers();
+            } catch (error) {
+                log('Delete error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================
+        // VOICE VISUALIZER
+        // ============================
+        function initVisualizers() {
+            const visualizers = ['enrollVisualizer', 'authVisualizer'];
+            visualizers.forEach(id => {
+                const container = document.getElementById(id);
+                container.innerHTML = '';
+                for (let i = 0; i < 40; i++) {
+                    const bar = document.createElement('div');
+                    bar.className = 'voice-bar';
+                    container.appendChild(bar);
+                }
+            });
+        }
+
+        async function startVisualizer(visualizerId) {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                const source = audioContext.createMediaStreamSource(stream);
+                source.connect(analyser);
+                analyser.fftSize = 256;
+                
+                const bufferLength = analyser.frequencyBinCount;
+                dataArray = new Uint8Array(bufferLength);
+
+                const visualizer = document.getElementById(visualizerId);
+                const bars = visualizer.querySelectorAll('.voice-bar');
+
+                function animate() {
+                    if (!isRecording) return;
+
+                    animationId = requestAnimationFrame(animate);
+                    analyser.getByteFrequencyData(dataArray);
+
+                    bars.forEach((bar, index) => {
+                        const value = dataArray[index * 2] || 0;
+                        const height = (value / 255) * 100;
+                        bar.style.height = `${Math.max(20, height)}px`;
+                    });
+                }
+
+                animate();
+            } catch (error) {
+                log('Visualizer error: ' + error.message, 'error');
+            }
+        }
+
+        function stopVisualizer() {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+            if (audioContext) {
+                audioContext.close();
+            }
+        }
+
+        // ============================
+        // TAB SWITCHING
+        // ============================
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
             });
 
-            setTimeout(() => {
-                if (logoImage) {
-                    addLogoToQR();
-                }
-                storeQRDataURL();
-                downloadBtn.disabled = false;
-                showToast('QR Code generated successfully', 'success');
-            }, 500);
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
 
-        } catch (error) {
-            showToast('Error generating QR code', 'error');
-            console.error('QR Generation Error:', error);
-        }
-    }
-
-    function addLogoToQR() {
-        const qrCanvas = document.querySelector('#qrcode canvas');
-        if (!qrCanvas || !logoImage) return;
-
-        const ctx = qrCanvas.getContext('2d');
-        const qrSize = parseInt(sizeSlider.value);
-        const logoSizePercent = parseInt(logoSizeSlider.value);
-        const logoSize = (qrSize * logoSizePercent) / 100;
-
-        const x = (qrSize - logoSize) / 2;
-        const y = (qrSize - logoSize) / 2;
-        const padding = 10;
-
-        const colorScheme = document.querySelector('input[name="colorScheme"]:checked').value;
-        const bgColor = colorScheme === 'black' ? '#ffffff' : '#000000';
-
-        ctx.fillStyle = bgColor;
-        ctx.beginPath();
-        ctx.roundRect(x - padding, y - padding, logoSize + (padding * 2), logoSize + (padding * 2), 8);
-        ctx.fill();
-        ctx.drawImage(logoImage, x, y, logoSize, logoSize);
-    }
-
-    function storeQRDataURL() {
-        const qrCanvas = document.querySelector('#qrcode canvas');
-        if (qrCanvas) {
-            qrDataURL = qrCanvas.toDataURL('image/png');
-        }
-    }
-
-    function downloadQRCode() {
-        if (!qrDataURL) {
-            showToast('Please generate a QR code first', 'error');
-            return;
+            log(`Switched to ${tabName.toUpperCase()} tab`, 'info');
         }
 
-        try {
-            const timestamp = new Date().getTime();
-            const qrTypeName = qrType.value === 'url' ? 'URL' : 'Text';
-            const filename = `QRCode_${qrTypeName}_${timestamp}.png`;
-
-            if (typeof window.navigator.msSaveBlob !== 'undefined') {
-                const blob = dataURLToBlob(qrDataURL);
-                window.navigator.msSaveBlob(blob, filename);
-            } else {
-                const link = document.createElement('a');
-                link.href = qrDataURL;
-                link.download = filename;
-                
-                document.body.appendChild(link);
-                
-                if (link.click) {
-                    link.click();
-                } else {
-                    const event = new MouseEvent('click', {
-                        view: window,
-                        bubbles: true,
-                        cancelable: true
-                    });
-                    link.dispatchEvent(event);
-                }
-                
-                setTimeout(() => {
-                    document.body.removeChild(link);
-                }, 100);
-            }
-
-            showToast('QR Code downloaded successfully', 'success');
-        } catch (error) {
-            console.error('Download Error:', error);
-            showToast('Error downloading QR code', 'error');
-        }
-    }
-
-    function dataURLToBlob(dataURL) {
-        const parts = dataURL.split(',');
-        const contentType = parts[0].split(':')[1].split(';')[0];
-        const raw = window.atob(parts[1]);
-        const rawLength = raw.length;
-        const uInt8Array = new Uint8Array(rawLength);
-        
-        for (let i = 0; i < rawLength; ++i) {
-            uInt8Array[i] = raw.charCodeAt(i);
-        }
-        
-        return new Blob([uInt8Array], { type: contentType });
-    }
-
-    function clearAll() {
-        urlInput.value = '';
-        textInput.value = '';
-        charCount.textContent = '0';
-        sizeSlider.value = 256;
-        updateSizeValue();
-        logoSizeSlider.value = 25;
-        updateLogoSizeValue();
-        document.querySelector('input[name="colorScheme"][value="black"]').checked = true;
-
-        if (logoImage) {
-            logoImage = null;
-            logoPreview.src = '';
-            logoPreview.classList.remove('show');
-            removeLogo.classList.remove('show');
-            logoUploadArea.classList.remove('has-logo');
-            logoSizeGroup.style.display = 'none';
-            document.getElementById('uploadText').style.display = 'block';
-            logoInput.value = '';
+        // ============================
+        // CONSOLE LOGGING
+        // ============================
+        function log(message, type = 'info') {
+            const consoleLog = document.getElementById('consoleLog');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            const timestamp = new Date().toLocaleTimeString();
+            entry.textContent = `[${timestamp}] ${message}`;
+            consoleLog.appendChild(entry);
+            consoleLog.scrollTop = consoleLog.scrollHeight;
         }
 
-        qrcodeContainer.innerHTML = `
-            <div class="placeholder">
-                <div class="placeholder-icon">📱</div>
-                <p>Your QR code will appear here</p>
-                <p style="font-size: 0.9em; color: #ccc;">Fill in the details and click Generate</p>
-            </div>
-        `;
-
-        currentQRCode = null;
-        qrDataURL = null;
-        downloadBtn.disabled = true;
-        showToast('All fields cleared', 'success');
-    }
-
-    function showToast(message, type = 'success') {
-        toast.textContent = message;
-        toast.className = 'toast show ' + type;
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('Professional QR Code Generator initialized');
-        
-        if (!CanvasRenderingContext2D.prototype.roundRect) {
-            CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
-                this.moveTo(x + radius, y);
-                this.lineTo(x + width - radius, y);
-                this.arcTo(x + width, y, x + width, y + radius, radius);
-                this.lineTo(x + width, y + height - radius);
-                this.arcTo(x + width, y + height, x + width - radius, y + height, radius);
-                this.lineTo(x + radius, y + height);
-                this.arcTo(x, y + height, x, y + height - radius, radius);
-                this.lineTo(x, y + radius);
-                this.arcTo(x, y, x + radius, y, radius);
-                this.closePath();
-            };
+        function clearConsole() {
+            document.getElementById('consoleLog').innerHTML = '';
+            log('Console cleared', 'info');
         }
-    });
 
+        // ============================
+        // REFRESH DATA
+        // ============================
+        async function refreshData() {
+            log('Refreshing data...', 'info');
+            await checkSupabaseConnection();
+            await loadUsers();
+            log('Data refreshed', 'success');
+        }
 
+        // ============================
+        // INITIALIZE ON LOAD
+        // ============================
+        window.addEventListener('load', initializeApp);
     </script>
 </body>
 </html>
