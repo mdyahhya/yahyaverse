@@ -261,13 +261,13 @@ body {
 
 .text--title span {
     display: block
-    font-size: 0.35em;
+    font-size: 0.3em;
 }
 
-/* .text--title span:first-child {
-    font-size: 0.35em;
-    margin-bottom: 0.2em
-} */
+.text--title span:first-child {
+    font-size: 0.3em;
+    /* margin-bottom: 0.2em */
+}
 
 .text--note {
     top: 87%;
@@ -402,5 +402,6 @@ body {
 .ui__buttons {
     z-index: 5
 }
+
 
 
