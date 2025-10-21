@@ -261,7 +261,7 @@ body {
 
 .text--title span {
     display: block
-    font-size: 0.3em;
+    
 }
 
 .text--title span:first-child {
@@ -406,6 +406,7 @@ body {
 .ui__buttons {
     z-index: 5
 }
+
 
 
 
