@@ -482,6 +482,42 @@
                 font-size: 12px;
             }
         }
+
+        /* Checkbox Styling */
+.checkbox-cell {
+    width: 40px;
+    text-align: center;
+}
+
+.select-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--primary);
+}
+
+.bulk-actions {
+    display: none;
+    background: #fff3cd;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 2px solid var(--warning);
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.bulk-actions.active {
+    display: flex;
+}
+
+.selected-count {
+    font-weight: 600;
+    color: #856404;
+}
+
     </style>
 </head>
 <body>
@@ -508,8 +544,22 @@
         <!-- Alert Container -->
         <div id="alertContainer"></div>
 
+
+        
         <!-- Students Tab -->
         <div id="studentsTab" class="tab-content active">
+
+            <!-- Bulk Actions Bar -->
+<div class="bulk-actions" id="bulkActions">
+    <div>
+        <span class="selected-count" id="selectedCount">0 selected</span>
+    </div>
+    <div class="filter-actions">
+        <button class="btn btn-danger" onclick="bulkDelete()">🗑️ Delete Selected</button>
+        <button class="btn btn-secondary" onclick="clearSelection()">Clear Selection</button>
+    </div>
+</div>
+
             <!-- Filters -->
             <div class="filters">
                 <div class="filters-grid">
@@ -572,10 +622,14 @@
                 </div>
                 <div class="table-wrapper">
                     <table id="studentsTable">
-                        <thead>
-                            <tr>
-                                <th>Image</th>
-                                <th>Name</th>
+                       <thead>
+    <tr>
+        <th class="checkbox-cell">
+            <input type="checkbox" class="select-checkbox" id="selectAll" onchange="toggleSelectAll()">
+        </th>
+        <th>Image</th>
+        <th>Name</th>
+
                                 <th>Roll No</th>
                                 <th>Email</th>
                                 <th>Year</th>
@@ -734,6 +788,8 @@
         let allStudents = [];
         let filteredStudents = [];
         let currentEditId = null;
+        let selectedStudents = new Set();
+
 
         // Initialize
         async function init() {
@@ -763,6 +819,8 @@
                 console.error('Error loading students:', error);
                 showAlert('Failed to load students: ' + error.message, 'error');
             }
+            clearSelection(); // Clear selection when reloading data
+
         }
 
         // Render Students
@@ -774,29 +832,141 @@
                 return;
             }
             
-            tbody.innerHTML = filteredStudents.map(student => `
-                <tr>
-                    <td>
-                        ${student.profile_image_path ? 
-                            `<img src="${student.profile_image_path}" class="profile-img" onclick="viewImage('${student.profile_image_path}')" alt="${student.name}">` : 
-                            '<div style="width: 40px; height: 40px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center;">👤</div>'
-                        }
-                    </td>
-                    <td><strong>${student.name || '-'}</strong></td>
-                    <td>${student.roll_no || '-'}</td>
-                    <td>${student.email || '-'}</td>
-                    <td><span style="padding: 4px 8px; background: #e9ecef; border-radius: 4px; font-size: 12px;">${student.year || '-'}</span></td>
-                    <td>${student.branch || '-'}</td>
-                    <td>${student.division || '-'}</td>
-                    <td>
-                        <div class="action-btns">
-                            <button class="action-btn btn-success" onclick='editStudent(${JSON.stringify(student).replace(/'/g, "&apos;")})'>Edit</button>
-                            <button class="action-btn btn-danger" onclick="deleteStudent('${student.id}', '${student.name}')">Delete</button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
+           tbody.innerHTML = filteredStudents.map(student => `
+    <tr>
+        <td class="checkbox-cell">
+            <input type="checkbox" class="select-checkbox student-checkbox" 
+                   data-id="${student.id}" 
+                   onchange="toggleStudentSelection('${student.id}')"
+                   ${selectedStudents.has(student.id) ? 'checked' : ''}>
+        </td>
+        <td>
+            ${student.profile_image_path ? 
+                `<img src="${student.profile_image_path}" class="profile-img" onclick="viewImage('${student.profile_image_path}')" alt="${student.name}">` : 
+                '<div style="width: 40px; height: 40px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center;">👤</div>'
+            }
+        </td>
+        <td><strong>${student.name || '-'}</strong></td>
+        <td>${student.roll_no || '-'}</td>
+        <td>${student.email || '-'}</td>
+        <td><span style="padding: 4px 8px; background: #e9ecef; border-radius: 4px; font-size: 12px;">${student.year || '-'}</span></td>
+        <td>${student.branch || '-'}</td>
+        <td>${student.division || '-'}</td>
+        <td>
+            <div class="action-btns">
+                <button class="action-btn btn-success" onclick='editStudent(${JSON.stringify(student).replace(/'/g, "&apos;")})'>Edit</button>
+                <button class="action-btn btn-danger" onclick="deleteStudent('${student.id}', '${student.name}')">Delete</button>
+            </div>
+        </td>
+    </tr>
+`).join('');
         }
+
+
+        // Multi-Select Functions
+function toggleSelectAll() {
+    const selectAll = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('.student-checkbox');
+    
+    if (selectAll.checked) {
+        // Select all visible students
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = true;
+            selectedStudents.add(checkbox.dataset.id);
+        });
+    } else {
+        // Deselect all
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = false;
+            selectedStudents.delete(checkbox.dataset.id);
+        });
+    }
+    
+    updateBulkActionsBar();
+}
+
+function toggleStudentSelection(studentId) {
+    if (selectedStudents.has(studentId)) {
+        selectedStudents.delete(studentId);
+    } else {
+        selectedStudents.add(studentId);
+    }
+    
+    updateSelectAllCheckbox();
+    updateBulkActionsBar();
+}
+
+function updateSelectAllCheckbox() {
+    const selectAll = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('.student-checkbox');
+    const checkedCount = document.querySelectorAll('.student-checkbox:checked').length;
+    
+    if (checkedCount === 0) {
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+    } else if (checkedCount === checkboxes.length) {
+        selectAll.checked = true;
+        selectAll.indeterminate = false;
+    } else {
+        selectAll.checked = false;
+        selectAll.indeterminate = true;
+    }
+}
+
+function updateBulkActionsBar() {
+    const bulkActions = document.getElementById('bulkActions');
+    const selectedCount = document.getElementById('selectedCount');
+    const count = selectedStudents.size;
+    
+    if (count > 0) {
+        bulkActions.classList.add('active');
+        selectedCount.textContent = `${count} student${count > 1 ? 's' : ''} selected`;
+    } else {
+        bulkActions.classList.remove('active');
+    }
+}
+
+function clearSelection() {
+    selectedStudents.clear();
+    document.querySelectorAll('.student-checkbox').forEach(cb => cb.checked = false);
+    document.getElementById('selectAll').checked = false;
+    document.getElementById('selectAll').indeterminate = false;
+    updateBulkActionsBar();
+}
+
+async function bulkDelete() {
+    const count = selectedStudents.size;
+    
+    if (count === 0) {
+        showAlert('No students selected', 'error');
+        return;
+    }
+    
+    if (!confirm(`Are you sure you want to delete ${count} student${count > 1 ? 's' : ''}? This cannot be undone.`)) {
+        return;
+    }
+    
+    try {
+        const idsArray = Array.from(selectedStudents);
+        
+        // Delete in batches
+        const { error } = await supabase
+            .from('students')
+            .delete()
+            .in('id', idsArray);
+        
+        if (error) throw error;
+        
+        showAlert(`${count} student${count > 1 ? 's' : ''} deleted successfully!`, 'success');
+        clearSelection();
+        await loadStudents();
+        
+    } catch (error) {
+        console.error('Error deleting students:', error);
+        showAlert('Error deleting students: ' + error.message, 'error');
+    }
+}
+
 
         // Apply Filters
         function applyFilters() {
@@ -818,6 +988,9 @@
             });
             
             renderStudents();
+            updateSelectAllCheckbox();
+updateBulkActionsBar();
+
         }
 
         // Reset Filters
@@ -1094,3 +1267,4 @@
     </script>
 </body>
 </html>
+
