@@ -1,158 +1,1096 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VVPIET Database Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  <meta charset="UTF-8">
-  <meta name="author" content="Boris Sehovac">
-  <meta name="description" content="See if you can solve this classic puzzle game.">
-  <meta name="viewport" content="width=device-width,height=device-height,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+        :root {
+            --primary: #FFCC00;
+            --secondary: #000000;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --border: #dee2e6;
+            --text: #212529;
+            --danger: #dc3545;
+            --success: #28a745;
+            --warning: #ffc107;
+        }
 
-  <title>The Cube - A Rubik's Cube Game</title>
-  <meta property="og:description" content="See if you can solve this classic puzzle game."/>
-  <meta property="og:image" content="assets/icons/meta-image.png"/>
-  <meta property="og:site_name" content="The Cube - A Rubik's Cube Game"/>
-  <meta property="og:title" content="The Cube - A Rubik's Cube Game"/>
-  <meta property="og:type" content="website"/>
-  <meta property="og:url" content="https://bsehovac.github.io"/>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
 
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:creator" content="@BorisSehovac">
-  <meta name="twitter:title" content="The Cube - A Rubik's Cube Game">
-  <meta name="twitter:image" content="https://bsehovac.github.io/the-cube/assets/icons/twitter-card.png">
-  <meta name="twitter:description" content="See if you can solve this classic puzzle game.">
+        /* Header */
+        .header {
+            background: var(--secondary);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="The Cube">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="translucent-black">
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
 
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
-  <link rel="manifest" href="assets/icons/site.webmanifest">
-  <link rel="mask-icon" href="assets/icons/safari-pinned-tab.svg" color="#5bbad5">
-  <link rel="shortcut icon" href="assets/icons/favicon.ico">
-  <meta name="theme-color" content="#ffffff">
+        .connection-info {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 12px;
+            opacity: 0.8;
+        }
 
-  <link rel="stylesheet" type="text/css" href="styles.css">
+        .connection-info span {
+            padding: 4px 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
 
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128627708-1"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'UA-128627708-1');
-  </script>
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-  <script>
-    window.gameVersion = '0.99.2';
-  </script>
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
 
+        .tab-btn {
+            padding: 12px 24px;
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--primary);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--secondary);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        /* Filters */
+        .filters {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--secondary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255,204,0,0.3);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        /* Data Table */
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .table-header h2 {
+            font-size: 18px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid var(--border);
+        }
+
+        .profile-img:hover {
+            transform: scale(1.1);
+            border-color: var(--primary);
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 5px;
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 2px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Image Viewer Modal */
+        .image-viewer {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-viewer.active {
+            display: flex;
+        }
+
+        .image-viewer img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+        }
+
+        .image-viewer-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Alert */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .tabs {
+                overflow-x: auto;
+            }
+
+            .tab-btn {
+                white-space: nowrap;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            th, td {
+                padding: 8px;
+                font-size: 12px;
+            }
+        }
+    </style>
 </head>
 <body>
-
-  <div class="ui">
-
-    <div class="ui__background"></div>
-
-    <div class="ui__game"></div>
-
-    <div class="ui__texts">
-      <h1 class="text text--title">
-        <span>THE CUBE</span><br>
-        <span>By Continent</span>
-      </h1>
-      <div class="text text--note">
-        Double tap to start
-      </div>
-      <div class="text text--timer">
-        0:00
-      </div>
-      <div class="text text--complete">
-        <span>Complete!</span>
-      </div>
-      <div class="text text--best-time">
-        <icon trophy></icon>
-        <span>Best Time!</span>
-      </div>
+    <!-- Header -->
+    <div class="header">
+        <h1>🎓 VVPIET Database Admin Dashboard</h1>
+        <div class="connection-info">
+            <span id="dbUrl">Connecting...</span>
+            <span id="dbStatus">●</span>
+            <span id="recordCount">0 records</span>
+        </div>
     </div>
 
-    <div class="ui__prefs">
-      <range name="size" title="Cube Size" list="2,3,4,5"></range>
-      <range name="flip" title="Flip Type" list="Swift&nbsp;,Smooth,Bounce"></range>
-      <range name="scramble" title="Scramble Length" list="20,25,30"></range>
-      <range name="fov" title="Camera Angle" list="Ortographic,Perspective"></range>
-      <range name="theme" title="Color Scheme" list="Cube,Erno,Dust,Camo,Rain"></range>
+    <!-- Container -->
+    <div class="container">
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('students')">👥 Students</button>
+            <button class="tab-btn" onclick="switchTab('auth')">🔐 Auth Credentials</button>
+            <button class="tab-btn" onclick="switchTab('stats')">📊 Statistics</button>
+            <button class="tab-btn" onclick="switchTab('config')">⚙️ Configuration</button>
+        </div>
+
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+
+        <!-- Students Tab -->
+        <div id="studentsTab" class="tab-content active">
+            <!-- Filters -->
+            <div class="filters">
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label>Year</label>
+                        <select id="filterYear" onchange="applyFilters()">
+                            <option value="">All Years</option>
+                            <option value="BTech1">BTech 1st Year</option>
+                            <option value="BTech2">BTech 2nd Year</option>
+                            <option value="BTech3">BTech 3rd Year</option>
+                            <option value="BTech4">BTech Final Year</option>
+                            <option value="BCA1">BCA 1st Year</option>
+                            <option value="BCA2">BCA 2nd Year</option>
+                            <option value="BCA3">BCA 3rd Year</option>
+                            <option value="MCA1">MCA 1st Year</option>
+                            <option value="MCA2">MCA 2nd Year</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Branch</label>
+                        <select id="filterBranch" onchange="applyFilters()">
+                            <option value="">All Branches</option>
+                            <option value="CSE">CSE</option>
+                            <option value="ENTC">ENTC</option>
+                            <option value="AI_DS">AI & DS</option>
+                            <option value="Electrical">Electrical</option>
+                            <option value="Mechanical">Mechanical</option>
+                            <option value="Civil">Civil</option>
+                            <option value="BCA">BCA</option>
+                            <option value="MCA">MCA</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Division</label>
+                        <select id="filterDivision" onchange="applyFilters()">
+                            <option value="">All Divisions</option>
+                            <option value="A">Division A</option>
+                            <option value="B">Division B</option>
+                            <option value="C">Division C</option>
+                            <option value="D">Division D</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Search</label>
+                        <input type="text" id="searchInput" placeholder="Name, email, roll no..." oninput="applyFilters()">
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn btn-primary" onclick="resetFilters()">Reset Filters</button>
+                    <button class="btn btn-success" onclick="openAddModal()">+ Add Student</button>
+                    <button class="btn btn-secondary" onclick="exportData()">📥 Export CSV</button>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>Student Records</h2>
+                    <button class="btn btn-primary" onclick="loadStudents()">🔄 Refresh</button>
+                </div>
+                <div class="table-wrapper">
+                    <table id="studentsTable">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Roll No</th>
+                                <th>Email</th>
+                                <th>Year</th>
+                                <th>Branch</th>
+                                <th>Division</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody">
+                            <tr><td colspan="8" class="loading"><div class="spinner"></div>Loading data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auth Tab -->
+        <div id="authTab" class="tab-content">
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>Authentication Credentials</h2>
+                    <button class="btn btn-primary" onclick="loadAuthRecords()">🔄 Refresh</button>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Password</th>
+                                <th>Student ID</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="authTableBody">
+                            <tr><td colspan="5" class="loading"><div class="spinner"></div>Loading data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Tab -->
+        <div id="statsTab" class="tab-content">
+            <div class="stats-grid" id="statsGrid">
+                <div class="loading"><div class="spinner"></div>Loading statistics...</div>
+            </div>
+        </div>
+
+        <!-- Config Tab -->
+        <div id="configTab" class="tab-content">
+            <div class="filters">
+                <h2 style="margin-bottom: 20px;">Database Configuration</h2>
+                <div class="form-group">
+                    <label>Supabase URL</label>
+                    <input type="text" id="configUrl" value="https://ktqwhwzbxyoplawjmbao.supabase.co">
+                </div>
+                <div class="form-group">
+                    <label>Supabase Anon Key</label>
+                    <textarea id="configKey" rows="3">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0cXdod3pieHlvcGxhd2ptYmFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwMzQ2ODgsImV4cCI6MjA2ODYxMDY4OH0.mo0mu-k3b_saK3I4gAGr4OIZcGZdRF5ogFMTqeijKas</textarea>
+                </div>
+                <button class="btn btn-primary" onclick="updateConfig()">Save & Reconnect</button>
+            </div>
+        </div>
     </div>
 
-    <div class="ui__theme">
-      <range name="hue" title="Hue" color></range>
-      <range name="saturation" title="Saturation" color></range>
-      <range name="lightness" title="Lightness" color></range>
+    <!-- Edit/Add Modal -->
+    <div class="modal" id="studentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add Student</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="studentForm">
+                    <input type="hidden" id="studentId">
+                    <div class="form-group">
+                        <label>Name *</label>
+                        <input type="text" id="studentName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="studentEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Roll Number *</label>
+                        <input type="text" id="studentRollNo" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Year *</label>
+                        <select id="studentYear" required>
+                            <option value="">Select Year</option>
+                            <option value="BTech1">BTech 1st Year</option>
+                            <option value="BTech2">BTech 2nd Year</option>
+                            <option value="BTech3">BTech 3rd Year</option>
+                            <option value="BTech4">BTech Final Year</option>
+                            <option value="BCA1">BCA 1st Year</option>
+                            <option value="BCA2">BCA 2nd Year</option>
+                            <option value="BCA3">BCA 3rd Year</option>
+                            <option value="MCA1">MCA 1st Year</option>
+                            <option value="MCA2">MCA 2nd Year</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Branch</label>
+                        <select id="studentBranch">
+                            <option value="">Select Branch</option>
+                            <option value="CSE">CSE</option>
+                            <option value="ENTC">ENTC</option>
+                            <option value="AI_DS">AI & DS</option>
+                            <option value="Electrical">Electrical</option>
+                            <option value="Mechanical">Mechanical</option>
+                            <option value="Civil">Civil</option>
+                            <option value="BCA">BCA</option>
+                            <option value="MCA">MCA</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Division (for 1st year)</label>
+                        <select id="studentDivision">
+                            <option value="">Select Division</option>
+                            <option value="A">Division A</option>
+                            <option value="B">Division B</option>
+                            <option value="C">Division C</option>
+                            <option value="D">Division D</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Bio</label>
+                        <textarea id="studentBio"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveStudent()">Save</button>
+            </div>
+        </div>
     </div>
 
-    <div class="ui__stats">
-      <div class="stats" name="cube-size">
-        <i>Cube:</i><b>3x3x3</b>
-      </div>
-      <div class="stats" name="total-solves">
-        <i>Total solves:</i><b>-</b>
-      </div>
-      <div class="stats" name="best-time">
-        <i>Best time:</i><b>-</b>
-      </div>
-      <div class="stats" name="worst-time">
-        <i>Worst time:</i><b>-</b>
-      </div>
-      <div class="stats" name="average-5">
-        <i>Average of 5:</i><b>-</b>
-      </div>
-      <div class="stats" name="average-12">
-        <i>Average of 12:</i><b>-</b>
-      </div>
-      <div class="stats" name="average-25">
-        <i>Average of 25:</i><b>-</b>
-      </div>
+    <!-- Image Viewer -->
+    <div class="image-viewer" id="imageViewer" onclick="closeImageViewer()">
+        <button class="image-viewer-close">&times;</button>
+        <img id="viewerImage" src="" alt="Profile">
     </div>
 
-    <div class="ui__buttons">
-      <button class="btn btn--bl btn--stats">
-        <icon trophy></icon>
-      </button>
-      <button class="btn btn--br btn--prefs">
-        <icon settings></icon>
-      </button>
-      <button class="btn btn--bl btn--back">
-        <icon back></icon>
-      </button>
-      <button class="btn btn--br btn--theme">
-        <icon theme></icon>
-      </button>
-      <button class="btn btn--br btn--reset">
-        <icon reset></icon>
-      </button>
-    </div>
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  </div>
+    <script>
+        // Configuration
+        let SUPABASE_URL = 'https://ktqwhwzbxyoplawjmbao.supabase.co';
+        let SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0cXdod3pieHlvcGxhd2ptYmFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwMzQ2ODgsImV4cCI6MjA2ODYxMDY4OH0.mo0mu-k3b_saK3I4gAGr4OIZcGZdRF5ogFMTqeijKas';
+        
+        let supabase = null;
+        let allStudents = [];
+        let filteredStudents = [];
+        let currentEditId = null;
 
-  <script src="three.js"></script>
-  <script src="cube.js"></script>
+        // Initialize
+        async function init() {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            document.getElementById('dbUrl').textContent = `Connected to: ${SUPABASE_URL.substring(8, 30)}...`;
+            document.getElementById('dbStatus').style.color = '#28a745';
+            await loadStudents();
+            await loadStats();
+        }
 
-  <script src="upup.min.js"></script>
-  <script>
-    if (UpUp !== null) {
-      UpUp.start({
-        'cache-version': window.gameVersion,
-        'content-url': 'index.html',
-        'assets': [ 'styles.css', 'three.js', 'cube.js' ]
-      });
-    }
-  </script>
+        // Load Students
+        async function loadStudents() {
+            try {
+                showLoading('studentsTableBody');
+                const { data, error } = await supabase
+                    .from('students')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                allStudents = data || [];
+                filteredStudents = [...allStudents];
+                renderStudents();
+                updateRecordCount();
+            } catch (error) {
+                console.error('Error loading students:', error);
+                showAlert('Failed to load students: ' + error.message, 'error');
+            }
+        }
 
+        // Render Students
+        function renderStudents() {
+            const tbody = document.getElementById('studentsTableBody');
+            
+            if (filteredStudents.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px; color: #666;">No students found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = filteredStudents.map(student => `
+                <tr>
+                    <td>
+                        ${student.profile_image_path ? 
+                            `<img src="${student.profile_image_path}" class="profile-img" onclick="viewImage('${student.profile_image_path}')" alt="${student.name}">` : 
+                            '<div style="width: 40px; height: 40px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center;">👤</div>'
+                        }
+                    </td>
+                    <td><strong>${student.name || '-'}</strong></td>
+                    <td>${student.roll_no || '-'}</td>
+                    <td>${student.email || '-'}</td>
+                    <td><span style="padding: 4px 8px; background: #e9ecef; border-radius: 4px; font-size: 12px;">${student.year || '-'}</span></td>
+                    <td>${student.branch || '-'}</td>
+                    <td>${student.division || '-'}</td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="action-btn btn-success" onclick='editStudent(${JSON.stringify(student).replace(/'/g, "&apos;")})'>Edit</button>
+                            <button class="action-btn btn-danger" onclick="deleteStudent('${student.id}', '${student.name}')">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Apply Filters
+        function applyFilters() {
+            const year = document.getElementById('filterYear').value;
+            const branch = document.getElementById('filterBranch').value;
+            const division = document.getElementById('filterDivision').value;
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            
+            filteredStudents = allStudents.filter(student => {
+                const matchYear = !year || student.year === year;
+                const matchBranch = !branch || student.branch === branch;
+                const matchDivision = !division || student.division === division;
+                const matchSearch = !search || 
+                    (student.name && student.name.toLowerCase().includes(search)) ||
+                    (student.email && student.email.toLowerCase().includes(search)) ||
+                    (student.roll_no && student.roll_no.toLowerCase().includes(search));
+                
+                return matchYear && matchBranch && matchDivision && matchSearch;
+            });
+            
+            renderStudents();
+        }
+
+        // Reset Filters
+        function resetFilters() {
+            document.getElementById('filterYear').value = '';
+            document.getElementById('filterBranch').value = '';
+            document.getElementById('filterDivision').value = '';
+            document.getElementById('searchInput').value = '';
+            applyFilters();
+        }
+
+        // Open Add Modal
+        function openAddModal() {
+            currentEditId = null;
+            document.getElementById('modalTitle').textContent = 'Add Student';
+            document.getElementById('studentForm').reset();
+            document.getElementById('studentId').value = '';
+            document.getElementById('studentModal').classList.add('active');
+        }
+
+        // Edit Student
+        function editStudent(student) {
+            currentEditId = student.id;
+            document.getElementById('modalTitle').textContent = 'Edit Student';
+            document.getElementById('studentId').value = student.id;
+            document.getElementById('studentName').value = student.name || '';
+            document.getElementById('studentEmail').value = student.email || '';
+            document.getElementById('studentRollNo').value = student.roll_no || '';
+            document.getElementById('studentYear').value = student.year || '';
+            document.getElementById('studentBranch').value = student.branch || '';
+            document.getElementById('studentDivision').value = student.division || '';
+            document.getElementById('studentBio').value = student.bio || '';
+            document.getElementById('studentModal').classList.add('active');
+        }
+
+        // Save Student
+        async function saveStudent() {
+            const id = document.getElementById('studentId').value;
+            const studentData = {
+                name: document.getElementById('studentName').value,
+                email: document.getElementById('studentEmail').value,
+                roll_no: document.getElementById('studentRollNo').value,
+                year: document.getElementById('studentYear').value,
+                branch: document.getElementById('studentBranch').value || null,
+                division: document.getElementById('studentDivision').value || null,
+                bio: document.getElementById('studentBio').value || null
+            };
+            
+            try {
+                if (id) {
+                    // Update
+                    const { error } = await supabase
+                        .from('students')
+                        .update(studentData)
+                        .eq('id', id);
+                    
+                    if (error) throw error;
+                    showAlert('Student updated successfully!', 'success');
+                } else {
+                    // Insert
+                    const { error } = await supabase
+                        .from('students')
+                        .insert([studentData]);
+                    
+                    if (error) throw error;
+                    showAlert('Student added successfully!', 'success');
+                }
+                
+                closeModal();
+                await loadStudents();
+            } catch (error) {
+                console.error('Error saving student:', error);
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        // Delete Student
+        async function deleteStudent(id, name) {
+            if (!confirm(`Are you sure you want to delete ${name}? This cannot be undone.`)) return;
+            
+            try {
+                const { error } = await supabase
+                    .from('students')
+                    .delete()
+                    .eq('id', id);
+                
+                if (error) throw error;
+                
+                showAlert('Student deleted successfully!', 'success');
+                await loadStudents();
+            } catch (error) {
+                console.error('Error deleting student:', error);
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        // Load Auth Records
+        async function loadAuthRecords() {
+            try {
+                showLoading('authTableBody');
+                const { data, error } = await supabase
+                    .from('auth_credentials')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                const tbody = document.getElementById('authTableBody');
+                tbody.innerHTML = data.map(auth => `
+                    <tr>
+                        <td>${auth.email}</td>
+                        <td><code>${auth.password_hash || '-'}</code></td>
+                        <td><small>${auth.student_id || '-'}</small></td>
+                        <td>${new Date(auth.created_at).toLocaleDateString()}</td>
+                        <td>
+                            <button class="action-btn btn-danger" onclick="deleteAuth('${auth.id}')">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading auth records:', error);
+                showAlert('Failed to load auth records: ' + error.message, 'error');
+            }
+        }
+
+        // Delete Auth
+        async function deleteAuth(id) {
+            if (!confirm('Delete this authentication record?')) return;
+            
+            try {
+                const { error } = await supabase
+                    .from('auth_credentials')
+                    .delete()
+                    .eq('id', id);
+                
+                if (error) throw error;
+                
+                showAlert('Auth record deleted!', 'success');
+                await loadAuthRecords();
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        // Load Stats
+        async function loadStats() {
+            try {
+                const { data: students } = await supabase.from('students').select('year, branch, division');
+                
+                const stats = {
+                    total: students.length,
+                    btech1: students.filter(s => s.year === 'BTech1').length,
+                    btech2: students.filter(s => s.year === 'BTech2').length,
+                    btech3: students.filter(s => s.year === 'BTech3').length,
+                    btech4: students.filter(s => s.year === 'BTech4').length,
+                    bca: students.filter(s => s.year?.startsWith('BCA')).length,
+                    mca: students.filter(s => s.year?.startsWith('MCA')).length,
+                    cse: students.filter(s => s.branch === 'CSE').length,
+                    entc: students.filter(s => s.branch === 'ENTC').length,
+                };
+                
+                document.getElementById('statsGrid').innerHTML = `
+                    <div class="stat-card">
+                        <h3>Total Students</h3>
+                        <div class="number">${stats.total}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>BTech 1st Year</h3>
+                        <div class="number">${stats.btech1}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>BTech 2nd Year</h3>
+                        <div class="number">${stats.btech2}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>BTech 3rd Year</h3>
+                        <div class="number">${stats.btech3}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>BTech Final Year</h3>
+                        <div class="number">${stats.btech4}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>BCA Students</h3>
+                        <div class="number">${stats.bca}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>MCA Students</h3>
+                        <div class="number">${stats.mca}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>CSE Branch</h3>
+                        <div class="number">${stats.cse}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>ENTC Branch</h3>
+                        <div class="number">${stats.entc}</div>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Tab Switching
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tab + 'Tab').classList.add('active');
+            
+            if (tab === 'auth') loadAuthRecords();
+            if (tab === 'stats') loadStats();
+        }
+
+        // Modal Functions
+        function closeModal() {
+            document.getElementById('studentModal').classList.remove('active');
+        }
+
+        // Image Viewer
+        function viewImage(url) {
+            document.getElementById('viewerImage').src = url;
+            document.getElementById('imageViewer').classList.add('active');
+        }
+
+        function closeImageViewer() {
+            document.getElementById('imageViewer').classList.remove('active');
+        }
+
+        // Export Data
+        function exportData() {
+            const csv = [
+                ['Name', 'Email', 'Roll No', 'Year', 'Branch', 'Division'],
+                ...filteredStudents.map(s => [s.name, s.email, s.roll_no, s.year, s.branch || '', s.division || ''])
+            ].map(row => row.join(',')).join('\n');
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `vvpiet-students-${Date.now()}.csv`;
+            a.click();
+        }
+
+        // Update Config
+        function updateConfig() {
+            SUPABASE_URL = document.getElementById('configUrl').value;
+            SUPABASE_KEY = document.getElementById('configKey').value;
+            init();
+            showAlert('Configuration updated and reconnected!', 'success');
+        }
+
+        // Utility Functions
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            document.getElementById('alertContainer').appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        function showLoading(tbody) {
+            document.getElementById(tbody).innerHTML = '<tr><td colspan="8" class="loading"><div class="spinner"></div>Loading...</td></tr>';
+        }
+
+        function updateRecordCount() {
+            document.getElementById('recordCount').textContent = `${filteredStudents.length} / ${allStudents.length} records`;
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
 </body>
 </html>
-
-
-
-
