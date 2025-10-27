@@ -1,565 +1,1807 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Panda Login Form</title>
-    <!-- Google Font -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
-    <!-- Stylesheet -->
-    <link rel="stylesheet" href="style.css" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="VVPIET Student Profiles - Create and manage your student profile">
+    <meta name="theme-color" content="#FFCC00">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <title>VVPIET - User Profile</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
-*{
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+        /* ====================================================================
+           CSS VARIABLES
+           ==================================================================== */
+        :root {
+            --color-bg: #f4c531;
+            --color-text: #2e0d30;
+            --color-accent: #FFCC00;
+            --color-accent-overlay: rgba(255, 204, 0, 0.20);
+            --color-accent-hover: rgba(255, 204, 0, 0.30);
+            --color-border: rgba(0, 0, 0, 0.10);
+            --color-shadow: rgba(0, 0, 0, 0.08);
+            --color-error: #FF4444;
+            --color-success: #44FF44;
+            
+            --font-base: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-size-base: 16px;
+            --font-size-sm: 14px;
+            --font-size-lg: 18px;
+            --font-size-xl: 24px;
+            --font-size-2xl: 32px;
+            
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-2xl: 48px;
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+            
+            --shadow-sm: 0 1px 3px var(--color-shadow);
+            --shadow-md: 0 4px 12px var(--color-shadow);
+            --shadow-lg: 0 8px 24px var(--color-shadow);
+            
+            --transition-fast: 150ms ease-in-out;
+            --transition-base: 250ms ease-in-out;
+            
+            --z-taskbar: 100;
+            --z-modal: 1000;
+        }
+        
+        /* ====================================================================
+           GLOBAL STYLES
+           ==================================================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            font-size: var(--font-size-base);
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: var(--font-base);
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* ====================================================================
+           PANDA CONTAINER & LOGIN/REGISTER FORMS
+           ==================================================================== */
+        .panda-container {
+            height: 34.25em;
+            width: 31.25em;
+            max-width: 95%;
+            position: relative;
+            margin: 2em auto;
+            padding-bottom: 100px;
+        }
+        
+        .panda-form {
+            width: 23.75em;
+            max-width: 100%;
+            min-height: 22em;
+            background-color: #ffffff;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            top: calc(50% + 3.1em);
+            left: 50%;
+            padding: 1.5em 2em;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-radius: 0.5em;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            max-height: calc(100vh - 200px); /* Add this line */
+    overflow-y: auto; /* Add this line */
+        }
+        
+        .panda-form h3 {
+            text-align: center;
+            color: #2e0d30;
+            margin-bottom: 1em;
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+        
+        .panda-form label {
+            display: block;
+            margin-bottom: 0.3em;
+            font-weight: 600;
+            color: #2e0d30;
+            font-size: 0.9em;
+        }
+        
+        .panda-form input,
+        .panda-form select {
+            font-size: 0.95em;
+            font-weight: 400;
+            color: #3f3554;
+            padding: 0.6em;
+            border: none;
+            border-bottom: 0.12em solid #3f3554;
+            outline: none;
+            width: 100%;
+            background: transparent;
+            margin-bottom: 0.9em;
+            transition: border-color 0.3s;
+        }
+        
+        .panda-form input:focus,
+        .panda-form select:focus {
+            border-color: #f4c531;
+        }
+        
+        .panda-form button {
+            font-size: 0.95em;
+            padding: 0.8em 0;
+            border-radius: 2em;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            background-color: #f4c531;
+            color: #2e0d30;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            margin-top: 0.8em;
+            transition: all 0.3s;
+        }
+        
+        .panda-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(244, 197, 49, 0.4);
+        }
+        
+        .panda-form .switch-text {
+            text-align: center;
+            margin-top: 1.5em;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+        
+        
+        .panda-form .switch-text span {
+            color: #f4c531;
+            text-decoration: underline;
+            font-weight: 600;
+        }
+        
+        /* Panda Face & Body */
+        .panda-face {
+            height: 7.5em;
+            width: 8.4em;
+            background-color: #ffffff;
+            border: 0.18em solid #2e0d30;
+            border-radius: 7.5em 7.5em 5.62em 5.62em;
+            position: absolute;
+            top: 2em;
+            margin: auto;
+            left: 0;
+            right: 0;
+            z-index: 10;
+        }
+        
+        .ear-l, .ear-r {
+            background-color: #3f3554;
+            height: 2.5em;
+            width: 2.81em;
+            border: 0.18em solid #2e0d30;
+            border-radius: 2.5em 2.5em 0 0;
+            top: 1.75em;
+            position: absolute;
+            z-index: 5;
+        }
+        
+        .ear-l {
+            transform: rotate(-38deg);
+            left: 10.75em;
+        }
+        
+        .ear-r {
+            transform: rotate(38deg);
+            right: 10.75em;
+        }
+        
+        .blush-l, .blush-r {
+            background-color: #ff8bb1;
+            height: 1em;
+            width: 1.37em;
+            border-radius: 50%;
+            position: absolute;
+            top: 4em;
+        }
+        
+        .blush-l {
+            transform: rotate(25deg);
+            left: 1em;
+        }
+        
+        .blush-r {
+            transform: rotate(-25deg);
+            right: 1em;
+        }
+        
+        .eye-l, .eye-r {
+            background-color: #3f3554;
+            height: 2.18em;
+            width: 2em;
+            border-radius: 2em;
+            position: absolute;
+            top: 2.18em;
+        }
+        
+        .eye-l {
+            left: 1.37em;
+            transform: rotate(-20deg);
+        }
+        
+        .eye-r {
+            right: 1.37em;
+            transform: rotate(20deg);
+        }
+        
+        .eyeball-l, .eyeball-r {
+            height: 0.6em;
+            width: 0.6em;
+            background-color: #ffffff;
+            border-radius: 50%;
+            position: absolute;
+            left: 0.6em;
+            top: 0.6em;
+            transition: 1s all;
+        }
+        
+        .eyeball-l {
+            transform: rotate(20deg);
+        }
+        
+        .eyeball-r {
+            transform: rotate(-20deg);
+        }
+        
+        .nose {
+            height: 1em;
+            width: 1em;
+            background-color: #3f3554;
+            position: absolute;
+            top: 4.37em;
+            margin: auto;
+            left: 0;
+            right: 0;
+            border-radius: 1.2em 0 0 0.25em;
+            transform: rotate(45deg);
+        }
+        
+        .nose:before {
+            content: "";
+            position: absolute;
+            background-color: #3f3554;
+            height: 0.6em;
+            width: 0.1em;
+            transform: rotate(-45deg);
+            top: 0.75em;
+            left: 1em;
+        }
+        
+        .mouth, .mouth:before {
+            height: 0.75em;
+            width: 0.93em;
+            background-color: transparent;
+            position: absolute;
+            border-radius: 50%;
+            box-shadow: 0 0.18em #3f3554;
+        }
+        
+        .mouth {
+            top: 5.31em;
+            left: 3.12em;
+        }
+        
+        .mouth:before {
+            content: "";
+            position: absolute;
+            left: 0.87em;
+        }
+        
+        .hand-l, .hand-r {
+            background-color: #3f3554;
+            height: 2.81em;
+            width: 2.5em;
+            border: 0.18em solid #2e0d30;
+            border-radius: 0.6em 0.6em 2.18em 2.18em;
+            transition: 1s all;
+            position: absolute;
+            top: 8.4em;
+            z-index: 15;
+        }
+        
+        .hand-l {
+            left: 7.5em;
+        }
+        
+        .hand-r {
+            right: 7.5em;
+        }
+        
+        .paw-l, .paw-r {
+            background-color: #3f3554;
+            height: 3.12em;
+            width: 3.12em;
+            border: 0.18em solid #2e0d30;
+            border-radius: 2.5em 2.5em 1.2em 1.2em;
+            position: absolute;
+            top: 26.56em;
+        }
+        
+        .paw-l {
+            left: 10em;
+        }
+        
+        .paw-r {
+            right: 10em;
+        }
+        
+        .paw-l:before, .paw-r:before {
+            position: absolute;
+            content: "";
+            background-color: #ffffff;
+            height: 1.37em;
+            width: 1.75em;
+            top: 1.12em;
+            left: 0.55em;
+            border-radius: 1.56em 1.56em 0.6em 0.6em;
+        }
+        
+        .paw-l:after, .paw-r:after {
+            position: absolute;
+            content: "";
+            background-color: #ffffff;
+            height: 0.5em;
+            width: 0.5em;
+            border-radius: 50%;
+            top: 0.31em;
+            left: 1.12em;
+            box-shadow: 0.87em 0.37em #ffffff, -0.87em 0.37em #ffffff;
+        }
+        
+        /* Alert Messages */
+        .alert {
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-lg);
+            display: none;
+        }
+        
+        .alert.active {
+            display: block;
+            animation: slideDown 0.3s ease-in-out;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .alert-success {
+            background: rgba(68, 255, 68, 0.2);
+            border: 1px solid var(--color-success);
+            color: var(--color-text);
+        }
+        
+        .alert-error {
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid var(--color-error);
+            color: var(--color-text);
+        }
+        
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* ====================================================================
+           PROFILE VIEW (Keep existing styles)
+           ==================================================================== */
+        .main-container {
+            flex: 1;
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: var(--spacing-lg) var(--spacing-md);
+            
+            padding-bottom: calc(100px + var(--spacing-xl)); /* Increase bottom padding */
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+            padding: var(--spacing-lg) 0;
+        }
+        
+        .page-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .page-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--color-text);
+            opacity: 0.8;
+        }
+        
+        .view-container {
+            display: none;
+        }
+        
+        .view-container.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Profile Edit View */
+        .profile-edit-container {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--color-text);
+            font-size: var(--font-size-sm);
+        }
+        
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: var(--spacing-md);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-base);
+            font-family: var(--font-base);
+            transition: all var(--transition-fast);
+            background: white;
+            color: var(--color-text);
+        }
+        
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 3px var(--color-accent-overlay);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .btn {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            min-width: 120px;
+        }
+        
+        .btn-primary {
+            background: var(--color-accent);
+            color: var(--color-text);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--color-accent-overlay);
+            border-color: var(--color-accent);
+        }
+        
+        .btn-danger {
+            background: var(--color-error);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+        
+        .image-upload-container {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .image-preview {
+            width: 150px;
+            height: 150px;
+            border-radius: var(--radius-md);
+            border: 2px dashed var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: var(--spacing-md);
+            background: var(--color-accent-overlay);
+        }
+        
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .skill-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-xs) var(--spacing-md);
+            background: var(--color-accent);
+            color: var(--color-text);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-sm);
+            margin: var(--spacing-xs);
+        }
+        
+        .skill-tag-remove {
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        /* Taskbar */
+        .taskbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid var(--color-border);
+            box-shadow: 0 -4px 12px var(--color-shadow);
+            z-index: var(--z-taskbar);
+            padding: var(--spacing-sm) 0;
+        }
+        
+        .taskbar-container {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        
+        .taskbar-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-decoration: none;
+            color: var(--color-text);
+            min-width: 80px;
+        }
+        
+        .taskbar-btn:hover,
+        .taskbar-btn.active {
+            background: var(--color-accent-overlay);
+        }
+        
+        .taskbar-icon {
+            width: 24px;
+            height: 24px;
+            fill: var(--color-text);
+        }
+        
+        .taskbar-label {
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--color-border);
+            border-top-color: var(--color-accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .panda-container {
+                font-size: 14px;
+                height: 30em;
+                padding-bottom: 100px;
+            }
+            
+            .panda-form {
+                padding: 1.2em 1.5em;
+            }
+            
+            body {
+                background: white;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .panda-container {
+                font-size: 12px;
+                padding-bottom: 100px;
+            }
+            .panda-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
 }
-body {
-  background-color: #f4c531;
-}
-.container {
-  height: 34.25em;
-  width: 31.25em;
-  position: absolute;
-  transform: translate(-50%, -50%);
-  top: 30%;
-  left: 50%;
-}
-form {
-  width: 23.75em;
-  min-height: 22em;
-  background-color: #ffffff;
-  position: absolute;
-  transform: translate(-50%, -50%);
-  top: calc(50% + 3.1em);
-  left: 50%;
-  padding: 1.5em 3.1em;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border-radius: 0.5em;
-}
-form label {
-  display: block;
-  margin-bottom: 0.2em;
-  font-weight: 600;
-  color: #2e0d30;
-}
-form input {
-  font-size: 0.95em;
-  font-weight: 400;
-  color: #3f3554;
-  padding: 0.3em;
-  border: none;
-  border-bottom: 0.12em solid #3f3554;
-  outline: none;
-}
-form input:focus {
-  border-color: #f4c531;
-}
-form input:not(:last-child) {
-  margin-bottom: 0.9em;
-}
-form button {
-  font-size: 0.95em;
-  padding: 0.8em 0;
-  border-radius: 2em;
-  border: none;
-  cursor: pointer;
-  outline: none;
-  background-color: #f4c531;
-  color: #2e0d30;
-  text-transform: uppercase;
-  font-weight: 600;
-  letter-spacing: 0.15em;
-  margin-top: 0.8em;
-  transition: 0.5s ;
-}
-form h3 {
-  margin-top: 5em;
-  
 
-}
-.message {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 15px 25px;
-    border-radius: 8px;
-    color: white;
-    font-size: 14px;
-    display: none;
-    z-index: 1000;
-}
-.message.success {
-    background-color: #10b981;
-    box-shadow: 0 0 20px #10b98166;
-}
-.message.error {
-    background-color: #ef4444;
-    box-shadow: 0 0 20px #ef444466;
-}
-.panda-face {
-  height: 7.5em;
-  width: 8.4em;
-  background-color: #ffffff;
-  border: 0.18em solid #2e0d30;
-  border-radius: 7.5em 7.5em 5.62em 5.62em;
-  position: absolute;
-  top: 2em;
-  margin: auto;
-  left: 0;
-  right: 0;
-}
-.ear-l, .ear-r {
-  background-color: #3f3554;
-  height: 2.5em;
-  width: 2.81em;
-  border: 0.18em solid #2e0d30;
-  border-radius: 2.5em 2.5em 0 0;
-  top: 1.75em;
-  position: absolute;
-}
-.ear-l {
-  transform: rotate(-38deg);
-  left: 10.75em;
-}
-.ear-r {
-  transform: rotate(38deg);
-  right: 10.75em;
-}
-.blush-l, .blush-r {
-  background-color: #ff8bb1;
-  height: 1em;
-  width: 1.37em;
-  border-radius: 50%;
-  position: absolute;
-  top: 4em;
-}
-.blush-l {
-  transform: rotate(25deg);
-  left: 1em;
-}
-.blush-r {
-  transform: rotate(-25deg);
-  right: 1em;
-}
-.eye-l, .eye-r {
-  background-color: #3f3554;
-  height: 2.18em;
-  width: 2em;
-  border-radius: 2em;
-  position: absolute;
-  top: 2.18em;
-}
-.eye-l {
-  left: 1.37em;
-  transform: rotate(-20deg);
-}
-.eye-r {
-  right: 1.37em;
-  transform: rotate(20deg);
-}
-.eyeball-l, .eyeball-r {
-  height: 0.6em;
-  width: 0.6em;
-  background-color: #ffffff;
-  border-radius: 50%;
-  position: absolute;
-  left: 0.6em;
-  top: 0.6em;
-  transition: 1s all;
-}
-.eyeball-l {
-  transform: rotate(20deg);
-}
-.eyeball-r {
-  transform: rotate(-20deg);
-}
-.nose {
-  height: 1em;
-  width: 1em;
-  background-color: #3f3554;
-  position: absolute;
-  top: 4.37em;
-  margin: auto;
-  left: 0;
-  right: 0;
-  border-radius: 1.2em 0 0 0.25em;
-  transform: rotate(45deg);
-}
-.nose:before {
-  content: "";
-  position: absolute;
-  background-color: #3f3554;
-  height: 0.6em;
-  width: 0.1em;
-  transform: rotate(-45deg);
-  top: 0.75em;
-  left: 1em;
-}
-.mouth, .mouth:before {
-  height: 0.75em;
-  width: 0.93em;
-  background-color: transparent;
-  position: absolute;
-  border-radius: 50%;
-  box-shadow: 0 0.18em #3f3554;
-}
-.mouth {
-  top: 5.31em;
-  left: 3.12em;
-}
-.mouth:before {
-  content: "";
-  position: absolute;
-  left: 0.87em;
-}
-.hand-l, .hand-r {
-  background-color: #3f3554;
-  height: 2.81em;
-  width: 2.5em;
-  border: 0.18em solid #2e0d30;
-  border-radius: 0.6em 0.6em 2.18em 2.18em;
-  transition: 1s all;
-  position: absolute;
-  top: 8.4em;
-}
-.hand-l {
-  left: 7.5em;
-}
-.hand-r {
-  right: 7.5em;
-}
-.paw-l, .paw-r {
-  background-color: #3f3554;
-  height: 3.12em;
-  width: 3.12em;
-  border: 0.18em solid #2e0d30;
-  border-radius: 2.5em 2.5em 1.2em 1.2em;
-  position: absolute;
-  top: 26.56em;
-}
-.paw-l {
-  left: 10em;
-}
-.paw-r {
-  right: 10em;
-}
-.paw-l:before, .paw-r:before {
-  position: absolute;
-  content: "";
-  background-color: #ffffff;
-  height: 1.37em;
-  width: 1.75em;
-  top: 1.12em;
-  left: 0.55em;
-  border-radius: 1.56em 1.56em 0.6em 0.6em;
-}
-.paw-l:after, .paw-r:after {
-  position: absolute;
-  content: "";
-  background-color: #ffffff;
-  height: 0.5em;
-  width: 0.5em;
-  border-radius: 50%;
-  top: 0.31em;
-  left: 1.12em;
-  box-shadow: 0.87em 0.37em #ffffff, -0.87em 0.37em #ffffff;
-}
-@media screen and (max-width: 500px) {
-  .container {
-    font-size: 14px;
-  }
+        }
+
+        .panda-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
 }
 
     </style>
-  </head>
-  <body>
-    <div id="message" class="message"></div>
-    
-    <div class="container">
-      <!-- Registration Form -->
-      <form id="register-form">
-        <h3 style="text-align: center; color: #2e0d30; margin-bottom: 1em;">REGISTER</h3>
-        <label for="reg-email">Email:</label>
-        <input type="email" id="reg-email" placeholder="abc@xyz.com" required/>
-        <label for="reg-password">Password:</label>
-        <input type="password" id="reg-password" placeholder="Password (5+ chars)..." required/>
-       
-        <button type="button" id="register-btn">Register</button>
-        <p style="text-align: center; margin-top: 0.8em; font-size: 1em; margin-top:6em; cursor: pointer;" onclick="switchToLogin()">
-          Already have an account? <span style="color: black; text-decoration: underline;">Login</span>
-        </p>
-      </form>
-      
-      <!-- Login Form (hidden by default) -->
-      <form id="login-form" style="display: none;">
-        <h3 style="text-align: center; color: #2e0d30; margin-bottom: 1em;">LOGIN</h3>
-        <label for="login-email">Email:</label>
-        <input type="email" id="login-email" placeholder="abc@xyz.com" required/>
-        <label for="login-password">Password:</label>
-        <input type="password" id="login-password" placeholder="Password here..." required/>
-        <button type="button" id="login-btn">Login</button>
-        <p style="text-align: center; margin-top: 0.8em; font-size: 1em;margin-top:6em; cursor: pointer;" onclick="switchToRegister()">
-          Don't have an account? <span style="color: black; text-decoration: underline;">Register</span>
-        </p>
-      </form>
-      
-      <!-- Welcome Screen (hidden by default) -->
-      <div id="welcome-screen" style="display: none; background: #ffffff; padding: 3em 2em; border-radius: 0.5em; position: absolute; top: calc(50% + 3.1em); left: 50%; transform: translate(-50%, -50%); width: 23.75em; text-align: center;">
-        <h2 style="color: #2e0d30; margin-bottom: 1em;">Welcome!</h2>
-        <p id="welcome-user" style="color: #3f3554; font-size: 1.1em; margin-bottom: 2em;"></p>
-        <button id="logout-btn" style="background-color: #ff4444; color: white; padding: 0.8em 2em; border: none; border-radius: 2em; cursor: pointer; font-weight: 600;">LOGOUT</button>
-      </div>
-      
-      <div class="ear-l"></div>
-      <div class="ear-r"></div>
-      <div class="panda-face">
-        <div class="blush-l"></div>
-        <div class="blush-r"></div>
-        <div class="eye-l">
-          <div class="eyeball-l"></div>
+</head>
+<body>
+    <main class="main-container">
+        <!-- Page Header -->
+        <header class="page-header">
+            <h1 class="page-title">🐼 Student Profile</h1>
+            <p class="page-subtitle" id="headerSubtitle">Login or create your profile</p>
+        </header>
+        
+        <!-- LOGIN & REGISTER VIEW -->
+        <div class="view-container active" id="authView">
+            <div class="panda-container">
+                <!-- Login Form -->
+                <form id="loginForm" class="panda-form">
+                    <h3>LOGIN</h3>
+                    
+                    <div class="alert alert-error" id="loginError"></div>
+                    <div class="alert alert-success" id="loginSuccess"></div>
+                    
+                    <label for="loginEmail">Email:</label>
+                    <input type="email" id="loginEmail" placeholder="your.email@student.vvpiet.edu" required/>
+                    
+                    <label for="loginPassword">Password:</label>
+                    <input type="password" id="loginPassword" placeholder="Enter password" required/>
+                    
+                    <button type="submit">
+                        <span id="loginBtnText">Login</span>
+                        <span class="loading-spinner hidden" id="loginSpinner"></span>
+                    </button>
+                    
+                    <div class="switch-text" onclick="switchToRegister()">
+                        Don't have an account? <span>Register</span>
+                    </div>
+                </form>
+                
+                <!-- Register Form -->
+                <form id="registerForm" class="panda-form hidden">
+                    <h3>REGISTER</h3>
+                    
+                    <div class="alert alert-error" id="registerError"></div>
+                    <div class="alert alert-success" id="registerSuccess"></div>
+                    
+                    <label for="regEmail">Email:</label>
+                    <input type="email" id="regEmail" placeholder="your.email@student.vvpiet.edu" required/>
+                    
+                    <label for="regPassword">Password:</label>
+                    <input type="password" id="regPassword" placeholder="Min 6 characters" minlength="6" required/>
+                    
+                    <label for="regConfirmPassword">Confirm Password:</label>
+                    <input type="password" id="regConfirmPassword" placeholder="Re-enter password" required/>
+                    
+                    <label for="regName">Full Name:</label>
+                    <input type="text" id="regName" placeholder="Your full name" required/>
+                    
+                    <label for="regRollNo">Roll Number:</label>
+                    <input type="text" id="regRollNo" placeholder="e.g., CSE2024001" required/>
+                    
+                    <label for="regYear">Year:</label>
+                    <select id="regYear" required>
+                        <option value="">Select Year</option>
+                        <option value="BTech1">BTech 1st Year</option>
+                        <option value="BTech2">BTech 2nd Year</option>
+                        <option value="BTech3">BTech 3rd Year</option>
+                        <option value="BTech4">BTech Final Year</option>
+                        <option value="BCA1">BCA 1st Year</option>
+                        <option value="BCA2">BCA 2nd Year</option>
+                        <option value="BCA3">BCA 3rd Year</option>
+                        <option value="MCA1">MCA 1st Year</option>
+                        <option value="MCA2">MCA 2nd Year</option>
+                    </select>
+                    
+                    <div id="divisionGroup" class="hidden">
+                        <label for="regDivision">Division:</label>
+                        <select id="regDivision">
+                            <option value="">Select Division</option>
+                            <option value="A">Division A</option>
+                            <option value="B">Division B</option>
+                            <option value="C">Division C</option>
+                            <option value="D">Division D</option>
+                        </select>
+                    </div>
+                    
+                    <div id="branchGroup">
+                        <label for="regBranch">Branch:</label>
+                        <select id="regBranch" required>
+                            <option value="">Select Branch</option>
+                            <option value="CSE">Computer Science & Engineering</option>
+                            <option value="ENTC">Electronics & Telecommunication</option>
+                            <option value="AI_DS">AI & Data Science</option>
+                            <option value="Electrical">Electrical Engineering</option>
+                            <option value="Mechanical">Mechanical Engineering</option>
+                            <option value="Civil">Civil Engineering</option>
+                            <option value="BCA">BCA</option>
+                            <option value="MCA">MCA</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit">
+                        <span id="registerBtnText">Create Account</span>
+                        <span class="loading-spinner hidden" id="registerSpinner"></span>
+                    </button>
+                    
+                    <div class="switch-text" onclick="switchToLogin()">
+                        Already have an account? <span>Login</span>
+                    </div>
+                </form>
+                
+                <!-- Panda Animation -->
+                <div class="ear-l"></div>
+                <div class="ear-r"></div>
+                <div class="panda-face">
+                    <div class="blush-l"></div>
+                    <div class="blush-r"></div>
+                    <div class="eye-l">
+                        <div class="eyeball-l"></div>
+                    </div>
+                    <div class="eye-r">
+                        <div class="eyeball-r"></div>
+                    </div>
+                    <div class="nose"></div>
+                    <div class="mouth"></div>
+                </div>
+                <div class="hand-l"></div>
+                <div class="hand-r"></div>
+                <div class="paw-l"></div>
+                <div class="paw-r"></div>
+            </div>
         </div>
-        <div class="eye-r">
-          <div class="eyeball-r"></div>
+        
+        <!-- PROFILE EDIT VIEW -->
+        <div class="view-container" id="profileView">
+            <div class="profile-edit-container">
+                <div style="text-align: center; margin-bottom: 2em;">
+                    <button class="btn btn-secondary" onclick="logout()">Logout</button>
+                </div>
+                
+                <div class="alert alert-success" id="profileSuccess"></div>
+                <div class="alert alert-error" id="profileError"></div>
+                
+                <form id="profileEditForm">
+                    <h2 style="margin-bottom: 1.5em; color: var(--color-text);">Edit Your Profile</h2>
+                    
+                    <!-- Profile Picture -->
+                    <div class="form-group">
+                        <label class="form-label">Profile Picture</label>
+                        <div class="image-upload-container">
+                            <div class="image-preview" id="profileImagePreview">
+                                <div style="opacity: 0.5;">No image</div>
+                            </div>
+                            <input type="file" id="profileImageInput" accept="image/*" class="form-input">
+                        </div>
+                    </div>
+                    
+                    <!-- Basic Info (readonly) -->
+                    <div class="form-group">
+                        <label class="form-label">Name</label>
+                        <input type="text" id="profileName" class="form-input" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Roll Number</label>
+                        <input type="text" id="profileRollNo" class="form-input" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="profileEmail" class="form-input" readonly>
+                    </div>
+                    
+                    <!-- Bio -->
+                    <div class="form-group">
+                        <label class="form-label">Bio</label>
+                        <textarea id="profileBio" class="form-textarea" placeholder="Tell us about yourself..."></textarea>
+                    </div>
+                    
+                    <!-- Skills -->
+                    <div class="form-group">
+                        <label class="form-label">Skills</label>
+                        <div id="skillsContainer" style="margin-bottom: 1em;"></div>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="newSkillInput" class="form-input" placeholder="Add a skill">
+                            <button type="button" class="btn btn-secondary" onclick="addSkill()">Add</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Current Semester -->
+                    <div class="form-group">
+                        <label class="form-label">Current Semester</label>
+                        <select id="profileCurrentSem" class="form-select">
+                            <option value="">Select Semester</option>
+                            <option value="1">Semester 1</option>
+                            <option value="2">Semester 2</option>
+                            <option value="3">Semester 3</option>
+                            <option value="4">Semester 4</option>
+                            <option value="5">Semester 5</option>
+                            <option value="6">Semester 6</option>
+                            <option value="7">Semester 7</option>
+                            <option value="8">Semester 8</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Marks Inputs (dynamic) -->
+                    <div id="marksInputsContainer"></div>
+                    
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">
+                            <span id="profileSaveBtnText">Save Changes</span>
+                            <span class="loading-spinner hidden" id="profileSaveSpinner"></span>
+                        </button>
+                        <button type="button" class="btn btn-danger" onclick="confirmDeleteProfile()">Delete Profile</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="nose"></div>
-        <div class="mouth"></div>
-      </div>
-      <div class="hand-l"></div>
-      <div class="hand-r"></div>
-      <div class="paw-l"></div>
-      <div class="paw-r"></div>
-    </div>
+    </main>
     
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Script -->
-  <script>
-
-      
-// Initialize Supabase
-const sb = supabase.createClient('https://nsnacwwcrszpjmanskti.supabase.co', 
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zbmFjd3djcnN6cGptYW5za3RpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5MTg2MTIsImV4cCI6MjA2ODQ5NDYxMn0.W01JADzAuGFvcAHAN6LPRIxc75J7A9Q76HIxvxkJDn4');
-
-// DOM Elements
-const messageEl = document.getElementById('message');
-const registerForm = document.getElementById('register-form');
-const loginForm = document.getElementById('login-form');
-const welcomeScreen = document.getElementById('welcome-screen');
-const welcomeUser = document.getElementById('welcome-user');
-
-// Registration Elements
-const regEmailEl = document.getElementById('reg-email');
-const regPasswordEl = document.getElementById('reg-password');
-const registerBtn = document.getElementById('register-btn');
-
-// Login Elements
-const loginEmailEl = document.getElementById('login-email');
-const loginPasswordEl = document.getElementById('login-password');
-const loginBtn = document.getElementById('login-btn');
-
-// Logout
-const logoutBtn = document.getElementById('logout-btn');
-
-// Panda Elements
-let eyeL = document.querySelector(".eyeball-l");
-let eyeR = document.querySelector(".eyeball-r");
-let handL = document.querySelector(".hand-l");
-let handR = document.querySelector(".hand-r");
-
-// Message function
-function showMessage(text, type) {
-    messageEl.textContent = text;
-    messageEl.className = `message ${type}`;
-    messageEl.style.display = 'block';
-    setTimeout(() => {
-        messageEl.style.display = 'none';
-    }, 4000);
-}
-
-// Switch forms
-function switchToLogin() {
-    registerForm.style.display = 'none';
-    loginForm.style.display = 'flex';
-    normalEyeStyle();
-    normalHandStyle();
-}
-
-function switchToRegister() {
-    loginForm.style.display = 'none';
-    registerForm.style.display = 'flex';
-    normalEyeStyle();
-    normalHandStyle();
-}
-
-// Check if already logged in
-function checkLoginStatus() {
-    const loggedInUser = localStorage.getItem('loggedInUser');
-    if (loggedInUser) {
-        const userData = JSON.parse(loggedInUser);
-        showWelcomeScreen(userData.email);
-    }
-}
-
-function showWelcomeScreen(email) {
-    registerForm.style.display = 'none';
-    loginForm.style.display = 'none';
-    welcomeScreen.style.display = 'block';
-    welcomeUser.textContent = `Welcome, ${email}`;
-    normalEyeStyle();
-    normalHandStyle();
-}
-
-// Panda animation functions
-let normalEyeStyle = () => {
-  eyeL.style.cssText = `left:0.6em; top: 0.6em;`;
-  eyeR.style.cssText = `right:0.6em; top:0.6em;`;
-};
-
-let normalHandStyle = () => {
-  handL.style.cssText = `height: 2.81em; top:8.4em; left:7.5em; transform: rotate(0deg);`;
-  handR.style.cssText = `height: 2.81em; top: 8.4em; right: 7.5em; transform: rotate(0deg)`;
-};
-
-let hideEyesWithHands = () => {
-  handL.style.cssText = `height: 6.56em; top: 3.87em; left: 11.75em; transform: rotate(-155deg);`;
-  handR.style.cssText = `height: 6.56em; top: 3.87em; right: 11.75em; transform: rotate(155deg);`;
-  normalEyeStyle();
-};
-
-// Registration email focus
-regEmailEl.addEventListener("focus", () => {
-  eyeL.style.cssText = `left: 0.75em; top: 1.12em;`;
-  eyeR.style.cssText = `right: 0.75em; top: 1.12em;`;
-  normalHandStyle();
-});
-
-// Registration password focus
-regPasswordEl.addEventListener("focus", () => {
-  hideEyesWithHands();
-});
-
-// Login email focus
-loginEmailEl.addEventListener("focus", () => {
-  eyeL.style.cssText = `left: 0.75em; top: 1.12em;`;
-  eyeR.style.cssText = `right: 0.75em; top: 1.12em;`;
-  normalHandStyle();
-});
-
-// Login password focus
-loginPasswordEl.addEventListener("focus", () => {
-  hideEyesWithHands();
-});
-
-// Click outside
-document.addEventListener("click", (e) => {
-  let clickedElem = e.target;
-  if (clickedElem != regEmailEl && clickedElem != regPasswordEl && 
-      clickedElem != loginEmailEl && clickedElem != loginPasswordEl) {
-    normalEyeStyle();
-    normalHandStyle();
-  }
-});
-
-registerBtn.addEventListener('click', async () => {
-    const email = regEmailEl.value;
-    const password = regPasswordEl.value;
-
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    <!-- Taskbar -->
+    <nav class="taskbar">
+        <div class="taskbar-container">
+            <a href="index.html" class="taskbar-btn" onclick="goHome(event)">
+                <svg class="taskbar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+                <span class="taskbar-label">Home</span>
+            </a>
+            <a href="userprofiles.html" class="taskbar-btn active">
+                <svg class="taskbar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+                <span class="taskbar-label">Profile</span>
+            </a>
+            <a href="aboutus.html" class="taskbar-btn">
+                <svg class="taskbar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                </svg>
+                <span class="taskbar-label">About</span>
+            </a>
+        </div>
+    </nav>
     
-    if (!emailRegex.test(email)) {
-        showMessage('Please enter a valid email', 'error');
-        return;
-    }
+    <script>
+    // ====================================================================
+    // VVPIET STUDENT PROFILES - USER PROFILE MANAGEMENT WITH PANDA
+    // ====================================================================
     
-    if (password.length <= 4) {
-        showMessage('Password must be more than 4 characters', 'error');
-        return;
-    }
-
-    const { data, error } = await sb
-        .from('loginusers')
-        .insert([{ email: email, password: password, agreed: true }])
-        .select();
-
-    if (error) {
-        if (error.message.includes('duplicate')) {
-            showMessage('Email already registered. Please login.', 'error');
-        } else {
-            showMessage('Registration failed: ' + error.message, 'error');
+    const APP_VERSION = '1.0.0-20251027-PANDA';
+    const SESSION_KEY = 'vvpiet_session';
+    
+    console.info('%c VVPIET Profiles - User Management (Panda Edition) ', 'background: #f4c531; color: #000; font-weight: bold; padding: 4px;');
+    console.info(`Version: ${APP_VERSION}`);
+    
+    // Supabase Configuration
+    const SUPABASE_URL = 'https://ktqwhwzbxyoplawjmbao.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0cXdod3pieHlvcGxhd2ptYmFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwMzQ2ODgsImV4cCI6MjA2ODYxMDY4OH0.mo0mu-k3b_saK3I4gAGr4OIZcGZdRF5ogFMTqeijKas';
+    
+    let supabase = null;
+    let currentUser = null;
+    let currentStudent = null;
+    let currentSkills = [];
+    let selectedImageFile = null;
+    
+    // Panda Elements
+    let eyeL = document.querySelector(".eyeball-l");
+    let eyeR = document.querySelector(".eyeball-r");
+    let handL = document.querySelector(".hand-l");
+    let handR = document.querySelector(".hand-r");
+    
+    // Initialize Supabase
+    function initializeSupabase() {
+        try {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            console.log('✓ Supabase initialized');
+            return true;
+        } catch (error) {
+            console.error('✗ Supabase initialization failed:', error);
+            return false;
         }
-    } else {
-        showMessage('Registration successful! Please login.', 'success');
-        setTimeout(() => {
+    }
+    
+    // ================================================================
+    // PANDA ANIMATION FUNCTIONS
+    // ================================================================
+    
+    let normalEyeStyle = () => {
+        eyeL.style.cssText = `left:0.6em; top: 0.6em;`;
+        eyeR.style.cssText = `left:0.6em; top:0.6em;`;
+    };
+    
+    let normalHandStyle = () => {
+        handL.style.cssText = `height: 2.81em; top:8.4em; left:7.5em; transform: rotate(0deg);`;
+        handR.style.cssText = `height: 2.81em; top: 8.4em; right: 7.5em; transform: rotate(0deg)`;
+    };
+    
+    let hideEyesWithHands = () => {
+        handL.style.cssText = `height: 6.56em; top: 3.87em; left: 11.75em; transform: rotate(-155deg);`;
+        handR.style.cssText = `height: 6.56em; top: 3.87em; right: 11.75em; transform: rotate(155deg);`;
+        normalEyeStyle();
+    };
+    
+    // Email focus - eyes follow
+    setTimeout(() => {
+        ['loginEmail', 'regEmail'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener("focus", () => {
+                    eyeL.style.cssText = `left: 0.75em; top: 1.12em;`;
+                    eyeR.style.cssText = `left: 0.75em; top: 1.12em;`;
+                    normalHandStyle();
+                });
+            }
+        });
+        
+        // Password focus - panda covers eyes
+        ['loginPassword', 'regPassword', 'regConfirmPassword'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener("focus", hideEyesWithHands);
+            }
+        });
+    }, 100);
+    
+    // Click outside - reset panda
+    document.addEventListener("click", (e) => {
+        const isInput = e.target.matches('input, select, button, textarea');
+        if (!isInput) {
+            normalEyeStyle();
+            normalHandStyle();
+        }
+    });
+    
+    // ================================================================
+    // SESSION MANAGEMENT
+    // ================================================================
+    
+    function saveSession(studentData) {
+        try {
+            localStorage.setItem(SESSION_KEY, JSON.stringify({
+                student: studentData,
+                timestamp: Date.now()
+            }));
+            console.log('✓ Session saved');
+        } catch (error) {
+            console.error('Error saving session:', error);
+        }
+    }
+    
+    function loadSession() {
+        try {
+            const data = localStorage.getItem(SESSION_KEY);
+            if (!data) return null;
+            
+            const session = JSON.parse(data);
+            const age = Date.now() - session.timestamp;
+            if (age > 24 * 60 * 60 * 1000) {
+                clearSession();
+                return null;
+            }
+            
+            return session.student;
+        } catch (error) {
+            console.error('Error loading session:', error);
+            return null;
+        }
+    }
+    
+    function clearSession() {
+        localStorage.removeItem(SESSION_KEY);
+        console.log('✓ Session cleared');
+    }
+    
+    // ================================================================
+    // VIEW SWITCHING
+    // ================================================================
+    
+    function switchToView(viewId) {
+        document.querySelectorAll('.view-container').forEach(view => {
+            view.classList.remove('active');
+        });
+        document.getElementById(viewId).classList.add('active');
+    }
+    
+    function switchToLogin() {
+    document.getElementById('loginForm').classList.remove('hidden');
+    document.getElementById('registerForm').classList.add('hidden');
+    
+    // Show panda
+    document.querySelector('.ear-l').classList.remove('panda-hidden');
+    document.querySelector('.ear-r').classList.remove('panda-hidden');
+    document.querySelector('.panda-face').classList.remove('panda-hidden');
+    document.querySelector('.hand-l').classList.remove('panda-hidden');
+    document.querySelector('.hand-r').classList.remove('panda-hidden');
+    document.querySelector('.paw-l').classList.remove('panda-hidden');
+    document.querySelector('.paw-r').classList.remove('panda-hidden');
+    
+    document.getElementById('loginEmail').value = '';
+    document.getElementById('loginPassword').value = '';
+    
+    hideAlert('loginError');
+    hideAlert('loginSuccess');
+    hideAlert('registerError');
+    hideAlert('registerSuccess');
+    
+    normalEyeStyle();
+    normalHandStyle();
+}
+
+    
+    function switchToRegister() {
+    document.getElementById('loginForm').classList.add('hidden');
+    document.getElementById('registerForm').classList.remove('hidden');
+    
+    // Hide panda
+    document.querySelector('.ear-l').classList.add('panda-hidden');
+    document.querySelector('.ear-r').classList.add('panda-hidden');
+    document.querySelector('.panda-face').classList.add('panda-hidden');
+    document.querySelector('.hand-l').classList.add('panda-hidden');
+    document.querySelector('.hand-r').classList.add('panda-hidden');
+    document.querySelector('.paw-l').classList.add('panda-hidden');
+    document.querySelector('.paw-r').classList.add('panda-hidden');
+    
+    document.getElementById('registerForm').reset();
+    hideAlert('loginError');
+    hideAlert('loginSuccess');
+    hideAlert('registerError');
+    hideAlert('registerSuccess');
+}
+
+    
+    function switchToProfile() {
+        document.getElementById('authView').classList.remove('active');
+        document.getElementById('profileView').classList.add('active');
+        document.getElementById('headerSubtitle').textContent = 'Manage your profile';
+    }
+    
+    // ================================================================
+    // ALERT HELPERS
+    // ================================================================
+    
+    function showAlert(elementId, message, type = 'error') {
+        const alert = document.getElementById(elementId);
+        if (alert) {
+            alert.textContent = message;
+            alert.className = `alert alert-${type} active`;
+            setTimeout(() => {
+                alert.classList.remove('active');
+            }, 5000);
+        }
+    }
+    
+    function hideAlert(elementId) {
+        const alert = document.getElementById(elementId);
+        if (alert) {
+            alert.classList.remove('active');
+        }
+    }
+    
+    // ================================================================
+    // LOGIN HANDLER
+    // ================================================================
+    
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        
+        console.log('=== LOGIN ATTEMPT ===');
+        console.log('Email:', email);
+        
+        const btn = document.getElementById('loginBtnText');
+        const spinner = document.getElementById('loginSpinner');
+        
+        btn.classList.add('hidden');
+        spinner.classList.remove('hidden');
+        hideAlert('loginError');
+        hideAlert('loginSuccess');
+        
+        try {
+            const { data, error } = await supabase.rpc('login_user', {
+                p_email: email,
+                p_password: password
+            });
+            
+            console.log('Raw response:', { data, error });
+            
+            if (error) {
+                console.error('Supabase error:', error);
+                throw new Error(error.message || 'Login failed');
+            }
+            
+            if (!data) {
+                throw new Error('No response from server');
+            }
+            
+            console.log('Login result:', data);
+            
+            if (data.success) {
+                console.log('Login successful!');
+                console.log('Student data:', data.student);
+                
+                currentStudent = data.student;
+                saveSession(currentStudent);
+                
+                showAlert('loginSuccess', 'Login successful!', 'success');
+                
+                loadProfileData(currentStudent);
+                
+                setTimeout(() => {
+                    switchToProfile();
+                }, 800);
+                
+            } else {
+                throw new Error(data.error || 'Invalid email or password');
+            }
+            
+        } catch (error) {
+            console.error('=== LOGIN ERROR ===');
+            console.error('Error type:', error.constructor.name);
+            console.error('Error message:', error.message);
+            console.error('Full error:', error);
+            
+            showAlert('loginError', error.message || 'An error occurred during login');
+        } finally {
+            btn.classList.remove('hidden');
+            spinner.classList.add('hidden');
+        }
+    });
+    
+    // ================================================================
+    // REGISTRATION HANDLER
+    // ================================================================
+    
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = document.getElementById('regEmail').value.trim();
+        const password = document.getElementById('regPassword').value;
+        const confirmPassword = document.getElementById('regConfirmPassword').value;
+        const name = document.getElementById('regName').value.trim();
+        const rollNo = document.getElementById('regRollNo').value.trim();
+        const year = document.getElementById('regYear').value;
+        const branch = document.getElementById('regBranch').value || null;
+        const division = document.getElementById('regDivision').value || null;
+        
+        if (password !== confirmPassword) {
+            showAlert('registerError', 'Passwords do not match');
+            return;
+        }
+        
+        const btn = document.getElementById('registerBtnText');
+        const spinner = document.getElementById('registerSpinner');
+        
+        btn.classList.add('hidden');
+        spinner.classList.remove('hidden');
+        hideAlert('registerError');
+        hideAlert('registerSuccess');
+        
+        try {
+            console.log('Registering with:', { email, name, rollNo, year, branch, division });
+            
+            const { data, error } = await supabase.rpc('register_user', {
+                p_email: email,
+                p_password: password,
+                p_name: name,
+                p_roll_no: rollNo,
+                p_year: year,
+                p_branch: branch,
+                p_division: division
+            });
+            
+            if (error) throw error;
+            
+            if (data.success) {
+                showAlert('registerSuccess', 'Registration successful! Please login.', 'success');
+                setTimeout(() => switchToLogin(), 2000);
+            } else {
+                throw new Error(data.error || 'Registration failed');
+            }
+            
+        } catch (error) {
+            console.error('Registration error:', error);
+            showAlert('registerError', error.message || 'An error occurred during registration');
+        } finally {
+            btn.classList.remove('hidden');
+            spinner.classList.add('hidden');
+        }
+    });
+    
+    // Year change handler for division/branch toggle
+    document.getElementById('regYear').addEventListener('change', (e) => {
+        const divisionGroup = document.getElementById('divisionGroup');
+        const branchGroup = document.getElementById('branchGroup');
+        const divisionSelect = document.getElementById('regDivision');
+        const branchSelect = document.getElementById('regBranch');
+        
+        if (e.target.value === 'BTech1') {
+            divisionGroup.classList.remove('hidden');
+            branchGroup.classList.add('hidden');
+            divisionSelect.setAttribute('required', 'required');
+            branchSelect.removeAttribute('required');
+            branchSelect.value = '';
+        } else {
+            divisionGroup.classList.add('hidden');
+            branchGroup.classList.remove('hidden');
+            branchSelect.setAttribute('required', 'required');
+            divisionSelect.removeAttribute('required');
+            divisionSelect.value = '';
+        }
+    });
+    
+    // ================================================================
+    // PROFILE MANAGEMENT
+    // ================================================================
+    
+    function loadProfileData(student) {
+        currentStudent = student;
+        selectedImageFile = null;
+        
+        console.log('Loading profile data:', student);
+        
+        document.getElementById('profileName').value = student.name || '';
+        document.getElementById('profileRollNo').value = student.roll_no || '';
+        document.getElementById('profileEmail').value = student.email || '';
+        document.getElementById('profileBio').value = student.bio || '';
+        
+        const preview = document.getElementById('profileImagePreview');
+        if (preview) {
+            if (student.profile_image_path && student.profile_image_path !== 'null' && student.profile_image_path !== '') {
+                console.log('Loading image:', student.profile_image_path);
+                preview.innerHTML = `<img src="${student.profile_image_path}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">`;
+            } else {
+                console.log('No profile image found');
+                preview.innerHTML = '<div style="opacity: 0.5;">No image</div>';
+            }
+        }
+        
+        const fileInput = document.getElementById('profileImageInput');
+        if (fileInput) fileInput.value = '';
+        
+        currentSkills = [];
+        if (student.skills) {
+            if (Array.isArray(student.skills)) {
+                currentSkills = student.skills;
+            } else if (typeof student.skills === 'string') {
+                try {
+                    currentSkills = JSON.parse(student.skills);
+                } catch (e) {
+                    console.error('Error parsing skills:', e);
+                    currentSkills = [];
+                }
+            }
+        }
+        renderSkills();
+        
+        document.getElementById('profileCurrentSem').value = student.current_sem || '';
+        
+        generateMarksInputs(student.current_sem || 8);
+        
+        for (let i = 1; i <= 8; i++) {
+            const marksInput = document.getElementById(`sem${i}Marks`);
+            if (marksInput) {
+                marksInput.value = student[`sem${i}_marks`] || '';
+            }
+        }
+    }
+    
+    function renderSkills() {
+        const container = document.getElementById('skillsContainer');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        currentSkills.forEach((skill, index) => {
+            const tag = document.createElement('span');
+            tag.className = 'skill-tag';
+            tag.innerHTML = `
+                ${skill}
+                <span class="skill-tag-remove" onclick="removeSkill(${index})">×</span>
+            `;
+            container.appendChild(tag);
+        });
+    }
+    
+    function addSkill() {
+        const input = document.getElementById('newSkillInput');
+        if (!input) return;
+        
+        const skill = input.value.trim();
+        
+        if (skill && !currentSkills.includes(skill)) {
+            currentSkills.push(skill);
+            renderSkills();
+            input.value = '';
+        }
+    }
+    
+    function removeSkill(index) {
+        currentSkills.splice(index, 1);
+        renderSkills();
+    }
+    
+    function generateMarksInputs(maxSem) {
+        const container = document.getElementById('marksInputsContainer');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        if (!maxSem || maxSem < 1) maxSem = 8;
+        
+        for (let i = 1; i <= maxSem; i++) {
+            const group = document.createElement('div');
+            group.className = 'form-group';
+            group.innerHTML = `
+                <label class="form-label">Semester ${i} Marks (%)</label>
+                <input 
+                    type="number" 
+                    id="sem${i}Marks" 
+                    class="form-input" 
+                    min="0" 
+                    max="100" 
+                    step="0.01"
+                    placeholder="Enter marks"
+                >
+            `;
+            container.appendChild(group);
+        }
+    }
+    
+    function renderMarksInputs(maxSem) {
+        generateMarksInputs(maxSem);
+    }
+    
+    function loadMarksData(student) {
+        for (let i = 1; i <= 8; i++) {
+            const input = document.getElementById(`sem${i}Marks`);
+            if (input) {
+                input.value = student[`sem${i}_marks`] || '';
+            }
+        }
+    }
+    
+    // Profile Current Semester change handler
+    const semSelect = document.getElementById('profileCurrentSem');
+    if (semSelect) {
+        semSelect.addEventListener('change', (e) => {
+            const sem = parseInt(e.target.value);
+            if (sem) {
+                renderMarksInputs(sem);
+                if (currentStudent) {
+                    loadMarksData(currentStudent);
+                }
+            }
+        });
+    }
+    
+    // ================================================================
+    // IMAGE UPLOAD & PREVIEW
+    // ================================================================
+    
+    const imageInput = document.getElementById('profileImageInput');
+    if (imageInput) {
+        imageInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            
+            if (!file) {
+                selectedImageFile = null;
+                return;
+            }
+            
+            if (!file.type.startsWith('image/')) {
+                alert('Please select an image file');
+                e.target.value = '';
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Image size must be less than 5MB');
+                e.target.value = '';
+                return;
+            }
+            
+            selectedImageFile = file;
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const preview = document.getElementById('profileImagePreview');
+                if (preview) {
+                    preview.innerHTML = `<img src="${event.target.result}" alt="Preview" style="width: 100%; height: 100%; object-fit: cover;">`;
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+    
+    async function uploadProfileImage(student, imageFile) {
+        if (!imageFile) return null;
+        
+        try {
+            console.log('=== Starting Image Upload ===');
+            console.log('File:', imageFile.name, imageFile.type, imageFile.size);
+            
+            const fileExt = imageFile.name.split('.').pop();
+            const fileName = `${student.id}_${Date.now()}.${fileExt}`;
+            const folderPath = `${student.year}/${student.branch || student.division || 'General'}`;
+            const filePath = `${folderPath}/${fileName}`;
+            
+            console.log('Upload path:', filePath);
+            
+            const { data, error } = await supabase.storage
+                .from('student-pictures')
+                .upload(filePath, imageFile, {
+                    cacheControl: '3600',
+                    upsert: true
+                });
+            
+            if (error) {
+                console.error('Upload error details:', error);
+                throw new Error(`Upload failed: ${error.message}`);
+            }
+            
+            console.log('Upload successful, data:', data);
+            
+            const { data: urlData } = supabase.storage
+                .from('student-pictures')
+                .getPublicUrl(filePath);
+            
+            console.log('Public URL:', urlData.publicUrl);
+            
+            return urlData.publicUrl;
+            
+        } catch (error) {
+            console.error('=== Upload Error ===');
+            console.error('Error:', error);
+            throw error;
+        }
+    }
+    
+    // ================================================================
+    // SAVE PROFILE
+    // ================================================================
+    
+    const profileForm = document.getElementById('profileEditForm');
+    if (profileForm) {
+        profileForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('profileSaveBtnText');
+            const spinner = document.getElementById('profileSaveSpinner');
+            
+            btn.classList.add('hidden');
+            spinner.classList.remove('hidden');
+            hideAlert('profileError');
+            
+            try {
+                let profileImageUrl = currentStudent.profile_image_path || null;
+                
+                if (selectedImageFile) {
+                    console.log('=== Starting image upload ===');
+                    console.log('Student data:', {
+                        id: currentStudent.id,
+                        year: currentStudent.year,
+                        branch: currentStudent.branch
+                    });
+                    
+                    try {
+                        profileImageUrl = await uploadProfileImage(currentStudent, selectedImageFile);
+                        console.log('✓ Image uploaded successfully:', profileImageUrl);
+                    } catch (uploadError) {
+                        console.error('✗ Image upload failed:', uploadError);
+                        showAlert('profileError', 'Image upload failed: ' + uploadError.message);
+                        btn.classList.remove('hidden');
+                        spinner.classList.add('hidden');
+                        return;
+                    }
+                } else {
+                    console.log('No new image selected, keeping existing');
+                }
+                
+                const updates = {
+                    bio: document.getElementById('profileBio').value || null,
+                    skills: currentSkills || [],
+                    current_sem: parseInt(document.getElementById('profileCurrentSem').value) || null,
+                    profile_image_path: profileImageUrl,
+                    updated_at: new Date().toISOString()
+                };
+                
+                const currentSem = updates.current_sem || 8;
+                for (let i = 1; i <= 8; i++) {
+                    const marksInput = document.getElementById(`sem${i}Marks`);
+                    if (marksInput && i <= currentSem) {
+                        const marks = parseFloat(marksInput.value);
+                        updates[`sem${i}_marks`] = isNaN(marks) ? null : marks;
+                    } else {
+                        updates[`sem${i}_marks`] = null;
+                    }
+                }
+                
+                console.log('=== Updating database ===');
+                console.log('Student ID:', currentStudent.id);
+                console.log('Updates:', updates);
+                
+                const { data, error } = await supabase
+                    .from('students')
+                    .update(updates)
+                    .eq('id', currentStudent.id)
+                    .select()
+                    .single();
+                
+                if (error) {
+                    console.error('✗ Database update error:', error);
+                    throw error;
+                }
+                
+                console.log('✓ Database updated successfully:', data);
+                
+                currentStudent = data;
+                saveSession(currentStudent);
+                selectedImageFile = null;
+                
+                showAlert('profileSuccess', 'Profile updated successfully!', 'success');
+                
+            } catch (error) {
+                console.error('=== PROFILE UPDATE FAILED ===');
+                console.error('Error type:', error.constructor.name);
+                console.error('Error message:', error.message);
+                console.error('Full error:', error);
+                
+                showAlert('profileError', 'Failed to update profile: ' + error.message);
+            } finally {
+                btn.classList.remove('hidden');
+                spinner.classList.add('hidden');
+            }
+        });
+    }
+    
+    // ================================================================
+    // DELETE PROFILE
+    // ================================================================
+    
+    function confirmDeleteProfile() {
+        if (confirm('Are you sure you want to delete your profile? You will have to REGISTER again with email')) {
+            deleteProfile();
+        }
+    }
+    
+    async function deleteProfile() {
+        try {
+            const { error } = await supabase
+                .from('students')
+                .delete()
+                .eq('id', currentStudent.id);
+            
+            if (error) throw error;
+            
+            await supabase
+                .from('auth_credentials')
+                .delete()
+                .eq('student_id', currentStudent.id);
+            
+            clearSession();
+            alert('Profile deleted successfully');
+            window.location.reload();
+        } catch (error) {
+            console.error('Delete error:', error);
+            alert('Failed to delete profile. Please try again.');
+        }
+    }
+    
+    // ================================================================
+    // LOGOUT
+    // ================================================================
+    
+    function logout() {
+        localStorage.removeItem(SESSION_KEY);
+        currentStudent = null;
+        selectedImageFile = null;
+        
+        const preview = document.getElementById('profileImagePreview');
+        if (preview) {
+            preview.innerHTML = '<div style="opacity: 0.5;">No image</div>';
+        }
+        
+        const fileInput = document.getElementById('profileImageInput');
+        if (fileInput) fileInput.value = '';
+        
+        document.getElementById('profileView').classList.remove('active');
+        document.getElementById('authView').classList.add('active');
+        document.getElementById('headerSubtitle').textContent = 'Login or create your profile';
+        
+        switchToLogin();
+        showAlert('loginSuccess', 'Logged out successfully', 'success');
+    }
+    
+    // ================================================================
+    // NAVIGATION
+    // ================================================================
+    
+    function goHome(event) {
+        event.preventDefault();
+        window.location.replace('index.html');
+    }
+    
+    function smartBack() {
+        if (document.referrer && document.referrer.includes(window.location.host)) {
+            window.history.back();
+        } else {
+            window.location.replace('index.html');
+        }
+    }
+    
+    if (window.location.pathname === '/index.html' || window.location.pathname === '/') {
+        window.history.replaceState(null, '', window.location.href);
+    }
+    
+    // ================================================================
+    // DEBUG TEST FUNCTION
+    // ================================================================
+    
+    async function testLogin() {
+        console.log('=== MANUAL LOGIN TEST ===');
+        console.log('Supabase object:', supabase);
+        
+        try {
+            const { data, error } = await supabase.rpc('login_user', {
+                p_email: 'test@test.com',
+                p_password: 'test123'
+            });
+            
+            console.log('Test response data:', data);
+            console.log('Test response error:', error);
+            alert('Check console for results');
+        } catch (e) {
+            console.error('Test error:', e);
+            alert('Error: ' + e.message);
+        }
+    }
+    
+    // ================================================================
+    // INITIALIZATION
+    // ================================================================
+    
+    function initialize() {
+        console.log('Initializing profile management...');
+        
+        if (!initializeSupabase()) {
+            alert('Failed to initialize. Please refresh the page.');
+            return;
+        }
+        
+        const savedStudent = loadSession();
+        if (savedStudent) {
+            console.log('✓ Session found, loading profile...');
+            currentStudent = savedStudent;
+            loadProfileData(savedStudent);
+            switchToProfile();
+        } else {
+            console.log('No session found, showing login');
+            document.getElementById('authView').classList.add('active');
             switchToLogin();
-        }, 2000);
-    }
-});
-
-// LOGIN
-loginBtn.addEventListener('click', async () => {
-    const email = loginEmailEl.value;
-    const password = loginPasswordEl.value;
-
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-    
-    if (!emailRegex.test(email)) {
-        showMessage('Please enter a valid email', 'error');
-        return;
+        }
+        
+        console.log('✓ Profile management initialized');
     }
     
-    if (password.length <= 4) {
-        showMessage('Password must be more than 4 characters', 'error');
-        return;
-    }
-
-    // Check credentials
-    const { data, error } = await sb
-        .from('loginusers')
-        .select('*')
-        .eq('email', email)
-        .eq('password', password)
-        .single();
-
-    if (error || !data) {
-        showMessage('Invalid email or password', 'error');
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initialize);
     } else {
-        showMessage('Login successful!', 'success');
-        
-        const loginData = {
-            email: data.email,
-            loginTime: new Date().toISOString()
-        };
-        localStorage.setItem('loggedInUser', JSON.stringify(loginData));
-        
-        setTimeout(() => {
-            showWelcomeScreen(data.email);
-        }, 1000);
+        initialize();
     }
-});
-
-// LOGOUT
-logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem('loggedInUser');
-    welcomeScreen.style.display = 'none';
-    loginForm.style.display = 'flex';
-    loginEmailEl.value = '';
-    loginPasswordEl.value = '';
-    showMessage('Logged out successfully', 'success');
-});
-
-// Check login on page load
-checkLoginStatus();
-
-// Make switch functions global
-window.switchToLogin = switchToLogin;
-window.switchToRegister = switchToRegister;
-
-    </script>
-  </body>
+    
+    // Debug utilities
+    window.VVPIET_PROFILE_DEBUG = {
+        version: APP_VERSION,
+        currentStudent: () => currentStudent,
+        clearSession,
+        loadSession,
+        switchToLogin,
+        switchToRegister,
+        switchToProfile,
+        testLogin
+    };
+    
+    // Make functions global
+    window.switchToLogin = switchToLogin;
+    window.switchToRegister = switchToRegister;
+    window.addSkill = addSkill;
+    window.removeSkill = removeSkill;
+    window.confirmDeleteProfile = confirmDeleteProfile;
+    window.logout = logout;
+    window.goHome = goHome;
+</script>
+</body>
 </html>
