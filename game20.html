@@ -16,693 +16,713 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        /* ====================================================================
-           CSS VARIABLES
-           ==================================================================== */
-        :root {
-            --color-bg: #f4c531;
-            --color-text: #2e0d30;
-            --color-accent: #FFCC00;
-            --color-accent-overlay: rgba(255, 204, 0, 0.20);
-            --color-accent-hover: rgba(255, 204, 0, 0.30);
-            --color-border: rgba(0, 0, 0, 0.10);
-            --color-shadow: rgba(0, 0, 0, 0.08);
-            --color-error: #FF4444;
-            --color-success: #44FF44;
-            
-            --font-base: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            --font-size-base: 16px;
-            --font-size-sm: 14px;
-            --font-size-lg: 18px;
-            --font-size-xl: 24px;
-            --font-size-2xl: 32px;
-            
-            --spacing-xs: 4px;
-            --spacing-sm: 8px;
-            --spacing-md: 16px;
-            --spacing-lg: 24px;
-            --spacing-xl: 32px;
-            --spacing-2xl: 48px;
-            
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
-            --radius-xl: 24px;
-            --radius-full: 9999px;
-            
-            --shadow-sm: 0 1px 3px var(--color-shadow);
-            --shadow-md: 0 4px 12px var(--color-shadow);
-            --shadow-lg: 0 8px 24px var(--color-shadow);
-            
-            --transition-fast: 150ms ease-in-out;
-            --transition-base: 250ms ease-in-out;
-            
-            --z-taskbar: 100;
-            --z-modal: 1000;
-        }
+       
+    /* ====================================================================
+       CSS VARIABLES
+       ==================================================================== */
+    :root {
+        --color-bg: #f4c531;
+        --color-text: #2e0d30;
+        --color-accent: #FFCC00;
+        --color-accent-overlay: rgba(255, 204, 0, 0.20);
+        --color-accent-hover: rgba(255, 204, 0, 0.30);
+        --color-border: rgba(0, 0, 0, 0.10);
+        --color-shadow: rgba(0, 0, 0, 0.08);
+        --color-error: #FF4444;
+        --color-success: #44FF44;
         
-        /* ====================================================================
-           GLOBAL STYLES
-           ==================================================================== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        --font-base: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        --font-size-base: 16px;
+        --font-size-sm: 14px;
+        --font-size-lg: 18px;
+        --font-size-xl: 24px;
+        --font-size-2xl: 32px;
         
-        html {
-            font-size: var(--font-size-base);
-            scroll-behavior: smooth;
-        }
+        --spacing-xs: 4px;
+        --spacing-sm: 8px;
+        --spacing-md: 16px;
+        --spacing-lg: 24px;
+        --spacing-xl: 32px;
+        --spacing-2xl: 48px;
         
-        body {
-            font-family: var(--font-base);
-            background: var(--color-bg);
-            color: var(--color-text);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 24px;
+        --radius-full: 9999px;
         
-        /* ====================================================================
-           PANDA CONTAINER & LOGIN/REGISTER FORMS
-           ==================================================================== */
+        --shadow-sm: 0 1px 3px var(--color-shadow);
+        --shadow-md: 0 4px 12px var(--color-shadow);
+        --shadow-lg: 0 8px 24px var(--color-shadow);
+        
+        --transition-fast: 150ms ease-in-out;
+        --transition-base: 250ms ease-in-out;
+        
+        --z-taskbar: 100;
+        --z-modal: 1000;
+    }
+    
+    /* ====================================================================
+       GLOBAL STYLES
+       ==================================================================== */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    html {
+        font-size: var(--font-size-base);
+        scroll-behavior: smooth;
+    }
+    
+    body {
+        font-family: var(--font-base);
+        background: #f4c531;
+        color: var(--color-text);
+        line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* ====================================================================
+       PANDA CONTAINER & ANIMATION (EXACT ORIGINAL)
+       ==================================================================== */
+    
+    .panda-container {
+        height: 34.25em;
+        width: 31.25em;
+        position: relative;
+        margin: 2em auto 6em;
+    }
+    
+    .panda-form {
+        width: 23.75em;
+        min-height: 22em;
+        background-color: #ffffff;
+        position: absolute;
+        transform: translate(-50%, -50%);
+        top: calc(50% + 3.1em);
+        left: 50%;
+        padding: 1.5em 3.1em;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border-radius: 0.5em;
+    }
+    
+    .panda-form h3 {
+        text-align: center;
+        color: #2e0d30;
+        margin-bottom: 1em;
+        font-size: 1.3em;
+    }
+    
+    .panda-form label {
+        display: block;
+        margin-bottom: 0.2em;
+        font-weight: 600;
+        color: #2e0d30;
+        font-size: 0.9em;
+    }
+    
+    .panda-form input,
+    .panda-form select {
+        font-size: 0.95em;
+        font-weight: 400;
+        color: #3f3554;
+        padding: 0.3em;
+        border: none;
+        border-bottom: 0.12em solid #3f3554;
+        outline: none;
+        width: 100%;
+        background: transparent;
+    }
+    
+    .panda-form input:focus,
+    .panda-form select:focus {
+        border-color: #f4c531;
+    }
+    
+    .panda-form input:not(:last-child),
+    .panda-form select:not(:last-child) {
+        margin-bottom: 0.9em;
+    }
+    
+    .panda-form button {
+        font-size: 0.95em;
+        padding: 0.8em 0;
+        border-radius: 2em;
+        border: none;
+        cursor: pointer;
+        outline: none;
+        background-color: #f4c531;
+        color: #2e0d30;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        margin-top: 0.8em;
+        transition: 0.5s;
+    }
+    
+    .panda-form button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(244, 197, 49, 0.5);
+    }
+    
+    .panda-form .switch-text {
+        text-align: center;
+        margin-top: 1.5em;
+        font-size: 0.9em;
+        cursor: pointer;
+        padding-bottom: 1em;
+    }
+    
+    .panda-form .switch-text span {
+        color: #f4c531;
+        text-decoration: underline;
+        font-weight: 600;
+    }
+    
+    .panda-face {
+        height: 7.5em;
+        width: 8.4em;
+        background-color: #ffffff;
+        border: 0.18em solid #2e0d30;
+        border-radius: 7.5em 7.5em 5.62em 5.62em;
+        position: absolute;
+        top: 2em;
+        margin: auto;
+        left: 0;
+        right: 0;
+    }
+    
+    .ear-l, .ear-r {
+        background-color: #3f3554;
+        height: 2.5em;
+        width: 2.81em;
+        border: 0.18em solid #2e0d30;
+        border-radius: 2.5em 2.5em 0 0;
+        top: 1.75em;
+        position: absolute;
+    }
+    
+    .ear-l {
+        transform: rotate(-38deg);
+        left: 10.75em;
+    }
+    
+    .ear-r {
+        transform: rotate(38deg);
+        right: 10.75em;
+    }
+    
+    .blush-l, .blush-r {
+        background-color: #ff8bb1;
+        height: 1em;
+        width: 1.37em;
+        border-radius: 50%;
+        position: absolute;
+        top: 4em;
+    }
+    
+    .blush-l {
+        transform: rotate(25deg);
+        left: 1em;
+    }
+    
+    .blush-r {
+        transform: rotate(-25deg);
+        right: 1em;
+    }
+    
+    .eye-l, .eye-r {
+        background-color: #3f3554;
+        height: 2.18em;
+        width: 2em;
+        border-radius: 2em;
+        position: absolute;
+        top: 2.18em;
+    }
+    
+    .eye-l {
+        left: 1.37em;
+        transform: rotate(-20deg);
+    }
+    
+    .eye-r {
+        right: 1.37em;
+        transform: rotate(20deg);
+    }
+    
+    .eyeball-l, .eyeball-r {
+        height: 0.6em;
+        width: 0.6em;
+        background-color: #ffffff;
+        border-radius: 50%;
+        position: absolute;
+        left: 0.6em;
+        top: 0.6em;
+        transition: 1s all;
+    }
+    
+    .eyeball-l {
+        transform: rotate(20deg);
+    }
+    
+    .eyeball-r {
+        transform: rotate(-20deg);
+    }
+    
+    .nose {
+        height: 1em;
+        width: 1em;
+        background-color: #3f3554;
+        position: absolute;
+        top: 4.37em;
+        margin: auto;
+        left: 0;
+        right: 0;
+        border-radius: 1.2em 0 0 0.25em;
+        transform: rotate(45deg);
+    }
+    
+    .nose:before {
+        content: "";
+        position: absolute;
+        background-color: #3f3554;
+        height: 0.6em;
+        width: 0.1em;
+        transform: rotate(-45deg);
+        top: 0.75em;
+        left: 1em;
+    }
+    
+    .mouth, .mouth:before {
+        height: 0.75em;
+        width: 0.93em;
+        background-color: transparent;
+        position: absolute;
+        border-radius: 50%;
+        box-shadow: 0 0.18em #3f3554;
+    }
+    
+    .mouth {
+        top: 5.31em;
+        left: 3.12em;
+    }
+    
+    .mouth:before {
+        content: "";
+        position: absolute;
+        left: 0.87em;
+    }
+    
+    .hand-l, .hand-r {
+        background-color: #3f3554;
+        height: 2.81em;
+        width: 2.5em;
+        border: 0.18em solid #2e0d30;
+        border-radius: 0.6em 0.6em 2.18em 2.18em;
+        transition: 1s all;
+        position: absolute;
+        top: 8.4em;
+    }
+    
+    .hand-l {
+        left: 7.5em;
+    }
+    
+    .hand-r {
+        right: 7.5em;
+    }
+    
+    .paw-l, .paw-r {
+        background-color: #3f3554;
+        height: 3.12em;
+        width: 3.12em;
+        border: 0.18em solid #2e0d30;
+        border-radius: 2.5em 2.5em 1.2em 1.2em;
+        position: absolute;
+        top: 26.56em;
+    }
+    
+    .paw-l {
+        left: 10em;
+    }
+    
+    .paw-r {
+        right: 10em;
+    }
+    
+    .paw-l:before, .paw-r:before {
+        position: absolute;
+        content: "";
+        background-color: #ffffff;
+        height: 1.37em;
+        width: 1.75em;
+        top: 1.12em;
+        left: 0.55em;
+        border-radius: 1.56em 1.56em 0.6em 0.6em;
+    }
+    
+    .paw-l:after, .paw-r:after {
+        position: absolute;
+        content: "";
+        background-color: #ffffff;
+        height: 0.5em;
+        width: 0.5em;
+        border-radius: 50%;
+        top: 0.31em;
+        left: 1.12em;
+        box-shadow: 0.87em 0.37em #ffffff, -0.87em 0.37em #ffffff;
+    }
+    
+    .panda-hidden {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+    
+    /* ====================================================================
+       ALERTS
+       ==================================================================== */
+    .alert {
+        padding: var(--spacing-md);
+        border-radius: var(--radius-md);
+        margin-bottom: var(--spacing-lg);
+        display: none;
+        font-size: 0.9em;
+    }
+    
+    .alert.active {
+        display: block;
+        animation: slideDown 0.3s ease-in-out;
+    }
+    
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .alert-success {
+        background: rgba(68, 255, 68, 0.2);
+        border: 1px solid var(--color-success);
+        color: var(--color-text);
+    }
+    
+    .alert-error {
+        background: rgba(255, 68, 68, 0.2);
+        border: 1px solid var(--color-error);
+        color: var(--color-text);
+    }
+    
+    /* Hidden class */
+    .hidden {
+        display: none !important;
+    }
+    
+    /* ====================================================================
+       MAIN CONTAINER
+       ==================================================================== */
+    .main-container {
+        flex: 1;
+        width: 100%;
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: var(--spacing-lg) var(--spacing-md);
+        padding-bottom: 150px;
+    }
+    
+    .page-header {
+        text-align: center;
+        margin-bottom: var(--spacing-xl);
+        padding: var(--spacing-lg) 0;
+    }
+    
+    .page-title {
+        font-size: var(--font-size-2xl);
+        font-weight: 800;
+        color: var(--color-text);
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .page-subtitle {
+        font-size: var(--font-size-lg);
+        color: var(--color-text);
+        opacity: 0.8;
+    }
+    
+    .view-container {
+        display: none;
+    }
+    
+    .view-container.active {
+        display: block;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* ====================================================================
+       PROFILE EDIT VIEW
+       ==================================================================== */
+    .profile-edit-container {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: var(--spacing-xl);
+        max-width: 900px;
+        margin: 0 auto;
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .form-group {
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: var(--spacing-sm);
+        color: var(--color-text);
+        font-size: var(--font-size-sm);
+    }
+    
+    .form-input,
+    .form-select,
+    .form-textarea {
+        width: 100%;
+        padding: var(--spacing-md);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        font-size: var(--font-size-base);
+        font-family: var(--font-base);
+        transition: all var(--transition-fast);
+        background: white;
+        color: var(--color-text);
+    }
+    
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+        outline: none;
+        border-color: var(--color-accent);
+        box-shadow: 0 0 0 3px var(--color-accent-overlay);
+    }
+    
+    .form-textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+    
+    .btn {
+        padding: var(--spacing-md) var(--spacing-lg);
+        border: none;
+        border-radius: var(--radius-md);
+        font-size: var(--font-size-base);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        text-align: center;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--spacing-sm);
+        min-width: 120px;
+    }
+    
+    .btn-primary {
+        background: var(--color-accent);
+        color: var(--color-text);
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .btn-secondary {
+        background: transparent;
+        color: var(--color-text);
+        border: 1px solid var(--color-border);
+    }
+    
+    .btn-secondary:hover {
+        background: var(--color-accent-overlay);
+        border-color: var(--color-accent);
+    }
+    
+    .btn-danger {
+        background: var(--color-error);
+        color: white;
+    }
+    
+    .btn-danger:hover {
+        opacity: 0.9;
+    }
+    
+    .btn-group {
+        display: flex;
+        gap: var(--spacing-md);
+        flex-wrap: wrap;
+    }
+    
+    .image-upload-container {
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .image-preview {
+        width: 150px;
+        height: 150px;
+        border-radius: var(--radius-md);
+        border: 2px dashed var(--color-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin-bottom: var(--spacing-md);
+        background: var(--color-accent-overlay);
+    }
+    
+    .image-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .skill-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        padding: var(--spacing-xs) var(--spacing-md);
+        background: var(--color-accent);
+        color: var(--color-text);
+        border-radius: var(--radius-full);
+        font-size: var(--font-size-sm);
+        margin: var(--spacing-xs);
+    }
+    
+    .skill-tag-remove {
+        cursor: pointer;
+        font-weight: bold;
+    }
+    
+    /* ====================================================================
+       TASKBAR
+       ==================================================================== */
+    .taskbar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        border-top: 1px solid var(--color-border);
+        box-shadow: 0 -4px 12px var(--color-shadow);
+        z-index: var(--z-taskbar);
+        padding: var(--spacing-sm) 0;
+    }
+    
+    .taskbar-container {
+        max-width: 600px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+    
+    .taskbar-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-xs);
+        padding: var(--spacing-sm) var(--spacing-md);
+        background: transparent;
+        border: none;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        text-decoration: none;
+        color: var(--color-text);
+        min-width: 80px;
+    }
+    
+    .taskbar-btn:hover,
+    .taskbar-btn.active {
+        background: var(--color-accent-overlay);
+    }
+    
+    .taskbar-icon {
+        width: 24px;
+        height: 24px;
+        fill: var(--color-text);
+    }
+    
+    .taskbar-label {
+        font-size: var(--font-size-sm);
+        font-weight: 500;
+    }
+    
+    .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--color-border);
+        border-top-color: var(--color-accent);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    /* ====================================================================
+       RESPONSIVE - MOBILE
+       ==================================================================== */
+    @media screen and (max-width: 500px) {
         .panda-container {
-            height: 34.25em;
-            width: 31.25em;
-            max-width: 95%;
-            position: relative;
-            margin: 2em auto;
+            font-size: 14px;
         }
         
         .panda-form {
-            width: 23.75em;
-            max-width: 100%;
-            min-height: 22em;
-            background-color: #ffffff;
-            position: absolute;
-            transform: translate(-50%, -50%);
-            top: calc(50% + 3.1em);
-            left: 50%;
-            padding: 1.5em 2em;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            border-radius: 0.5em;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            padding: 1.2em 2em;
         }
-        
-        .panda-form h3 {
-            text-align: center;
-            color: #2e0d30;
-            margin-bottom: 1em;
-            font-size: 1.5em;
-            font-weight: 600;
-        }
-        
-        .panda-form label {
-            display: block;
-            margin-bottom: 0.3em;
-            font-weight: 600;
-            color: #2e0d30;
-            font-size: 0.9em;
-        }
-        
-        .panda-form input,
-        .panda-form select {
-            font-size: 0.95em;
-            font-weight: 400;
-            color: #3f3554;
-            padding: 0.6em;
-            border: none;
-            border-bottom: 0.12em solid #3f3554;
-            outline: none;
-            width: 100%;
-            background: transparent;
-            margin-bottom: 0.9em;
-            transition: border-color 0.3s;
-        }
-        
-        .panda-form input:focus,
-        .panda-form select:focus {
-            border-color: #f4c531;
-        }
-        
-        .panda-form button {
-            font-size: 0.95em;
-            padding: 0.8em 0;
-            border-radius: 2em;
-            border: none;
-            cursor: pointer;
-            outline: none;
-            background-color: #f4c531;
-            color: #2e0d30;
-            text-transform: uppercase;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            margin-top: 0.8em;
-            transition: all 0.3s;
-        }
-        
-        .panda-form button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(244, 197, 49, 0.4);
-        }
-        
-        .panda-form .switch-text {
-            text-align: center;
-            margin-top: 1.5em;
-            font-size: 0.9em;
-            cursor: pointer;
-        }
-        
-        .panda-form .switch-text span {
-            color: #f4c531;
-            text-decoration: underline;
-            font-weight: 600;
-        }
-        
-        /* Panda Face & Body */
-        .panda-face {
-            height: 7.5em;
-            width: 8.4em;
-            background-color: #ffffff;
-            border: 0.18em solid #2e0d30;
-            border-radius: 7.5em 7.5em 5.62em 5.62em;
-            position: absolute;
-            top: 2em;
-            margin: auto;
-            left: 0;
-            right: 0;
-            z-index: 10;
-        }
-        
-        .ear-l, .ear-r {
-            background-color: #3f3554;
-            height: 2.5em;
-            width: 2.81em;
-            border: 0.18em solid #2e0d30;
-            border-radius: 2.5em 2.5em 0 0;
-            top: 1.75em;
-            position: absolute;
-            z-index: 5;
-        }
-        
-        .ear-l {
-            transform: rotate(-38deg);
-            left: 10.75em;
-        }
-        
-        .ear-r {
-            transform: rotate(38deg);
-            right: 10.75em;
-        }
-        
-        .blush-l, .blush-r {
-            background-color: #ff8bb1;
-            height: 1em;
-            width: 1.37em;
-            border-radius: 50%;
-            position: absolute;
-            top: 4em;
-        }
-        
-        .blush-l {
-            transform: rotate(25deg);
-            left: 1em;
-        }
-        
-        .blush-r {
-            transform: rotate(-25deg);
-            right: 1em;
-        }
-        
-        .eye-l, .eye-r {
-            background-color: #3f3554;
-            height: 2.18em;
-            width: 2em;
-            border-radius: 2em;
-            position: absolute;
-            top: 2.18em;
-        }
-        
-        .eye-l {
-            left: 1.37em;
-            transform: rotate(-20deg);
-        }
-        
-        .eye-r {
-            right: 1.37em;
-            transform: rotate(20deg);
-        }
-        
-        .eyeball-l, .eyeball-r {
-            height: 0.6em;
-            width: 0.6em;
-            background-color: #ffffff;
-            border-radius: 50%;
-            position: absolute;
-            left: 0.6em;
-            top: 0.6em;
-            transition: 1s all;
-        }
-        
-        .eyeball-l {
-            transform: rotate(20deg);
-        }
-        
-        .eyeball-r {
-            transform: rotate(-20deg);
-        }
-        
-        .nose {
-            height: 1em;
-            width: 1em;
-            background-color: #3f3554;
-            position: absolute;
-            top: 4.37em;
-            margin: auto;
-            left: 0;
-            right: 0;
-            border-radius: 1.2em 0 0 0.25em;
-            transform: rotate(45deg);
-        }
-        
-        .nose:before {
-            content: "";
-            position: absolute;
-            background-color: #3f3554;
-            height: 0.6em;
-            width: 0.1em;
-            transform: rotate(-45deg);
-            top: 0.75em;
-            left: 1em;
-        }
-        
-        .mouth, .mouth:before {
-            height: 0.75em;
-            width: 0.93em;
-            background-color: transparent;
-            position: absolute;
-            border-radius: 50%;
-            box-shadow: 0 0.18em #3f3554;
-        }
-        
-        .mouth {
-            top: 5.31em;
-            left: 3.12em;
-        }
-        
-        .mouth:before {
-            content: "";
-            position: absolute;
-            left: 0.87em;
-        }
-        
-        .hand-l, .hand-r {
-            background-color: #3f3554;
-            height: 2.81em;
-            width: 2.5em;
-            border: 0.18em solid #2e0d30;
-            border-radius: 0.6em 0.6em 2.18em 2.18em;
-            transition: 1s all;
-            position: absolute;
-            top: 8.4em;
-            z-index: 15;
-        }
-        
-        .hand-l {
-            left: 7.5em;
-        }
-        
-        .hand-r {
-            right: 7.5em;
-        }
-        
-        .paw-l, .paw-r {
-            background-color: #3f3554;
-            height: 3.12em;
-            width: 3.12em;
-            border: 0.18em solid #2e0d30;
-            border-radius: 2.5em 2.5em 1.2em 1.2em;
-            position: absolute;
-            top: 26.56em;
-        }
-        
-        .paw-l {
-            left: 10em;
-        }
-        
-        .paw-r {
-            right: 10em;
-        }
-        
-        .paw-l:before, .paw-r:before {
-            position: absolute;
-            content: "";
-            background-color: #ffffff;
-            height: 1.37em;
-            width: 1.75em;
-            top: 1.12em;
-            left: 0.55em;
-            border-radius: 1.56em 1.56em 0.6em 0.6em;
-        }
-        
-        .paw-l:after, .paw-r:after {
-            position: absolute;
-            content: "";
-            background-color: #ffffff;
-            height: 0.5em;
-            width: 0.5em;
-            border-radius: 50%;
-            top: 0.31em;
-            left: 1.12em;
-            box-shadow: 0.87em 0.37em #ffffff, -0.87em 0.37em #ffffff;
-        }
-        
-        /* Alert Messages */
-        .alert {
-            padding: var(--spacing-md);
-            border-radius: var(--radius-md);
-            margin-bottom: var(--spacing-lg);
-            display: none;
-        }
-        
-        .alert.active {
-            display: block;
-            animation: slideDown 0.3s ease-in-out;
-        }
-        
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .alert-success {
-            background: rgba(68, 255, 68, 0.2);
-            border: 1px solid var(--color-success);
-            color: var(--color-text);
-        }
-        
-        .alert-error {
-            background: rgba(255, 68, 68, 0.2);
-            border: 1px solid var(--color-error);
-            color: var(--color-text);
-        }
-        
-        /* Hidden class */
-        .hidden {
-            display: none !important;
-        }
-        
-        /* ====================================================================
-           PROFILE VIEW (Keep existing styles)
-           ==================================================================== */
+    }
+    
+    @media (max-width: 768px) {
         .main-container {
-            flex: 1;
-            width: 100%;
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: var(--spacing-lg) var(--spacing-md);
-            padding-bottom: calc(80px + var(--spacing-xl));
+            padding: var(--spacing-md);
+            padding-bottom: 120px;
         }
         
-        .page-header {
-            text-align: center;
-            margin-bottom: var(--spacing-xl);
-            padding: var(--spacing-lg) 0;
+        .profile-edit-container {
+            padding: var(--spacing-lg);
         }
         
         .page-title {
-            font-size: var(--font-size-2xl);
-            font-weight: 800;
-            color: var(--color-text);
-            margin-bottom: var(--spacing-sm);
+            font-size: var(--font-size-xl);
         }
         
         .page-subtitle {
-            font-size: var(--font-size-lg);
-            color: var(--color-text);
-            opacity: 0.8;
-        }
-        
-        .view-container {
-            display: none;
-        }
-        
-        .view-container.active {
-            display: block;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Profile Edit View */
-        .profile-edit-container {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: var(--spacing-xl);
-            max-width: 900px;
-            margin: 0 auto;
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .form-group {
-            margin-bottom: var(--spacing-lg);
-        }
-        
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: var(--spacing-sm);
-            color: var(--color-text);
-            font-size: var(--font-size-sm);
-        }
-        
-        .form-input,
-        .form-select,
-        .form-textarea {
-            width: 100%;
-            padding: var(--spacing-md);
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-md);
             font-size: var(--font-size-base);
-            font-family: var(--font-base);
-            transition: all var(--transition-fast);
-            background: white;
-            color: var(--color-text);
         }
-        
-        .form-input:focus,
-        .form-select:focus,
-        .form-textarea:focus {
-            outline: none;
-            border-color: var(--color-accent);
-            box-shadow: 0 0 0 3px var(--color-accent-overlay);
-        }
-        
-        .form-textarea {
-            resize: vertical;
-            min-height: 100px;
+    }
+    
+    @media (max-width: 480px) {
+        .btn-group {
+            flex-direction: column;
         }
         
         .btn {
-            padding: var(--spacing-md) var(--spacing-lg);
-            border: none;
-            border-radius: var(--radius-md);
-            font-size: var(--font-size-base);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            text-align: center;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--spacing-sm);
-            min-width: 120px;
-        }
-        
-        .btn-primary {
-            background: var(--color-accent);
-            color: var(--color-text);
-            box-shadow: var(--shadow-sm);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .btn-secondary {
-            background: transparent;
-            color: var(--color-text);
-            border: 1px solid var(--color-border);
-        }
-        
-        .btn-secondary:hover {
-            background: var(--color-accent-overlay);
-            border-color: var(--color-accent);
-        }
-        
-        .btn-danger {
-            background: var(--color-error);
-            color: white;
-        }
-        
-        .btn-danger:hover {
-            opacity: 0.9;
-        }
-        
-        .btn-group {
-            display: flex;
-            gap: var(--spacing-md);
-            flex-wrap: wrap;
-        }
-        
-        .image-upload-container {
-            margin-bottom: var(--spacing-lg);
-        }
-        
-        .image-preview {
-            width: 150px;
-            height: 150px;
-            border-radius: var(--radius-md);
-            border: 2px dashed var(--color-border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            margin-bottom: var(--spacing-md);
-            background: var(--color-accent-overlay);
-        }
-        
-        .image-preview img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
-        
-        .skill-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: var(--spacing-xs);
-            padding: var(--spacing-xs) var(--spacing-md);
-            background: var(--color-accent);
-            color: var(--color-text);
-            border-radius: var(--radius-full);
-            font-size: var(--font-size-sm);
-            margin: var(--spacing-xs);
-        }
-        
-        .skill-tag-remove {
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        /* Taskbar */
-        .taskbar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            border-top: 1px solid var(--color-border);
-            box-shadow: 0 -4px 12px var(--color-shadow);
-            z-index: var(--z-taskbar);
-            padding: var(--spacing-sm) 0;
-        }
-        
-        .taskbar-container {
-            max-width: 600px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-        }
-        
-        .taskbar-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: var(--spacing-xs);
-            padding: var(--spacing-sm) var(--spacing-md);
-            background: transparent;
-            border: none;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            text-decoration: none;
-            color: var(--color-text);
-            min-width: 80px;
-        }
-        
-        .taskbar-btn:hover,
-        .taskbar-btn.active {
-            background: var(--color-accent-overlay);
-        }
-        
-        .taskbar-icon {
-            width: 24px;
-            height: 24px;
-            fill: var(--color-text);
-        }
-        
-        .taskbar-label {
-            font-size: var(--font-size-sm);
-            font-weight: 500;
-        }
-        
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--color-border);
-            border-top-color: var(--color-accent);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .panda-container {
-                font-size: 14px;
-                height: 30em;
-            }
-            
-            .panda-form {
-                padding: 1.2em 1.5em;
-            }
-            
-            body {
-                background: white;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .panda-container {
-                font-size: 12px;
-            }
-            .panda-hidden {
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
+    }
 
-        }
-
-        .panda-hidden {
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
 
     </style>
 </head>
