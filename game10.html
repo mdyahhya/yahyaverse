@@ -907,6 +907,12 @@
                 <button class="tab" data-tab="groups">Groups</button>
                 <button class="tab" data-tab="contacts">Contacts</button>
             </div>
+            <div id="create-group-btn-container" style="padding: 8px 16px; display: none; border-bottom: 1px solid var(--border-color);">
+    <button id="show-create-group-btn" style="width: 100%; padding: 10px; background: var(--primary-color); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">
+        + Create New Group
+    </button>
+</div>
+
 
             <div class="chat-list" id="chat-list">
                 <div class="empty-state">
@@ -1017,6 +1023,11 @@
                         detectSessionInUrl: true,
                         storage: window.localStorage,
                         storageKey: 'safechat-auth-token'
+                    },
+                    realtime: {
+                        params: {
+                            eventsPerSecond: 10 // Optimized for instant messaging
+                        }
                     }
                 });
                 return true;
@@ -1035,9 +1046,11 @@
             messages: {},
             contacts: [],
             contactRequests: [],
+            chatParticipants: {}, // Store DM participant info
             db: null,
             realtimeChannels: {},
-            currentTab: 'chats'
+            currentTab: 'chats',
+            messageRefreshInterval: null
         };
 
         // 20 Pre-defined avatar URLs
@@ -1187,7 +1200,7 @@
             }, 500);
         });
 
-                document.getElementById('signup-form').addEventListener('submit', async (e) => {
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('signup-btn');
             btn.disabled = true;
@@ -1199,10 +1212,8 @@
                 const email = document.getElementById('signup-email').value.trim();
                 const password = document.getElementById('signup-password').value;
                 
-                // Generate encryption keys
                 const keyPair = generateKeyPair();
                 
-                // Sign up with Supabase Auth (NO EMAIL VERIFICATION REQUIRED)
                 const { data: authData, error: authError } = await supabase.auth.signUp({
                     email,
                     password,
@@ -1217,12 +1228,10 @@
                 if (authError) throw authError;
                 if (!authData.user) throw new Error('Signup failed');
                 
-                // Check if user already exists (email confirmation disabled behavior)
                 if (authData.user.identities && authData.user.identities.length === 0) {
                     throw new Error('An account with this email already exists');
                 }
                 
-                // Create profile
                 const { error: profileError } = await supabase
                     .from('profiles')
                     .insert({
@@ -1233,24 +1242,20 @@
                     });
                 
                 if (profileError) {
-                    // If username already taken
                     if (profileError.code === '23505') {
                         throw new Error('Username already taken');
                     }
                     throw profileError;
                 }
                 
-                // Save keys locally
                 await saveKeyPair(authData.user.id, keyPair);
                 
-                // Log login history
                 APP_STATE.currentUser = authData.user;
                 APP_STATE.keyPair = keyPair;
                 await logLoginHistory();
                 
                 showNotification('Account created! Complete your profile', 'success');
                 
-                // Show profile setup
                 populateAvatarGrid();
                 document.getElementById('signup-screen').classList.remove('active');
                 document.getElementById('profile-modal').classList.add('active');
@@ -1264,8 +1269,7 @@
             }
         });
 
-
-                document.getElementById('login-form').addEventListener('submit', async (e) => {
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('login-btn');
             btn.disabled = true;
@@ -1275,14 +1279,12 @@
                 const emailInput = document.getElementById('login-email').value.trim();
                 const password = document.getElementById('login-password').value;
                 
-                // Always use email for login (no username lookup needed)
                 const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
                     email: emailInput,
                     password
                 });
                 
                 if (authError) {
-                    // Better error messages
                     if (authError.message.includes('Invalid login credentials')) {
                         throw new Error('Invalid email or password');
                     }
@@ -1295,14 +1297,12 @@
                 
                 APP_STATE.currentUser = authData.user;
                 
-                // Load encryption keys
                 const keyPair = await loadKeyPair(authData.user.id);
                 if (!keyPair) {
                     throw new Error('Account setup incomplete. Please contact support.');
                 }
                 APP_STATE.keyPair = keyPair;
                 
-                // Log login history
                 await logLoginHistory();
                 
                 showNotification('Welcome back!', 'success');
@@ -1369,13 +1369,9 @@
 
         // ==================== APP LOADING ====================
         async function loadApp() {
-            // Hide auth screens
             document.querySelectorAll('.auth-screen').forEach(s => s.classList.remove('active'));
-            
-            // Show app
             document.getElementById('app-container').classList.add('active');
             
-            // Load user profile
             const { data: profile } = await supabase
                 .from('profiles')
                 .select('*')
@@ -1384,16 +1380,9 @@
             
             APP_STATE.currentUser.profile = profile;
             
-            // Load chats
             await loadChats();
-            
-            // Load contacts
             await loadContacts();
-            
-            // Setup realtime subscriptions
             setupRealtimeSubscriptions();
-            
-            // Update presence
             updatePresence(true);
         }
 
@@ -1408,10 +1397,43 @@
                     .eq('user_id', APP_STATE.currentUser.id);
                 
                 APP_STATE.chats = chatMembers ? chatMembers.map(cm => cm.chats) : [];
+                
+                // Load participant info for DMs
+                for (const chat of APP_STATE.chats) {
+                    if (chat.type === 'dm') {
+                        await loadDMParticipant(chat.id);
+                    }
+                }
+                
                 renderChatList();
                 
             } catch (error) {
                 console.error('Load chats error:', error);
+            }
+        }
+
+        // Load the other participant's name for DM chats
+        async function loadDMParticipant(chatId) {
+            try {
+                const { data: members } = await supabase
+                    .from('chat_members')
+                    .select(`
+                        user_id,
+                        profiles (
+                            id,
+                            display_name,
+                            username,
+                            avatar_url
+                        )
+                    `)
+                    .eq('chat_id', chatId)
+                    .neq('user_id', APP_STATE.currentUser.id);
+                
+                if (members && members.length > 0) {
+                    APP_STATE.chatParticipants[chatId] = members[0].profiles;
+                }
+            } catch (error) {
+                console.error('Load DM participant error:', error);
             }
         }
 
@@ -1427,7 +1449,6 @@
                 
                 APP_STATE.contacts = contacts || [];
                 
-                // Load contact requests
                 const { data: requests } = await supabase
                     .from('contact_requests')
                     .select(`
@@ -1447,6 +1468,14 @@
 
         function renderChatList() {
             const chatList = document.getElementById('chat-list');
+            const createGroupBtn = document.getElementById('create-group-btn-container');
+            
+            // Show create group button only on groups tab
+            if (APP_STATE.currentTab === 'groups') {
+                createGroupBtn.style.display = 'block';
+            } else {
+                createGroupBtn.style.display = 'none';
+            }
             
             if (APP_STATE.currentTab === 'chats') {
                 const dmChats = APP_STATE.chats.filter(c => c.type === 'dm');
@@ -1463,20 +1492,26 @@
                     return;
                 }
                 
-                chatList.innerHTML = dmChats.map(chat => `
-                    <div class="chat-item" data-chat-id="${chat.id}">
-                        <div class="chat-avatar">
-                            ${chat.avatar_url ? `<img src="${chat.avatar_url}" alt="${chat.title || 'Chat'}">` : '👤'}
+                chatList.innerHTML = dmChats.map(chat => {
+                    const participant = APP_STATE.chatParticipants[chat.id];
+                    const chatName = participant ? participant.display_name : 'Loading...';
+                    const chatAvatar = participant?.avatar_url;
+                    
+                    return `
+                        <div class="chat-item" data-chat-id="${chat.id}">
+                            <div class="chat-avatar">
+                                ${chatAvatar ? `<img src="${chatAvatar}" alt="${chatName}">` : '👤'}
+                            </div>
+                            <div class="chat-info">
+                                <div class="chat-name">${chatName}</div>
+                                <div class="chat-last-msg">Tap to open chat</div>
+                            </div>
+                            <div class="chat-meta">
+                                <div class="chat-time">${dayjs(chat.created_at).format('HH:mm')}</div>
+                            </div>
                         </div>
-                        <div class="chat-info">
-                            <div class="chat-name">${chat.title || 'Direct Message'}</div>
-                            <div class="chat-last-msg">Tap to open chat</div>
-                        </div>
-                        <div class="chat-meta">
-                            <div class="chat-time">${dayjs(chat.created_at).format('HH:mm')}</div>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             } else if (APP_STATE.currentTab === 'groups') {
                 const groupChats = APP_STATE.chats.filter(c => c.type === 'group');
                 if (groupChats.length === 0) {
@@ -1522,7 +1557,6 @@
                 
                 let html = '';
                 
-                // Show pending requests
                 if (APP_STATE.contactRequests.length > 0) {
                     html += '<div style="padding: 12px 16px; background: var(--active-bg); font-weight: 600; font-size: 14px;">Pending Requests</div>';
                     APP_STATE.contactRequests.forEach(req => {
@@ -1549,7 +1583,6 @@
                     });
                 }
                 
-                // Show contacts
                 if (APP_STATE.contacts.length > 0) {
                     html += '<div style="padding: 12px 16px; background: var(--active-bg); font-weight: 600; font-size: 14px; margin-top: 8px;">My Contacts</div>';
                     APP_STATE.contacts.forEach(contact => {
@@ -1571,7 +1604,6 @@
                 chatList.innerHTML = html;
             }
             
-            // Add click listeners for chat items
             chatList.querySelectorAll('.chat-item[data-chat-id]').forEach(item => {
                 item.addEventListener('click', () => {
                     const chatId = item.dataset.chatId;
@@ -1590,10 +1622,8 @@
                 
                 if (error) throw error;
                 
-                // Get request details
                 const request = APP_STATE.contactRequests.find(r => r.id === requestId);
                 if (request) {
-                    // Add to contacts for both users
                     await supabase.from('contacts').insert([
                         { owner_id: request.sender_id, contact_id: request.receiver_id },
                         { owner_id: request.receiver_id, contact_id: request.sender_id }
@@ -1631,7 +1661,6 @@
 
         window.startChatWithContact = async function(contactId) {
             try {
-                // Create or get DM chat
                 const { data, error } = await supabase.rpc('create_dm_chat', {
                     user1_id: APP_STATE.currentUser.id,
                     user2_id: contactId
@@ -1729,6 +1758,62 @@
             }
         };
 
+        // Create group functionality
+        document.getElementById('show-create-group-btn').addEventListener('click', () => {
+            document.getElementById('new-group-modal').classList.add('active');
+            populateAvatarGrid();
+        });
+
+        document.getElementById('create-group-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const groupName = document.getElementById('group-name').value.trim();
+            const selectedAvatar = document.querySelector('#group-avatar-grid .avatar-option.selected');
+            
+            if (!selectedAvatar) {
+                showNotification('Please select a group avatar', 'error');
+                return;
+            }
+            
+            try {
+                // Create group chat (group_code will be auto-generated by trigger)
+                const { data: newGroup, error: groupError } = await supabase
+                    .from('chats')
+                    .insert({
+                        type: 'group',
+                        title: groupName,
+                        avatar_url: selectedAvatar.dataset.url,
+                        created_by: APP_STATE.currentUser.id
+                    })
+                    .select()
+                    .single();
+                
+                if (groupError) throw groupError;
+                
+                // Add creator as owner
+                const { error: memberError } = await supabase
+                    .from('chat_members')
+                    .insert({
+                        chat_id: newGroup.id,
+                        user_id: APP_STATE.currentUser.id,
+                        role: 'owner'
+                    });
+                
+                if (memberError) throw memberError;
+                
+                showNotification(`Group created! Code: ${newGroup.group_code}`, 'success');
+                document.getElementById('new-group-modal').classList.remove('active');
+                document.getElementById('group-name').value = '';
+                
+                await loadChats();
+                APP_STATE.currentTab = 'groups';
+                renderChatList();
+                
+            } catch (error) {
+                console.error('Create group error:', error);
+                showNotification('Failed to create group', 'error');
+            }
+        });
+
         // Join group functionality
         document.getElementById('join-group-btn').addEventListener('click', async () => {
             const code = document.getElementById('join-group-code').value.trim().toUpperCase();
@@ -1739,7 +1824,6 @@
             }
             
             try {
-                // Find group by code
                 const { data: group, error: groupError } = await supabase
                     .from('chats')
                     .select('*')
@@ -1752,7 +1836,6 @@
                     return;
                 }
                 
-                // Send join request
                 const { error: requestError } = await supabase
                     .from('group_requests')
                     .insert({
@@ -1785,20 +1868,34 @@
             
             APP_STATE.currentChat = chat;
             
-            // Load messages
+            // Stop previous refresh interval
+            if (APP_STATE.messageRefreshInterval) {
+                clearInterval(APP_STATE.messageRefreshInterval);
+            }
+            
             await loadMessages(chatId);
             
-            // Update UI
+            // Get chat name
+            let chatName, chatAvatar;
+            if (chat.type === 'dm') {
+                const participant = APP_STATE.chatParticipants[chatId];
+                chatName = participant ? participant.display_name : 'Chat';
+                chatAvatar = participant?.avatar_url;
+            } else {
+                chatName = chat.title;
+                chatAvatar = chat.avatar_url;
+            }
+            
             const chatArea = document.getElementById('chat-area');
             chatArea.classList.add('active');
             chatArea.innerHTML = `
                 <div class="chat-header">
                     <div class="chat-avatar">
-                        ${chat.avatar_url ? `<img src="${chat.avatar_url}" alt="${chat.title}">` : 
-                          (chat.title ? chat.title.charAt(0).toUpperCase() : '👤')}
+                        ${chatAvatar ? `<img src="${chatAvatar}" alt="${chatName}">` : 
+                          (chat.type === 'group' ? '👥' : '👤')}
                     </div>
                     <div class="chat-header-info">
-                        <div class="chat-header-name">${chat.title || 'Direct Message'}</div>
+                        <div class="chat-header-name">${chatName}</div>
                         <div class="chat-header-status">${chat.type === 'group' ? `Code: ${chat.group_code}` : 'Online'}</div>
                     </div>
                 </div>
@@ -1813,25 +1910,26 @@
                 </div>
             `;
             
-            // Mobile: hide sidebar
             if (window.innerWidth <= 768) {
                 document.getElementById('sidebar').classList.add('chat-open');
             }
             
-            // Render messages
             renderMessages();
             
-            // Setup send button
             document.getElementById('send-btn').addEventListener('click', sendMessage);
             document.getElementById('message-input').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') sendMessage();
             });
             
-            // Subscribe to chat channel
             subscribeToChat(chatId);
+            
+            // Refresh messages every 1 second for instant updates
+            APP_STATE.messageRefreshInterval = setInterval(async () => {
+                await loadMessages(chatId, true); // Silent refresh
+            }, 1000);
         }
 
-        async function loadMessages(chatId) {
+        async function loadMessages(chatId, silent = false) {
             try {
                 const { data: messages } = await supabase
                     .from('messages')
@@ -1840,7 +1938,15 @@
                     .order('created_at', { ascending: true })
                     .limit(100);
                 
+                const oldCount = APP_STATE.messages[chatId]?.length || 0;
                 APP_STATE.messages[chatId] = messages || [];
+                
+                // Only re-render if new messages or not silent
+                if (!silent || messages.length !== oldCount) {
+                    if (APP_STATE.currentChat && APP_STATE.currentChat.id === chatId) {
+                        renderMessages();
+                    }
+                }
                 
             } catch (error) {
                 console.error('Load messages error:', error);
@@ -1849,6 +1955,8 @@
 
         function renderMessages() {
             const messagesContainer = document.getElementById('chat-messages');
+            if (!messagesContainer) return;
+            
             const messages = APP_STATE.messages[APP_STATE.currentChat.id] || [];
             
             if (messages.length === 0) {
@@ -1859,6 +1967,8 @@
                 `;
                 return;
             }
+            
+            const scrollAtBottom = messagesContainer.scrollHeight - messagesContainer.scrollTop === messagesContainer.clientHeight;
             
             messagesContainer.innerHTML = messages.map(msg => {
                 const isOutgoing = msg.sender_id === APP_STATE.currentUser.id;
@@ -1878,8 +1988,10 @@
                 `;
             }).join('');
             
-            // Scroll to bottom
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            // Auto-scroll to bottom only if already at bottom
+            if (scrollAtBottom || messages.length === 1) {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
         }
 
         async function sendMessage() {
@@ -1900,6 +2012,9 @@
                 if (error) throw error;
                 
                 input.value = '';
+                
+                // Immediately reload messages
+                await loadMessages(APP_STATE.currentChat.id);
                 
             } catch (error) {
                 console.error('Send message error:', error);
@@ -1950,7 +2065,11 @@
                 APP_STATE.messages[message.chat_id] = [];
             }
             
-            APP_STATE.messages[message.chat_id].push(message);
+            // Check if message already exists (avoid duplicates)
+            const exists = APP_STATE.messages[message.chat_id].find(m => m.id === message.id);
+            if (!exists) {
+                APP_STATE.messages[message.chat_id].push(message);
+            }
             
             if (APP_STATE.currentChat && APP_STATE.currentChat.id === message.chat_id) {
                 renderMessages();
@@ -1988,7 +2107,6 @@
             document.getElementById('new-chat-modal').classList.add('active');
         });
 
-        // Tab switching
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -2048,14 +2166,12 @@
             installBtn.style.display = 'none';
         });
 
-        // Register Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', async () => {
                 try {
                     const registration = await navigator.serviceWorker.register('/sw.js');
                     console.log('SW registered:', registration);
                     
-                    // Check for updates
                     registration.addEventListener('updatefound', () => {
                         const newWorker = registration.installing;
                         newWorker.addEventListener('statechange', () => {
@@ -2066,7 +2182,6 @@
                         });
                     });
                     
-                    // Request notification permission
                     if ('Notification' in window && Notification.permission === 'default') {
                         const permission = await Notification.requestPermission();
                         if (permission === 'granted') {
@@ -2081,7 +2196,6 @@
             });
         }
 
-        // Schedule daily notifications
         function scheduleNotifications(registration) {
             if ('periodicSync' in registration) {
                 registration.periodicSync.register('check-scheduled-notifications', {
@@ -2111,7 +2225,6 @@
             
             await initIndexedDB();
             
-            // Check for existing session
             const { data: { session }, error } = await supabase.auth.getSession();
             
             if (session && session.user) {
@@ -2128,7 +2241,6 @@
                 }
             }
             
-            // Listen for auth state changes
             supabase.auth.onAuthStateChange(async (event, session) => {
                 console.log('Auth state changed:', event);
                 
