@@ -901,6 +901,12 @@
             <div class="search-bar">
                 <input type="text" placeholder="Search..." id="search-input">
             </div>
+            <!-- Group Requests Badge -->
+<div id="group-requests-badge" style="padding: 8px 16px; background: var(--teal-light); color: white; cursor: pointer; display: none; align-items: center; justify-content: space-between;">
+    <span>You have pending group join requests</span>
+    <span id="group-req-count" style="background: white; color: var(--teal-light); padding: 2px 8px; border-radius: 10px; font-weight: 600; font-size: 12px;">0</span>
+</div>
+
 
             <div class="tabs">
                 <button class="tab active" data-tab="chats">Chats</button>
@@ -1000,6 +1006,19 @@
         </div>
     </div>
 
+
+    <!-- Group Requests Modal -->
+<div class="modal" id="group-requests-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Group Join Requests</h3>
+            <button class="close-modal">&times;</button>
+        </div>
+        <div id="group-requests-list" style="max-height: 400px; overflow-y: auto;"></div>
+    </div>
+</div>
+
+
     <!-- CDN Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/tweetnacl@1.0.3/nacl-fast.min.js"></script>
@@ -1038,20 +1057,22 @@
         }
 
         // ==================== GLOBAL STATE ====================
-        const APP_STATE = {
-            currentUser: null,
-            currentChat: null,
-            keyPair: null,
-            chats: [],
-            messages: {},
-            contacts: [],
-            contactRequests: [],
-            chatParticipants: {}, // Store DM participant info
-            db: null,
-            realtimeChannels: {},
-            currentTab: 'chats',
-            messageRefreshInterval: null
-        };
+       const APP_STATE = {
+    currentUser: null,
+    currentChat: null,
+    keyPair: null,
+    chats: [],
+    messages: {},
+    contacts: [],
+    contactRequests: [],
+    groupRequests: [], // ADD THIS LINE
+    chatParticipants: {},
+    db: null,
+    realtimeChannels: {},
+    currentTab: 'chats',
+    messageRefreshInterval: null
+};
+
 
         // 20 Pre-defined avatar URLs
         const AVATAR_URLS = [
@@ -1369,22 +1390,27 @@
 
         // ==================== APP LOADING ====================
         async function loadApp() {
-            document.querySelectorAll('.auth-screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('app-container').classList.add('active');
-            
-            const { data: profile } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', APP_STATE.currentUser.id)
-                .single();
-            
-            APP_STATE.currentUser.profile = profile;
-            
-            await loadChats();
-            await loadContacts();
-            setupRealtimeSubscriptions();
-            updatePresence(true);
-        }
+    document.querySelectorAll('.auth-screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('app-container').classList.add('active');
+    
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', APP_STATE.currentUser.id)
+        .single();
+    
+    APP_STATE.currentUser.profile = profile;
+    
+    await loadChats();
+    await loadContacts();
+    await loadGroupRequests(); // ADD THIS LINE
+    setupRealtimeSubscriptions();
+    updatePresence(true);
+}
+// Group requests badge click handler
+document.getElementById('group-requests-badge').addEventListener('click', () => {
+    showGroupRequests();
+});
 
         async function loadChats() {
             try {
@@ -1465,6 +1491,60 @@
                 console.error('Load contacts error:', error);
             }
         }
+
+        // Load group requests for groups where user is admin/owner
+async function loadGroupRequests() {
+    try {
+        // Get groups where user is admin or owner
+        const { data: adminChats } = await supabase
+            .from('chat_members')
+            .select('chat_id, role')
+            .eq('user_id', APP_STATE.currentUser.id)
+            .in('role', ['owner', 'admin']);
+        
+        if (!adminChats || adminChats.length === 0) {
+            document.getElementById('group-requests-badge').style.display = 'none';
+            return;
+        }
+        
+        const adminChatIds = adminChats.map(c => c.chat_id);
+        
+        // Get pending requests for these groups
+        const { data: requests } = await supabase
+            .from('group_requests')
+            .select(`
+                *,
+                chats (
+                    id,
+                    title,
+                    avatar_url
+                ),
+                profiles (
+                    id,
+                    username,
+                    display_name,
+                    avatar_url
+                )
+            `)
+            .in('group_id', adminChatIds)
+            .eq('status', 'pending');
+        
+        APP_STATE.groupRequests = requests || [];
+        
+        // Show/hide badge
+        const badge = document.getElementById('group-requests-badge');
+        if (requests && requests.length > 0) {
+            badge.style.display = 'flex';
+            document.getElementById('group-req-count').textContent = requests.length;
+        } else {
+            badge.style.display = 'none';
+        }
+        
+    } catch (error) {
+        console.error('Load group requests error:', error);
+    }
+}
+
 
         function renderChatList() {
             const chatList = document.getElementById('chat-list');
@@ -1757,6 +1837,91 @@
                 showNotification('Failed to send request', 'error');
             }
         };
+
+        // Show group requests modal
+window.showGroupRequests = function() {
+    const modal = document.getElementById('group-requests-modal');
+    const listEl = document.getElementById('group-requests-list');
+    
+    if (APP_STATE.groupRequests.length === 0) {
+        listEl.innerHTML = '<p style="padding: 20px; text-align: center; color: var(--text-secondary);">No pending requests</p>';
+    } else {
+        listEl.innerHTML = APP_STATE.groupRequests.map(req => `
+            <div class="chat-item" style="border-bottom: 1px solid var(--border-color); padding: 16px;">
+                <div class="chat-avatar">
+                    ${req.profiles.avatar_url ? `<img src="${req.profiles.avatar_url}" alt="${req.profiles.display_name}">` : req.profiles.display_name.charAt(0).toUpperCase()}
+                </div>
+                <div class="chat-info">
+                    <div class="chat-name">${req.profiles.display_name}</div>
+                    <div class="chat-last-msg">@${req.profiles.username} wants to join "${req.chats.title}"</div>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button onclick="approveGroupRequest('${req.id}', '${req.group_id}', '${req.user_id}')" style="background: var(--teal-light); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600;">Approve</button>
+                    <button onclick="rejectGroupRequest('${req.id}')" style="background: var(--error-color); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600;">Reject</button>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    modal.classList.add('active');
+};
+
+// Approve group join request
+window.approveGroupRequest = async function(requestId, groupId, userId) {
+    try {
+        // Update request status
+        const { error: updateError } = await supabase
+            .from('group_requests')
+            .update({ status: 'approved' })
+            .eq('id', requestId);
+        
+        if (updateError) throw updateError;
+        
+        // Add user to group
+        const { error: memberError } = await supabase
+            .from('chat_members')
+            .insert({
+                chat_id: groupId,
+                user_id: userId,
+                role: 'member'
+            });
+        
+        if (memberError) throw memberError;
+        
+        showNotification('User added to group!', 'success');
+        
+        // Refresh requests
+        await loadGroupRequests();
+        showGroupRequests();
+        
+    } catch (error) {
+        console.error('Approve request error:', error);
+        showNotification('Failed to approve request', 'error');
+    }
+};
+
+// Reject group join request
+window.rejectGroupRequest = async function(requestId) {
+    try {
+        const { error } = await supabase
+            .from('group_requests')
+            .update({ status: 'rejected' })
+            .eq('id', requestId);
+        
+        if (error) throw error;
+        
+        showNotification('Request rejected', 'success');
+        
+        // Refresh requests
+        await loadGroupRequests();
+        showGroupRequests();
+        
+    } catch (error) {
+        console.error('Reject request error:', error);
+        showNotification('Failed to reject request', 'error');
+    }
+};
+
 
         // Create group functionality
         document.getElementById('show-create-group-btn').addEventListener('click', () => {
