@@ -11,6 +11,13 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Firebase SDK -->
+<!-- <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"></script> -->
+
+
     
     <title>SafeChat - Secure Messaging</title>
     
@@ -823,7 +830,7 @@
     <div class="auth-screen active" id="signup-screen">
         <div class="auth-card">
             <div class="auth-logo">
-                <h1>🔒 SafeChat</h1>
+                <h1>🔒 SafeChats by Yahya</h1>
                 <p>End-to-end encrypted messaging</p>
             </div>
             <form id="signup-form">
@@ -882,7 +889,7 @@
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h2>SafeChat</h2>
+                <h2>SafeChats by Yahya</h2>
                 <div class="header-actions">
                     <button id="new-chat-btn" title="New Chat">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1055,6 +1062,122 @@
                 return false;
             }
         }
+
+        // ==================== NATIVE WEB PUSH ====================
+
+// Convert VAPID key from base64 to Uint8Array
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+    
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
+
+// Request notification permission and subscribe
+async function requestNotificationPermission() {
+    try {
+        console.log('Requesting notification permission...');
+        
+        // Check if service worker is supported
+        if (!('serviceWorker' in navigator)) {
+            console.error('Service workers not supported');
+            return null;
+        }
+        
+        // Check if Push API is supported
+        if (!('PushManager' in window)) {
+            console.error('Push notifications not supported');
+            return null;
+        }
+        
+        // Request permission
+        const permission = await Notification.requestPermission();
+        
+        if (permission !== 'granted') {
+            console.log('Notification permission denied');
+            return null;
+        }
+        
+        console.log('✅ Notification permission granted');
+        
+        // Wait for service worker to be ready
+        const registration = await navigator.serviceWorker.ready;
+        
+        // Your PUBLIC VAPID key (we'll generate this in Part 3)
+        const applicationServerKey = urlBase64ToUint8Array(
+            'BMwc1T2JQ2CwiK-AfIevE8Y0Zi2gPqnbVkawzAnkHbPAUwMId85EEVZoETk5w0R3BPirwUdQp3-D759EJ9WegMI'
+        );
+        
+        // Subscribe to push notifications
+        const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: applicationServerKey
+        });
+        
+        console.log('Push subscription:', subscription);
+        
+        // Save subscription to Supabase
+        await savePushSubscription(subscription);
+        
+        return subscription;
+        
+    } catch (error) {
+        console.error('Error requesting notification permission:', error);
+        return null;
+    }
+}
+
+// Save push subscription to Supabase
+async function savePushSubscription(subscription) {
+    try {
+        const { error } = await supabase
+            .from('profiles')
+            .update({ 
+                push_subscription: JSON.parse(JSON.stringify(subscription))
+            })
+            .eq('id', APP_STATE.currentUser.id);
+        
+        if (error) throw error;
+        
+        console.log('✅ Push subscription saved to database');
+        
+    } catch (error) {
+        console.error('Error saving push subscription:', error);
+    }
+}
+
+// Unsubscribe from push notifications
+async function unsubscribePush() {
+    try {
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.getSubscription();
+        
+        if (subscription) {
+            await subscription.unsubscribe();
+            console.log('Unsubscribed from push notifications');
+        }
+        
+        // Remove from database
+        await supabase
+            .from('profiles')
+            .update({ push_subscription: null })
+            .eq('id', APP_STATE.currentUser.id);
+            
+    } catch (error) {
+        console.error('Error unsubscribing:', error);
+    }
+}
+
+
+
 
         // ==================== GLOBAL STATE ====================
        const APP_STATE = {
@@ -1403,10 +1526,16 @@
     
     await loadChats();
     await loadContacts();
-    await loadGroupRequests(); // ADD THIS LINE
+    await loadGroupRequests();
     setupRealtimeSubscriptions();
     updatePresence(true);
+    
+    // ✅ ADD THIS: Request notification permission after 2 seconds
+    setTimeout(() => {
+        requestNotificationPermission();
+    }, 2000);
 }
+
 // Group requests badge click handler
 document.getElementById('group-requests-badge').addEventListener('click', () => {
     showGroupRequests();
@@ -2159,33 +2288,97 @@ window.rejectGroupRequest = async function(requestId) {
             }
         }
 
-        async function sendMessage() {
-            const input = document.getElementById('message-input');
-            const text = input.value.trim();
-            
-            if (!text || !APP_STATE.currentChat) return;
-            
-            try {
-                const { error } = await supabase
-                    .from('messages')
-                    .insert({
-                        chat_id: APP_STATE.currentChat.id,
-                        sender_id: APP_STATE.currentUser.id,
-                        body_cipher: 'encrypted:' + text
-                    });
-                
-                if (error) throw error;
-                
-                input.value = '';
-                
-                // Immediately reload messages
-                await loadMessages(APP_STATE.currentChat.id);
-                
-            } catch (error) {
-                console.error('Send message error:', error);
-                showNotification('Failed to send message', 'error');
-            }
+       async function sendMessage() {
+    const input = document.getElementById('message-input');
+    const text = input.value.trim();
+    
+    if (!text || !APP_STATE.currentChat) return;
+    
+    try {
+        const { error } = await supabase
+            .from('messages')
+            .insert({
+                chat_id: APP_STATE.currentChat.id,
+                sender_id: APP_STATE.currentUser.id,
+                body_cipher: 'encrypted:' + text
+            });
+        
+        if (error) throw error;
+        
+        input.value = '';
+        await loadMessages(APP_STATE.currentChat.id);
+        
+        // ✅ Send push notification
+        await sendPushNotification(text);
+        
+    } catch (error) {
+        console.error('Send message error:', error);
+        showNotification('Failed to send message', 'error');
+    }
+}
+
+// ✅ NEW FUNCTION: Send push via Vercel
+// Send push notification via Netlify Function
+async function sendPushNotification(messageText) {
+    try {
+        // Get chat members (excluding sender)
+        const { data: members } = await supabase
+            .from('chat_members')
+            .select('user_id, profiles!inner(push_subscription, display_name)')
+            .eq('chat_id', APP_STATE.currentChat.id)
+            .neq('user_id', APP_STATE.currentUser.id);
+        
+        if (!members || members.length === 0) {
+            console.log('No members to notify');
+            return;
         }
+        
+        // Extract push subscriptions
+        const recipients = members
+            .map(m => m.profiles.push_subscription)
+            .filter(sub => sub !== null);
+        
+        if (recipients.length === 0) {
+            console.log('No recipients with push subscriptions');
+            return;
+        }
+        
+        console.log(`Sending push to ${recipients.length} recipient(s)`);
+        
+        // Call Netlify Function (relative path works since it's same site!)
+        const response = await fetch('/.netlify/functions/sendPushNotification', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                chatId: APP_STATE.currentChat.id,
+                senderId: APP_STATE.currentUser.id,
+                senderName: APP_STATE.currentUser.profile.display_name,
+                messageText: messageText,
+                recipients: recipients
+            })
+        });
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Push notification failed:', errorText);
+        } else {
+            const result = await response.json();
+            console.log('✅ Push notification sent:', result);
+        }
+        
+    } catch (error) {
+        console.error('Send notification error:', error);
+        // Don't show error to user - messaging still works
+    }
+}
+
+
+
+
+        // Send push notification to chat members
+
 
         // ==================== REALTIME SUBSCRIPTIONS ====================
         function setupRealtimeSubscriptions() {
@@ -2383,44 +2576,59 @@ window.rejectGroupRequest = async function(requestId) {
 
         // ==================== INITIALIZATION ====================
         async function init() {
-            if (!initializeSupabase()) {
-                showNotification('Failed to initialize app', 'error');
-                return;
-            }
+    // Initialize Supabase
+    if (!initializeSupabase()) {
+        showNotification('Failed to initialize app', 'error');
+        return;
+    }
+    
+   
+    
+    await initIndexedDB();
+    
+    const { data: { session }, error } = await supabase.auth.getSession();
+    
+    if (session && session.user) {
+        console.log('Existing session found, logging in...');
+        APP_STATE.currentUser = session.user;
+        const keyPair = await loadKeyPair(session.user.id);
+        
+        if (keyPair) {
+            APP_STATE.keyPair = keyPair;
+            await loadApp();
             
-            await initIndexedDB();
-            
-            const { data: { session }, error } = await supabase.auth.getSession();
-            
-            if (session && session.user) {
-                console.log('Existing session found, logging in...');
-                APP_STATE.currentUser = session.user;
-                const keyPair = await loadKeyPair(session.user.id);
-                
-                if (keyPair) {
-                    APP_STATE.keyPair = keyPair;
-                    await loadApp();
-                } else {
-                    console.log('Keys not found, please login again');
-                    await supabase.auth.signOut();
-                }
-            }
-            
-            supabase.auth.onAuthStateChange(async (event, session) => {
-                console.log('Auth state changed:', event);
-                
-                if (event === 'SIGNED_IN' && session) {
-                    APP_STATE.currentUser = session.user;
-                    const keyPair = await loadKeyPair(session.user.id);
-                    if (keyPair) {
-                        APP_STATE.keyPair = keyPair;
-                        await loadApp();
-                    }
-                } else if (event === 'SIGNED_OUT') {
-                    window.location.reload();
-                }
-            });
+            // Request notification permission after login
+            setTimeout(() => {
+                requestNotificationPermission();
+            }, 2000); 
+            // Wait 2 seconds after login
+        } else {
+            console.log('Keys not found, please login again');
+            await supabase.auth.signOut();
         }
+    }
+    
+    supabase.auth.onAuthStateChange(async (event, session) => {
+        console.log('Auth state changed:', event);
+        
+        if (event === 'SIGNED_IN' && session) {
+            APP_STATE.currentUser = session.user;
+            const keyPair = await loadKeyPair(session.user.id);
+            if (keyPair) {
+                APP_STATE.keyPair = keyPair;
+                await loadApp();
+                
+                // Request notification permission
+                setTimeout(() => {
+                    requestNotificationPermission();
+                }, 2000);
+            }
+        } else if (event === 'SIGNED_OUT') {
+            window.location.reload();
+        }
+    });
+}
+
 
         init();
     </script>
