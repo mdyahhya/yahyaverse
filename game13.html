@@ -2,83 +2,26 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Learn Python - Interactive Book</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Mobile Book Library</title>
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 20px 10px;
-}
-
-.book-header {
-  text-align: center;
-  color: white;
-  margin-bottom: 20px;
-}
-
-.book-header h1 {
-  font-size: 28px;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-  margin-bottom: 10px;
-}
-
-.controls {
-  margin-bottom: 30px;
-  text-align: center;
-}
-
-.controls button {
-  background: white;
-  color: #667eea;
-  border: none;
-  padding: 12px 28px;
-  border-radius: 25px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-  margin: 0 8px;
-  transition: all 0.3s;
-}
-
-.controls button:active {
-  transform: scale(0.95);
-}
-
-.controls button:hover {
-  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-}
-
 .book {
-  width: 95vw;
-  max-width: 600px;
-  height: 75vh;
-  max-height: 700px;
-  min-height: 500px;
+  width: 1000px;
+  height: 640px;
   border: 2px solid #dddddd;
   -webkit-perspective: 1400px;
-  -moz-perspective: 1400px;
-  perspective: 1400px;
+     -moz-perspective: 1400px;
+          perspective: 1400px;
+  /*
+  -webkit-transform: perspective(1400);
+     -moz-transform: perspective(1400);
+          transform: perspective(1400);*/
+
   -webkit-transform-style: preserve-3d;
-  -moz-transform-style: preserve-3d;
-  transform-style: preserve-3d;
-  font-family: 'Georgia', 'Times New Roman', serif;
-  margin: 0 auto;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-  border-radius: 8px;
-  background: #f9f9f9;
+     -moz-transform-style: preserve-3d;
+          transform-style: preserve-3d;
+  font-family: Arial;
+  margin: 0px auto;
 }
 
 .page {
@@ -87,563 +30,239 @@ body {
   position: absolute;
   transition: transform 1s;
   -webkit-transform-style: preserve-3d;
-  -moz-transform-style: preserve-3d;
-  transform-style: preserve-3d;
+     -moz-transform-style: preserve-3d;
+          transform-style: preserve-3d;
 }
-
 .page > div {
   width: 50%;
   height: 100%;
   position: absolute;
-  transform: translateX(50%);
+  transform: translateX(500px) translateY(2%);
   transform-style: preserve-3d;
 }
-
 .page > div > div {
   width: 98%;
   height: 96%;
   background-color: #ffffff;
   -webkit-backface-visibility: hidden;
-  -moz-backface-visibility: hidden;
-  backface-visibility: hidden;
+     -moz-backface-visibility: hidden;
+          backface-visibility: hidden;
   position: absolute;
-  padding: 25px 20px;
+  padding: 10px 20px;
   box-sizing: border-box;
   border: 1px solid #dddddd;
   -webkit-transform-style: flat;
-  -moz-transform-style: flat;
-  transform-style: flat;
-  overflow-y: auto;
+     -moz-transform-style: flat;
+          transform-style: flat;
 }
-
 .page > div > div.back {
-  transform: rotateY(180deg) translateZ(1px);
+  transform:  rotateY(180deg) translateZ(1px);
 }
 
 .page.listed {
   transform: rotateY(-180deg);
 }
 
-#page1 { z-index: 5; }
-#page2 { z-index: 4; }
-#page3 { z-index: 3; }
-#page4 { z-index: 2; }
-#page5 { z-index: 1; }
+#page1 {
+  z-index: 4;
+}
+#page2 {
+  z-index: 3;
+}
+#page3 {
+  z-index: 2;
+}
+#page4 {
+  z-index: 1;
+}
 
-#page1.page.listed { z-index: 1; }
-#page2.page.listed { z-index: 2; }
-#page3.page.listed { z-index: 3; }
-#page4.page.listed { z-index: 4; }
-#page5.page.listed { z-index: 5; }
+#page1.page.listed {
+  z-index: 1;
+}
+#page2.page.listed {
+  z-index: 2;
+}
+#page3.page.listed {
+  z-index: 3;
+}
+#page4.page.listed {
+  z-index: 4;
+}
+
+.controls {
+  margin-bottom: 80px;
+}
 
 .page .header {
-  margin: 6px 0px 15px 0px;
-  padding: 0px 0px 10px 0px;
+  margin: 6px 0px;
+  padding: 0px;
   text-align: center;
-  font-size: 22px;
-  color: #2c3e50;
-  border-bottom: 2px solid #667eea;
-  font-weight: bold;
 }
-
 .page .content {
-  text-indent: 0px;
-  line-height: 1.8;
-  font-size: 15px;
-  color: #333;
-}
-
-.page .content p {
-  margin-bottom: 15px;
-  text-align: justify;
-}
-
-.page .content h4 {
-  color: #667eea;
-  margin: 15px 0 8px 0;
-  font-size: 17px;
-}
-
-.page .content ul {
-  margin-left: 25px;
-  margin-bottom: 12px;
-}
-
-.page .content li {
-  margin-bottom: 8px;
-}
-
-.page .content .code-block {
-  background: #f4f4f4;
-  border-left: 4px solid #667eea;
-  padding: 12px;
-  margin: 12px 0;
-  font-family: 'Courier New', monospace;
-  font-size: 13px;
-  border-radius: 4px;
-  overflow-x: auto;
-}
-
-.page .content strong {
-  color: #2c3e50;
+  text-indent: 20px;
 }
 
 .page .pageNumber {
   position: absolute;
   bottom: 20px;
-  font-size: 14px;
-  font-weight: bold;
-  color: #667eea;
+  font-size: 12px;
 }
-
 .page .front .pageNumber {
   right: 20px;
 }
-
 .page .back .pageNumber {
   left: 20px;
 }
 
 .page .front {
-  background: -webkit-gradient(linear, right top, left top, color-stop(0.95, #fff), color-stop(1, #cacaca));
-  background-image: -webkit-linear-gradient(right, #fff 95%, #cacaca 100%);
-  background-image: -moz-linear-gradient(right, #fff 95%, #cacaca 100%);
-  background-image: -ms-linear-gradient(right, #fff 95%, #cacaca 100%);
-  background-image: -o-linear-gradient(right, #fff 95%, #cacaca 100%);
-  background-image: linear-gradient(to left, #fff 95%, #cacaca 100%);
+  background:-webkit-gradient(linear, right top, left top, color-stop(0.95, #fff), color-stop(1, #cacaca));
+    background-image:-webkit-linear-gradient(right, #fff 95%, #cacaca 100%);
+    background-image:-moz-linear-gradient(right, #fff 95%, #cacaca 100%);
+    background-image:-ms-linear-gradient(right, #fff 95%, #cacaca 100%);
+    background-image:-o-linear-gradient(right, #fff 95%, #cacaca 100%);
+    background-image:linear-gradient(right, #fff 95%, #cacaca 100%);
 }
 
 .page .back {
-  background: -webkit-gradient(linear, left top, right top, color-stop(0.95, #fff), color-stop(1, #dadada));
-  background-image: -webkit-linear-gradient(left, #fff 95%, #dadada 100%);
-  background-image: -moz-linear-gradient(left, #fff 95%, #dadada 100%);
-  background-image: -ms-linear-gradient(left, #fff 95%, #dadada 100%);
-  background-image: -o-linear-gradient(left, #fff 95%, #dadada 100%);
-  background-image: linear-gradient(to right, #fff 95%, #dadada 100%);
-}
-
-/* Scrollbar styling */
-.page > div > div::-webkit-scrollbar {
-  width: 6px;
-}
-
-.page > div > div::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-.page > div > div::-webkit-scrollbar-thumb {
-  background: #667eea;
-  border-radius: 3px;
-}
-
-@media (max-width: 480px) {
-  .book {
-    width: 98vw;
-    height: 70vh;
-    min-height: 450px;
-  }
-  
-  .page .header {
-    font-size: 18px;
-  }
-  
-  .page .content {
-    font-size: 13px;
-    padding: 15px 12px;
-  }
-  
-  .page .content h4 {
-    font-size: 15px;
-  }
-  
-  .page > div > div {
-    padding: 20px 15px;
-  }
+  background:-webkit-gradient(linear, left top, right top, color-stop(0.95, #fff), color-stop(1, #dadada));
+    background-image:-webkit-linear-gradient(left, #fff 95%, #dadada 100%);
+    background-image:-moz-linear-gradient(left, #fff 95%, #dadada 100%);
+    background-image:-ms-linear-gradient(left, #fff 95%, #dadada 100%);
+    background-image:-o-linear-gradient(left, #fff 95%, #dadada 100%);
+    background-image:linear-gradient(left, #fff 95%, #dadada 100%);
 }
 </style>
 </head>
 <body>
-
-<div class="book-header">
-  <h1>🐍 Introduction to Python Programming</h1>
-</div>
-
 <div class="controls">
-  <button id="prevPage">◄ Prev</button>
-  <button id="nextPage">Next ►</button>
+  <button id="prevPage">Prev</button>
+  <button id="nextPage">Next</button>
 </div>
-
 <div class="book">
-  <!-- Page 1 -->
   <div class="page" id="page1">
-    <div class="subpage">
-      <div class="front">
-        <h4 class="header">Welcome to Python!</h4>
-        <div class="content">
-          <p><strong>What is Python?</strong></p>
-          <p>Python is a powerful, high-level programming language created by Guido van Rossum and first released in 1991 [web:1]. It has become one of the most popular programming languages in the world, loved by beginners and professionals alike.</p>
+      <div class="subpage">
+        <div class="front">
+          <h4 class="header">Page 1</h4>
+          <div class="content">
+            <p>Lorem ipsum dolor sit amet, ex cum quando dolorem blandit, commodo aliquip temporibus cu nec, malis offendit tacimates an vel. Saepe decore putant ut ius, viris scripserit cu nam. Ea has graeci ponderum efficiantur, ocurreret adolescens liberavisse vim ex. Ea ius odio habeo expetenda, eripuit iracundia vel id. Disputando accommodare per te.</p>
 
-          <p><strong>Why Learn Python?</strong></p>
-          <p>Python is designed to be easy to read and write. Unlike many programming languages that use complex syntax with lots of brackets and semicolons, Python uses simple, English-like statements that make sense even to non-programmers [web:1].</p>
+            <p>Per iusto percipit inciderint ut, mea natum detraxit te. Ad his inani tollit maluisset, quaestio adversarium quo et. Ut populo probatus consulatu usu, quo gloriatur efficiendi assueverit cu. Eros volumus vim no, postea possim mel ea.</p>
 
-          <h4>What Can You Do With Python?</h4>
-          <ul>
-            <li>Build websites and web applications</li>
-            <li>Create artificial intelligence and machine learning models</li>
-            <li>Analyze data and create visualizations</li>
-            <li>Automate repetitive tasks</li>
-            <li>Develop games and desktop applications</li>
-            <li>Write scripts for system administration</li>
-          </ul>
+            <p>His cu soluta splendide. Vim meis omittantur cu, id dolores copiosae evertitur duo. In per antiopam concludaturque, eruditi appellantur mei ei. Quem eleifend mei no.</p>
 
-          <p>Python works on all major platforms including Windows, Mac, Linux, and even mobile devices [web:1]. This cross-platform compatibility makes it an excellent choice for any project.</p>
+            <p>At partiendo voluptatum mei, agam duis concludaturque ea est. Quis quidam eos cu. An eum omittam iracundia, bonorum argumentum et est. Aliquando forensibus incorrupte in vel, dolor omnium id sea, id nam affert facilisis.</p>
+
+            <p>Ei sensibus posidonium eam, usu facer recusabo in. Ius ex everti forensibus accommodare, at quo dolore recteque complectitur, cu malis inani eos. No his gubergren scriptorem. Duo postea copiosae id, at tempor habemus molestiae sit. Ne audiam ornatus torquatos qui, at pro possit inermis urbanitas. Te sale ullum nostrud ius, ne ignota molestie iracundia his, nonumy labore ius at.</p>
+          </div>
+          <div class="pageNumber">1</div>
         </div>
-        <div class="pageNumber">1</div>
-      </div>
-      
-      <div class="back">
-        <h4 class="header">Python's Key Features</h4>
-        <div class="content">
-          <p><strong>Why Python Stands Out</strong></p>
-          
-          <h4>1. Simple and Readable Syntax</h4>
-          <p>Python code reads almost like English. You don't need to memorize complicated symbols or structures [web:1]. This makes learning faster and coding more enjoyable.</p>
+        <div class="back">
+          <h4 class="header">Page 2</h4>
+          <div class="content"><p>Lorem ipsum dolor sit amet, ex cum quando dolorem blandit, commodo aliquip temporibus cu nec, malis offendit tacimates an vel. Saepe decore putant ut ius, viris scripserit cu nam. Ea has graeci ponderum efficiantur, ocurreret adolescens liberavisse vim ex. Ea ius odio habeo expetenda, eripuit iracundia vel id. Disputando accommodare per te.</p>
 
-          <h4>2. Interpreted Language</h4>
-          <p>Python runs on an interpreter system, which means you can execute code as soon as you write it. No need to compile your program first - just write and run [web:1]!</p>
+            <p>Per iusto percipit inciderint ut, mea natum detraxit te. Ad his inani tollit maluisset, quaestio adversarium quo et. Ut populo probatus consulatu usu, quo gloriatur efficiendi assueverit cu. Eros volumus vim no, postea possim mel ea.</p>
 
-          <h4>3. Dynamically Typed</h4>
-          <p>You don't need to declare variable types. Python figures out whether something is a number, text, or other data type automatically [web:13]. This saves time and reduces errors.</p>
+            <p>His cu soluta splendide. Vim meis omittantur cu, id dolores copiosae evertitur duo. In per antiopam concludaturque, eruditi appellantur mei ei. Quem eleifend mei no.</p>
 
-          <h4>4. Extensive Libraries</h4>
-          <p>Python comes with a vast collection of pre-written code libraries for almost any task you can imagine [web:3]. Need to work with dates? There's a library. Want to make web requests? There's a library for that too.</p>
+            <p>At partiendo voluptatum mei, agam duis concludaturque ea est. Quis quidam eos cu. An eum omittam iracundia, bonorum argumentum et est. Aliquando forensibus incorrupte in vel, dolor omnium id sea, id nam affert facilisis.</p>
 
-          <h4>5. Large Community</h4>
-          <p>Millions of developers worldwide use Python, which means tons of tutorials, forums, and resources are available to help you learn [web:2].</p>
+            <p>Ei sensibus posidonium eam, usu facer recusabo in. Ius ex everti forensibus accommodare, at quo dolore recteque complectitur, cu malis inani eos. No his gubergren scriptorem. Duo postea copiosae id, at tempor habemus molestiae sit. Ne audiam ornatus torquatos qui, at pro possit inermis urbanitas. Te sale ullum nostrud ius, ne ignota molestie iracundia his, nonumy labore ius at.</p></div>
+          <div class="pageNumber">2</div>
         </div>
-        <div class="pageNumber">2</div>
       </div>
-    </div>
   </div>
-
-  <!-- Page 2 -->
   <div class="page" id="page2">
-    <div class="subpage">
-      <div class="front">
-        <h4 class="header">Your First Python Program</h4>
-        <div class="content">
-          <p><strong>The Classic "Hello, World!"</strong></p>
-          <p>Every programmer's journey begins with a simple program that displays text on the screen. In Python, this is incredibly straightforward [web:1]:</p>
+      <div class="subpage">
+        <div class="front">
+          <h4 class="header">Page 3</h4>
+          <div class="content"><p>Lorem ipsum dolor sit amet, ex cum quando dolorem blandit, commodo aliquip temporibus cu nec, malis offendit tacimates an vel. Saepe decore putant ut ius, viris scripserit cu nam. Ea has graeci ponderum efficiantur, ocurreret adolescens liberavisse vim ex. Ea ius odio habeo expetenda, eripuit iracundia vel id. Disputando accommodare per te.</p>
 
-          <div class="code-block">print("Hello, World!")</div>
+            <p>Per iusto percipit inciderint ut, mea natum detraxit te. Ad his inani tollit maluisset, quaestio adversarium quo et. Ut populo probatus consulatu usu, quo gloriatur efficiendi assueverit cu. Eros volumus vim no, postea possim mel ea.</p>
 
-          <p>That's it! Just one line of code. The <strong>print()</strong> function tells Python to display whatever is inside the parentheses on the screen.</p>
+            <p>His cu soluta splendide. Vim meis omittantur cu, id dolores copiosae evertitur duo. In per antiopam concludaturque, eruditi appellantur mei ei. Quem eleifend mei no.</p>
 
-          <h4>Understanding the Syntax</h4>
-          <ul>
-            <li><strong>print</strong> - A built-in function that outputs text</li>
-            <li><strong>()</strong> - Parentheses contain the argument (input) for the function</li>
-            <li><strong>"Hello, World!"</strong> - A string (text) enclosed in quotes</li>
-          </ul>
+            <p>At partiendo voluptatum mei, agam duis concludaturque ea est. Quis quidam eos cu. An eum omittam iracundia, bonorum argumentum et est. Aliquando forensibus incorrupte in vel, dolor omnium id sea, id nam affert facilisis.</p>
 
-          <p><strong>Try These Examples:</strong></p>
-          <div class="code-block">print("Welcome to Python!")
-print("My name is Sarah")
-print(2025)
-print(3.14)</div>
-
-          <p>Notice how you can print both text (strings) and numbers. Python handles different data types seamlessly [web:16].</p>
-
-          <h4>Comments in Python</h4>
-          <p>Use the # symbol to add comments - notes that Python ignores [web:3]:</p>
-          <div class="code-block"># This is a comment
-print("This runs")  # Comment after code</div>
+            <p>Ei sensibus posidonium eam, usu facer recusabo in. Ius ex everti forensibus accommodare, at quo dolore recteque complectitur, cu malis inani eos. No his gubergren scriptorem. Duo postea copiosae id, at tempor habemus molestiae sit. Ne audiam ornatus torquatos qui, at pro possit inermis urbanitas. Te sale ullum nostrud ius, ne ignota molestie iracundia his, nonumy labore ius at.</p></div>
+          <div class="pageNumber">3</div>
         </div>
-        <div class="pageNumber">3</div>
-      </div>
-      
-      <div class="back">
-        <h4 class="header">Variables: Storing Data</h4>
-        <div class="content">
-          <p><strong>What Are Variables?</strong></p>
-          <p>Variables are named containers that store data in your computer's memory [web:13]. Think of them as labeled boxes where you can put information and retrieve it later.</p>
+        <div class="back">
+          <h4 class="header">Page 4</h4>
+          <div class="content"><p>Lorem ipsum dolor sit amet, ex cum quando dolorem blandit, commodo aliquip temporibus cu nec, malis offendit tacimates an vel. Saepe decore putant ut ius, viris scripserit cu nam. Ea has graeci ponderum efficiantur, ocurreret adolescens liberavisse vim ex. Ea ius odio habeo expetenda, eripuit iracundia vel id. Disputando accommodare per te.</p>
 
-          <h4>Creating Variables</h4>
-          <p>In Python, creating a variable is simple - just use the assignment operator (=) [web:13]:</p>
+            <p>Per iusto percipit inciderint ut, mea natum detraxit te. Ad his inani tollit maluisset, quaestio adversarium quo et. Ut populo probatus consulatu usu, quo gloriatur efficiendi assueverit cu. Eros volumus vim no, postea possim mel ea.</p>
 
-          <div class="code-block">name = "Alice"
-age = 25
-height = 5.6
-is_student = True</div>
+            <p>His cu soluta splendide. Vim meis omittantur cu, id dolores copiosae evertitur duo. In per antiopam concludaturque, eruditi appellantur mei ei. Quem eleifend mei no.</p>
 
-          <p>The variable name goes on the left, the equals sign in the middle, and the value on the right.</p>
+            <p>At partiendo voluptatum mei, agam duis concludaturque ea est. Quis quidam eos cu. An eum omittam iracundia, bonorum argumentum et est. Aliquando forensibus incorrupte in vel, dolor omnium id sea, id nam affert facilisis.</p>
 
-          <h4>Variable Naming Rules</h4>
-          <ul>
-            <li>Must start with a letter or underscore (_)</li>
-            <li>Can contain letters, numbers, and underscores</li>
-            <li>Cannot use Python keywords (like print, if, for)</li>
-            <li>Case-sensitive: "Name" and "name" are different</li>
-          </ul>
-
-          <h4>Using Variables</h4>
-          <div class="code-block">greeting = "Hello"
-name = "Bob"
-message = greeting + " " + name
-print(message)  # Output: Hello Bob</div>
-
-          <p>Variables make your code flexible and reusable [web:13]. You can change a variable's value and all code using it automatically updates!</p>
+            <p>Ei sensibus posidonium eam, usu facer recusabo in. Ius ex everti forensibus accommodare, at quo dolore recteque complectitur, cu malis inani eos. No his gubergren scriptorem. Duo postea copiosae id, at tempor habemus molestiae sit. Ne audiam ornatus torquatos qui, at pro possit inermis urbanitas. Te sale ullum nostrud ius, ne ignota molestie iracundia his, nonumy labore ius at.</p></div>
+          <div class="pageNumber">4</div>
         </div>
-        <div class="pageNumber">4</div>
       </div>
-    </div>
   </div>
-
-  <!-- Page 3 -->
   <div class="page" id="page3">
-    <div class="subpage">
-      <div class="front">
-        <h4 class="header">Data Types in Python</h4>
-        <div class="content">
-          <p><strong>Understanding Data Types</strong></p>
-          <p>Python has several built-in data types to represent different kinds of information [web:16]. Let's explore the most important ones.</p>
+      <div class="subpage">
+        <div class="front">
+          <h4 class="header">Page 5</h4>
+          <div class="content"><p>Lorem ipsum dolor sit amet, ex cum quando dolorem blandit, commodo aliquip temporibus cu nec, malis offendit tacimates an vel. Saepe decore putant ut ius, viris scripserit cu nam. Ea has graeci ponderum efficiantur, ocurreret adolescens liberavisse vim ex. Ea ius odio habeo expetenda, eripuit iracundia vel id. Disputando accommodare per te.</p>
 
-          <h4>1. Numeric Types</h4>
-          <div class="code-block">integer_num = 42        # int
-float_num = 3.14        # float
-complex_num = 2 + 3j    # complex</div>
+            <p>Per iusto percipit inciderint ut, mea natum detraxit te. Ad his inani tollit maluisset, quaestio adversarium quo et. Ut populo probatus consulatu usu, quo gloriatur efficiendi assueverit cu. Eros volumus vim no, postea possim mel ea.</p>
 
-          <ul>
-            <li><strong>int</strong> - Whole numbers (positive or negative)</li>
-            <li><strong>float</strong> - Decimal numbers</li>
-            <li><strong>complex</strong> - Complex numbers with real and imaginary parts</li>
-          </ul>
+            <p>His cu soluta splendide. Vim meis omittantur cu, id dolores copiosae evertitur duo. In per antiopam concludaturque, eruditi appellantur mei ei. Quem eleifend mei no.</p>
 
-          <h4>2. String Type</h4>
-          <div class="code-block">text = "Hello Python"
-quote = 'Single quotes work too'
-multiline = """This spans
-multiple lines"""</div>
+            <p>At partiendo voluptatum mei, agam duis concludaturque ea est. Quis quidam eos cu. An eum omittam iracundia, bonorum argumentum et est. Aliquando forensibus incorrupte in vel, dolor omnium id sea, id nam affert facilisis.</p>
 
-          <p>Strings are sequences of characters enclosed in quotes [web:16]. You can use single, double, or triple quotes.</p>
-
-          <h4>3. Boolean Type</h4>
-          <div class="code-block">is_valid = True
-is_empty = False</div>
-
-          <p>Booleans represent truth values - either True or False [web:16]. They're essential for decision-making in programs.</p>
+            <p>Ei sensibus posidonium eam, usu facer recusabo in. Ius ex everti forensibus accommodare, at quo dolore recteque complectitur, cu malis inani eos. No his gubergren scriptorem. Duo postea copiosae id, at tempor habemus molestiae sit. Ne audiam ornatus torquatos qui, at pro possit inermis urbanitas. Te sale ullum nostrud ius, ne ignota molestie iracundia his, nonumy labore ius at.</p></div>
+          <div class="pageNumber">5</div>
         </div>
-        <div class="pageNumber">5</div>
-      </div>
-      
-      <div class="back">
-        <h4 class="header">More Data Types</h4>
-        <div class="content">
-          <h4>4. Lists</h4>
-          <p>Lists store multiple items in a single variable [web:3]. They're ordered and changeable:</p>
-          <div class="code-block">fruits = ["apple", "banana", "cherry"]
-numbers = [1, 2, 3, 4, 5]
-mixed = [1, "hello", 3.14, True]</div>
+        <div class="back">
+          <h4 class="header">Page 6</h4>
+          <div class="content"><p>Lorem ipsum dolor sit amet, ex cum quando dolorem blandit, commodo aliquip temporibus cu nec, malis offendit tacimates an vel. Saepe decore putant ut ius, viris scripserit cu nam. Ea has graeci ponderum efficiantur, ocurreret adolescens liberavisse vim ex. Ea ius odio habeo expetenda, eripuit iracundia vel id. Disputando accommodare per te.</p>
 
-          <h4>5. Tuples</h4>
-          <p>Similar to lists but immutable (can't be changed) [web:16]:</p>
-          <div class="code-block">coordinates = (10, 20)
-rgb = (255, 128, 0)</div>
+            <p>Per iusto percipit inciderint ut, mea natum detraxit te. Ad his inani tollit maluisset, quaestio adversarium quo et. Ut populo probatus consulatu usu, quo gloriatur efficiendi assueverit cu. Eros volumus vim no, postea possim mel ea.</p>
 
-          <h4>6. Dictionaries</h4>
-          <p>Store data in key-value pairs [web:16]:</p>
-          <div class="code-block">person = {
-    "name": "John",
-    "age": 30,
-    "city": "New York"
-}</div>
+            <p>His cu soluta splendide. Vim meis omittantur cu, id dolores copiosae evertitur duo. In per antiopam concludaturque, eruditi appellantur mei ei. Quem eleifend mei no.</p>
 
-          <h4>Checking Types</h4>
-          <p>Use the type() function to check any variable's data type [web:14]:</p>
-          <div class="code-block">x = 10
-print(type(x))  # Output: &lt;class 'int'&gt;
+            <p>At partiendo voluptatum mei, agam duis concludaturque ea est. Quis quidam eos cu. An eum omittam iracundia, bonorum argumentum et est. Aliquando forensibus incorrupte in vel, dolor omnium id sea, id nam affert facilisis.</p>
 
-y = "Hello"
-print(type(y))  # Output: &lt;class 'str'&gt;</div>
-
-          <p>Understanding data types helps you choose the right structure for your data [web:16].</p>
+            <p>Ei sensibus posidonium eam, usu facer recusabo in. Ius ex everti forensibus accommodare, at quo dolore recteque complectitur, cu malis inani eos. No his gubergren scriptorem. Duo postea copiosae id, at tempor habemus molestiae sit. Ne audiam ornatus torquatos qui, at pro possit inermis urbanitas. Te sale ullum nostrud ius, ne ignota molestie iracundia his, nonumy labore ius at.</p></div>
+          <div class="pageNumber">6</div>
         </div>
-        <div class="pageNumber">6</div>
       </div>
-    </div>
   </div>
-
-  <!-- Page 4 -->
   <div class="page" id="page4">
-    <div class="subpage">
-      <div class="front">
-        <h4 class="header">Basic Operations</h4>
-        <div class="content">
-          <p><strong>Python as a Calculator</strong></p>
-          <p>Python can perform all standard mathematical operations [web:14]:</p>
+      <div class="subpage">
+        <div class="front">
+          <h4 class="header">Page 7</h4>
+          <div class="content"><p>Lorem ipsum dolor sit amet, ex cum quando dolorem blandit, commodo aliquip temporibus cu nec, malis offendit tacimates an vel. Saepe decore putant ut ius, viris scripserit cu nam. Ea has graeci ponderum efficiantur, ocurreret adolescens liberavisse vim ex. Ea ius odio habeo expetenda, eripuit iracundia vel id. Disputando accommodare per te.</p>
 
-          <h4>Arithmetic Operators</h4>
-          <div class="code-block"># Addition
-result = 5 + 3        # 8
+            <p>Per iusto percipit inciderint ut, mea natum detraxit te. Ad his inani tollit maluisset, quaestio adversarium quo et. Ut populo probatus consulatu usu, quo gloriatur efficiendi assueverit cu. Eros volumus vim no, postea possim mel ea.</p>
 
-# Subtraction
-result = 10 - 4       # 6
+            <p>His cu soluta splendide. Vim meis omittantur cu, id dolores copiosae evertitur duo. In per antiopam concludaturque, eruditi appellantur mei ei. Quem eleifend mei no.</p>
 
-# Multiplication
-result = 6 * 7        # 42
+            <p>At partiendo voluptatum mei, agam duis concludaturque ea est. Quis quidam eos cu. An eum omittam iracundia, bonorum argumentum et est. Aliquando forensibus incorrupte in vel, dolor omnium id sea, id nam affert facilisis.</p>
 
-# Division
-result = 20 / 4       # 5.0
-
-# Integer Division
-result = 17 // 5      # 3
-
-# Modulo (remainder)
-result = 17 % 5       # 2
-
-# Exponentiation
-result = 2 ** 3       # 8</div>
-
-          <h4>Comparison Operators</h4>
-          <p>These operators compare values and return True or False [web:14]:</p>
-          <div class="code-block">5 == 5    # True (equal to)
-5 != 3    # True (not equal to)
-5 > 3     # True (greater than)
-5 < 3     # False (less than)
-5 >= 5    # True (greater or equal)
-5 <= 3    # False (less or equal)</div>
+            <p>Ei sensibus posidonium eam, usu facer recusabo in. Ius ex everti forensibus accommodare, at quo dolore recteque complectitur, cu malis inani eos. No his gubergren scriptorem. Duo postea copiosae id, at tempor habemus molestiae sit. Ne audiam ornatus torquatos qui, at pro possit inermis urbanitas. Te sale ullum nostrud ius, ne ignota molestie iracundia his, nonumy labore ius at.</p></div>
+          <div class="pageNumber">7</div>
         </div>
-        <div class="pageNumber">7</div>
-      </div>
-      
-      <div class="back">
-        <h4 class="header">Conditional Statements</h4>
-        <div class="content">
-          <p><strong>Making Decisions in Code</strong></p>
-          <p>Programs need to make decisions based on conditions. Python uses if, elif, and else statements [web:12].</p>
+        <div class="back">
+          <h4 class="header">Page 8</h4>
+          <div class="content"><p>Lorem ipsum dolor sit amet, ex cum quando dolorem blandit, commodo aliquip temporibus cu nec, malis offendit tacimates an vel. Saepe decore putant ut ius, viris scripserit cu nam. Ea has graeci ponderum efficiantur, ocurreret adolescens liberavisse vim ex. Ea ius odio habeo expetenda, eripuit iracundia vel id. Disputando accommodare per te.</p>
 
-          <h4>Basic If Statement</h4>
-          <div class="code-block">age = 18
+            <p>Per iusto percipit inciderint ut, mea natum detraxit te. Ad his inani tollit maluisset, quaestio adversarium quo et. Ut populo probatus consulatu usu, quo gloriatur efficiendi assueverit cu. Eros volumus vim no, postea possim mel ea.</p>
 
-if age >= 18:
-    print("You are an adult")
-else:
-    print("You are a minor")</div>
+            <p>His cu soluta splendide. Vim meis omittantur cu, id dolores copiosae evertitur duo. In per antiopam concludaturque, eruditi appellantur mei ei. Quem eleifend mei no.</p>
 
-          <p><strong>Important:</strong> Notice the indentation (spaces before print). Python uses indentation to group code blocks [web:1].</p>
+            <p>At partiendo voluptatum mei, agam duis concludaturque ea est. Quis quidam eos cu. An eum omittam iracundia, bonorum argumentum et est. Aliquando forensibus incorrupte in vel, dolor omnium id sea, id nam affert facilisis.</p>
 
-          <h4>Multiple Conditions</h4>
-          <div class="code-block">score = 85
-
-if score >= 90:
-    print("Grade: A")
-elif score >= 80:
-    print("Grade: B")
-elif score >= 70:
-    print("Grade: C")
-elif score >= 60:
-    print("Grade: D")
-else:
-    print("Grade: F")</div>
-
-          <p>The program checks each condition in order and executes the first one that's True [web:3].</p>
-
-          <h4>Logical Operators</h4>
-          <div class="code-block">age = 25
-has_license = True
-
-if age >= 18 and has_license:
-    print("Can drive")</div>
+            <p>Ei sensibus posidonium eam, usu facer recusabo in. Ius ex everti forensibus accommodare, at quo dolore recteque complectitur, cu malis inani eos. No his gubergren scriptorem. Duo postea copiosae id, at tempor habemus molestiae sit. Ne audiam ornatus torquatos qui, at pro possit inermis urbanitas. Te sale ullum nostrud ius, ne ignota molestie iracundia his, nonumy labore ius at.</p></div>
+          <div class="pageNumber">8</div>
         </div>
-        <div class="pageNumber">8</div>
       </div>
-    </div>
   </div>
-
-  <!-- Page 5 -->
-  <div class="page" id="page5">
-    <div class="subpage">
-      <div class="front">
-        <h4 class="header">Loops in Python</h4>
-        <div class="content">
-          <p><strong>Repeating Actions</strong></p>
-          <p>Loops allow you to execute code multiple times without writing it repeatedly [web:12].</p>
-
-          <h4>For Loops</h4>
-          <p>Use for loops to iterate over sequences [web:13]:</p>
-          <div class="code-block"># Loop through numbers
-for i in range(5):
-    print(i)  # Prints 0, 1, 2, 3, 4
-
-# Loop through a list
-fruits = ["apple", "banana", "cherry"]
-for fruit in fruits:
-    print(fruit)</div>
-
-          <p>The range() function generates a sequence of numbers [web:15]. range(5) creates numbers from 0 to 4.</p>
-
-          <h4>While Loops</h4>
-          <p>While loops continue as long as a condition is True [web:12]:</p>
-          <div class="code-block">count = 0
-while count < 5:
-    print(count)
-    count = count + 1  # Increment counter</div>
-
-          <p><strong>Warning:</strong> Make sure while loops eventually become False, or they'll run forever!</p>
-
-          <h4>Break and Continue</h4>
-          <div class="code-block">for i in range(10):
-    if i == 5:
-        break  # Exit loop
-    print(i)</div>
-        </div>
-        <div class="pageNumber">9</div>
-      </div>
-      
-      <div class="back">
-        <h4 class="header">Functions: Reusable Code</h4>
-        <div class="content">
-          <p><strong>Creating Functions</strong></p>
-          <p>Functions are reusable blocks of code that perform specific tasks [web:3]. They help organize your code and avoid repetition.</p>
-
-          <h4>Defining Functions</h4>
-          <div class="code-block">def greet(name):
-    print("Hello, " + name + "!")
-
-# Call the function
-greet("Alice")  # Output: Hello, Alice!
-greet("Bob")    # Output: Hello, Bob!</div>
-
-          <p><strong>Function Components:</strong></p>
-          <ul>
-            <li><strong>def</strong> - keyword to define a function</li>
-            <li><strong>greet</strong> - function name</li>
-            <li><strong>(name)</strong> - parameter (input)</li>
-            <li>Indented code is the function body</li>
-          </ul>
-
-          <h4>Returning Values</h4>
-          <div class="code-block">def add(a, b):
-    return a + b
-
-result = add(5, 3)
-print(result)  # Output: 8</div>
-
-          <p>The return statement sends a value back to the caller [web:3].</p>
-
-          <h4>Multiple Parameters</h4>
-          <div class="code-block">def calculate(x, y, operation):
-    if operation == "add":
-        return x + y
-    elif operation == "multiply":
-        return x * y</div>
-        </div>
-        <div class="pageNumber">10</div>
-      </div>
-    </div>
-  </div>
-
 </div>
+
 
 <script>
 var Pages = function() {
