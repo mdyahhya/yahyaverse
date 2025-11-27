@@ -2,163 +2,54 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Mobile Book Library</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learn Python - Interactive Book</title>
 <style>
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: Arial, sans-serif;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
-  overflow-x: hidden;
-  padding: 0;
-}
-
-/* Book List View */
-.library-container {
-  display: block;
-  padding: 15px;
-  max-width: 100vw;
-  margin: 0 auto;
-}
-
-.library-header {
-  text-align: center;
-  color: white;
-  margin-bottom: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   padding: 20px 10px;
 }
 
-.library-header h1 {
-  font-size: 28px;
-  margin-bottom: 8px;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-}
-
-.library-header p {
-  font-size: 14px;
-  opacity: 0.9;
-}
-
-.books-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 15px;
-  padding: 10px;
-}
-
-.book-card {
-  background: white;
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-  cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.book-card:active {
-  transform: scale(0.98);
-}
-
-.book-card:hover {
-  box-shadow: 0 12px 30px rgba(0,0,0,0.3);
-  transform: translateY(-3px);
-}
-
-.book-icon {
-  width: 60px;
-  height: 80px;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 32px;
-  flex-shrink: 0;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-}
-
-.book-info {
-  flex: 1;
-}
-
-.book-info h3 {
-  font-size: 20px;
-  margin-bottom: 5px;
-  color: #333;
-}
-
-.book-info p {
-  font-size: 13px;
-  color: #666;
-  line-height: 1.4;
-}
-
-/* 3D Book View */
-.book-view-container {
-  display: none;
-  padding: 10px;
-  max-width: 100vw;
-  margin: 0 auto;
-}
-
-.back-button {
-  background: white;
-  color: #667eea;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 25px;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  margin-bottom: 15px;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.back-button:active {
-  transform: scale(0.95);
-}
-
-.book-title-header {
+.book-header {
   text-align: center;
   color: white;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
-.book-title-header h2 {
-  font-size: 24px;
+.book-header h1 {
+  font-size: 28px;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  margin-bottom: 10px;
 }
 
 .controls {
+  margin-bottom: 30px;
   text-align: center;
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: center;
-  gap: 15px;
 }
 
 .controls button {
   background: white;
   color: #667eea;
   border: none;
-  padding: 12px 30px;
+  padding: 12px 28px;
   border-radius: 25px;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  margin: 0 8px;
   transition: all 0.3s;
 }
 
@@ -166,23 +57,28 @@ body {
   transform: scale(0.95);
 }
 
-.controls button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.controls button:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
 }
 
 .book {
   width: 95vw;
-  max-width: 380px;
-  height: 500px;
+  max-width: 600px;
+  height: 75vh;
+  max-height: 700px;
+  min-height: 500px;
   border: 2px solid #dddddd;
+  -webkit-perspective: 1400px;
+  -moz-perspective: 1400px;
   perspective: 1400px;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
   transform-style: preserve-3d;
-  font-family: Arial, sans-serif;
+  font-family: 'Georgia', 'Times New Roman', serif;
   margin: 0 auto;
-  background: white;
-  border-radius: 5px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  border-radius: 8px;
+  background: #f9f9f9;
 }
 
 .page {
@@ -190,6 +86,8 @@ body {
   height: 100%;
   position: absolute;
   transition: transform 1s;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
   transform-style: preserve-3d;
 }
 
@@ -197,7 +95,7 @@ body {
   width: 50%;
   height: 100%;
   position: absolute;
-  transform: translateX(calc(50%));
+  transform: translateX(50%);
   transform-style: preserve-3d;
 }
 
@@ -205,15 +103,17 @@ body {
   width: 98%;
   height: 96%;
   background-color: #ffffff;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
   backface-visibility: hidden;
   position: absolute;
-  padding: 15px 12px;
+  padding: 25px 20px;
   box-sizing: border-box;
   border: 1px solid #dddddd;
+  -webkit-transform-style: flat;
+  -moz-transform-style: flat;
   transform-style: flat;
   overflow-y: auto;
-  font-size: 11px;
-  line-height: 1.5;
 }
 
 .page > div > div.back {
@@ -224,7 +124,6 @@ body {
   transform: rotateY(-180deg);
 }
 
-/* Z-index management for 5 pages (10 sides) */
 #page1 { z-index: 5; }
 #page2 { z-index: 4; }
 #page3 { z-index: 3; }
@@ -238,118 +137,94 @@ body {
 #page5.page.listed { z-index: 5; }
 
 .page .header {
-  margin: 8px 0;
-  padding: 0;
+  margin: 6px 0px 15px 0px;
+  padding: 0px 0px 10px 0px;
   text-align: center;
-  font-size: 16px;
-  color: #667eea;
-  font-weight: bold;
+  font-size: 22px;
+  color: #2c3e50;
   border-bottom: 2px solid #667eea;
-  padding-bottom: 5px;
+  font-weight: bold;
 }
 
 .page .content {
-  text-align: justify;
-  margin-top: 10px;
+  text-indent: 0px;
+  line-height: 1.8;
+  font-size: 15px;
+  color: #333;
 }
 
 .page .content p {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  text-align: justify;
 }
 
 .page .content h4 {
-  color: #764ba2;
-  margin: 10px 0 5px 0;
-  font-size: 12px;
+  color: #667eea;
+  margin: 15px 0 8px 0;
+  font-size: 17px;
 }
 
 .page .content ul {
-  margin-left: 20px;
-  margin-bottom: 10px;
+  margin-left: 25px;
+  margin-bottom: 12px;
 }
 
 .page .content li {
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
-.page .content .code-example {
+.page .content .code-block {
   background: #f4f4f4;
-  padding: 8px;
-  border-radius: 4px;
+  border-left: 4px solid #667eea;
+  padding: 12px;
+  margin: 12px 0;
   font-family: 'Courier New', monospace;
-  font-size: 10px;
-  margin: 8px 0;
-  border-left: 3px solid #667eea;
+  font-size: 13px;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.page .content strong {
+  color: #2c3e50;
 }
 
 .page .pageNumber {
   position: absolute;
-  bottom: 10px;
-  font-size: 11px;
+  bottom: 20px;
+  font-size: 14px;
   font-weight: bold;
   color: #667eea;
 }
 
 .page .front .pageNumber {
-  right: 15px;
+  right: 20px;
 }
 
 .page .back .pageNumber {
-  left: 15px;
+  left: 20px;
 }
 
 .page .front {
-  background: linear-gradient(to left, #fff 95%, #cacaca 100%);
+  background: -webkit-gradient(linear, right top, left top, color-stop(0.95, #fff), color-stop(1, #cacaca));
+  background-image: -webkit-linear-gradient(right, #fff 95%, #cacaca 100%);
+  background-image: -moz-linear-gradient(right, #fff 95%, #cacaca 100%);
+  background-image: -ms-linear-gradient(right, #fff 95%, #cacaca 100%);
+  background-image: -o-linear-gradient(right, #fff 95%, #cacaca 100%);
+  background-image: linear-gradient(to left, #fff 95%, #cacaca 100%);
 }
 
 .page .back {
-  background: linear-gradient(to right, #fff 95%, #dadada 100%);
+  background: -webkit-gradient(linear, left top, right top, color-stop(0.95, #fff), color-stop(1, #dadada));
+  background-image: -webkit-linear-gradient(left, #fff 95%, #dadada 100%);
+  background-image: -moz-linear-gradient(left, #fff 95%, #dadada 100%);
+  background-image: -ms-linear-gradient(left, #fff 95%, #dadada 100%);
+  background-image: -o-linear-gradient(left, #fff 95%, #dadada 100%);
+  background-image: linear-gradient(to right, #fff 95%, #dadada 100%);
 }
 
-.hidden {
-  display: none !important;
-}
-
-/* Emoji styling */
-.emoji {
-  font-size: 16px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 360px) {
-  .book {
-    height: 450px;
-  }
-  
-  .page > div > div {
-    font-size: 10px;
-    padding: 12px 10px;
-  }
-  
-  .page .header {
-    font-size: 14px;
-  }
-}
-
-@media (min-width: 768px) {
-  .books-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .book {
-    max-width: 500px;
-    height: 600px;
-  }
-  
-  .page > div > div {
-    font-size: 13px;
-    padding: 20px 15px;
-  }
-}
-
-/* Smooth scrolling */
+/* Scrollbar styling */
 .page > div > div::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 
 .page > div > div::-webkit-scrollbar-track {
@@ -358,310 +233,307 @@ body {
 
 .page > div > div::-webkit-scrollbar-thumb {
   background: #667eea;
-  border-radius: 2px;
+  border-radius: 3px;
+}
+
+@media (max-width: 480px) {
+  .book {
+    width: 98vw;
+    height: 70vh;
+    min-height: 450px;
+  }
+  
+  .page .header {
+    font-size: 18px;
+  }
+  
+  .page .content {
+    font-size: 13px;
+    padding: 15px 12px;
+  }
+  
+  .page .content h4 {
+    font-size: 15px;
+  }
+  
+  .page > div > div {
+    padding: 20px 15px;
+  }
 }
 </style>
 </head>
 <body>
 
-<!-- Book Selection View -->
-<div class="library-container" id="libraryView">
-  <div class="library-header">
-    <h1>📚 My Book Library</h1>
-    <p>Select a book to start reading</p>
-  </div>
-  
-  <div class="books-grid">
-    <div class="book-card" onclick="openBook('python')">
-      <div class="book-icon" style="background: linear-gradient(135deg, #3776ab, #ffd43b);">
-        🐍
-      </div>
-      <div class="book-info">
-        <h3>Learn Python</h3>
-        <p>A beginner-friendly introduction to Python programming with easy-to-understand concepts.</p>
-      </div>
-    </div>
-    
-    <div class="book-card" onclick="alert('Coming Soon!')">
-      <div class="book-icon" style="background: linear-gradient(135deg, #f0db4f, #323330);">
-        ⚡
-      </div>
-      <div class="book-info">
-        <h3>JavaScript Basics</h3>
-        <p>Master the fundamentals of JavaScript for web development.</p>
-      </div>
-    </div>
-    
-    <div class="book-card" onclick="alert('Coming Soon!')">
-      <div class="book-icon" style="background: linear-gradient(135deg, #61dafb, #282c34);">
-        ⚛️
-      </div>
-      <div class="book-info">
-        <h3>React Guide</h3>
-        <p>Build modern user interfaces with React library.</p>
-      </div>
-    </div>
-    
-    <div class="book-card" onclick="alert('Coming Soon!')">
-      <div class="book-icon" style="background: linear-gradient(135deg, #3ddc84, #073042);">
-        🤖
-      </div>
-      <div class="book-info">
-        <h3>Android Dev</h3>
-        <p>Create amazing Android apps with Kotlin and Jetpack Compose.</p>
-      </div>
-    </div>
-  </div>
+<div class="book-header">
+  <h1>🐍 Introduction to Python Programming</h1>
 </div>
 
-<!-- 3D Book View -->
-<div class="book-view-container" id="bookView">
-  <button class="back-button" onclick="backToLibrary()">
-    ← Back to Library
-  </button>
-  
-  <div class="book-title-header">
-    <h2>🐍 Introduction to Python</h2>
-  </div>
-  
-  <div class="controls">
-    <button id="prevPage">◄ Prev</button>
-    <button id="nextPage">Next ►</button>
-  </div>
-  
-  <div class="book">
-    <!-- Page 1 -->
-    <div class="page" id="page1">
-      <div class="subpage">
-        <div class="front">
-          <h4 class="header">Welcome to Python! 🎉</h4>
-          <div class="content">
-            <p><strong>What is Python?</strong></p>
-            <p>Python is a powerful yet beginner-friendly programming language created by Guido van Rossum in 1991 [web:1]. Think of it as a way to talk to computers using words that are almost like English!</p>
-            
-            <p><strong>Why Learn Python?</strong></p>
-            <p>Python is one of the most popular languages in 2025 because it's easy to read and write [web:9]. Unlike other languages that look like alien code, Python reads like a recipe or instructions!</p>
-            
-            <p><strong>Real-World Uses:</strong></p>
-            <ul>
-              <li>🌐 Building websites and web apps</li>
-              <li>🤖 Creating AI and machine learning</li>
-              <li>📊 Analyzing data and making graphs</li>
-              <li>🎮 Making games and animations</li>
-              <li>⚙️ Automating boring tasks</li>
-            </ul>
-            
-            <p>The best part? Python works on Windows, Mac, Linux, and even Raspberry Pi [web:1]!</p>
-          </div>
-          <div class="pageNumber">1</div>
+<div class="controls">
+  <button id="prevPage">◄ Prev</button>
+  <button id="nextPage">Next ►</button>
+</div>
+
+<div class="book">
+  <!-- Page 1 -->
+  <div class="page" id="page1">
+    <div class="subpage">
+      <div class="front">
+        <h4 class="header">Welcome to Python!</h4>
+        <div class="content">
+          <p><strong>What is Python?</strong></p>
+          <p>Python is a powerful, high-level programming language created by Guido van Rossum and first released in 1991 [web:1]. It has become one of the most popular programming languages in the world, loved by beginners and professionals alike.</p>
+
+          <p><strong>Why Learn Python?</strong></p>
+          <p>Python is designed to be easy to read and write. Unlike many programming languages that use complex syntax with lots of brackets and semicolons, Python uses simple, English-like statements that make sense even to non-programmers [web:1].</p>
+
+          <h4>What Can You Do With Python?</h4>
+          <ul>
+            <li>Build websites and web applications</li>
+            <li>Create artificial intelligence and machine learning models</li>
+            <li>Analyze data and create visualizations</li>
+            <li>Automate repetitive tasks</li>
+            <li>Develop games and desktop applications</li>
+            <li>Write scripts for system administration</li>
+          </ul>
+
+          <p>Python works on all major platforms including Windows, Mac, Linux, and even mobile devices [web:1]. This cross-platform compatibility makes it an excellent choice for any project.</p>
         </div>
-        
-        <div class="back">
-          <h4 class="header">Python's Superpowers ⚡</h4>
-          <div class="content">
-            <p><strong>What Makes Python Special?</strong></p>
-            
-            <h4>1. Simple and Clean</h4>
-            <p>Python uses everyday words like "print", "if", and "for" [web:1]. You don't need complex symbols everywhere!</p>
-            
-            <h4>2. Less Code, More Results</h4>
-            <p>Tasks that take 20 lines in other languages might only need 5 lines in Python [web:9]. This means faster development and less typing!</p>
-            
-            <h4>3. Huge Community</h4>
-            <p>Millions of developers worldwide use Python, so you'll always find help and ready-made tools [web:6].</p>
-            
-            <h4>4. Free Libraries</h4>
-            <p>Python has thousands of free "libraries" - pre-written code packages for almost anything you can imagine [web:6]!</p>
-            
-            <h4>5. Beginner-Friendly</h4>
-            <p>Python doesn't force you to learn complex concepts right away. You can start simple and grow [web:2].</p>
-          </div>
-          <div class="pageNumber">2</div>
+        <div class="pageNumber">1</div>
+      </div>
+      
+      <div class="back">
+        <h4 class="header">Python's Key Features</h4>
+        <div class="content">
+          <p><strong>Why Python Stands Out</strong></p>
+          
+          <h4>1. Simple and Readable Syntax</h4>
+          <p>Python code reads almost like English. You don't need to memorize complicated symbols or structures [web:1]. This makes learning faster and coding more enjoyable.</p>
+
+          <h4>2. Interpreted Language</h4>
+          <p>Python runs on an interpreter system, which means you can execute code as soon as you write it. No need to compile your program first - just write and run [web:1]!</p>
+
+          <h4>3. Dynamically Typed</h4>
+          <p>You don't need to declare variable types. Python figures out whether something is a number, text, or other data type automatically [web:13]. This saves time and reduces errors.</p>
+
+          <h4>4. Extensive Libraries</h4>
+          <p>Python comes with a vast collection of pre-written code libraries for almost any task you can imagine [web:3]. Need to work with dates? There's a library. Want to make web requests? There's a library for that too.</p>
+
+          <h4>5. Large Community</h4>
+          <p>Millions of developers worldwide use Python, which means tons of tutorials, forums, and resources are available to help you learn [web:2].</p>
         </div>
+        <div class="pageNumber">2</div>
       </div>
     </div>
-    
-    <!-- Page 2 -->
-    <div class="page" id="page2">
-      <div class="subpage">
-        <div class="front">
-          <h4 class="header">Your First Python Program 🚀</h4>
-          <div class="content">
-            <p><strong>The Classic "Hello World"</strong></p>
-            <p>Every programmer's first program! Let's write it in Python:</p>
-            
-            <div class="code-example">
-print("Hello, World!")
-            </div>
-            
-            <p>That's it! Just one line and you're a programmer. Compare this to other languages that need 5-10 lines for the same thing [web:1].</p>
-            
-            <p><strong>How It Works:</strong></p>
-            <ul>
-              <li><strong>print()</strong> - tells Python to show something</li>
-              <li><strong>"Hello, World!"</strong> - the text to display</li>
-              <li>Parentheses () hold what you want to print</li>
-              <li>Quotes "" mark it as text (called a "string")</li>
-            </ul>
-            
-            <p><strong>Try These:</strong></p>
-            <div class="code-example">
-print("Welcome to Python!")
-print("My name is Alex")
+  </div>
+
+  <!-- Page 2 -->
+  <div class="page" id="page2">
+    <div class="subpage">
+      <div class="front">
+        <h4 class="header">Your First Python Program</h4>
+        <div class="content">
+          <p><strong>The Classic "Hello, World!"</strong></p>
+          <p>Every programmer's journey begins with a simple program that displays text on the screen. In Python, this is incredibly straightforward [web:1]:</p>
+
+          <div class="code-block">print("Hello, World!")</div>
+
+          <p>That's it! Just one line of code. The <strong>print()</strong> function tells Python to display whatever is inside the parentheses on the screen.</p>
+
+          <h4>Understanding the Syntax</h4>
+          <ul>
+            <li><strong>print</strong> - A built-in function that outputs text</li>
+            <li><strong>()</strong> - Parentheses contain the argument (input) for the function</li>
+            <li><strong>"Hello, World!"</strong> - A string (text) enclosed in quotes</li>
+          </ul>
+
+          <p><strong>Try These Examples:</strong></p>
+          <div class="code-block">print("Welcome to Python!")
+print("My name is Sarah")
 print(2025)
-            </div>
-            
-            <p>Notice how you can print text OR numbers!</p>
-          </div>
-          <div class="pageNumber">3</div>
+print(3.14)</div>
+
+          <p>Notice how you can print both text (strings) and numbers. Python handles different data types seamlessly [web:16].</p>
+
+          <h4>Comments in Python</h4>
+          <p>Use the # symbol to add comments - notes that Python ignores [web:3]:</p>
+          <div class="code-block"># This is a comment
+print("This runs")  # Comment after code</div>
         </div>
-        
-        <div class="back">
-          <h4 class="header">Variables: Storing Information 📦</h4>
-          <div class="content">
-            <p><strong>What are Variables?</strong></p>
-            <p>Variables are like labeled boxes that store information [web:7]. You give them a name and put data inside!</p>
-            
-            <div class="code-example">
-name = "Sarah"
-age = 15
+        <div class="pageNumber">3</div>
+      </div>
+      
+      <div class="back">
+        <h4 class="header">Variables: Storing Data</h4>
+        <div class="content">
+          <p><strong>What Are Variables?</strong></p>
+          <p>Variables are named containers that store data in your computer's memory [web:13]. Think of them as labeled boxes where you can put information and retrieve it later.</p>
+
+          <h4>Creating Variables</h4>
+          <p>In Python, creating a variable is simple - just use the assignment operator (=) [web:13]:</p>
+
+          <div class="code-block">name = "Alice"
+age = 25
 height = 5.6
-is_student = True
-            </div>
-            
-            <p><strong>Understanding Variables:</strong></p>
-            <ul>
-              <li><strong>name</strong> - stores text (string)</li>
-              <li><strong>age</strong> - stores whole numbers (integer)</li>
-              <li><strong>height</strong> - stores decimals (float)</li>
-              <li><strong>is_student</strong> - stores True/False (boolean)</li>
-            </ul>
-            
-            <p><strong>The Magic Part:</strong></p>
-            <p>In Python, you don't tell the computer "this is text" or "this is a number". Python figures it out automatically [web:6]! This is called dynamic typing.</p>
-            
-            <div class="code-example">
-x = 10      # x is a number
-x = "Hi"    # now x is text!
-            </div>
-            
-            <p>Try changing variable values - Python adapts!</p>
-          </div>
-          <div class="pageNumber">4</div>
+is_student = True</div>
+
+          <p>The variable name goes on the left, the equals sign in the middle, and the value on the right.</p>
+
+          <h4>Variable Naming Rules</h4>
+          <ul>
+            <li>Must start with a letter or underscore (_)</li>
+            <li>Can contain letters, numbers, and underscores</li>
+            <li>Cannot use Python keywords (like print, if, for)</li>
+            <li>Case-sensitive: "Name" and "name" are different</li>
+          </ul>
+
+          <h4>Using Variables</h4>
+          <div class="code-block">greeting = "Hello"
+name = "Bob"
+message = greeting + " " + name
+print(message)  # Output: Hello Bob</div>
+
+          <p>Variables make your code flexible and reusable [web:13]. You can change a variable's value and all code using it automatically updates!</p>
         </div>
+        <div class="pageNumber">4</div>
       </div>
     </div>
-    
-    <!-- Page 3 -->
-    <div class="page" id="page3">
-      <div class="subpage">
-        <div class="front">
-          <h4 class="header">Data Types Explained 🎨</h4>
-          <div class="content">
-            <p><strong>Types of Data in Python:</strong></p>
-            
-            <h4>1. Numbers (Numeric)</h4>
-            <div class="code-example">
-score = 95          # Integer
-price = 19.99       # Float
-complex_num = 2+3j  # Complex
-            </div>
-            
-            <h4>2. Text (String)</h4>
-            <div class="code-example">
-message = "Hello Python!"
-quote = 'Learning is fun'
-            </div>
-            
-            <h4>3. True/False (Boolean)</h4>
-            <div class="code-example">
-is_raining = False
-has_license = True
-            </div>
-            
-            <h4>4. Lists (Collections)</h4>
-            <div class="code-example">
-fruits = ["apple", "banana", "orange"]
-numbers = [1, 2, 3, 4, 5]
-            </div>
-            
-            <p>Lists store multiple items in order [web:7]. Use square brackets [].</p>
-            
-            <p><strong>Check Types:</strong></p>
-            <div class="code-example">
-print(type(95))      # int
-print(type(19.99))   # float
-            </div>
-          </div>
-          <div class="pageNumber">5</div>
+  </div>
+
+  <!-- Page 3 -->
+  <div class="page" id="page3">
+    <div class="subpage">
+      <div class="front">
+        <h4 class="header">Data Types in Python</h4>
+        <div class="content">
+          <p><strong>Understanding Data Types</strong></p>
+          <p>Python has several built-in data types to represent different kinds of information [web:16]. Let's explore the most important ones.</p>
+
+          <h4>1. Numeric Types</h4>
+          <div class="code-block">integer_num = 42        # int
+float_num = 3.14        # float
+complex_num = 2 + 3j    # complex</div>
+
+          <ul>
+            <li><strong>int</strong> - Whole numbers (positive or negative)</li>
+            <li><strong>float</strong> - Decimal numbers</li>
+            <li><strong>complex</strong> - Complex numbers with real and imaginary parts</li>
+          </ul>
+
+          <h4>2. String Type</h4>
+          <div class="code-block">text = "Hello Python"
+quote = 'Single quotes work too'
+multiline = """This spans
+multiple lines"""</div>
+
+          <p>Strings are sequences of characters enclosed in quotes [web:16]. You can use single, double, or triple quotes.</p>
+
+          <h4>3. Boolean Type</h4>
+          <div class="code-block">is_valid = True
+is_empty = False</div>
+
+          <p>Booleans represent truth values - either True or False [web:16]. They're essential for decision-making in programs.</p>
         </div>
-        
-        <div class="back">
-          <h4 class="header">Basic Math Operations ➕</h4>
-          <div class="content">
-            <p><strong>Python as a Calculator:</strong></p>
-            
-            <div class="code-example">
-# Addition
-print(5 + 3)        # Output: 8
+        <div class="pageNumber">5</div>
+      </div>
+      
+      <div class="back">
+        <h4 class="header">More Data Types</h4>
+        <div class="content">
+          <h4>4. Lists</h4>
+          <p>Lists store multiple items in a single variable [web:3]. They're ordered and changeable:</p>
+          <div class="code-block">fruits = ["apple", "banana", "cherry"]
+numbers = [1, 2, 3, 4, 5]
+mixed = [1, "hello", 3.14, True]</div>
+
+          <h4>5. Tuples</h4>
+          <p>Similar to lists but immutable (can't be changed) [web:16]:</p>
+          <div class="code-block">coordinates = (10, 20)
+rgb = (255, 128, 0)</div>
+
+          <h4>6. Dictionaries</h4>
+          <p>Store data in key-value pairs [web:16]:</p>
+          <div class="code-block">person = {
+    "name": "John",
+    "age": 30,
+    "city": "New York"
+}</div>
+
+          <h4>Checking Types</h4>
+          <p>Use the type() function to check any variable's data type [web:14]:</p>
+          <div class="code-block">x = 10
+print(type(x))  # Output: &lt;class 'int'&gt;
+
+y = "Hello"
+print(type(y))  # Output: &lt;class 'str'&gt;</div>
+
+          <p>Understanding data types helps you choose the right structure for your data [web:16].</p>
+        </div>
+        <div class="pageNumber">6</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page 4 -->
+  <div class="page" id="page4">
+    <div class="subpage">
+      <div class="front">
+        <h4 class="header">Basic Operations</h4>
+        <div class="content">
+          <p><strong>Python as a Calculator</strong></p>
+          <p>Python can perform all standard mathematical operations [web:14]:</p>
+
+          <h4>Arithmetic Operators</h4>
+          <div class="code-block"># Addition
+result = 5 + 3        # 8
 
 # Subtraction
-print(10 - 4)       # Output: 6
+result = 10 - 4       # 6
 
 # Multiplication
-print(6 * 7)        # Output: 42
+result = 6 * 7        # 42
 
 # Division
-print(20 / 4)       # Output: 5.0
+result = 20 / 4       # 5.0
 
 # Integer Division
-print(17 // 5)      # Output: 3
+result = 17 // 5      # 3
 
-# Remainder (Modulo)
-print(17 % 5)       # Output: 2
+# Modulo (remainder)
+result = 17 % 5       # 2
 
-# Power
-print(2 ** 3)       # Output: 8
-            </div>
-            
-            <p><strong>With Variables:</strong></p>
-            <div class="code-example">
-x = 10
-y = 3
-sum = x + y
-print(sum)          # Output: 13
-            </div>
-            
-            <p>The # symbol creates comments - notes that Python ignores [web:3]. Use them to explain your code!</p>
-          </div>
-          <div class="pageNumber">6</div>
+# Exponentiation
+result = 2 ** 3       # 8</div>
+
+          <h4>Comparison Operators</h4>
+          <p>These operators compare values and return True or False [web:14]:</p>
+          <div class="code-block">5 == 5    # True (equal to)
+5 != 3    # True (not equal to)
+5 > 3     # True (greater than)
+5 < 3     # False (less than)
+5 >= 5    # True (greater or equal)
+5 <= 3    # False (less or equal)</div>
         </div>
+        <div class="pageNumber">7</div>
       </div>
-    </div>
-    
-    <!-- Page 4 -->
-    <div class="page" id="page4">
-      <div class="subpage">
-        <div class="front">
-          <h4 class="header">Making Decisions with If 🤔</h4>
-          <div class="content">
-            <p><strong>Conditional Statements:</strong></p>
-            <p>Programs need to make decisions. Python uses "if" statements to check conditions [web:10].</p>
-            
-            <div class="code-example">
-age = 16
+      
+      <div class="back">
+        <h4 class="header">Conditional Statements</h4>
+        <div class="content">
+          <p><strong>Making Decisions in Code</strong></p>
+          <p>Programs need to make decisions based on conditions. Python uses if, elif, and else statements [web:12].</p>
+
+          <h4>Basic If Statement</h4>
+          <div class="code-block">age = 18
 
 if age >= 18:
-    print("You can vote!")
+    print("You are an adult")
 else:
-    print("Too young to vote")
-            </div>
-            
-            <p><strong>Important!</strong> Notice the indentation (spaces before print). Python uses indentation instead of curly braces {} [web:1].</p>
-            
-            <h4>Multiple Conditions:</h4>
-            <div class="code-example">
-score = 85
+    print("You are a minor")</div>
+
+          <p><strong>Important:</strong> Notice the indentation (spaces before print). Python uses indentation to group code blocks [web:1].</p>
+
+          <h4>Multiple Conditions</h4>
+          <div class="code-block">score = 85
 
 if score >= 90:
     print("Grade: A")
@@ -669,227 +541,148 @@ elif score >= 80:
     print("Grade: B")
 elif score >= 70:
     print("Grade: C")
+elif score >= 60:
+    print("Grade: D")
 else:
-    print("Grade: F")
-            </div>
-            
-            <p>Use <strong>elif</strong> (else if) for multiple checks [web:3].</p>
-            
-            <p><strong>Comparison Operators:</strong></p>
-            <ul>
-              <li>== (equal to)</li>
-              <li>!= (not equal)</li>
-              <li>&gt; (greater than)</li>
-              <li>&lt; (less than)</li>
-            </ul>
-          </div>
-          <div class="pageNumber">7</div>
+    print("Grade: F")</div>
+
+          <p>The program checks each condition in order and executes the first one that's True [web:3].</p>
+
+          <h4>Logical Operators</h4>
+          <div class="code-block">age = 25
+has_license = True
+
+if age >= 18 and has_license:
+    print("Can drive")</div>
         </div>
-        
-        <div class="back">
-          <h4 class="header">Loops: Repeating Actions 🔄</h4>
-          <div class="content">
-            <p><strong>For Loops:</strong></p>
-            <p>Need to repeat something? Use loops [web:3]!</p>
-            
-            <div class="code-example">
-# Print numbers 1 to 5
-for i in range(1, 6):
-    print(i)
+        <div class="pageNumber">8</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page 5 -->
+  <div class="page" id="page5">
+    <div class="subpage">
+      <div class="front">
+        <h4 class="header">Loops in Python</h4>
+        <div class="content">
+          <p><strong>Repeating Actions</strong></p>
+          <p>Loops allow you to execute code multiple times without writing it repeatedly [web:12].</p>
+
+          <h4>For Loops</h4>
+          <p>Use for loops to iterate over sequences [web:13]:</p>
+          <div class="code-block"># Loop through numbers
+for i in range(5):
+    print(i)  # Prints 0, 1, 2, 3, 4
 
 # Loop through a list
 fruits = ["apple", "banana", "cherry"]
 for fruit in fruits:
-    print(fruit)
-            </div>
-            
-            <p>The <strong>range(1, 6)</strong> creates numbers from 1 to 5 (stops before 6).</p>
-            
-            <h4>While Loops:</h4>
-            <div class="code-example">
-count = 0
+    print(fruit)</div>
+
+          <p>The range() function generates a sequence of numbers [web:15]. range(5) creates numbers from 0 to 4.</p>
+
+          <h4>While Loops</h4>
+          <p>While loops continue as long as a condition is True [web:12]:</p>
+          <div class="code-block">count = 0
 while count < 5:
     print(count)
-    count = count + 1
-            </div>
-            
-            <p>While loops continue as long as the condition is True [web:3].</p>
-            
-            <p><strong>Pro Tip:</strong> Be careful with while loops! Make sure they eventually stop, or they'll run forever.</p>
-            
-            <p><strong>Breaking Out:</strong></p>
-            <div class="code-example">
-for i in range(10):
+    count = count + 1  # Increment counter</div>
+
+          <p><strong>Warning:</strong> Make sure while loops eventually become False, or they'll run forever!</p>
+
+          <h4>Break and Continue</h4>
+          <div class="code-block">for i in range(10):
     if i == 5:
-        break
-    print(i)
-            </div>
-          </div>
-          <div class="pageNumber">8</div>
+        break  # Exit loop
+    print(i)</div>
         </div>
+        <div class="pageNumber">9</div>
       </div>
-    </div>
-    
-    <!-- Page 5 -->
-    <div class="page" id="page5">
-      <div class="subpage">
-        <div class="front">
-          <h4 class="header">Functions: Reusable Code 🎯</h4>
-          <div class="content">
-            <p><strong>What are Functions?</strong></p>
-            <p>Functions are reusable blocks of code with a name. Write once, use many times [web:3]!</p>
-            
-            <div class="code-example">
-def greet(name):
+      
+      <div class="back">
+        <h4 class="header">Functions: Reusable Code</h4>
+        <div class="content">
+          <p><strong>Creating Functions</strong></p>
+          <p>Functions are reusable blocks of code that perform specific tasks [web:3]. They help organize your code and avoid repetition.</p>
+
+          <h4>Defining Functions</h4>
+          <div class="code-block">def greet(name):
     print("Hello, " + name + "!")
 
 # Call the function
-greet("Alice")      # Hello, Alice!
-greet("Bob")        # Hello, Bob!
-            </div>
-            
-            <p><strong>Breaking It Down:</strong></p>
-            <ul>
-              <li><strong>def</strong> - defines a new function</li>
-              <li><strong>greet</strong> - the function name</li>
-              <li><strong>(name)</strong> - parameter (input)</li>
-              <li>Indented code runs when called</li>
-            </ul>
-            
-            <h4>Functions with Return:</h4>
-            <div class="code-example">
-def add(a, b):
+greet("Alice")  # Output: Hello, Alice!
+greet("Bob")    # Output: Hello, Bob!</div>
+
+          <p><strong>Function Components:</strong></p>
+          <ul>
+            <li><strong>def</strong> - keyword to define a function</li>
+            <li><strong>greet</strong> - function name</li>
+            <li><strong>(name)</strong> - parameter (input)</li>
+            <li>Indented code is the function body</li>
+          </ul>
+
+          <h4>Returning Values</h4>
+          <div class="code-block">def add(a, b):
     return a + b
 
 result = add(5, 3)
-print(result)       # Output: 8
-            </div>
-            
-            <p>The <strong>return</strong> statement sends a value back [web:3].</p>
-            
-            <p>Functions make code organized and easier to fix!</p>
-          </div>
-          <div class="pageNumber">9</div>
+print(result)  # Output: 8</div>
+
+          <p>The return statement sends a value back to the caller [web:3].</p>
+
+          <h4>Multiple Parameters</h4>
+          <div class="code-block">def calculate(x, y, operation):
+    if operation == "add":
+        return x + y
+    elif operation == "multiply":
+        return x * y</div>
         </div>
-        
-        <div class="back">
-          <h4 class="header">Your Python Journey 🌟</h4>
-          <div class="content">
-            <p><strong>Congratulations!</strong></p>
-            <p>You've learned the fundamentals of Python! Here's what you now know:</p>
-            
-            <ul>
-              <li>✅ What Python is and why it's popular</li>
-              <li>✅ How to print output</li>
-              <li>✅ Variables and data types</li>
-              <li>✅ Basic math operations</li>
-              <li>✅ If statements for decisions</li>
-              <li>✅ Loops for repetition</li>
-              <li>✅ Functions for reusable code</li>
-            </ul>
-            
-            <p><strong>What's Next?</strong></p>
-            <p>Python has so much more to offer [web:3]:</p>
-            <ul>
-              <li>📚 Working with files</li>
-              <li>🎨 Creating graphics and games</li>
-              <li>🌐 Building websites</li>
-              <li>🤖 Machine learning and AI</li>
-              <li>📊 Data science</li>
-            </ul>
-            
-            <p><strong>Remember:</strong> Every expert was once a beginner. Practice daily, build small projects, and don't be afraid to make mistakes - that's how you learn [web:5]!</p>
-            
-            <p style="text-align: center; margin-top: 15px;"><strong>Happy Coding! 🐍💻</strong></p>
-          </div>
-          <div class="pageNumber">10</div>
-        </div>
+        <div class="pageNumber">10</div>
       </div>
     </div>
   </div>
+
 </div>
 
 <script>
-// View Management
-function openBook(bookType) {
-  document.getElementById('libraryView').classList.add('hidden');
-  document.getElementById('bookView').classList.remove('hidden');
-  
-  // Reset book to first page
-  var pages = document.getElementsByClassName("page");
-  for (var i = 0; i < pages.length; i++) {
-    pages[i].className = pages[i].className.replace(/ listed/g, "");
-  }
-  currentPage = 0;
-  updateButtons();
-}
-
-function backToLibrary() {
-  document.getElementById('bookView').classList.add('hidden');
-  document.getElementById('libraryView').classList.remove('hidden');
-}
-
-// 3D Book Functionality
 var Pages = function() {
   var pages = document.getElementsByClassName("page"),
       currentPage = 0,
-      
+
       next = function() {
         var page = pages[currentPage];
-        if (page && currentPage < pages.length - 1) {
+        console.log(pages, page);
+        if (page) {
           page.className += " listed";
+        }
+        if (currentPage < pages.length - 1) {
           currentPage++;
         }
-        updateButtons();
       },
-      
       prev = function() {
+        var page = pages[currentPage];
+        if (page) {
+          page.className = page.className.replace(/ listed/g, "");
+        }
         if (currentPage > 0) {
           currentPage--;
-          var page = pages[currentPage];
-          if (page) {
-            page.className = page.className.replace(/ listed/g, "");
-          }
         }
-        updateButtons();
-      },
-      
-      updateButtons = function() {
-        var prevBtn = document.getElementById("prevPage");
-        var nextBtn = document.getElementById("nextPage");
-        
-        prevBtn.disabled = (currentPage === 0);
-        nextBtn.disabled = (currentPage === pages.length - 1);
       };
   
   return {
     prev: prev,
-    next: next,
-    updateButtons: updateButtons
+    next: next
   };
 };
 
 var pages = Pages();
-var currentPage = 0;
-
 document.getElementById("nextPage").addEventListener("click", function() {
   pages.next();
 }, false);
-
 document.getElementById("prevPage").addEventListener("click", function() {
   pages.prev();
 }, false);
-
-// Initialize button states
-pages.updateButtons();
-
-// Prevent scrolling on body when book is open
-document.getElementById('bookView').addEventListener('touchmove', function(e) {
-  if (e.target.closest('.page > div > div')) {
-    return; // Allow scrolling inside pages
-  }
-  e.preventDefault();
-}, { passive: false });
 </script>
 
 </body>
