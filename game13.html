@@ -1,308 +1,1009 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Mobile Book Library</title>
-<style>
-.book {
-  width: 1000px;
-  height: 640px;
-  border: 2px solid #dddddd;
-  -webkit-perspective: 1400px;
-     -moz-perspective: 1400px;
-          perspective: 1400px;
-  /*
-  -webkit-transform: perspective(1400);
-     -moz-transform: perspective(1400);
-          transform: perspective(1400);*/
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Full Stack Developer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  -webkit-transform-style: preserve-3d;
-     -moz-transform-style: preserve-3d;
-          transform-style: preserve-3d;
-  font-family: Arial;
-  margin: 0px auto;
-}
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --accent-purple: #a855f7;
+            --accent-purple-dim: rgba(168, 85, 247, 0.1);
+            --accent-purple-hover: #9333ea;
+        }
 
-.page {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  transition: transform 1s;
-  -webkit-transform-style: preserve-3d;
-     -moz-transform-style: preserve-3d;
-          transform-style: preserve-3d;
-}
-.page > div {
-  width: 50%;
-  height: 100%;
-  position: absolute;
-  transform: translateX(500px) translateY(2%);
-  transform-style: preserve-3d;
-}
-.page > div > div {
-  width: 98%;
-  height: 96%;
-  background-color: #ffffff;
-  -webkit-backface-visibility: hidden;
-     -moz-backface-visibility: hidden;
-          backface-visibility: hidden;
-  position: absolute;
-  padding: 10px 20px;
-  box-sizing: border-box;
-  border: 1px solid #dddddd;
-  -webkit-transform-style: flat;
-     -moz-transform-style: flat;
-          transform-style: flat;
-}
-.page > div > div.back {
-  transform:  rotateY(180deg) translateZ(1px);
-}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
 
-.page.listed {
-  transform: rotateY(-180deg);
-}
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(168, 85, 247, 0.1);
+            border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+        }
 
-#page1 {
-  z-index: 4;
-}
-#page2 {
-  z-index: 3;
-}
-#page3 {
-  z-index: 2;
-}
-#page4 {
-  z-index: 1;
-}
+        .nav-btn {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-primary));
+            color: var(--text-primary);
+            border: 2px solid var(--accent-purple);
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
 
-#page1.page.listed {
-  z-index: 1;
-}
-#page2.page.listed {
-  z-index: 2;
-}
-#page3.page.listed {
-  z-index: 3;
-}
-#page4.page.listed {
-  z-index: 4;
-}
+        .nav-btn:hover {
+            background: var(--accent-purple);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);
+        }
 
-.controls {
-  margin-bottom: 80px;
-}
+        .nav-btn.active {
+            background: var(--accent-purple);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+        }
 
-.page .header {
-  margin: 6px 0px;
-  padding: 0px;
-  text-align: center;
-}
-.page .content {
-  text-indent: 20px;
-}
+        /* Main Container */
+        .container {
+            margin-top: 100px;
+            padding: 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+            min-height: calc(100vh - 100px);
+        }
 
-.page .pageNumber {
-  position: absolute;
-  bottom: 20px;
-  font-size: 12px;
-}
-.page .front .pageNumber {
-  right: 20px;
-}
-.page .back .pageNumber {
-  left: 20px;
-}
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
 
-.page .front {
-  background:-webkit-gradient(linear, right top, left top, color-stop(0.95, #fff), color-stop(1, #cacaca));
-    background-image:-webkit-linear-gradient(right, #fff 95%, #cacaca 100%);
-    background-image:-moz-linear-gradient(right, #fff 95%, #cacaca 100%);
-    background-image:-ms-linear-gradient(right, #fff 95%, #cacaca 100%);
-    background-image:-o-linear-gradient(right, #fff 95%, #cacaca 100%);
-    background-image:linear-gradient(right, #fff 95%, #cacaca 100%);
-}
+        .section.active {
+            display: block;
+        }
 
-.page .back {
-  background:-webkit-gradient(linear, left top, right top, color-stop(0.95, #fff), color-stop(1, #dadada));
-    background-image:-webkit-linear-gradient(left, #fff 95%, #dadada 100%);
-    background-image:-moz-linear-gradient(left, #fff 95%, #dadada 100%);
-    background-image:-ms-linear-gradient(left, #fff 95%, #dadada 100%);
-    background-image:-o-linear-gradient(left, #fff 95%, #dadada 100%);
-    background-image:linear-gradient(left, #fff 95%, #dadada 100%);
-}
-</style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Profile Section */
+        .profile-header {
+            text-align: center;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-primary));
+            border-radius: 16px;
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .profile-image-container {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            border: 4px solid var(--accent-purple);
+            padding: 4px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-purple-hover));
+            box-shadow: 0 10px 40px rgba(168, 85, 247, 0.3);
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--bg-secondary);
+        }
+
+        .profile-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        h1 {
+            color: var(--accent-purple);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+        }
+
+        h2 {
+            color: var(--accent-purple);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent-purple);
+            display: inline-block;
+        }
+
+        h3 {
+            color: var(--accent-purple);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .social-btn {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            border: 2px solid var(--accent-purple);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        .social-btn:hover {
+            background: var(--accent-purple);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .contact-item {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            border-color: var(--accent-purple);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(168, 85, 247, 0.2);
+        }
+
+        .contact-item strong {
+            color: var(--accent-purple);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Skills Section */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .skill-card {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-primary));
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid rgba(168, 85, 247, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-purple-hover));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .skill-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .skill-card:hover {
+            border-color: var(--accent-purple);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3);
+        }
+
+        .skill-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* Projects Section */
+        .projects-grid {
+            display: grid;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .project-card {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-primary));
+            padding: 2rem;
+            border-radius: 12px;
+            border: 2px solid rgba(168, 85, 247, 0.2);
+            transition: all 0.3s ease;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .project-card:hover {
+            border-color: var(--accent-purple);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(168, 85, 247, 0.3);
+        }
+
+        .project-image-container {
+            width: 200px;
+            height: 200px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid var(--accent-purple);
+            background: var(--bg-primary);
+            flex-shrink: 0;
+        }
+
+        .project-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Uncomment and add your image URL below */
+        /* .project-image {
+            content: url('YOUR_SUPABASE_IMAGE_URL_HERE');
+        } */
+
+        .project-content {
+            flex: 1;
+        }
+
+        .project-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .visit-btn {
+            background: var(--accent-purple);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .visit-btn:hover {
+            background: var(--accent-purple-hover);
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .project-description ul {
+            margin-top: 0.5rem;
+            margin-left: 1.5rem;
+        }
+
+        .project-description li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Languages Section */
+        .languages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .language-card {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 2px solid rgba(168, 85, 247, 0.2);
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .language-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-purple);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .language-card:hover::after {
+            transform: scaleX(1);
+        }
+
+        .language-card:hover {
+            border-color: var(--accent-purple);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3);
+        }
+
+        .language-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-purple);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0.75rem 1rem;
+            }
+
+            .nav-btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+
+            .container {
+                margin-top: 140px;
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .project-card {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .project-image-container {
+                width: 100%;
+                height: 250px;
+                margin: 0 auto;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .languages-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+
+        .glow-text {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+            }
+            to {
+                text-shadow: 0 0 20px rgba(168, 85, 247, 0.8), 0 0 30px rgba(168, 85, 247, 0.6);
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="controls">
-  <button id="prevPage">Prev</button>
-  <button id="nextPage">Next</button>
-</div>
-<div class="book">
-  <div class="page" id="page1">
-      <div class="subpage">
-        <div class="front">
-          <h4 class="header">Page 1</h4>
-          <div class="content">
-            <p>Lorem ipsum dolor sit amet, ex cum quando dolorem blandit, commodo aliquip temporibus cu nec, malis offendit tacimates an vel. Saepe decore putant ut ius, viris scripserit cu nam. Ea has graeci ponderum efficiantur, ocurreret adolescens liberavisse vim ex. Ea ius odio habeo expetenda, eripuit iracundia vel id. Disputando accommodare per te.</p>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <button class="nav-btn active" onclick="showSection('profile')">Profile & Contact</button>
+        <button class="nav-btn" onclick="showSection('skills')">Skills</button>
+        <button class="nav-btn" onclick="showSection('projects')">Projects</button>
+        <button class="nav-btn" onclick="showSection('languages')">Languages</button>
+    </nav>
 
-            <p>Per iusto percipit inciderint ut, mea natum detraxit te. Ad his inani tollit maluisset, quaestio adversarium quo et. Ut populo probatus consulatu usu, quo gloriatur efficiendi assueverit cu. Eros volumus vim no, postea possim mel ea.</p>
+    <!-- Main Container -->
+    <div class="container">
 
-            <p>His cu soluta splendide. Vim meis omittantur cu, id dolores copiosae evertitur duo. In per antiopam concludaturque, eruditi appellantur mei ei. Quem eleifend mei no.</p>
+        <!-- Profile & Contact Section -->
+        <section id="profile" class="section active">
+            <div class="profile-header">
+                <div class="profile-image-container">
+                    <!-- Uncomment below and add your image URL -->
+                    <!-- <img src="YOUR_SUPABASE_IMAGE_URL_HERE" alt="Profile" class="profile-image"> -->
 
-            <p>At partiendo voluptatum mei, agam duis concludaturque ea est. Quis quidam eos cu. An eum omittam iracundia, bonorum argumentum et est. Aliquando forensibus incorrupte in vel, dolor omnium id sea, id nam affert facilisis.</p>
+                    <!-- SVG Placeholder -->
+                    <svg class="profile-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#a855f7;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#9333ea;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="100" cy="70" r="40" fill="url(#grad1)"/>
+                        <ellipse cx="100" cy="160" rx="60" ry="50" fill="url(#grad1)"/>
+                    </svg>
+                </div>
 
-            <p>Ei sensibus posidonium eam, usu facer recusabo in. Ius ex everti forensibus accommodare, at quo dolore recteque complectitur, cu malis inani eos. No his gubergren scriptorem. Duo postea copiosae id, at tempor habemus molestiae sit. Ne audiam ornatus torquatos qui, at pro possit inermis urbanitas. Te sale ullum nostrud ius, ne ignota molestie iracundia his, nonumy labore ius at.</p>
-          </div>
-          <div class="pageNumber">1</div>
-        </div>
-        <div class="back">
-          <h4 class="header">Page 2</h4>
-          <div class="content"><p>Lorem ipsum dolor sit amet, ex cum quando dolorem blandit, commodo aliquip temporibus cu nec, malis offendit tacimates an vel. Saepe decore putant ut ius, viris scripserit cu nam. Ea has graeci ponderum efficiantur, ocurreret adolescens liberavisse vim ex. Ea ius odio habeo expetenda, eripuit iracundia vel id. Disputando accommodare per te.</p>
+                <h1 class="glow-text">YOUR NAME</h1>
+                <p style="font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                    Full Stack Developer | Android Expert | AI Engineer
+                </p>
 
-            <p>Per iusto percipit inciderint ut, mea natum detraxit te. Ad his inani tollit maluisset, quaestio adversarium quo et. Ut populo probatus consulatu usu, quo gloriatur efficiendi assueverit cu. Eros volumus vim no, postea possim mel ea.</p>
+                <div class="social-links">
+                    <a href="YOUR_GITHUB_URL" target="_blank" class="social-btn">
+                        <span>🔗</span> GitHub
+                    </a>
+                    <a href="YOUR_LINKEDIN_URL" target="_blank" class="social-btn">
+                        <span>💼</span> LinkedIn
+                    </a>
+                    <a href="mailto:YOUR_EMAIL" class="social-btn">
+                        <span>📧</span> Email
+                    </a>
+                    <a href="https://wa.me/YOUR_PHONE_NUMBER" target="_blank" class="social-btn">
+                        <span>💬</span> WhatsApp
+                    </a>
+                </div>
+            </div>
 
-            <p>His cu soluta splendide. Vim meis omittantur cu, id dolores copiosae evertitur duo. In per antiopam concludaturque, eruditi appellantur mei ei. Quem eleifend mei no.</p>
+            <h2>Contact Information</h2>
+            <div class="contact-grid">
+                <div class="contact-item">
+                    <strong>📱 Phone</strong>
+                    <span>YOUR_PHONE_NUMBER</span>
+                </div>
+                <div class="contact-item">
+                    <strong>📧 Email</strong>
+                    <span>YOUR_EMAIL</span>
+                </div>
+                <div class="contact-item">
+                    <strong>🏠 Address</strong>
+                    <span>YOUR_ADDRESS</span>
+                </div>
+                <div class="contact-item">
+                    <strong>🌆 City</strong>
+                    <span>YOUR_CITY</span>
+                </div>
+                <div class="contact-item">
+                    <strong>📍 State</strong>
+                    <span>YOUR_STATE</span>
+                </div>
+            </div>
+        </section>
 
-            <p>At partiendo voluptatum mei, agam duis concludaturque ea est. Quis quidam eos cu. An eum omittam iracundia, bonorum argumentum et est. Aliquando forensibus incorrupte in vel, dolor omnium id sea, id nam affert facilisis.</p>
+        <!-- Skills Section -->
+        <section id="skills" class="section">
+            <h2>Professional Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <span class="skill-icon">📱</span>
+                    <h3>Android App Development</h3>
+                    <p>Kotlin, Java</p>
+                </div>
+                <div class="skill-card">
+                    <span class="skill-icon">🐍</span>
+                    <h3>Python Development</h3>
+                    <p>Advanced Python programming</p>
+                </div>
+                <div class="skill-card">
+                    <span class="skill-icon">🗄️</span>
+                    <h3>SQL Database</h3>
+                    <p>Database design & optimization</p>
+                </div>
+                <div class="skill-card">
+                    <span class="skill-icon">🌐</span>
+                    <h3>Web Development</h3>
+                    <p>Full-stack web applications</p>
+                </div>
+                <div class="skill-card">
+                    <span class="skill-icon">🎨</span>
+                    <h3>Frontend Development</h3>
+                    <p>Amazing UI/UX design</p>
+                </div>
+                <div class="skill-card">
+                    <span class="skill-icon">⚡</span>
+                    <h3>Fullstack Development</h3>
+                    <p>End-to-end solutions</p>
+                </div>
+                <div class="skill-card">
+                    <span class="skill-icon">📲</span>
+                    <h3>Progressive Web Apps</h3>
+                    <p>PWA development expert</p>
+                </div>
+                <div class="skill-card">
+                    <span class="skill-icon">🚀</span>
+                    <h3>Startup Founder</h3>
+                    <p>Company management</p>
+                </div>
+                <div class="skill-card">
+                    <span class="skill-icon">👥</span>
+                    <h3>Team Leadership</h3>
+                    <p>Leading development teams</p>
+                </div>
+                <div class="skill-card">
+                    <span class="skill-icon">🤖</span>
+                    <h3>AI Prompt Expert</h3>
+                    <p>Advanced AI prompting</p>
+                </div>
+                <div class="skill-card">
+                    <span class="skill-icon">🧠</span>
+                    <h3>AI Engineer</h3>
+                    <p>AI model development</p>
+                </div>
+                <div class="skill-card">
+                    <span class="skill-icon">📊</span>
+                    <h3>AI Analysis</h3>
+                    <p>Data analysis with AI</p>
+                </div>
+                <div class="skill-card">
+                    <span class="skill-icon">💬</span>
+                    <h3>Communication Skills</h3>
+                    <p>Fluent English speaker</p>
+                </div>
+            </div>
+        </section>
 
-            <p>Ei sensibus posidonium eam, usu facer recusabo in. Ius ex everti forensibus accommodare, at quo dolore recteque complectitur, cu malis inani eos. No his gubergren scriptorem. Duo postea copiosae id, at tempor habemus molestiae sit. Ne audiam ornatus torquatos qui, at pro possit inermis urbanitas. Te sale ullum nostrud ius, ne ignota molestie iracundia his, nonumy labore ius at.</p></div>
-          <div class="pageNumber">2</div>
-        </div>
-      </div>
-  </div>
-  <div class="page" id="page2">
-      <div class="subpage">
-        <div class="front">
-          <h4 class="header">Page 3</h4>
-          <div class="content"><p>Lorem ipsum dolor sit amet, ex cum quando dolorem blandit, commodo aliquip temporibus cu nec, malis offendit tacimates an vel. Saepe decore putant ut ius, viris scripserit cu nam. Ea has graeci ponderum efficiantur, ocurreret adolescens liberavisse vim ex. Ea ius odio habeo expetenda, eripuit iracundia vel id. Disputando accommodare per te.</p>
+        <!-- Projects Section -->
+        <section id="projects" class="section">
+            <h2>Featured Projects</h2>
+            <div class="projects-grid">
 
-            <p>Per iusto percipit inciderint ut, mea natum detraxit te. Ad his inani tollit maluisset, quaestio adversarium quo et. Ut populo probatus consulatu usu, quo gloriatur efficiendi assueverit cu. Eros volumus vim no, postea possim mel ea.</p>
+                <!-- Project 1 -->
+                <div class="project-card">
+                    <div class="project-image-container">
+                        <!-- Uncomment and add your image URL -->
+                        <!-- <img src="YOUR_SUPABASE_IMAGE_URL" alt="pydefine" class="project-image"> -->
+                        <svg class="project-image" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="200" height="200" fill="#1a1a1a"/>
+                            <text x="100" y="100" font-size="60" fill="#a855f7" text-anchor="middle" dy=".3em">🐍</text>
+                            <text x="100" y="150" font-size="20" fill="#ffffff" text-anchor="middle">pydefine</text>
+                        </svg>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-title">
+                            <h3>pydefine - Python Library</h3>
+                            <a href="YOUR_PROJECT_URL" target="_blank" class="visit-btn">Visit Site →</a>
+                        </div>
+                        <div class="project-description">
+                            Custom Python library that converts raw Python errors into easy-to-understand explanations with emojis. Makes debugging more intuitive and beginner-friendly.
+                        </div>
+                    </div>
+                </div>
 
-            <p>His cu soluta splendide. Vim meis omittantur cu, id dolores copiosae evertitur duo. In per antiopam concludaturque, eruditi appellantur mei ei. Quem eleifend mei no.</p>
+                <!-- Project 2 -->
+                <div class="project-card">
+                    <div class="project-image-container">
+                        <!-- Uncomment and add your image URL -->
+                        <!-- <img src="YOUR_SUPABASE_IMAGE_URL" alt="JobCenter" class="project-image"> -->
+                        <svg class="project-image" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="200" height="200" fill="#1a1a1a"/>
+                            <text x="100" y="100" font-size="60" fill="#a855f7" text-anchor="middle" dy=".3em">💼</text>
+                            <text x="100" y="150" font-size="18" fill="#ffffff" text-anchor="middle">JobCenter</text>
+                        </svg>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-title">
+                            <h3>JobCenter - Job Application Platform</h3>
+                            <a href="YOUR_PROJECT_URL" target="_blank" class="visit-btn">Visit Site →</a>
+                        </div>
+                        <div class="project-description">
+                            Android job application app with live backend integration. Features real-time job postings and application tracking.
+                        </div>
+                    </div>
+                </div>
 
-            <p>At partiendo voluptatum mei, agam duis concludaturque ea est. Quis quidam eos cu. An eum omittam iracundia, bonorum argumentum et est. Aliquando forensibus incorrupte in vel, dolor omnium id sea, id nam affert facilisis.</p>
+                <!-- Project 3 -->
+                <div class="project-card">
+                    <div class="project-image-container">
+                        <!-- Uncomment and add your image URL -->
+                        <!-- <img src="YOUR_SUPABASE_IMAGE_URL" alt="YouBuddy" class="project-image"> -->
+                        <svg class="project-image" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="200" height="200" fill="#1a1a1a"/>
+                            <text x="100" y="100" font-size="60" fill="#a855f7" text-anchor="middle" dy=".3em">🎓</text>
+                            <text x="100" y="150" font-size="18" fill="#ffffff" text-anchor="middle">YouBuddy AI</text>
+                        </svg>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-title">
+                            <h3>YouBuddy AI - All-in-One Engineering App</h3>
+                            <a href="YOUR_PROJECT_URL" target="_blank" class="visit-btn">Visit Site →</a>
+                        </div>
+                        <div class="project-description">
+                            Comprehensive app for engineering students featuring notes, Instagram-style feed, AI chatbot for doubts, mini games, and coding language tutorials.
+                        </div>
+                    </div>
+                </div>
 
-            <p>Ei sensibus posidonium eam, usu facer recusabo in. Ius ex everti forensibus accommodare, at quo dolore recteque complectitur, cu malis inani eos. No his gubergren scriptorem. Duo postea copiosae id, at tempor habemus molestiae sit. Ne audiam ornatus torquatos qui, at pro possit inermis urbanitas. Te sale ullum nostrud ius, ne ignota molestie iracundia his, nonumy labore ius at.</p></div>
-          <div class="pageNumber">3</div>
-        </div>
-        <div class="back">
-          <h4 class="header">Page 4</h4>
-          <div class="content"><p>Lorem ipsum dolor sit amet, ex cum quando dolorem blandit, commodo aliquip temporibus cu nec, malis offendit tacimates an vel. Saepe decore putant ut ius, viris scripserit cu nam. Ea has graeci ponderum efficiantur, ocurreret adolescens liberavisse vim ex. Ea ius odio habeo expetenda, eripuit iracundia vel id. Disputando accommodare per te.</p>
+                <!-- Project 4 -->
+                <div class="project-card">
+                    <div class="project-image-container">
+                        <!-- Uncomment and add your image URL -->
+                        <!-- <img src="YOUR_SUPABASE_IMAGE_URL" alt="Dominal Browser" class="project-image"> -->
+                        <svg class="project-image" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="200" height="200" fill="#1a1a1a"/>
+                            <text x="100" y="100" font-size="60" fill="#a855f7" text-anchor="middle" dy=".3em">🔒</text>
+                            <text x="100" y="150" font-size="16" fill="#ffffff" text-anchor="middle">Dominal Browser</text>
+                        </svg>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-title">
+                            <h3>Dominal Browser - Privacy-First Browser</h3>
+                            <a href="YOUR_PROJECT_URL" target="_blank" class="visit-btn">Visit Site →</a>
+                        </div>
+                        <div class="project-description">
+                            Secure Android browser that saves no browsing history, blocks user data sharing, and filters harmful external sites for maximum privacy protection.
+                        </div>
+                    </div>
+                </div>
 
-            <p>Per iusto percipit inciderint ut, mea natum detraxit te. Ad his inani tollit maluisset, quaestio adversarium quo et. Ut populo probatus consulatu usu, quo gloriatur efficiendi assueverit cu. Eros volumus vim no, postea possim mel ea.</p>
+                <!-- Project 5 -->
+                <div class="project-card">
+                    <div class="project-image-container">
+                        <!-- Uncomment and add your image URL -->
+                        <!-- <img src="YOUR_SUPABASE_IMAGE_URL" alt="Turf Booking" class="project-image"> -->
+                        <svg class="project-image" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="200" height="200" fill="#1a1a1a"/>
+                            <text x="100" y="100" font-size="60" fill="#a855f7" text-anchor="middle" dy=".3em">⚽</text>
+                            <text x="100" y="150" font-size="16" fill="#ffffff" text-anchor="middle">Turf Booking</text>
+                        </svg>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-title">
+                            <h3>Online Turf Booking System</h3>
+                            <a href="YOUR_PROJECT_URL" target="_blank" class="visit-btn">Visit Site →</a>
+                        </div>
+                        <div class="project-description">
+                            Complete booking platform with web app and 2 mobile apps (user & turf admin). Features live database for turf availability and instant booking notifications to owners.
+                        </div>
+                    </div>
+                </div>
 
-            <p>His cu soluta splendide. Vim meis omittantur cu, id dolores copiosae evertitur duo. In per antiopam concludaturque, eruditi appellantur mei ei. Quem eleifend mei no.</p>
+                <!-- Project 6 -->
+                <div class="project-card">
+                    <div class="project-image-container">
+                        <!-- Uncomment and add your image URL -->
+                        <!-- <img src="YOUR_SUPABASE_IMAGE_URL" alt="Chat App" class="project-image"> -->
+                        <svg class="project-image" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="200" height="200" fill="#1a1a1a"/>
+                            <text x="100" y="100" font-size="60" fill="#a855f7" text-anchor="middle" dy=".3em">💬</text>
+                            <text x="100" y="150" font-size="18" fill="#ffffff" text-anchor="middle">Chat App</text>
+                        </svg>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-title">
+                            <h3>WhatsApp-Style Chat Application</h3>
+                            <a href="YOUR_PROJECT_URL" target="_blank" class="visit-btn">Visit Site →</a>
+                        </div>
+                        <div class="project-description">
+                            Web-based messaging app with live message delivery and offline notifications. Real-time chat experience similar to WhatsApp.
+                        </div>
+                    </div>
+                </div>
 
-            <p>At partiendo voluptatum mei, agam duis concludaturque ea est. Quis quidam eos cu. An eum omittam iracundia, bonorum argumentum et est. Aliquando forensibus incorrupte in vel, dolor omnium id sea, id nam affert facilisis.</p>
+                <!-- Project 7 -->
+                <div class="project-card">
+                    <div class="project-image-container">
+                        <!-- Uncomment and add your image URL -->
+                        <!-- <img src="YOUR_SUPABASE_IMAGE_URL" alt="FaceAttend" class="project-image"> -->
+                        <svg class="project-image" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="200" height="200" fill="#1a1a1a"/>
+                            <text x="100" y="100" font-size="60" fill="#a855f7" text-anchor="middle" dy=".3em">👤</text>
+                            <text x="100" y="150" font-size="16" fill="#ffffff" text-anchor="middle">FaceAttend AI</text>
+                        </svg>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-title">
+                            <h3>FaceAttend AI - Attendance System</h3>
+                            <a href="YOUR_PROJECT_URL" target="_blank" class="visit-btn">Visit Site →</a>
+                        </div>
+                        <div class="project-description">
+                            AI-powered attendance software that stores student facial data and automatically detects attendance using facial recognition AI model.
+                        </div>
+                    </div>
+                </div>
 
-            <p>Ei sensibus posidonium eam, usu facer recusabo in. Ius ex everti forensibus accommodare, at quo dolore recteque complectitur, cu malis inani eos. No his gubergren scriptorem. Duo postea copiosae id, at tempor habemus molestiae sit. Ne audiam ornatus torquatos qui, at pro possit inermis urbanitas. Te sale ullum nostrud ius, ne ignota molestie iracundia his, nonumy labore ius at.</p></div>
-          <div class="pageNumber">4</div>
-        </div>
-      </div>
-  </div>
-  <div class="page" id="page3">
-      <div class="subpage">
-        <div class="front">
-          <h4 class="header">Page 5</h4>
-          <div class="content"><p>Lorem ipsum dolor sit amet, ex cum quando dolorem blandit, commodo aliquip temporibus cu nec, malis offendit tacimates an vel. Saepe decore putant ut ius, viris scripserit cu nam. Ea has graeci ponderum efficiantur, ocurreret adolescens liberavisse vim ex. Ea ius odio habeo expetenda, eripuit iracundia vel id. Disputando accommodare per te.</p>
+                <!-- Project 8 -->
+                <div class="project-card">
+                    <div class="project-image-container">
+                        <!-- Uncomment and add your image URL -->
+                        <!-- <img src="YOUR_SUPABASE_IMAGE_URL" alt="Heart AI" class="project-image"> -->
+                        <svg class="project-image" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="200" height="200" fill="#1a1a1a"/>
+                            <text x="100" y="100" font-size="60" fill="#a855f7" text-anchor="middle" dy=".3em">❤️</text>
+                            <text x="100" y="150" font-size="18" fill="#ffffff" text-anchor="middle">Heart AI</text>
+                        </svg>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-title">
+                            <h3>Heart AI - Disease Prediction</h3>
+                            <a href="YOUR_PROJECT_URL" target="_blank" class="visit-btn">Visit Site →</a>
+                        </div>
+                        <div class="project-description">
+                            Healthcare app providing heart disease information, symptom-based disease prediction, health tips, and doctor directories with location and contact details.
+                        </div>
+                    </div>
+                </div>
 
-            <p>Per iusto percipit inciderint ut, mea natum detraxit te. Ad his inani tollit maluisset, quaestio adversarium quo et. Ut populo probatus consulatu usu, quo gloriatur efficiendi assueverit cu. Eros volumus vim no, postea possim mel ea.</p>
+                <!-- Project 9 -->
+                <div class="project-card">
+                    <div class="project-image-container">
+                        <!-- Uncomment and add your image URL -->
+                        <!-- <img src="YOUR_SUPABASE_IMAGE_URL" alt="SmileUp" class="project-image"> -->
+                        <svg class="project-image" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="200" height="200" fill="#1a1a1a"/>
+                            <text x="100" y="100" font-size="60" fill="#a855f7" text-anchor="middle" dy=".3em">😊</text>
+                            <text x="100" y="150" font-size="18" fill="#ffffff" text-anchor="middle">SmileUp</text>
+                        </svg>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-title">
+                            <h3>SmileUp - Smile Reward App</h3>
+                            <a href="YOUR_PROJECT_URL" target="_blank" class="visit-btn">Visit Site →</a>
+                        </div>
+                        <div class="project-description">
+                            Innovative app rewarding users with points and gifts for smiling. Uses AI model to capture and verify smiles without storing images, promoting mental wellness.
+                        </div>
+                    </div>
+                </div>
 
-            <p>His cu soluta splendide. Vim meis omittantur cu, id dolores copiosae evertitur duo. In per antiopam concludaturque, eruditi appellantur mei ei. Quem eleifend mei no.</p>
+                <!-- Project 10 -->
+                <div class="project-card">
+                    <div class="project-image-container">
+                        <!-- Uncomment and add your image URL -->
+                        <!-- <img src="YOUR_SUPABASE_IMAGE_URL" alt="Coderverse" class="project-image"> -->
+                        <svg class="project-image" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="200" height="200" fill="#1a1a1a"/>
+                            <text x="100" y="100" font-size="60" fill="#a855f7" text-anchor="middle" dy=".3em">💻</text>
+                            <text x="100" y="150" font-size="17" fill="#ffffff" text-anchor="middle">Coderverse</text>
+                        </svg>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-title">
+                            <h3>Coderverse - Coding Learning Platform</h3>
+                            <a href="YOUR_PROJECT_URL" target="_blank" class="visit-btn">Visit Site →</a>
+                        </div>
+                        <div class="project-description">
+                            Educational platform for learning programming languages with MCQ tests, AI-powered analytics of user study patterns, and personalized growth tracking.
+                        </div>
+                    </div>
+                </div>
 
-            <p>At partiendo voluptatum mei, agam duis concludaturque ea est. Quis quidam eos cu. An eum omittam iracundia, bonorum argumentum et est. Aliquando forensibus incorrupte in vel, dolor omnium id sea, id nam affert facilisis.</p>
+                <!-- Project 11 -->
+                <div class="project-card">
+                    <div class="project-image-container">
+                        <!-- Uncomment and add your image URL -->
+                        <!-- <img src="YOUR_SUPABASE_IMAGE_URL" alt="Maidly" class="project-image"> -->
+                        <svg class="project-image" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="200" height="200" fill="#1a1a1a"/>
+                            <text x="100" y="100" font-size="60" fill="#a855f7" text-anchor="middle" dy=".3em">🏡</text>
+                            <text x="100" y="150" font-size="18" fill="#ffffff" text-anchor="middle">Maidly</text>
+                        </svg>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-title">
+                            <h3>Maidly - Maid Booking System</h3>
+                            <a href="YOUR_PROJECT_URL" target="_blank" class="visit-btn">Visit Site →</a>
+                        </div>
+                        <div class="project-description">
+                            Online maid booking platform with live availability tracking and instant booking confirmations. Streamlines household service hiring.
+                        </div>
+                    </div>
+                </div>
 
-            <p>Ei sensibus posidonium eam, usu facer recusabo in. Ius ex everti forensibus accommodare, at quo dolore recteque complectitur, cu malis inani eos. No his gubergren scriptorem. Duo postea copiosae id, at tempor habemus molestiae sit. Ne audiam ornatus torquatos qui, at pro possit inermis urbanitas. Te sale ullum nostrud ius, ne ignota molestie iracundia his, nonumy labore ius at.</p></div>
-          <div class="pageNumber">5</div>
-        </div>
-        <div class="back">
-          <h4 class="header">Page 6</h4>
-          <div class="content"><p>Lorem ipsum dolor sit amet, ex cum quando dolorem blandit, commodo aliquip temporibus cu nec, malis offendit tacimates an vel. Saepe decore putant ut ius, viris scripserit cu nam. Ea has graeci ponderum efficiantur, ocurreret adolescens liberavisse vim ex. Ea ius odio habeo expetenda, eripuit iracundia vel id. Disputando accommodare per te.</p>
+                <!-- Project 12 -->
+                <div class="project-card">
+                    <div class="project-image-container">
+                        <!-- Uncomment and add your image URL -->
+                        <!-- <img src="YOUR_SUPABASE_IMAGE_URL" alt="VVPIET Staff" class="project-image"> -->
+                        <svg class="project-image" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="200" height="200" fill="#1a1a1a"/>
+                            <text x="100" y="100" font-size="60" fill="#a855f7" text-anchor="middle" dy=".3em">📸</text>
+                            <text x="100" y="150" font-size="15" fill="#ffffff" text-anchor="middle">Staff Profiles</text>
+                        </svg>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-title">
+                            <h3>VVPIET Staff Profile Site</h3>
+                            <a href="YOUR_PROJECT_URL" target="_blank" class="visit-btn">Visit Site →</a>
+                        </div>
+                        <div class="project-description">
+                            Professional photo app and profile website for VVPIET Solapur staff members. Centralized staff information management system.
+                        </div>
+                    </div>
+                </div>
 
-            <p>Per iusto percipit inciderint ut, mea natum detraxit te. Ad his inani tollit maluisset, quaestio adversarium quo et. Ut populo probatus consulatu usu, quo gloriatur efficiendi assueverit cu. Eros volumus vim no, postea possim mel ea.</p>
+                <!-- Project 13 -->
+                <div class="project-card">
+                    <div class="project-image-container">
+                        <!-- Uncomment and add your image URL -->
+                        <!-- <img src="YOUR_SUPABASE_IMAGE_URL" alt="T&P System" class="project-image"> -->
+                        <svg class="project-image" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="200" height="200" fill="#1a1a1a"/>
+                            <text x="100" y="100" font-size="60" fill="#a855f7" text-anchor="middle" dy=".3em">📊</text>
+                            <text x="100" y="150" font-size="17" fill="#ffffff" text-anchor="middle">T&P System</text>
+                        </svg>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-title">
+                            <h3>Training & Placement Data System</h3>
+                            <a href="YOUR_PROJECT_URL" target="_blank" class="visit-btn">Visit Site →</a>
+                        </div>
+                        <div class="project-description">
+                            Website and app for VVPIET managing training and placement data. Tracks student placements, company visits, and training sessions.
+                        </div>
+                    </div>
+                </div>
 
-            <p>His cu soluta splendide. Vim meis omittantur cu, id dolores copiosae evertitur duo. In per antiopam concludaturque, eruditi appellantur mei ei. Quem eleifend mei no.</p>
+                <!-- Project 14 -->
+                <div class="project-card">
+                    <div class="project-image-container">
+                        <!-- Uncomment and add your image URL -->
+                        <!-- <img src="YOUR_SUPABASE_IMAGE_URL" alt="Student CV" class="project-image"> -->
+                        <svg class="project-image" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="200" height="200" fill="#1a1a1a"/>
+                            <text x="100" y="100" font-size="60" fill="#a855f7" text-anchor="middle" dy=".3em">📄</text>
+                            <text x="100" y="150" font-size="16" fill="#ffffff" text-anchor="middle">Student CV</text>
+                        </svg>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-title">
+                            <h3>Student Profile & CV Creation System</h3>
+                            <a href="YOUR_PROJECT_URL" target="_blank" class="visit-btn">Visit Site →</a>
+                        </div>
+                        <div class="project-description">
+                            Automated CV and profile creation platform for VVPIET students. Helps students build professional resumes and manage academic portfolios.
+                        </div>
+                    </div>
+                </div>
 
-            <p>At partiendo voluptatum mei, agam duis concludaturque ea est. Quis quidam eos cu. An eum omittam iracundia, bonorum argumentum et est. Aliquando forensibus incorrupte in vel, dolor omnium id sea, id nam affert facilisis.</p>
+            </div>
+        </section>
 
-            <p>Ei sensibus posidonium eam, usu facer recusabo in. Ius ex everti forensibus accommodare, at quo dolore recteque complectitur, cu malis inani eos. No his gubergren scriptorem. Duo postea copiosae id, at tempor habemus molestiae sit. Ne audiam ornatus torquatos qui, at pro possit inermis urbanitas. Te sale ullum nostrud ius, ne ignota molestie iracundia his, nonumy labore ius at.</p></div>
-          <div class="pageNumber">6</div>
-        </div>
-      </div>
-  </div>
-  <div class="page" id="page4">
-      <div class="subpage">
-        <div class="front">
-          <h4 class="header">Page 7</h4>
-          <div class="content"><p>Lorem ipsum dolor sit amet, ex cum quando dolorem blandit, commodo aliquip temporibus cu nec, malis offendit tacimates an vel. Saepe decore putant ut ius, viris scripserit cu nam. Ea has graeci ponderum efficiantur, ocurreret adolescens liberavisse vim ex. Ea ius odio habeo expetenda, eripuit iracundia vel id. Disputando accommodare per te.</p>
+        <!-- Languages Section -->
+        <section id="languages" class="section">
+            <h2>Programming Languages</h2>
+            <div class="languages-grid">
+                <div class="language-card">
+                    <span class="skill-icon">📱</span>
+                    <div class="language-name">Kotlin</div>
+                </div>
+                <div class="language-card">
+                    <span class="skill-icon">🐍</span>
+                    <div class="language-name">Python</div>
+                </div>
+                <div class="language-card">
+                    <span class="skill-icon">🗄️</span>
+                    <div class="language-name">SQL</div>
+                </div>
+                <div class="language-card">
+                    <span class="skill-icon">🌐</span>
+                    <div class="language-name">HTML</div>
+                </div>
+                <div class="language-card">
+                    <span class="skill-icon">🎨</span>
+                    <div class="language-name">CSS</div>
+                </div>
+                <div class="language-card">
+                    <span class="skill-icon">⚡</span>
+                    <div class="language-name">JavaScript</div>
+                </div>
+                <div class="language-card">
+                    <span class="skill-icon">⚛️</span>
+                    <div class="language-name">React</div>
+                </div>
+                <div class="language-card">
+                    <span class="skill-icon">🦋</span>
+                    <div class="language-name">Flutter</div>
+                </div>
+            </div>
+        </section>
 
-            <p>Per iusto percipit inciderint ut, mea natum detraxit te. Ad his inani tollit maluisset, quaestio adversarium quo et. Ut populo probatus consulatu usu, quo gloriatur efficiendi assueverit cu. Eros volumus vim no, postea possim mel ea.</p>
+    </div>
 
-            <p>His cu soluta splendide. Vim meis omittantur cu, id dolores copiosae evertitur duo. In per antiopam concludaturque, eruditi appellantur mei ei. Quem eleifend mei no.</p>
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.remove('active'));
 
-            <p>At partiendo voluptatum mei, agam duis concludaturque ea est. Quis quidam eos cu. An eum omittam iracundia, bonorum argumentum et est. Aliquando forensibus incorrupte in vel, dolor omnium id sea, id nam affert facilisis.</p>
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
 
-            <p>Ei sensibus posidonium eam, usu facer recusabo in. Ius ex everti forensibus accommodare, at quo dolore recteque complectitur, cu malis inani eos. No his gubergren scriptorem. Duo postea copiosae id, at tempor habemus molestiae sit. Ne audiam ornatus torquatos qui, at pro possit inermis urbanitas. Te sale ullum nostrud ius, ne ignota molestie iracundia his, nonumy labore ius at.</p></div>
-          <div class="pageNumber">7</div>
-        </div>
-        <div class="back">
-          <h4 class="header">Page 8</h4>
-          <div class="content"><p>Lorem ipsum dolor sit amet, ex cum quando dolorem blandit, commodo aliquip temporibus cu nec, malis offendit tacimates an vel. Saepe decore putant ut ius, viris scripserit cu nam. Ea has graeci ponderum efficiantur, ocurreret adolescens liberavisse vim ex. Ea ius odio habeo expetenda, eripuit iracundia vel id. Disputando accommodare per te.</p>
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
 
-            <p>Per iusto percipit inciderint ut, mea natum detraxit te. Ad his inani tollit maluisset, quaestio adversarium quo et. Ut populo probatus consulatu usu, quo gloriatur efficiendi assueverit cu. Eros volumus vim no, postea possim mel ea.</p>
+            // Add active class to clicked button
+            event.target.classList.add('active');
 
-            <p>His cu soluta splendide. Vim meis omittantur cu, id dolores copiosae evertitur duo. In per antiopam concludaturque, eruditi appellantur mei ei. Quem eleifend mei no.</p>
-
-            <p>At partiendo voluptatum mei, agam duis concludaturque ea est. Quis quidam eos cu. An eum omittam iracundia, bonorum argumentum et est. Aliquando forensibus incorrupte in vel, dolor omnium id sea, id nam affert facilisis.</p>
-
-            <p>Ei sensibus posidonium eam, usu facer recusabo in. Ius ex everti forensibus accommodare, at quo dolore recteque complectitur, cu malis inani eos. No his gubergren scriptorem. Duo postea copiosae id, at tempor habemus molestiae sit. Ne audiam ornatus torquatos qui, at pro possit inermis urbanitas. Te sale ullum nostrud ius, ne ignota molestie iracundia his, nonumy labore ius at.</p></div>
-          <div class="pageNumber">8</div>
-        </div>
-      </div>
-  </div>
-</div>
-
-
-<script>
-var Pages = function() {
-  var pages = document.getElementsByClassName("page"),
-      currentPage = 0,
-
-      next = function() {
-        var page = pages[currentPage];
-        console.log(pages, page);
-        if (page) {
-          page.className += " listed";
+            // Smooth scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        if (currentPage < pages.length - 1) {
-          currentPage++;
-        }
-      },
-      prev = function() {
-        var page = pages[currentPage];
-        if (page) {
-          page.className = page.className.replace(/ listed/g, "");
-        }
-        if (currentPage > 0) {
-          currentPage--;
-        }
-      };
-  
-  return {
-    prev: prev,
-    next: next
-  };
-};
 
-var pages = Pages();
-document.getElementById("nextPage").addEventListener("click", function() {
-  pages.next();
-}, false);
-document.getElementById("prevPage").addEventListener("click", function() {
-  pages.prev();
-}, false);
-</script>
+        // Add smooth scrolling and animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add entrance animation
+            const cards = document.querySelectorAll('.skill-card, .project-card, .language-card');
 
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '0';
+                        entry.target.style.transform = 'translateY(20px)';
+                        setTimeout(() => {
+                            entry.target.style.transition = 'all 0.5s ease';
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }, 100);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            cards.forEach(card => observer.observe(card));
+        });
+    </script>
 </body>
 </html>
