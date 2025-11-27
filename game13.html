@@ -1,1764 +1,896 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="pyBuddy - Run Python instantly in your browser. A beginner-friendly Python coding platform powered by Pyodide.">
-    <meta name="keywords" content="python, online python, python editor, pyodide, browser python, learn python">
-    <meta name="author" content="Yahya Mundewadi">
-    <meta name="theme-color" content="#1a1a1a">
-    
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="pyBuddy - Your Python Practice Buddy">
-    <meta property="og:description" content="Run Python instantly in your browser">
-    <meta property="og:type" content="website">
-    
-    <!-- Apple Mobile Web App -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="pyBuddy">
-    
-    <title>pyBuddy - Your Python Practice Buddy</title>
-    
-    <!-- Pyodide CDN - Latest Stable Version 0.27.0 -->
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.27.0/full/pyodide.js"></script>
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <style>
-        /* ========================================
-           CSS STYLES - pyBuddy
-           Complete styling for Python IDE
-        ======================================== */
-
-        /* === RESET & BASE STYLES === */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            /* Color Palette */
-            --primary-bg: #0d1117;
-            --secondary-bg: #161b22;
-            --tertiary-bg: #1a1a1a;
-            --card-bg: #21262d;
-            --border-color: #30363d;
-            --text-primary: #e8e8e8;
-            --text-secondary: #8b949e;
-            --text-muted: #6e7681;
-            --accent-green: #4CAF50;
-            --accent-green-hover: #45a049;
-            --accent-blue: #58a6ff;
-            --accent-yellow: #f9c74f;
-            --accent-red: #ff6b6b;
-            --console-green: #4ade80;
-            --console-yellow: #fbbf24;
-            --console-red: #f87171;
-            --console-blue: #60a5fa;
-            
-            /* Spacing */
-            --spacing-xs: 0.25rem;
-            --spacing-sm: 0.5rem;
-            --spacing-md: 1rem;
-            --spacing-lg: 1.5rem;
-            --spacing-xl: 2rem;
-            
-            /* Border Radius */
-            --radius-sm: 4px;
-            --radius-md: 8px;
-            --radius-lg: 12px;
-            
-            /* Transitions */
-            --transition-fast: 0.15s ease;
-            --transition-normal: 0.3s ease;
-            
-            /* Shadows */
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
-            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--primary-bg);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        /* === LOADING OVERLAY === */
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--primary-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-
-        .loading-overlay.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .loading-content {
-            text-align: center;
-            padding: var(--spacing-xl);
-        }
-
-        .spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid var(--border-color);
-            border-top-color: var(--accent-green);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto var(--spacing-lg);
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .loading-content h2 {
-            font-size: 1.5rem;
-            margin-bottom: var(--spacing-sm);
-            color: var(--accent-green);
-        }
-
-        .loading-content p {
-            color: var(--text-secondary);
-            margin-bottom: var(--spacing-lg);
-        }
-
-        .progress-bar {
-            width: 300px;
-            height: 4px;
-            background: var(--border-color);
-            border-radius: var(--radius-sm);
-            overflow: hidden;
-            margin: 0 auto;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--accent-green);
-            animation: progress 2s ease-in-out infinite;
-        }
-
-        @keyframes progress {
-            0%, 100% { width: 0; }
-            50% { width: 100%; }
-        }
-
-        /* === AD PLACEHOLDERS === */
-        .ad-placeholder {
-            background: var(--secondary-bg);
-            border: 2px dashed var(--border-color);
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .ad-top {
-            height: 90px;
-            margin: var(--spacing-md) var(--spacing-md) 0;
-        }
-
-        .ad-sidebar {
-            display: none;
-            width: 160px;
-            height: 600px;
-            position: absolute;
-            right: -180px;
-            top: 0;
-        }
-
-        @media (min-width: 1400px) {
-            .ad-sidebar {
-                display: flex;
-            }
-        }
-
-        /* === CONTAINER === */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: var(--spacing-md);
-        }
-
-        /* === HEADER === */
-        .header {
-            background: var(--secondary-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: var(--spacing-lg);
-            margin-bottom: var(--spacing-lg);
-            box-shadow: var(--shadow-md);
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: var(--spacing-md);
-        }
-
-        .logo-section {
-            flex: 1;
-            min-width: 250px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
-            margin-bottom: var(--spacing-sm);
-        }
-
-        .logo svg {
-            flex-shrink: 0;
-        }
-
-        .logo-text h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: var(--spacing-xs);
-        }
-
-        .tagline {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-left: 56px;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: var(--spacing-sm);
-            flex-wrap: wrap;
-        }
-
-        /* === BUTTONS === */
-        .btn {
-            padding: 0.625rem 1.25rem;
-            border: none;
-            border-radius: var(--radius-md);
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            display: inline-flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            font-family: inherit;
-            white-space: nowrap;
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .btn-primary {
-            background: var(--accent-green);
-            color: white;
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            background: var(--accent-green-hover);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .btn-primary:active:not(:disabled) {
-            transform: translateY(0);
-        }
-
-        .btn-secondary {
-            background: var(--card-bg);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
-
-        .btn-secondary:hover:not(:disabled) {
-            background: var(--border-color);
-            border-color: var(--text-muted);
-        }
-
-        .btn-small {
-            padding: 0.375rem 0.75rem;
-            font-size: 0.8rem;
-            background: transparent;
-            color: var(--text-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            display: inline-flex;
-            align-items: center;
-            gap: var(--spacing-xs);
-        }
-
-        .btn-small:hover {
-            background: var(--card-bg);
-            color: var(--text-primary);
-            border-color: var(--text-muted);
-        }
-
-        .btn-run {
-            padding: 0.875rem 2rem;
-            font-size: 1.1rem;
-            background: linear-gradient(135deg, var(--accent-green), #66bb6a);
-            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-        }
-
-        .btn-run:hover:not(:disabled) {
-            box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
-        }
-
-        .btn-run:disabled {
-            background: var(--border-color);
-            box-shadow: none;
-        }
-
-        /* === MAIN CONTENT === */
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-lg);
-        }
-
-        /* === SECTION STYLING === */
-        .editor-section,
-        .output-section {
-            background: var(--secondary-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: var(--spacing-lg);
-            box-shadow: var(--shadow-md);
-            position: relative;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--spacing-md);
-            padding-bottom: var(--spacing-md);
-            border-bottom: 1px solid var(--border-color);
-            flex-wrap: wrap;
-            gap: var(--spacing-sm);
-        }
-
-        .section-header h2 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            color: var(--text-primary);
-        }
-
-        .editor-controls,
-        .console-status {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
-        }
-
-        .char-count {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-        }
-
-        /* === CODE EDITOR === */
-        .editor-wrapper {
-            display: flex;
-            background: var(--tertiary-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            position: relative;
-        }
-
-        .line-numbers {
-            background: var(--card-bg);
-            color: var(--text-muted);
-            padding: var(--spacing-md);
-            font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            user-select: none;
-            text-align: right;
-            min-width: 50px;
-            border-right: 1px solid var(--border-color);
-            overflow: hidden;
-        }
-
-        .code-editor {
-            flex: 1;
-            background: var(--tertiary-bg);
-            color: var(--text-primary);
-            border: none;
-            outline: none;
-            padding: var(--spacing-md);
-            font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            resize: none;
-            min-height: 400px;
-            max-height: 600px;
-            overflow-y: auto;
-            tab-size: 4;
-        }
-
-        .code-editor::placeholder {
-            color: var(--text-muted);
-        }
-
-        .code-editor::-webkit-scrollbar {
-            width: 12px;
-        }
-
-        .code-editor::-webkit-scrollbar-track {
-            background: var(--card-bg);
-        }
-
-        .code-editor::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: var(--radius-sm);
-        }
-
-        .code-editor::-webkit-scrollbar-thumb:hover {
-            background: var(--text-muted);
-        }
-
-        /* === CONTROL PANEL === */
-        .control-panel {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: var(--spacing-lg);
-            flex-wrap: wrap;
-            padding: var(--spacing-md) 0;
-        }
-
-        .control-info {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
-        }
-
-        .execution-time {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        /* === OUTPUT CONSOLE === */
-        .output-console {
-            background: var(--tertiary-bg);
-            color: var(--console-green);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: var(--spacing-md);
-            font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            min-height: 300px;
-            max-height: 500px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        .output-console::-webkit-scrollbar {
-            width: 12px;
-        }
-
-        .output-console::-webkit-scrollbar-track {
-            background: var(--card-bg);
-        }
-
-        .output-console::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: var(--radius-sm);
-        }
-
-        .output-console::-webkit-scrollbar-thumb:hover {
-            background: var(--text-muted);
-        }
-
-        /* Console output styling */
-        .output-console .error {
-            color: var(--console-red);
-        }
-
-        .output-console .warning {
-            color: var(--console-yellow);
-        }
-
-        .output-console .info {
-            color: var(--console-blue);
-        }
-
-        .output-console .success {
-            color: var(--console-green);
-        }
-
-        /* === STATUS INDICATORS === */
-        .status-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: var(--spacing-xs);
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            padding: 0.25rem 0.625rem;
-            background: var(--card-bg);
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border-color);
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--accent-yellow);
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        .status-indicator.ready .status-dot {
-            background: var(--accent-green);
-            animation: none;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .python-version {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            padding: 0.25rem 0.625rem;
-            background: var(--card-bg);
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border-color);
-        }
-
-        /* === MODAL === */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: var(--spacing-md);
-            backdrop-filter: blur(4px);
-        }
-
-        .modal.active {
-            display: flex;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .modal-content {
-            background: var(--secondary-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            max-width: 800px;
-            width: 100%;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: var(--shadow-lg);
-            animation: slideUp 0.3s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: var(--spacing-lg);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .modal-header h3 {
-            font-size: 1.5rem;
-            color: var(--text-primary);
-        }
-
-        .btn-close {
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            padding: var(--spacing-sm);
-            border-radius: var(--radius-sm);
-            transition: all var(--transition-fast);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn-close:hover {
-            background: var(--card-bg);
-            color: var(--text-primary);
-        }
-
-        .samples-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: var(--spacing-md);
-            padding: var(--spacing-lg);
-        }
-
-        .sample-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: var(--spacing-lg);
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            text-align: left;
-        }
-
-        .sample-card:hover {
-            background: var(--border-color);
-            border-color: var(--accent-green);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .sample-card h4 {
-            font-size: 1.1rem;
-            margin-bottom: var(--spacing-sm);
-            color: var(--text-primary);
-        }
-
-        .sample-card p {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-
-        /* === FOOTER === */
-        .footer {
-            background: var(--secondary-bg);
-            border-top: 1px solid var(--border-color);
-            margin-top: var(--spacing-xl);
-            padding: var(--spacing-lg);
-            text-align: center;
-        }
-
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .footer p {
-            color: var(--text-secondary);
-            margin-bottom: var(--spacing-sm);
-        }
-
-        .footer strong {
-            color: var(--accent-green);
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: var(--spacing-md);
-            flex-wrap: wrap;
-        }
-
-        .footer-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color var(--transition-fast);
-        }
-
-        .footer-link:hover {
-            color: var(--accent-green);
-        }
-
-        .separator {
-            color: var(--border-color);
-        }
-
-        /* === RESPONSIVE DESIGN === */
-        @media (max-width: 768px) {
-            .container {
-                padding: var(--spacing-sm);
-            }
-
-            .header {
-                padding: var(--spacing-md);
-            }
-
-            .logo-text h1 {
-                font-size: 1.5rem;
-            }
-
-            .subtitle {
-                margin-left: 0;
-                font-size: 0.8rem;
-            }
-
-            .header-actions {
-                width: 100%;
-                justify-content: stretch;
-            }
-
-            .header-actions .btn {
-                flex: 1;
-                justify-content: center;
-            }
-
-            .editor-section,
-            .output-section {
-                padding: var(--spacing-md);
-            }
-
-            .code-editor {
-                min-height: 300px;
-                font-size: 0.85rem;
-            }
-
-            .output-console {
-                min-height: 200px;
-                font-size: 0.85rem;
-            }
-
-            .btn-run {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .control-panel {
-                flex-direction: column;
-            }
-
-            .control-info {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .samples-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .ad-top {
-                height: 60px;
-                font-size: 0.75rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .logo {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .subtitle {
-                text-align: center;
-            }
-
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .line-numbers {
-                min-width: 35px;
-                padding: var(--spacing-sm);
-                font-size: 0.8rem;
-            }
-
-            .code-editor,
-            .output-console {
-                font-size: 0.8rem;
-            }
-        }
-
-        /* === UTILITY CLASSES === */
-        .hidden {
-            display: none !important;
-        }
-
-        .text-success {
-            color: var(--console-green);
-        }
-
-        .text-error {
-            color: var(--console-red);
-        }
-
-        .text-warning {
-            color: var(--console-yellow);
-        }
-
-        .text-info {
-            color: var(--console-blue);
-        }
-
-        /* === ANIMATIONS === */
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-
-        .shake {
-            animation: shake 0.5s ease;
-        }
-
-
-        /* Console wrapper */
-.console-wrapper {
-    position: relative;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Mobile Book Library</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* Input area at bottom of console */
-.input-area {
-    display: flex;
-    align-items: center;
-    background: var(--tertiary-bg);
-    border-top: 1px solid var(--border-color);
-    padding: var(--spacing-sm) var(--spacing-md);
-    gap: var(--spacing-sm);
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding: 0;
 }
 
-.input-prompt {
-    color: var(--accent-green);
-    font-family: 'Fira Code', monospace;
-    font-weight: bold;
+/* Book List View */
+.library-container {
+  display: block;
+  padding: 15px;
+  max-width: 100vw;
+  margin: 0 auto;
 }
 
-.console-input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: var(--text-primary);
-    font-family: 'Fira Code', monospace;
-    font-size: 0.9rem;
-    padding: 0.25rem;
+.library-header {
+  text-align: center;
+  color: white;
+  margin-bottom: 25px;
+  padding: 20px 10px;
 }
 
-.console-input::placeholder {
-    color: var(--text-muted);
+.library-header h1 {
+  font-size: 28px;
+  margin-bottom: 8px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
-    </style>
-</head>
-<body>
-    
-    <!-- Loading Overlay -->
-    <div id="loading-overlay" class="loading-overlay">
-        <div class="loading-content">
-            <div class="spinner"></div>
-            <h2>Loading Python...</h2>
-            <p id="loading-status">Initializing Pyodide runtime</p>
-            <div class="progress-bar">
-                <div class="progress-fill"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Top Ad Placeholder -->
-    <div class="ad-placeholder ad-top">
-        <span>Advertisement Space</span>
-    </div>
-
-    <!-- Main Container -->
-    <div class="container">
-        
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <div class="logo-section">
-                    <div class="logo">
-                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M20 5L35 12.5V27.5L20 35L5 27.5V12.5L20 5Z" fill="#4CAF50" stroke="#81C784" stroke-width="2"/>
-                            <text x="20" y="26" text-anchor="middle" fill="white" font-family="Arial" font-size="16" font-weight="bold">py</text>
-                        </svg>
-                        <div class="logo-text">
-                            <h1>pyBuddy</h1>
-                            <p class="tagline">Your Python Practice Buddy</p>
-                        </div>
-                    </div>
-                    <p class="subtitle">Run Python instantly in your browser.</p>
-                </div>
-                
-                <div class="header-actions">
-                    <button id="clear-btn" class="btn btn-secondary" title="Clear Editor">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                            <path d="M2 3h12v2H2V3zm1 3h10v9a1 1 0 01-1 1H4a1 1 0 01-1-1V6z"/>
-                        </svg>
-                        Clear
-                    </button>
-                    <button id="save-btn" class="btn btn-secondary" title="Save Code">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                            <path d="M2 2h10l2 2v10a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1zm8 0v4H6V2H4v12h8V4h-2z"/>
-                        </svg>
-                        Save
-                    </button>
-                    <button id="install-btn" class="btn btn-primary install-btn" style="display:none;" title="Install pyBuddy">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                            <path d="M8 12l-5-5h3V2h4v5h3l-5 5zm-6 2h12v2H2v-2z"/>
-                        </svg>
-                        Install App
-                    </button>
-                </div>
-            </div>
-        </header>
-
-        <!-- Main Content Area -->
-        <main class="main-content">
-            
-            <!-- Editor Section -->
-            <section class="editor-section">
-                <div class="section-header">
-                    <h2>
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M5 3l-3 3 3 3V7h6V5H5V3zm10 8l3-3-3-3v2H9v2h6v2z"/>
-                        </svg>
-                        Python Editor
-                    </h2>
-                    <div class="editor-controls">
-                        <button id="sample-btn" class="btn-small" title="Load Sample Code">
-                            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-                                <path d="M2 2h10v2H2V2zm0 4h10v2H2V6zm0 4h6v2H2v-2z"/>
-                            </svg>
-                            Samples
-                        </button>
-                        <span id="char-count" class="char-count">0 characters</span>
-                    </div>
-                </div>
-                
-                <div class="editor-wrapper">
-                    <!-- Line Numbers -->
-                    <div id="line-numbers" class="line-numbers">1</div>
-                    
-                    <!-- Code Editor -->
-                    <textarea 
-                        id="code-editor" 
-                        class="code-editor" 
-                        spellcheck="false"
-                        placeholder="# Write your Python code here...&#10;print('Hello, pyBuddy!')"
-                        aria-label="Python Code Editor"
-                    >print("Welcome to pyBuddy!")
-print("Let's write some Python code!")
-
-# Try some basic Python
-name = "Coder"
-print(f"Hello, {name}!")
-
-# Simple calculation
-result = 10 + 20
-print(f"10 + 20 = {result}")</textarea>
-                </div>
-
-                <!-- Sidebar Ad Placeholder -->
-                <div class="ad-placeholder ad-sidebar">
-                    <span>Ad Space</span>
-                </div>
-            </section>
-
-            <!-- Control Panel -->
-            <div class="control-panel">
-                <button id="run-btn" class="btn btn-run" aria-label="Run Python Code">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M5 3l12 7-12 7V3z"/>
-                    </svg>
-                    <span id="run-btn-text">Run Code</span>
-                </button>
-                
-                <div class="control-info">
-                    <span id="execution-time" class="execution-time"></span>
-                    <button id="clear-output-btn" class="btn btn-small" title="Clear Output">
-                        <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-                            <path d="M1 1h12v2H1V1zm0 4h12v2H1V5zm0 4h8v2H1V9z"/>
-                        </svg>
-                        Clear Output
-                    </button>
-                </div>
-            </div>
-
-            <!-- Output Console -->
-            <section class="output-section">
-                <div class="section-header">
-                    <h2>
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M2 2h16v14H2V2zm2 2v10h12V4H4zm2 2l2 2-2 2v-4zm4 3h4v1H10V9z"/>
-                        </svg>
-                        Output Console
-                    </h2>
-                    <div class="console-status">
-                        <span id="python-version" class="python-version"></span>
-                        <span id="pyodide-status" class="status-indicator">
-                            <span class="status-dot"></span>
-                            Initializing...
-                        </span>
-                    </div>
-                </div>
-                
-               <div class="console-wrapper">
-    <pre id="output-console" class="output-console" aria-live="polite" aria-label="Python Output Console">pyBuddy Console v1.0
-Powered by Pyodide
-Ready to run Python code...
-</pre>
-    <div id="input-area" class="input-area" style="display:none;">
-        <span class="input-prompt">>>> </span>
-        <input type="text" id="console-input" class="console-input" placeholder="Enter input...">
-    </div>
-</div>
-
-            </section>
-
-            <!-- Sample Code Modal -->
-            <div id="samples-modal" class="modal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>Sample Python Programs</h3>
-                        <button id="close-modal" class="btn-close" aria-label="Close Modal">
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M10 8.586l4.95-4.95 1.414 1.414L11.414 10l4.95 4.95-1.414 1.414L10 11.414l-4.95 4.95-1.414-1.414L8.586 10 3.636 5.05l1.414-1.414L10 8.586z"/>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="samples-grid">
-                        <button class="sample-card" data-sample="hello">
-                            <h4>👋 Hello World</h4>
-                            <p>Basic print statement</p>
-                        </button>
-                        <button class="sample-card" data-sample="calculator">
-                            <h4>🔢 Calculator</h4>
-                            <p>Simple arithmetic operations</p>
-                        </button>
-                        <button class="sample-card" data-sample="loop">
-                            <h4>🔄 For Loop</h4>
-                            <p>Iterate through numbers</p>
-                        </button>
-                        <button class="sample-card" data-sample="list">
-                            <h4>📋 Lists</h4>
-                            <p>Working with Python lists</p>
-                        </button>
-                        <button class="sample-card" data-sample="function">
-                            <h4>⚡ Functions</h4>
-                            <p>Define and call functions</p>
-                        </button>
-                        <button class="sample-card" data-sample="fibonacci">
-                            <h4>🔢 Fibonacci</h4>
-                            <p>Generate Fibonacci sequence</p>
-                        </button>
-                        <button class="sample-card" data-sample="prime">
-                            <h4>✨ Prime Numbers</h4>
-                            <p>Check if number is prime</p>
-                        </button>
-                        <button class="sample-card" data-sample="dictionary">
-                            <h4>📖 Dictionary</h4>
-                            <p>Work with key-value pairs</p>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-        </main>
-
-    </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <p>&copy; 2025 pyBuddy &mdash; Created by <strong>Yahya Mundewadi</strong></p>
-            <div class="footer-links">
-                <a href="#" class="footer-link">About</a>
-                <span class="separator">|</span>
-                <a href="#" class="footer-link">Docs</a>
-                <span class="separator">|</span>
-                <a href="#" class="footer-link">GitHub</a>
-                <span class="separator">|</span>
-                <a href="#" class="footer-link">Contact</a>
-            </div>
-        </div>
-    </footer>
-
-    <!-- ========================================
-         JAVASCRIPT - pyBuddy
-         Complete functionality for Python IDE
-    ======================================== -->
-    <script>
-        // ==========================================
-        // GLOBAL VARIABLES & INITIALIZATION
-        // ==========================================
-        
-        let pyodide = null;
-        let pyodideReady = false;
-        let deferredPrompt = null;
-        let autoSaveInterval = null;
-        
-        // DOM Elements
-        const loadingOverlay = document.getElementById('loading-overlay');
-        const loadingStatus = document.getElementById('loading-status');
-        const codeEditor = document.getElementById('code-editor');
-        const lineNumbers = document.getElementById('line-numbers');
-        const outputConsole = document.getElementById('output-console');
-        const runBtn = document.getElementById('run-btn');
-        const runBtnText = document.getElementById('run-btn-text');
-        const clearBtn = document.getElementById('clear-btn');
-        const saveBtn = document.getElementById('save-btn');
-        const clearOutputBtn = document.getElementById('clear-output-btn');
-        const sampleBtn = document.getElementById('sample-btn');
-        const installBtn = document.getElementById('install-btn');
-        const samplesModal = document.getElementById('samples-modal');
-        const closeModal = document.getElementById('close-modal');
-        const charCount = document.getElementById('char-count');
-        const executionTime = document.getElementById('execution-time');
-        const pyodideStatus = document.getElementById('pyodide-status');
-        const pythonVersion = document.getElementById('python-version');
-        
-        // Sample Code Library
-        const sampleCodes = {
-            hello: `# Hello World Program
-print("Hello, World!")
-print("Welcome to Python programming!")`,
-            
-            calculator: `# Simple Calculator
-a = 15
-b = 7
-
-print(f"Addition: {a} + {b} = {a + b}")
-print(f"Subtraction: {a} - {b} = {a - b}")
-print(f"Multiplication: {a} × {b} = {a * b}")
-print(f"Division: {a} ÷ {b} = {a / b:.2f}")
-print(f"Modulus: {a} % {b} = {a % b}")
-print(f"Power: {a} ^ {b} = {a ** b}")`,
-            
-            loop: `# For Loop Example
-print("Counting from 1 to 10:")
-for i in range(1, 11):
-    print(f"Number: {i}")
-
-print("\\nEven numbers from 2 to 20:")
-for num in range(2, 21, 2):
-    print(num, end=" ")
-print()`,
-            
-            list: `# Working with Lists
-fruits = ["apple", "banana", "cherry", "date", "elderberry"]
-
-print("Original list:", fruits)
-print(f"First fruit: {fruits[0]}")
-print(f"Last fruit: {fruits[-1]}")
-
-# Add a new fruit
-fruits.append("fig")
-print("After adding fig:", fruits)
-
-# List comprehension
-lengths = [len(fruit) for fruit in fruits]
-print("Lengths:", lengths)`,
-            
-            function: `# Function Examples
-def greet(name):
-    """Greet someone by name"""
-    return f"Hello, {name}! Welcome to pyBuddy!"
-
-def add_numbers(a, b):
-    """Add two numbers"""
-    return a + b
-
-def is_even(num):
-    """Check if a number is even"""
-    return num % 2 == 0
-
-# Call the functions
-print(greet("Python Learner"))
-print(f"5 + 3 = {add_numbers(5, 3)}")
-print(f"Is 10 even? {is_even(10)}")
-print(f"Is 7 even? {is_even(7)}")`,
-            
-            fibonacci: `# Fibonacci Sequence Generator
-def fibonacci(n):
-    """Generate first n Fibonacci numbers"""
-    fib_sequence = []
-    a, b = 0, 1
-    for _ in range(n):
-        fib_sequence.append(a)
-        a, b = b, a + b
-    return fib_sequence
-
-# Generate first 15 Fibonacci numbers
-n = 15
-result = fibonacci(n)
-print(f"First {n} Fibonacci numbers:")
-print(result)
-
-# Sum of Fibonacci numbers
-print(f"\\nSum: {sum(result)}")`,
-            
-            prime: `# Prime Number Checker
-def is_prime(n):
-    """Check if a number is prime"""
-    if n < 2:
-        return False
-    for i in range(2, int(n ** 0.5) + 1):
-        if n % i == 0:
-            return False
-    return True
-
-# Test numbers
-test_numbers = [2, 3, 4, 17, 20, 29, 30, 37, 100]
-
-print("Prime Number Check:")
-for num in test_numbers:
-    status = "Prime" if is_prime(num) else "Not Prime"
-    print(f"{num}: {status}")
-
-# Find primes in a range
-primes = [n for n in range(1, 50) if is_prime(n)]
-print(f"\\nPrime numbers between 1-50: {primes}")`,
-            
-            dictionary: `# Working with Dictionaries
-student = {
-    "name": "Alice Johnson",
-    "age": 20,
-    "major": "Computer Science",
-    "gpa": 3.85,
-    "courses": ["Python", "Data Structures", "Web Dev"]
+.library-header p {
+  font-size: 14px;
+  opacity: 0.9;
 }
 
-print("Student Information:")
-for key, value in student.items():
-    print(f"{key.capitalize()}: {value}")
-
-# Add a new field
-student["email"] = "alice@university.edu"
-print(f"\\nEmail added: {student['email']}")
-
-# Dictionary methods
-print(f"\\nKeys: {list(student.keys())}")
-print(f"Number of fields: {len(student)}")
-`
-        };
-        
-        // ==========================================
-        // PYODIDE INITIALIZATION
-        // ==========================================
-        
-        async function initPyodide() {
-    try {
-        loadingStatus.textContent = "Loading Pyodide runtime...";
-        
-        // Load Pyodide
-        pyodide = await loadPyodide({
-            indexURL: "https://cdn.jsdelivr.net/pyodide/v0.27.0/full/"
-        });
-        
-        loadingStatus.textContent = "Setting up Python environment...";
-        
-        // Configure stdout/stderr
-        pyodide.setStdout({
-            batched: (msg) => {
-                appendOutput(msg, 'success');
-            }
-        });
-        
-        pyodide.setStderr({
-            batched: (msg) => {
-                appendOutput(msg, 'error');
-            }
-        });
-        
-        loadingStatus.textContent = "Configuring input system...";
-        
-        // WORKING FIX: Inject input handler into pyodide.globals.js
-        const inputHandler = async (prompt_text) => {
-            const inputArea = document.getElementById('input-area');
-            const consoleInput = document.getElementById('console-input');
-            
-            if (prompt_text) {
-                appendOutput(prompt_text, 'info');
-            }
-            
-            return new Promise((resolve) => {
-                inputArea.style.display = 'flex';
-                consoleInput.value = '';
-                consoleInput.focus();
-                
-                const handleInput = (e) => {
-                    if (e.key === 'Enter') {
-                        const value = consoleInput.value;
-                        appendOutput(value, 'info');
-                        inputArea.style.display = 'none';
-                        consoleInput.removeEventListener('keypress', handleInput);
-                        resolve(value);
-                    }
-                };
-                
-                consoleInput.addEventListener('keypress', handleInput);
-            });
-        };
-        
-        // Make it globally available to Python
-        window.pyodideInputHandler = inputHandler;
-        
-        // Override Python's input() function
-        await pyodide.runPythonAsync(`
-from js import pyodideInputHandler
-import asyncio
-
-# Create synchronous wrapper for input
-def input(prompt=""):
-    # Convert JS Promise to Python awaitable and run it
-    loop = asyncio.get_event_loop()
-    task = asyncio.ensure_future(pyodideInputHandler(prompt))
-    return loop.run_until_complete(task)
-
-# Override built-in
-__builtins__.input = input
-        `);
-        
-        // Get Python version
-        const version = pyodide.runPython(`
-import sys
-sys.version.split()[0]
-        `);
-        
-        pythonVersion.textContent = `Python ${version}`;
-        loadingStatus.textContent = "Python is ready!";
-        pyodideReady = true;
-        
-        // Update status indicator
-        pyodideStatus.classList.add('ready');
-        pyodideStatus.innerHTML = '<span class="status-dot"></span> Ready';
-        
-        // Hide loading overlay
-        setTimeout(() => {
-            loadingOverlay.classList.add('hidden');
-        }, 500);
-        
-        // Initial console message
-        outputConsole.innerHTML = '';
-        appendOutput('🐍 Python is ready! Write your code and click "Run Code"', 'info');
-        appendOutput('Powered by Pyodide v0.27.0', 'info');
-        appendOutput('✅ Input function ready!', 'success');
-        
-    } catch (error) {
-        console.error('Pyodide initialization error:', error);
-        loadingStatus.textContent = "Error loading Python";
-        appendOutput(`❌ Failed to load Pyodide: ${error.message}`, 'error');
-        loadingOverlay.classList.add('hidden');
-    }
+.books-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+  padding: 10px;
 }
 
-
-// Simple async wrapper and input() conversion preprocessor
-
-
-        
-        // ==========================================
-        // CODE EXECUTION
-        // ==========================================
-        
-        // Preprocessor function to wrap user code in async and await input()
-function preprocessUserCode(code) {
-  // Detect if code contains 'input(' and no async/await usage
-  const usesInput = /\binput\s*\(/.test(code);
-  const usesAwait = /\bawait\b/.test(code);
-  const usesAsyncDef = /\basync\s+def\b/.test(code);
-
-  if (usesInput && !usesAwait && !usesAsyncDef) {
-    // Wrap code inside async function and replace input() with await input()
-    let wrappedCode = 'async def __pybuddy_main():\n';
-    // Indent original code 4 spaces
-    const indentedCode = code.split('\n').map(line => '    ' + line).join('\n');
-    wrappedCode += indentedCode + '\n\nawait __pybuddy_main()';
-    // Replace all input( with await input(
-    wrappedCode = wrappedCode.replace(/\binput\s*\(/g, 'await input(');
-    return wrappedCode;
-  }
-  // No changes needed
-  return code;
+.book-card {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
-async function runPythonCode() {
-  if (!pyodideReady) {
-    appendOutput('⚠️  Python is still loading. Please wait...', 'warning');
-    return;
+.book-card:active {
+  transform: scale(0.98);
+}
+
+.book-card:hover {
+  box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+  transform: translateY(-3px);
+}
+
+.book-icon {
+  width: 60px;
+  height: 80px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.book-info {
+  flex: 1;
+}
+
+.book-info h3 {
+  font-size: 20px;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.book-info p {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* 3D Book View */
+.book-view-container {
+  display: none;
+  padding: 10px;
+  max-width: 100vw;
+  margin: 0 auto;
+}
+
+.back-button {
+  background: white;
+  color: #667eea;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  margin-bottom: 15px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.back-button:active {
+  transform: scale(0.95);
+}
+
+.book-title-header {
+  text-align: center;
+  color: white;
+  margin-bottom: 15px;
+}
+
+.book-title-header h2 {
+  font-size: 24px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.controls {
+  text-align: center;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.controls button {
+  background: white;
+  color: #667eea;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: all 0.3s;
+}
+
+.controls button:active {
+  transform: scale(0.95);
+}
+
+.controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.book {
+  width: 95vw;
+  max-width: 380px;
+  height: 500px;
+  border: 2px solid #dddddd;
+  perspective: 1400px;
+  transform-style: preserve-3d;
+  font-family: Arial, sans-serif;
+  margin: 0 auto;
+  background: white;
+  border-radius: 5px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.page {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transition: transform 1s;
+  transform-style: preserve-3d;
+}
+
+.page > div {
+  width: 50%;
+  height: 100%;
+  position: absolute;
+  transform: translateX(calc(50%));
+  transform-style: preserve-3d;
+}
+
+.page > div > div {
+  width: 98%;
+  height: 96%;
+  background-color: #ffffff;
+  backface-visibility: hidden;
+  position: absolute;
+  padding: 15px 12px;
+  box-sizing: border-box;
+  border: 1px solid #dddddd;
+  transform-style: flat;
+  overflow-y: auto;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.page > div > div.back {
+  transform: rotateY(180deg) translateZ(1px);
+}
+
+.page.listed {
+  transform: rotateY(-180deg);
+}
+
+/* Z-index management for 5 pages (10 sides) */
+#page1 { z-index: 5; }
+#page2 { z-index: 4; }
+#page3 { z-index: 3; }
+#page4 { z-index: 2; }
+#page5 { z-index: 1; }
+
+#page1.page.listed { z-index: 1; }
+#page2.page.listed { z-index: 2; }
+#page3.page.listed { z-index: 3; }
+#page4.page.listed { z-index: 4; }
+#page5.page.listed { z-index: 5; }
+
+.page .header {
+  margin: 8px 0;
+  padding: 0;
+  text-align: center;
+  font-size: 16px;
+  color: #667eea;
+  font-weight: bold;
+  border-bottom: 2px solid #667eea;
+  padding-bottom: 5px;
+}
+
+.page .content {
+  text-align: justify;
+  margin-top: 10px;
+}
+
+.page .content p {
+  margin-bottom: 10px;
+}
+
+.page .content h4 {
+  color: #764ba2;
+  margin: 10px 0 5px 0;
+  font-size: 12px;
+}
+
+.page .content ul {
+  margin-left: 20px;
+  margin-bottom: 10px;
+}
+
+.page .content li {
+  margin-bottom: 5px;
+}
+
+.page .content .code-example {
+  background: #f4f4f4;
+  padding: 8px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  margin: 8px 0;
+  border-left: 3px solid #667eea;
+}
+
+.page .pageNumber {
+  position: absolute;
+  bottom: 10px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.page .front .pageNumber {
+  right: 15px;
+}
+
+.page .back .pageNumber {
+  left: 15px;
+}
+
+.page .front {
+  background: linear-gradient(to left, #fff 95%, #cacaca 100%);
+}
+
+.page .back {
+  background: linear-gradient(to right, #fff 95%, #dadada 100%);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Emoji styling */
+.emoji {
+  font-size: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 360px) {
+  .book {
+    height: 450px;
   }
   
-  let code = codeEditor.value.trim();
-
-  if (!code) {
-    appendOutput('⚠️  No code to run. Please write some Python code first.', 'warning');
-    return;
+  .page > div > div {
+    font-size: 10px;
+    padding: 12px 10px;
   }
-
-  // Clear output
-  outputConsole.innerHTML = '';
-  appendOutput('🚀 Running your code...\n', 'info');
-
-  // Disable run button
-  runBtn.disabled = true;
-  runBtnText.textContent = 'Running...';
-
-  // Preprocess user code to add async if needed
-  code = preprocessUserCode(code);
-
-  const startTime = performance.now();
-
-  try {
-    await pyodide.loadPackagesFromImports(code);
-    await pyodide.runPythonAsync(code);
-
-    const endTime = performance.now();
-    const duration = ((endTime - startTime) / 1000).toFixed(3);
-
-    appendOutput(`\n✅ Execution completed in ${duration}s`, 'success');
-    executionTime.textContent = `Executed in ${duration}s`;
-
-  } catch (error) {
-    const endTime = performance.now();
-    const duration = ((endTime - startTime) / 1000).toFixed(3);
-
-    appendOutput('\n❌ Error occurred:', 'error');
-    appendOutput(error.message, 'error');
-
-    // TODO: Connect pyDecode here to translate errors into simple English
-    appendOutput('\n💡 Tip: Check your syntax and indentation', 'warning');
-
-    executionTime.textContent = `Failed after ${duration}s`;
-    outputConsole.classList.add('shake');
-    setTimeout(() => outputConsole.classList.remove('shake'), 500);
-  } finally {
-    runBtn.disabled = false;
-    runBtnText.textContent = 'Run Code';
+  
+  .page .header {
+    font-size: 14px;
   }
 }
 
-        // ==========================================
-        // OUTPUT CONSOLE MANAGEMENT
-        // ==========================================
-        
-        function appendOutput(text, type = 'normal') {
-            const line = document.createElement('span');
-            line.textContent = text + '\n';
-            
-            switch (type) {
-                case 'error':
-                    line.className = 'error';
-                    break;
-                case 'warning':
-                    line.className = 'warning';
-                    break;
-                case 'info':
-                    line.className = 'info';
-                    break;
-                case 'success':
-                    line.className = 'success';
-                    break;
-            }
-            
-            outputConsole.appendChild(line);
-            outputConsole.scrollTop = outputConsole.scrollHeight;
-        }
-        
-        function clearOutput() {
-            outputConsole.innerHTML = '';
-            appendOutput('Console cleared.', 'info');
-            executionTime.textContent = '';
-        }
-        
-        // ==========================================
-        // CODE EDITOR MANAGEMENT
-        // ==========================================
-        
-        function updateLineNumbers() {
-    const lines = codeEditor.value.split('\n');
-    const lineCount = lines.length;
-    
-    // Create line numbers with <br> tags for proper display
-    let lineNumbersHTML = '';
-    for (let i = 1; i <= lineCount; i++) {
-        lineNumbersHTML += i + '<br>';
-    }
-    
-    // Remove last <br> to avoid extra line
-    lineNumbers.innerHTML = lineNumbersHTML.slice(0, -4);
-    
-    // Update character count
-    const charCountNum = codeEditor.value.length;
-    charCount.textContent = `${charCountNum} character${charCountNum !== 1 ? 's' : ''}`;
+@media (min-width: 768px) {
+  .books-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .book {
+    max-width: 500px;
+    height: 600px;
+  }
+  
+  .page > div > div {
+    font-size: 13px;
+    padding: 20px 15px;
+  }
 }
 
-        
-        function handleTab(e) {
-            if (e.key === 'Tab') {
-                e.preventDefault();
-                const start = codeEditor.selectionStart;
-                const end = codeEditor.selectionEnd;
-                const value = codeEditor.value;
-                
-                codeEditor.value = value.substring(0, start) + '    ' + value.substring(end);
-                codeEditor.selectionStart = codeEditor.selectionEnd = start + 4;
-                updateLineNumbers();
-            }
-        }
-        
-        function clearEditor() {
-            if (codeEditor.value.trim() === '') {
-                return;
-            }
+/* Smooth scrolling */
+.page > div > div::-webkit-scrollbar {
+  width: 4px;
+}
+
+.page > div > div::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.page > div > div::-webkit-scrollbar-thumb {
+  background: #667eea;
+  border-radius: 2px;
+}
+</style>
+</head>
+<body>
+
+<!-- Book Selection View -->
+<div class="library-container" id="libraryView">
+  <div class="library-header">
+    <h1>📚 My Book Library</h1>
+    <p>Select a book to start reading</p>
+  </div>
+  
+  <div class="books-grid">
+    <div class="book-card" onclick="openBook('python')">
+      <div class="book-icon" style="background: linear-gradient(135deg, #3776ab, #ffd43b);">
+        🐍
+      </div>
+      <div class="book-info">
+        <h3>Learn Python</h3>
+        <p>A beginner-friendly introduction to Python programming with easy-to-understand concepts.</p>
+      </div>
+    </div>
+    
+    <div class="book-card" onclick="alert('Coming Soon!')">
+      <div class="book-icon" style="background: linear-gradient(135deg, #f0db4f, #323330);">
+        ⚡
+      </div>
+      <div class="book-info">
+        <h3>JavaScript Basics</h3>
+        <p>Master the fundamentals of JavaScript for web development.</p>
+      </div>
+    </div>
+    
+    <div class="book-card" onclick="alert('Coming Soon!')">
+      <div class="book-icon" style="background: linear-gradient(135deg, #61dafb, #282c34);">
+        ⚛️
+      </div>
+      <div class="book-info">
+        <h3>React Guide</h3>
+        <p>Build modern user interfaces with React library.</p>
+      </div>
+    </div>
+    
+    <div class="book-card" onclick="alert('Coming Soon!')">
+      <div class="book-icon" style="background: linear-gradient(135deg, #3ddc84, #073042);">
+        🤖
+      </div>
+      <div class="book-info">
+        <h3>Android Dev</h3>
+        <p>Create amazing Android apps with Kotlin and Jetpack Compose.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 3D Book View -->
+<div class="book-view-container" id="bookView">
+  <button class="back-button" onclick="backToLibrary()">
+    ← Back to Library
+  </button>
+  
+  <div class="book-title-header">
+    <h2>🐍 Introduction to Python</h2>
+  </div>
+  
+  <div class="controls">
+    <button id="prevPage">◄ Prev</button>
+    <button id="nextPage">Next ►</button>
+  </div>
+  
+  <div class="book">
+    <!-- Page 1 -->
+    <div class="page" id="page1">
+      <div class="subpage">
+        <div class="front">
+          <h4 class="header">Welcome to Python! 🎉</h4>
+          <div class="content">
+            <p><strong>What is Python?</strong></p>
+            <p>Python is a powerful yet beginner-friendly programming language created by Guido van Rossum in 1991 [web:1]. Think of it as a way to talk to computers using words that are almost like English!</p>
             
-            if (confirm('Are you sure you want to clear the editor?')) {
-                codeEditor.value = '';
-                updateLineNumbers();
-                appendOutput('Editor cleared.', 'info');
-            }
-        }
-        
-        // ==========================================
-        // LOCAL STORAGE MANAGEMENT
-        // ==========================================
-        
-        function saveCode() {
-            try {
-                localStorage.setItem('pybuddy-code', codeEditor.value);
-                localStorage.setItem('pybuddy-save-time', new Date().toISOString());
-                
-                // Show save feedback
-                const originalText = saveBtn.innerHTML;
-                saveBtn.innerHTML = `
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-                    </svg>
-                    Saved!
-                `;
-                
-                setTimeout(() => {
-                    saveBtn.innerHTML = originalText;
-                }, 1500);
-                
-            } catch (error) {
-                console.error('Save error:', error);
-                appendOutput('⚠️  Could not save code to local storage', 'warning');
-            }
-        }
-        
-        function loadCode() {
-            try {
-                const savedCode = localStorage.getItem('pybuddy-code');
-                if (savedCode) {
-                    codeEditor.value = savedCode;
-                    updateLineNumbers();
-                    
-                    const saveTime = localStorage.getItem('pybuddy-save-time');
-                    if (saveTime) {
-                        const date = new Date(saveTime);
-                        appendOutput(`📂 Loaded code from ${date.toLocaleString()}`, 'info');
-                    }
-                }
-            } catch (error) {
-                console.error('Load error:', error);
-            }
-        }
-        
-        function autoSave() {
-            if (codeEditor.value.trim()) {
-                localStorage.setItem('pybuddy-code', codeEditor.value);
-            }
-        }
-        
-        // ==========================================
-        // SAMPLE CODE MANAGEMENT
-        // ==========================================
-        
-        function openSamplesModal() {
-            samplesModal.classList.add('active');
-        }
-        
-        function closeSamplesModal() {
-            samplesModal.classList.remove('active');
-        }
-        
-        function loadSample(sampleKey) {
-            if (sampleCodes[sampleKey]) {
-                codeEditor.value = sampleCodes[sampleKey];
-                updateLineNumbers();
-                closeSamplesModal();
-                appendOutput(`📋 Loaded sample: ${sampleKey}`, 'info');
-            }
-        }
-        
-        // ==========================================
-        // PWA INSTALLATION
-        // ==========================================
-        
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installBtn.style.display = 'inline-flex';
-        });
-        
-        async function installApp() {
-            if (!deferredPrompt) {
-                return;
-            }
+            <p><strong>Why Learn Python?</strong></p>
+            <p>Python is one of the most popular languages in 2025 because it's easy to read and write [web:9]. Unlike other languages that look like alien code, Python reads like a recipe or instructions!</p>
             
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
+            <p><strong>Real-World Uses:</strong></p>
+            <ul>
+              <li>🌐 Building websites and web apps</li>
+              <li>🤖 Creating AI and machine learning</li>
+              <li>📊 Analyzing data and making graphs</li>
+              <li>🎮 Making games and animations</li>
+              <li>⚙️ Automating boring tasks</li>
+            </ul>
             
-            if (outcome === 'accepted') {
-                console.log('PWA installed');
-                installBtn.style.display = 'none';
-            }
+            <p>The best part? Python works on Windows, Mac, Linux, and even Raspberry Pi [web:1]!</p>
+          </div>
+          <div class="pageNumber">1</div>
+        </div>
+        
+        <div class="back">
+          <h4 class="header">Python's Superpowers ⚡</h4>
+          <div class="content">
+            <p><strong>What Makes Python Special?</strong></p>
             
-            deferredPrompt = null;
+            <h4>1. Simple and Clean</h4>
+            <p>Python uses everyday words like "print", "if", and "for" [web:1]. You don't need complex symbols everywhere!</p>
+            
+            <h4>2. Less Code, More Results</h4>
+            <p>Tasks that take 20 lines in other languages might only need 5 lines in Python [web:9]. This means faster development and less typing!</p>
+            
+            <h4>3. Huge Community</h4>
+            <p>Millions of developers worldwide use Python, so you'll always find help and ready-made tools [web:6].</p>
+            
+            <h4>4. Free Libraries</h4>
+            <p>Python has thousands of free "libraries" - pre-written code packages for almost anything you can imagine [web:6]!</p>
+            
+            <h4>5. Beginner-Friendly</h4>
+            <p>Python doesn't force you to learn complex concepts right away. You can start simple and grow [web:2].</p>
+          </div>
+          <div class="pageNumber">2</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Page 2 -->
+    <div class="page" id="page2">
+      <div class="subpage">
+        <div class="front">
+          <h4 class="header">Your First Python Program 🚀</h4>
+          <div class="content">
+            <p><strong>The Classic "Hello World"</strong></p>
+            <p>Every programmer's first program! Let's write it in Python:</p>
+            
+            <div class="code-example">
+print("Hello, World!")
+            </div>
+            
+            <p>That's it! Just one line and you're a programmer. Compare this to other languages that need 5-10 lines for the same thing [web:1].</p>
+            
+            <p><strong>How It Works:</strong></p>
+            <ul>
+              <li><strong>print()</strong> - tells Python to show something</li>
+              <li><strong>"Hello, World!"</strong> - the text to display</li>
+              <li>Parentheses () hold what you want to print</li>
+              <li>Quotes "" mark it as text (called a "string")</li>
+            </ul>
+            
+            <p><strong>Try These:</strong></p>
+            <div class="code-example">
+print("Welcome to Python!")
+print("My name is Alex")
+print(2025)
+            </div>
+            
+            <p>Notice how you can print text OR numbers!</p>
+          </div>
+          <div class="pageNumber">3</div>
+        </div>
+        
+        <div class="back">
+          <h4 class="header">Variables: Storing Information 📦</h4>
+          <div class="content">
+            <p><strong>What are Variables?</strong></p>
+            <p>Variables are like labeled boxes that store information [web:7]. You give them a name and put data inside!</p>
+            
+            <div class="code-example">
+name = "Sarah"
+age = 15
+height = 5.6
+is_student = True
+            </div>
+            
+            <p><strong>Understanding Variables:</strong></p>
+            <ul>
+              <li><strong>name</strong> - stores text (string)</li>
+              <li><strong>age</strong> - stores whole numbers (integer)</li>
+              <li><strong>height</strong> - stores decimals (float)</li>
+              <li><strong>is_student</strong> - stores True/False (boolean)</li>
+            </ul>
+            
+            <p><strong>The Magic Part:</strong></p>
+            <p>In Python, you don't tell the computer "this is text" or "this is a number". Python figures it out automatically [web:6]! This is called dynamic typing.</p>
+            
+            <div class="code-example">
+x = 10      # x is a number
+x = "Hi"    # now x is text!
+            </div>
+            
+            <p>Try changing variable values - Python adapts!</p>
+          </div>
+          <div class="pageNumber">4</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Page 3 -->
+    <div class="page" id="page3">
+      <div class="subpage">
+        <div class="front">
+          <h4 class="header">Data Types Explained 🎨</h4>
+          <div class="content">
+            <p><strong>Types of Data in Python:</strong></p>
+            
+            <h4>1. Numbers (Numeric)</h4>
+            <div class="code-example">
+score = 95          # Integer
+price = 19.99       # Float
+complex_num = 2+3j  # Complex
+            </div>
+            
+            <h4>2. Text (String)</h4>
+            <div class="code-example">
+message = "Hello Python!"
+quote = 'Learning is fun'
+            </div>
+            
+            <h4>3. True/False (Boolean)</h4>
+            <div class="code-example">
+is_raining = False
+has_license = True
+            </div>
+            
+            <h4>4. Lists (Collections)</h4>
+            <div class="code-example">
+fruits = ["apple", "banana", "orange"]
+numbers = [1, 2, 3, 4, 5]
+            </div>
+            
+            <p>Lists store multiple items in order [web:7]. Use square brackets [].</p>
+            
+            <p><strong>Check Types:</strong></p>
+            <div class="code-example">
+print(type(95))      # int
+print(type(19.99))   # float
+            </div>
+          </div>
+          <div class="pageNumber">5</div>
+        </div>
+        
+        <div class="back">
+          <h4 class="header">Basic Math Operations ➕</h4>
+          <div class="content">
+            <p><strong>Python as a Calculator:</strong></p>
+            
+            <div class="code-example">
+# Addition
+print(5 + 3)        # Output: 8
+
+# Subtraction
+print(10 - 4)       # Output: 6
+
+# Multiplication
+print(6 * 7)        # Output: 42
+
+# Division
+print(20 / 4)       # Output: 5.0
+
+# Integer Division
+print(17 // 5)      # Output: 3
+
+# Remainder (Modulo)
+print(17 % 5)       # Output: 2
+
+# Power
+print(2 ** 3)       # Output: 8
+            </div>
+            
+            <p><strong>With Variables:</strong></p>
+            <div class="code-example">
+x = 10
+y = 3
+sum = x + y
+print(sum)          # Output: 13
+            </div>
+            
+            <p>The # symbol creates comments - notes that Python ignores [web:3]. Use them to explain your code!</p>
+          </div>
+          <div class="pageNumber">6</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Page 4 -->
+    <div class="page" id="page4">
+      <div class="subpage">
+        <div class="front">
+          <h4 class="header">Making Decisions with If 🤔</h4>
+          <div class="content">
+            <p><strong>Conditional Statements:</strong></p>
+            <p>Programs need to make decisions. Python uses "if" statements to check conditions [web:10].</p>
+            
+            <div class="code-example">
+age = 16
+
+if age >= 18:
+    print("You can vote!")
+else:
+    print("Too young to vote")
+            </div>
+            
+            <p><strong>Important!</strong> Notice the indentation (spaces before print). Python uses indentation instead of curly braces {} [web:1].</p>
+            
+            <h4>Multiple Conditions:</h4>
+            <div class="code-example">
+score = 85
+
+if score >= 90:
+    print("Grade: A")
+elif score >= 80:
+    print("Grade: B")
+elif score >= 70:
+    print("Grade: C")
+else:
+    print("Grade: F")
+            </div>
+            
+            <p>Use <strong>elif</strong> (else if) for multiple checks [web:3].</p>
+            
+            <p><strong>Comparison Operators:</strong></p>
+            <ul>
+              <li>== (equal to)</li>
+              <li>!= (not equal)</li>
+              <li>&gt; (greater than)</li>
+              <li>&lt; (less than)</li>
+            </ul>
+          </div>
+          <div class="pageNumber">7</div>
+        </div>
+        
+        <div class="back">
+          <h4 class="header">Loops: Repeating Actions 🔄</h4>
+          <div class="content">
+            <p><strong>For Loops:</strong></p>
+            <p>Need to repeat something? Use loops [web:3]!</p>
+            
+            <div class="code-example">
+# Print numbers 1 to 5
+for i in range(1, 6):
+    print(i)
+
+# Loop through a list
+fruits = ["apple", "banana", "cherry"]
+for fruit in fruits:
+    print(fruit)
+            </div>
+            
+            <p>The <strong>range(1, 6)</strong> creates numbers from 1 to 5 (stops before 6).</p>
+            
+            <h4>While Loops:</h4>
+            <div class="code-example">
+count = 0
+while count < 5:
+    print(count)
+    count = count + 1
+            </div>
+            
+            <p>While loops continue as long as the condition is True [web:3].</p>
+            
+            <p><strong>Pro Tip:</strong> Be careful with while loops! Make sure they eventually stop, or they'll run forever.</p>
+            
+            <p><strong>Breaking Out:</strong></p>
+            <div class="code-example">
+for i in range(10):
+    if i == 5:
+        break
+    print(i)
+            </div>
+          </div>
+          <div class="pageNumber">8</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Page 5 -->
+    <div class="page" id="page5">
+      <div class="subpage">
+        <div class="front">
+          <h4 class="header">Functions: Reusable Code 🎯</h4>
+          <div class="content">
+            <p><strong>What are Functions?</strong></p>
+            <p>Functions are reusable blocks of code with a name. Write once, use many times [web:3]!</p>
+            
+            <div class="code-example">
+def greet(name):
+    print("Hello, " + name + "!")
+
+# Call the function
+greet("Alice")      # Hello, Alice!
+greet("Bob")        # Hello, Bob!
+            </div>
+            
+            <p><strong>Breaking It Down:</strong></p>
+            <ul>
+              <li><strong>def</strong> - defines a new function</li>
+              <li><strong>greet</strong> - the function name</li>
+              <li><strong>(name)</strong> - parameter (input)</li>
+              <li>Indented code runs when called</li>
+            </ul>
+            
+            <h4>Functions with Return:</h4>
+            <div class="code-example">
+def add(a, b):
+    return a + b
+
+result = add(5, 3)
+print(result)       # Output: 8
+            </div>
+            
+            <p>The <strong>return</strong> statement sends a value back [web:3].</p>
+            
+            <p>Functions make code organized and easier to fix!</p>
+          </div>
+          <div class="pageNumber">9</div>
+        </div>
+        
+        <div class="back">
+          <h4 class="header">Your Python Journey 🌟</h4>
+          <div class="content">
+            <p><strong>Congratulations!</strong></p>
+            <p>You've learned the fundamentals of Python! Here's what you now know:</p>
+            
+            <ul>
+              <li>✅ What Python is and why it's popular</li>
+              <li>✅ How to print output</li>
+              <li>✅ Variables and data types</li>
+              <li>✅ Basic math operations</li>
+              <li>✅ If statements for decisions</li>
+              <li>✅ Loops for repetition</li>
+              <li>✅ Functions for reusable code</li>
+            </ul>
+            
+            <p><strong>What's Next?</strong></p>
+            <p>Python has so much more to offer [web:3]:</p>
+            <ul>
+              <li>📚 Working with files</li>
+              <li>🎨 Creating graphics and games</li>
+              <li>🌐 Building websites</li>
+              <li>🤖 Machine learning and AI</li>
+              <li>📊 Data science</li>
+            </ul>
+            
+            <p><strong>Remember:</strong> Every expert was once a beginner. Practice daily, build small projects, and don't be afraid to make mistakes - that's how you learn [web:5]!</p>
+            
+            <p style="text-align: center; margin-top: 15px;"><strong>Happy Coding! 🐍💻</strong></p>
+          </div>
+          <div class="pageNumber">10</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// View Management
+function openBook(bookType) {
+  document.getElementById('libraryView').classList.add('hidden');
+  document.getElementById('bookView').classList.remove('hidden');
+  
+  // Reset book to first page
+  var pages = document.getElementsByClassName("page");
+  for (var i = 0; i < pages.length; i++) {
+    pages[i].className = pages[i].className.replace(/ listed/g, "");
+  }
+  currentPage = 0;
+  updateButtons();
+}
+
+function backToLibrary() {
+  document.getElementById('bookView').classList.add('hidden');
+  document.getElementById('libraryView').classList.remove('hidden');
+}
+
+// 3D Book Functionality
+var Pages = function() {
+  var pages = document.getElementsByClassName("page"),
+      currentPage = 0,
+      
+      next = function() {
+        var page = pages[currentPage];
+        if (page && currentPage < pages.length - 1) {
+          page.className += " listed";
+          currentPage++;
         }
-        
-        // ==========================================
-        // EVENT LISTENERS
-        // ==========================================
-        
-        // Editor events
-        codeEditor.addEventListener('input', updateLineNumbers);
-        codeEditor.addEventListener('keydown', handleTab);
-        codeEditor.addEventListener('scroll', () => {
-            lineNumbers.scrollTop = codeEditor.scrollTop;
-        });
-        
-        // Button events
-        runBtn.addEventListener('click', runPythonCode);
-        clearBtn.addEventListener('click', clearEditor);
-        saveBtn.addEventListener('click', saveCode);
-        clearOutputBtn.addEventListener('click', clearOutput);
-        sampleBtn.addEventListener('click', openSamplesModal);
-        closeModal.addEventListener('click', closeSamplesModal);
-        installBtn.addEventListener('click', installApp);
-        
-        // Enter key to run code (Ctrl+Enter or Cmd+Enter)
-        codeEditor.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                e.preventDefault();
-                runPythonCode();
-            }
-        });
-        
-        // Sample card events
-        document.querySelectorAll('.sample-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const sampleKey = card.getAttribute('data-sample');
-                loadSample(sampleKey);
-            });
-        });
-        
-        // Modal close on outside click
-        samplesModal.addEventListener('click', (e) => {
-            if (e.target === samplesModal) {
-                closeSamplesModal();
-            }
-        });
-        
-        // Escape key to close modal
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && samplesModal.classList.contains('active')) {
-                closeSamplesModal();
-            }
-        });
-        
-        // Auto-save every 5 seconds
-        autoSaveInterval = setInterval(autoSave, 5000);
-        
-        // Save before page unload
-        window.addEventListener('beforeunload', (e) => {
-            autoSave();
-        });
-        
-        // ==========================================
-        // INITIALIZATION ON PAGE LOAD
-        // ==========================================
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            // Initialize line numbers
-            updateLineNumbers();
-            
-            // Load saved code
-            loadCode();
-            
-            // Initialize Pyodide
-            initPyodide();
-            
-            console.log('pyBuddy initialized - Created by Yahya Mundewadi');
-        });
-        
-        // ==========================================
-        // SERVICE WORKER REGISTRATION (PWA)
-        // ==========================================
-        
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                // Note: Service worker file must be created separately
-                // This is a placeholder for PWA functionality
-                navigator.serviceWorker.register('/service-worker.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registered:', registration.scope);
-                    })
-                    .catch(error => {
-                        console.log('ServiceWorker registration failed:', error);
-                    });
-            });
+        updateButtons();
+      },
+      
+      prev = function() {
+        if (currentPage > 0) {
+          currentPage--;
+          var page = pages[currentPage];
+          if (page) {
+            page.className = page.className.replace(/ listed/g, "");
+          }
         }
+        updateButtons();
+      },
+      
+      updateButtons = function() {
+        var prevBtn = document.getElementById("prevPage");
+        var nextBtn = document.getElementById("nextPage");
         
-    </script>
+        prevBtn.disabled = (currentPage === 0);
+        nextBtn.disabled = (currentPage === pages.length - 1);
+      };
+  
+  return {
+    prev: prev,
+    next: next,
+    updateButtons: updateButtons
+  };
+};
+
+var pages = Pages();
+var currentPage = 0;
+
+document.getElementById("nextPage").addEventListener("click", function() {
+  pages.next();
+}, false);
+
+document.getElementById("prevPage").addEventListener("click", function() {
+  pages.prev();
+}, false);
+
+// Initialize button states
+pages.updateButtons();
+
+// Prevent scrolling on body when book is open
+document.getElementById('bookView').addEventListener('touchmove', function(e) {
+  if (e.target.closest('.page > div > div')) {
+    return; // Allow scrolling inside pages
+  }
+  e.preventDefault();
+}, { passive: false });
+</script>
 
 </body>
 </html>
