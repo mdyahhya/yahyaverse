@@ -183,125 +183,28 @@
         </div>
     </div>
 
-    <script type="module">
-    // Your Hugging Face Space URL
-    const API_URL = "https://mdyahya-dominal2-5.hf.space";
-
+    <script>
+    // Simple approach - embed the Gradio interface directly
     const chatContainer = document.getElementById('chatContainer');
     const messageInput = document.getElementById('messageInput');
     const sendButton = document.getElementById('sendButton');
 
-    let conversationHistory = [];
-
-    // Add message to chat
-    function addMessage(text, isUser) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
-        messageDiv.innerHTML = `
-            <div class="avatar ${isUser ? 'user-avatar' : 'ai-avatar'}">
-                ${isUser ? 'U' : 'AI'}
-            </div>
-            <div class="message-content">${text}</div>
-        `;
-        chatContainer.appendChild(messageDiv);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
-
-    // Show loading indicator
-    function showLoading() {
-        const loadingDiv = document.createElement('div');
-        loadingDiv.className = 'message ai-message';
-        loadingDiv.id = 'loading';
-        loadingDiv.innerHTML = `
-            <div class="avatar ai-avatar">AI</div>
-            <div class="message-content">
-                <div class="loading">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </div>
-        `;
-        chatContainer.appendChild(loadingDiv);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
-
-    // Remove loading indicator
-    function removeLoading() {
-        const loading = document.getElementById('loading');
-        if (loading) loading.remove();
-    }
-
-    // Send message to API using direct fetch
-    async function sendMessage() {
-        const message = messageInput.value.trim();
-        if (!message) return;
-
-        // Add user message
-        addMessage(message, true);
-        messageInput.value = '';
-        sendButton.disabled = true;
-        showLoading();
-
-        try {
-            // Direct API call to Gradio endpoint
-            const response = await fetch(`${API_URL}/api/predict`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    data: [message, conversationHistory]
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const result = await response.json();
-            removeLoading();
-
-            if (result && result.data && result.data[0]) {
-                const aiReply = result.data[0];
-                addMessage(aiReply, false);
-                conversationHistory.push([message, aiReply]);
-            } else {
-                addMessage("Sorry, I couldn't process that request.", false);
-            }
-        } catch (error) {
-            removeLoading();
-            addMessage("Error: Could not connect to AI. The Space might be sleeping or starting up. Please try again in a moment.", false);
-            console.error("API Error:", error);
-        }
-
-        sendButton.disabled = false;
-        messageInput.focus();
-    }
-
-    // Event listeners
-    sendButton.addEventListener('click', sendMessage);
+    // Hide the input area and show embedded Gradio instead
+    document.querySelector('.input-container').style.display = 'none';
     
-    messageInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-        }
-    });
-
-    // Auto-resize textarea
-    messageInput.addEventListener('input', function() {
-        this.style.height = 'auto';
-        this.style.height = Math.min(this.scrollHeight, 200) + 'px';
-    });
-
-    // Welcome message
-    window.addEventListener('load', () => {
-        addMessage("Hello! I am DOMINAL AI, built by Yahya Mundewadi. How can I help you today?", false);
-    });
+    chatContainer.innerHTML = `
+        <iframe 
+            src="https://mdyahya-dominal2-5.hf.space"
+            frameborder="0"
+            width="100%"
+            height="100%"
+            style="border: none;"
+        ></iframe>
+    `;
 </script>
 
 
 </body>
 </html>
+
 
