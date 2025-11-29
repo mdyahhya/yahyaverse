@@ -184,28 +184,14 @@
     </div>
 
     <script type="module">
-    import { Client } from "https://cdn.jsdelivr.net/npm/@gradio/client/+esm";
-
-    // CHANGE THIS TO YOUR HUGGING FACE USERNAME
-    const SPACE_URL = "MdYahya/dominal2.5";
+    // Your Hugging Face Space URL
+    const API_URL = "https://mdyahya-dominal2-5.hf.space";
 
     const chatContainer = document.getElementById('chatContainer');
     const messageInput = document.getElementById('messageInput');
     const sendButton = document.getElementById('sendButton');
 
     let conversationHistory = [];
-    let client = null;
-
-    // Initialize Gradio client
-    async function initClient() {
-        try {
-            client = await Client.connect(SPACE_URL);
-            console.log("Connected to DOMINAL AI");
-        } catch (error) {
-            console.error("Failed to connect:", error);
-            addMessage("Failed to connect to AI. Please refresh the page.", false);
-        }
-    }
 
     // Add message to chat
     function addMessage(text, isUser) {
@@ -246,17 +232,10 @@
         if (loading) loading.remove();
     }
 
-    // Send message to API
+    // Send message to API using direct fetch
     async function sendMessage() {
         const message = messageInput.value.trim();
         if (!message) return;
-
-        // Ensure client is connected
-        if (!client) {
-            addMessage("Connecting to AI...", false);
-            await initClient();
-            if (!client) return;
-        }
 
         // Add user message
         addMessage(message, true);
@@ -265,15 +244,26 @@
         showLoading();
 
         try {
-            const result = await client.predict("/chat", { 		
-                message: message,
-                history: conversationHistory
+            // Direct API call to Gradio endpoint
+            const response = await fetch(`${API_URL}/api/predict`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    data: [message, conversationHistory]
+                })
             });
 
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
             removeLoading();
 
-            if (result && result.data) {
-                const aiReply = result.data;
+            if (result && result.data && result.data[0]) {
+                const aiReply = result.data[0];
                 addMessage(aiReply, false);
                 conversationHistory.push([message, aiReply]);
             } else {
@@ -281,7 +271,7 @@
             }
         } catch (error) {
             removeLoading();
-            addMessage("Error: Could not get response from AI. Please try again.", false);
+            addMessage("Error: Could not connect to AI. The Space might be sleeping or starting up. Please try again in a moment.", false);
             console.error("API Error:", error);
         }
 
@@ -305,14 +295,13 @@
         this.style.height = Math.min(this.scrollHeight, 200) + 'px';
     });
 
-    // Initialize on page load
-    window.addEventListener('load', async () => {
-        addMessage("Connecting to DOMINAL AI...", false);
-        await initClient();
-        removeLoading();
+    // Welcome message
+    window.addEventListener('load', () => {
         addMessage("Hello! I am DOMINAL AI, built by Yahya Mundewadi. How can I help you today?", false);
     });
 </script>
 
+
 </body>
 </html>
+
