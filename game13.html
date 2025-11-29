@@ -184,8 +184,9 @@
     </div>
 
     <script type="module">
-    // Correct Hugging Face Space URL format
-    const API_URL = "https://mdyahya-dominal2-5.hf.space";
+    // YOUR HUGGING FACE ACCESS TOKEN
+    const HF_TOKEN = "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";  // ⚠️ REPLACE THIS
+    const SPACE_URL = "https://mdyahya-dominal2-5.hf.space";
 
     const chatContainer = document.getElementById('chatContainer');
     const messageInput = document.getElementById('messageInput');
@@ -193,7 +194,6 @@
 
     let conversationHistory = [];
 
-    // Add message to chat
     function addMessage(text, isUser) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
@@ -207,7 +207,6 @@
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
-    // Show loading indicator
     function showLoading() {
         const loadingDiv = document.createElement('div');
         loadingDiv.className = 'message ai-message';
@@ -226,13 +225,11 @@
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
-    // Remove loading indicator
     function removeLoading() {
         const loading = document.getElementById('loading');
         if (loading) loading.remove();
     }
 
-    // Send message to API
     async function sendMessage() {
         const message = messageInput.value.trim();
         if (!message) return;
@@ -243,10 +240,12 @@
         showLoading();
 
         try {
-            const response = await fetch(`${API_URL}/api/predict`, {
+            // API call with Authorization header for private Space
+            const response = await fetch(`${SPACE_URL}/api/predict`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${HF_TOKEN}`  // Add token
                 },
                 body: JSON.stringify({
                     data: [message, conversationHistory]
@@ -269,7 +268,7 @@
             }
         } catch (error) {
             removeLoading();
-            addMessage("Error connecting to AI. Please wait a moment and try again.", false);
+            addMessage("Error: Could not connect to AI. Check your access token.", false);
             console.error("API Error:", error);
         }
 
@@ -277,7 +276,6 @@
         messageInput.focus();
     }
 
-    // Event listeners
     sendButton.addEventListener('click', sendMessage);
     
     messageInput.addEventListener('keydown', (e) => {
@@ -292,20 +290,13 @@
         this.style.height = Math.min(this.scrollHeight, 200) + 'px';
     });
 
-    // Welcome message and wake up space
-    window.addEventListener('load', async () => {
+    window.addEventListener('load', () => {
         addMessage("Hello! I am DOMINAL AI, built by Yahya Mundewadi. How can I help you today?", false);
-        
-        // Wake up the Space with a ping
-        try {
-            await fetch(API_URL);
-        } catch (e) {
-            console.log("Waking up Space...");
-        }
     });
 </script>
 </body>
 </html>
+
 
 
 
