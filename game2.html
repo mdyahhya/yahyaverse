@@ -2,1524 +2,1102 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Md. Yahya Mundewadi - Full Stack Developer</title>
-    <meta name="description" content="Founder of Continental Group. Full Stack Developer specializing in PWA apps, SQL, and enterprise solutions.">
-    
-    <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#0f1419">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <!-- Manifest -->
-    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiWWFoeWEgTXVuZGV3YWRpIC0gUG9ydGZvbGlvIiwic2hvcnRfbmFtZSI6IllhaHlhIFBvcnRmb2xpbyIsImRlc2NyaXB0aW9uIjoiRnVsbCBTdGFjayBEZXZlbG9wZXIgUG9ydGZvbGlvIiwic3RhcnRfdXJsIjoiLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMwZjE0MTkiLCJ0aGVtZV9jb2xvciI6IiMwZjE0MTkiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCM2FXUjBhRDBpTVRFeUlpQm9aV2xuYUhROUlqRXhNaUlnZG1sbGQwSnZlRDBpTUNBd0lERXhNaUF4TVRJSUR6cERVeUlnZUcxc2JuTTlJbWgwZEhBNkx5OTNkM2N1ZHpNdWIzSm5Mekl3TURBdmMzWm5JajROQ2lBZ1BISmxZM1FnZUQwaU1DSWdlVDBpTUNJZ2QybGtkR2c5SWpFeE1pSWdhR1ZwWjJoMFBTSXhNVElpSUdacGJHdzlJaU14TURBeU4yRWlMejROQ2lBZ1BIUmxlSFFnZUQwaU5UWWlJSGs5SWpVNElpQm1hV3hzUFNJalptWm1JaUJtYjI1MExYTnBlbVU5SWpJMElpQjBaWGgwTFdGdVkyaHZjajFpYldsa1pHeGxJajVaUEM5MFpYaDBQZzA4TDNOMlp6ND0iLCJzaXplcyI6IjExMngxMTIiLCJ0eXBlIjoiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
-    
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-    
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- AOS Animation -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Collapsing Mini Galaxy</title>
     <style>
-        :root {
-            --primary-bg: #0f1419;
-            --secondary-bg: #1a1f2e;
-            --accent-bg: #2a3441;
-            --primary-text: #ffffff;
-            --secondary-text: #b0b8c5;
-            --accent-color: #64ffda;
-            --highlight-color: #00d9ff;
-            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-accent: linear-gradient(135deg, #64ffda 0%, #00d9ff 100%);
-            --glass-bg: rgba(42, 52, 65, 0.3);
-            --border-color: rgba(100, 255, 218, 0.2);
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--primary-bg);
-            color: var(--primary-text);
-            overflow-x: hidden;
-            line-height: 1.6;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            background: #000;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            touch-action: none;
         }
 
-        /* Background Animation */
-        .bg-animation {
-            position: fixed;
+        #container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #galaxyCanvas {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
-            opacity: 0.1;
+            background: radial-gradient(ellipse at center, #0a0a1a 0%, #000000 100%);
         }
 
-        .particle {
+        #videoContainer {
             position: absolute;
-            width: 2px;
-            height: 2px;
-            background: var(--accent-color);
-            border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
-        }
-
-        /* Header */
-        header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(15, 20, 25, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-color);
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
-
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 5%;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .logo {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.5rem;
-            font-weight: 600;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            color: var(--secondary-text);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .nav-links a:hover {
-            color: var(--accent-color);
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
+            bottom: 0;
             left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--gradient-accent);
-            transition: width 0.3s ease;
-        }
-
-        .nav-links a:hover::after {
             width: 100%;
-        }
-
-        .menu-toggle {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            gap: 4px;
-        }
-
-        .menu-toggle span {
-            width: 25px;
-            height: 3px;
-            background: var(--accent-color);
-            transition: all 0.3s ease;
-        }
-
-        /* Main Content */
-        main {
-            margin-top: 80px;
-        }
-
-        .section {
-            padding: 5rem 5%;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        /* Hero Section */
-        .hero {
-            min-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            position: relative;
-        }
-
-        .hero-content {
-            z-index: 2;
-            max-width: 800px;
-        }
-
-        .hero h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 700;
-            margin-bottom: 1rem;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero .subtitle {
-            font-size: 1.2rem;
-            color: var(--secondary-text);
-            margin-bottom: 2rem;
-        }
-
-        .hero .intro {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 3rem;
-            color: var(--primary-text);
-        }
-
-        .contact-info {
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 3rem;
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--secondary-text);
-            font-size: 0.9rem;
-        }
-
-        .contact-item i {
-            color: var(--accent-color);
-        }
-
-        /* Animation Canvas */
- /* Horizontal Slideshow Container - Mobile Responsive */
-.animation-container {
-    width: 100%;
-    max-width: 500px;
-    height: 80px;
-    margin: 2rem auto;
-    background: var(--glass-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    padding: 0 20px;
-}
-
-.slideshow-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    position: relative;
-}
-
-.slideshow-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    width: 100%;
-    position: relative;
-}
-
-.slideshow-icon {
-    font-size: 1.5rem;
-    color: var(--text-color);
-    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    opacity: 0.3;
-    transform: scale(0.7) translateX(0);
-    position: relative;
-    z-index: 1;
-    flex-shrink: 0;
-}
-
-.slideshow-icon.active {
-    font-size: 2.5rem;
-    opacity: 1;
-    transform: scale(1) translateX(0);
-    color: var(--primary-color);
-    font-weight: bold;
-    filter: drop-shadow(0 0 15px var(--primary-color));
-    z-index: 3;
-}
-
-.slideshow-icon.prev {
-    opacity: 0.5;
-    transform: scale(0.8) translateX(-10px);
-    z-index: 2;
-}
-
-.slideshow-icon.next {
-    opacity: 0.5;
-    transform: scale(0.8) translateX(10px);
-    z-index: 2;
-}
-
-/* Sliding Animation Classes */
-.slideshow-icon.slide-left {
-    animation: slideToLeft 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.slideshow-icon.slide-right {
-    animation: slideToRight 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.slideshow-icon.slide-to-center {
-    animation: slideToCenter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-@keyframes slideToLeft {
-    0% { transform: scale(1) translateX(0); opacity: 1; }
-    100% { transform: scale(0.8) translateX(-40px); opacity: 0.5; }
-}
-
-@keyframes slideToRight {
-    0% { transform: scale(0.8) translateX(-10px); opacity: 0.5; }
-    100% { transform: scale(0.7) translateX(40px); opacity: 0.3; }
-}
-
-@keyframes slideToCenter {
-    0% { transform: scale(0.8) translateX(10px); opacity: 0.5; }
-    100% { transform: scale(1) translateX(0); opacity: 1; }
-}
-
-/* Navigation Buttons - Mobile Optimized */
-.nav-button {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: var(--glass-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 50%;
-    width: 35px;
-    height: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 0.9rem;
-    color: var(--text-color);
-    transition: all 0.3s ease;
-    z-index: 10;
-    touch-action: manipulation;
-}
-
-.nav-button:hover,
-.nav-button:active {
-    background: var(--primary-color);
-    color: white;
-    transform: translateY(-50%) scale(1.1);
-}
-
-.nav-button.prev-btn {
-    left: 5px;
-}
-
-.nav-button.next-btn {
-    right: 5px;
-}
-
-/* Horizontal divider lines */
-.animation-container::before,
-.animation-container::after {
-    content: '';
-    position: absolute;
-    width: calc(100% - 40px);
-    height: 1px;
-    background: linear-gradient(90deg, transparent 0%, var(--border-color) 20%, var(--border-color) 80%, transparent 100%);
-    left: 20px;
-}
-
-.animation-container::before {
-    top: 0;
-}
-
-.animation-container::after {
-    bottom: 0;
-}
-
-/* Mobile Responsive Adjustments */
-@media (max-width: 768px) {
-    .animation-container {
-        height: 70px;
-        padding: 0 15px;
-        margin: 1.5rem auto;
-    }
-    
-    .slideshow-wrapper {
-        gap: 15px;
-    }
-    
-    .slideshow-icon {
-        font-size: 1.2rem;
-    }
-    
-    .slideshow-icon.active {
-        font-size: 2rem;
-    }
-    
-    .nav-button {
-        width: 30px;
-        height: 30px;
-        font-size: 0.8rem;
-    }
-    
-    .nav-button.prev-btn {
-        left: 3px;
-    }
-    
-    .nav-button.next-btn {
-        right: 3px;
-    }
-}
-
-@media (max-width: 480px) {
-    .animation-container {
-        height: 60px;
-        padding: 0 10px;
-    }
-    
-    .slideshow-wrapper {
-        gap: 10px;
-    }
-    
-    .slideshow-icon {
-        font-size: 1rem;
-    }
-    
-    .slideshow-icon.active {
-        font-size: 1.8rem;
-    }
-    
-    .nav-button {
-        width: 25px;
-        height: 25px;
-        font-size: 0.7rem;
-    }
-}
-
-/* Touch-friendly interactions */
-@media (hover: none) and (pointer: coarse) {
-    .nav-button:hover {
-        background: var(--glass-bg);
-        color: var(--text-color);
-        transform: translateY(-50%) scale(1);
-    }
-    
-    .nav-button:active {
-        background: var(--primary-color);
-        color: white;
-        transform: translateY(-50%) scale(0.95);
-    }
-}
-
-
-        /* Section Styles */
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 3rem;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .intro-section {
-            background: var(--glass-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 3rem;
-            margin: 3rem 0;
-            backdrop-filter: blur(20px);
-        }
-
-        .intro-text {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: var(--secondary-text);
-            text-align: center;
-        }
-
-        /* Projects Grid */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .project-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(20px);
-            position: relative;
+            height: 40%;
+            background: rgba(0, 0, 0, 0.5);
+            border-top: 2px solid rgba(138, 180, 248, 0.3);
             overflow: hidden;
         }
 
-        .project-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
+        #webcam {
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(100, 255, 218, 0.1), transparent);
-            transition: left 0.5s ease;
+            object-fit: cover;
+            transform: scaleX(-1);
         }
 
-        .project-card:hover::before {
-            left: 100%;
+        #canvasOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
         }
 
-        .project-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--accent-color);
-            box-shadow: 0 20px 40px rgba(100, 255, 218, 0.1);
-        }
-
-        .project-header {
+        .stats-overlay {
+            position: absolute;
+            bottom: 42%;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+            gap: 20px;
+            z-index: 10;
+            padding: 15px 25px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 20px;
+            border: 1px solid rgba(138, 180, 248, 0.3);
+            backdrop-filter: blur(10px);
         }
 
-        .project-logo {
-            width: 60px;
-            height: 60px;
-            background: var(--gradient-primary);
-            border-radius: 15px;
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #8ab4f8;
+            text-shadow: 0 0 10px rgba(138, 180, 248, 0.5);
+        }
+
+        #permissionModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            color: white;
-            font-weight: 600;
+            z-index: 1000;
+            padding: 20px;
         }
 
-        .project-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--primary-text);
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 100%;
+            border: 2px solid rgba(138, 180, 248, 0.3);
+            box-shadow: 0 0 50px rgba(138, 180, 248, 0.2);
         }
 
-        .project-description {
-            color: var(--secondary-text);
-            line-height: 1.6;
-            margin-bottom: 2rem;
-        }
-
-        .project-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 10px;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .btn-primary {
-            background: var(--gradient-accent);
-            color: var(--primary-bg);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--accent-color);
-            border: 2px solid var(--accent-color);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(100, 255, 218, 0.2);
-        }
-
-        /* Skills Section */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 1.5rem;
-            margin-top: 3rem;
-        }
-
-        .skill-item {
-            background: var(--glass-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 15px;
-            padding: 1.5rem;
-            text-align: center;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(20px);
-        }
-
-        .skill-item:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-color);
-        }
-
-        .skill-icon {
-            font-size: 2.5rem;
-            color: var(--accent-color);
-            margin-bottom: 1rem;
-        }
-
-        .skill-name {
-            font-weight: 500;
-            color: var(--primary-text);
-        }
-
-        /* Footer */
-        footer {
-            background: var(--secondary-bg);
-            border-top: 1px solid var(--border-color);
-            padding: 3rem 5%;
-            text-align: center;
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .social-link {
-            width: 60px;
-            height: 60px;
-            background: var(--glass-bg);
-            border: 1px solid var(--border-color);
+        .modal-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: radial-gradient(circle, rgba(138, 180, 248, 0.2) 0%, transparent 70%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--accent-color);
-            font-size: 1.5rem;
-            text-decoration: none;
-            transition: all 0.3s ease;
         }
 
-        .social-link:hover {
-            transform: translateY(-5px);
-            background: var(--accent-color);
-            color: var(--primary-bg);
+        .modal-icon svg {
+            width: 40px;
+            height: 40px;
+            stroke: #8ab4f8;
         }
 
-        /* PWA Install Button */
-        .install-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--gradient-accent);
-            color: var(--primary-bg);
+        .modal-title {
+            font-size: 24px;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .modal-text {
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
             border: none;
-            padding: 1rem 1.5rem;
-            border-radius: 50px;
+            border-radius: 12px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #8ab4f8 0%, #6a94d8 100%);
+            color: #000;
+            box-shadow: 0 0 20px rgba(138, 180, 248, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.95);
+            box-shadow: 0 0 30px rgba(138, 180, 248, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:active {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
             display: none;
             align-items: center;
-            gap: 0.5rem;
-            z-index: 1000;
-            animation: bounce 2s infinite;
+            justify-content: center;
+            z-index: 999;
         }
 
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
+        .loading-overlay.active {
+            display: flex;
         }
 
-        /* Mobile Styles */
-        @media (max-width: 768px) {
-            .nav-links {
-                position: fixed;
-                top: 80px;
-                left: -100%;
-                width: 100%;
-                height: calc(100vh - 80px);
-                background: rgba(15, 20, 25, 0.98);
-                backdrop-filter: blur(20px);
-                flex-direction: column;
-                justify-content: flex-start;
-                align-items: center;
-                padding-top: 3rem;
-                transition: left 0.3s ease;
-            }
-
-            .nav-links.active {
-                left: 0;
-            }
-
-            .menu-toggle {
-                display: flex;
-            }
-
-            .menu-toggle.active span:nth-child(1) {
-                transform: rotate(-45deg) translate(-5px, 6px);
-            }
-
-            .menu-toggle.active span:nth-child(2) {
-                opacity: 0;
-            }
-
-            .menu-toggle.active span:nth-child(3) {
-                transform: rotate(45deg) translate(-5px, -6px);
-            }
-
-            .section {
-                padding: 3rem 5%;
-            }
-
-            .contact-info {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .project-buttons {
-                justify-content: center;
-            }
-
-            .skills-grid {
-                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            }
-
-            .social-links {
-                gap: 1rem;
-            }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(138, 180, 248, 0.3);
+            border-top-color: #8ab4f8;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
 
-        /* Smooth scroll */
-        html {
-            scroll-behavior: smooth;
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
+        .error-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 50, 50, 0.9);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            display: none;
+            z-index: 100;
+            text-align: center;
+            max-width: 80%;
+        }
 
-        /* Programming Languages Section */
-.languages-grid {
-   display: grid;
-   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-   gap: 1.5rem;
-   margin-top: 3rem;
-}
+        .hand-indicator {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(138, 180, 248, 0.6);
+            border: 2px solid rgba(138, 180, 248, 1);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            box-shadow: 0 0 10px rgba(138, 180, 248, 0.8);
+        }
 
-.language-item {
-   background: var(--glass-bg);
-   border: 1px solid var(--border-color);
-   border-radius: 15px;
-   padding: 1.5rem;
-   text-align: center;
-   transition: all 0.3s ease;
-   backdrop-filter: blur(20px);
-}
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(138, 180, 248, 0.6), rgba(138, 180, 248, 0.2));
+            pointer-events: none;
+            z-index: 4;
+            transform-origin: left center;
+        }
 
-.language-item:hover {
-   transform: translateY(-5px);
-   border-color: var(--accent-color);
-}
+        .title-overlay {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            text-shadow: 0 0 20px rgba(138, 180, 248, 0.8);
+            letter-spacing: 2px;
+            z-index: 10;
+        }
 
-.language-flag {
-   font-size: 2.5rem;
-   color: var(--accent-color);
-   margin-bottom: 1rem;
-}
+        @media (max-width: 480px) {
+            .modal-content {
+                padding: 25px;
+            }
 
-.language-name {
-   font-weight: 500;
-   color: var(--primary-text);
-}
+            .modal-title {
+                font-size: 20px;
+            }
 
+            .btn {
+                padding: 12px;
+                font-size: 14px;
+            }
 
+            .stats-overlay {
+                gap: 15px;
+                padding: 12px 20px;
+            }
+
+            .stat-value {
+                font-size: 20px;
+            }
+
+            .title-overlay {
+                font-size: 16px;
+                top: 15px;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Background Animation -->
-    <div class="bg-animation" id="bgAnimation"></div>
+    <div id="container">
+        <canvas id="galaxyCanvas"></canvas>
+        
+        <div class="title-overlay">COLLAPSING MINI GALAXY</div>
 
-    <!-- Header -->
-    <header>
-        <nav>
-            <div class="logo">YM</div>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="#about">About Me</a></li>
-                <li><a href="#projects">My Projects</a></li>
-                <li><a href="#client-projects">Client Projects</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#languages">Languages</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-            <div class="menu-toggle" id="menuToggle">
-                <span></span>
-                <span></span>
-                <span></span>
+        <div class="stats-overlay">
+            <div class="stat-item">
+                <div class="stat-label">Scale</div>
+                <div class="stat-value" id="scaleValue">1.0</div>
             </div>
-        </nav>
-    </header>
-
-    <!-- Main Content -->
-    <main>
-        <!-- Hero Section -->
-        <section class="hero section" id="home">
-            <div class="hero-content" data-aos="fade-up">
-                <h1>Md. Yahya Mundewadi</h1>
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <span>mdyahyamundewadi@gmail.com</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <span>Contact Number (To be added)</span>
-                    </div>
-                </div>
-                <div class="intro">
-                    <strong>Founder of Continental Group.</strong><br>
-                    I am a full stack developer who builds PWA apps, knows SQL, and has worked with Private Limited companies and local businesses.
-                </div>
-                
-                <div class="animation-container" data-aos-delay="500">
-    <div class="slideshow-container">
-        <!-- Optional Navigation Buttons -->
-        <button class="nav-button prev-btn" onclick="previousSlide()">
-            <i class="fas fa-chevron-left"></i>
-        </button>
-        
-        <div class="slideshow-wrapper">
-            <i class="fas fa-database slideshow-icon prev"></i>
-            <i class="fas fa-code slideshow-icon active"></i>
-            <i class="fas fa-mobile-alt slideshow-icon next"></i>
+            <div class="stat-item">
+                <div class="stat-label">Chaos</div>
+                <div class="stat-value" id="chaosValue">0.0</div>
+            </div>
         </div>
-        
-        <!-- Optional Navigation Buttons -->
-        <button class="nav-button next-btn" onclick="nextSlide()">
-            <i class="fas fa-chevron-right"></i>
-        </button>
+
+        <div id="videoContainer">
+            <video id="webcam" autoplay playsinline></video>
+            <canvas id="canvasOverlay"></canvas>
+        </div>
+
+        <div id="permissionModal">
+            <div class="modal-content">
+                <div class="modal-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                        <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                </div>
+                <h2 class="modal-title">Camera Access Required</h2>
+                <p class="modal-text">
+                    This experience uses your camera to track hand gestures and control the galaxy visualization. 
+                    Your camera feed is processed locally and never uploaded or stored.
+                </p>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="denyCamera()">Deny</button>
+                    <button class="btn btn-primary" onclick="allowCamera()">Allow Camera</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="spinner"></div>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
     </div>
-</div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 
-            </div>
-        </section>
-
-        <!-- Introduction Section -->
-        <section class="section" id="about">
-            <div class="intro-section" data-aos="fade-up">
-                <h2 class="section-title">Introduction</h2>
-                <p class="intro-text">
-                    Welcome to my digital portfolio. This is a placeholder introduction section where you can add your detailed background, 
-                    experience, and professional journey. Feel free to customize this content to reflect your unique story, 
-                    achievements, and vision for the future. This space is designed to give visitors a comprehensive understanding 
-                    of who you are as a professional and what drives your passion for technology and innovation.
-                </p>
-            </div>
-        </section>
-
-        <!-- Projects Section -->
-        <section class="section" id="projects">
-            <h2 class="section-title" data-aos="fade-up">My Projects</h2>
-            <div class="projects-grid">
-                <div class="project-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="project-header">
-                        <div class="project-logo">YB</div>
-                        <h3 class="project-title">YouBuddy AI</h3>
-                    </div>
-                    <p class="project-description">
-                        A comprehensive educational platform for engineering students featuring an AI-powered chatbot for academic assistance, 
-                        a social tech feed, gamified learning experiences, and organized study materials across all academic years.
-                    </p>
-                    <div class="project-buttons">
-                        <a href="https://" target="_blank" class="btn btn-primary">
-                            <i class="fas fa-external-link-alt"></i> View Live
-                        </a>
-                        <a href="#" class="btn btn-secondary">
-                            <i class="fas fa-download"></i> Download App
-                        </a>
-                    </div>
-                </div>
-
-                <div class="project-card" data-aos="fade-up" data-aos-delay="200">
-                    <div class="project-header">
-                        <div class="project-logo">JC</div>
-                        <h3 class="project-title">JobCenter</h3>
-                    </div>
-                    <p class="project-description">
-                        A comprehensive job portal solution for Jobcenter Pvt. Ltd., featuring resume building tools, 
-                        job application tracking, and separate portals for HR professionals and job seekers.
-                    </p>
-                    <div class="project-buttons">
-                        <a href="https://jobcenter.netlify.app" target="_blank" class="btn btn-primary">
-                            <i class="fas fa-external-link-alt"></i> View Live
-                        </a>
-                        <a href="#" class="btn btn-secondary">
-                            <i class="fas fa-download"></i> Download App
-                        </a>
-                    </div>
-                </div>
-
-                <div class="project-card" data-aos="fade-up" data-aos-delay="300">
-                    <div class="project-header">
-                        <div class="project-logo">TB</div>
-                        <h3 class="project-title">TurfBook</h3>
-                    </div>
-                    <p class="project-description">
-                        An online turf booking system for sports facilities, developed for Solapur Railway Turf. 
-                        Features real-time slot management, user bookings, and comprehensive admin dashboard.
-                    </p>
-                    <div class="project-buttons">
-                        <a href="https://solapurturfs.netlify.app" target="_blank" class="btn btn-primary">
-                            <i class="fas fa-external-link-alt"></i> View Live
-                        </a>
-                        <a href="#" class="btn btn-secondary">
-                            <i class="fas fa-download"></i> Download App
-                        </a>
-                    </div>
-                </div>
-
-                <div class="project-card" data-aos="fade-up" data-aos-delay="400">
-                    <div class="project-header">
-                        <div class="project-logo">CV</div>
-                        <h3 class="project-title">CoderVerse</h3>
-                    </div>
-                    <p class="project-description">
-                        A gamified programming education platform featuring interactive MCQ quizzes, 
-                        problem-solving challenges, and comprehensive testing modules to enhance coding skills.
-                    </p>
-                    <div class="project-buttons">
-                        <a href="https://coderverse.netlify.app" class="btn btn-primary">
-                            <i class="fas fa-eye"></i> View Project
-                        </a>
-                        <a href="#" class="btn btn-secondary">
-                            <i class="fas fa-download"></i> Download App
-                        </a>
-                    </div>
-                </div>
-
-                <div class="project-card" data-aos="fade-up" data-aos-delay="500">
-                    <div class="project-header">
-                        <div class="project-logo">PS</div>
-                        <h3 class="project-title">Photography Shop</h3>
-                    </div>
-                    <p class="project-description">
-                        A custom business website for local photography services featuring service portfolios, 
-                        direct WhatsApp integration for seamless client communication and booking inquiries.
-                    </p>
-                    <div class="project-buttons">
-                        <a href="https://sharpkolors.netlify.app" class="btn btn-primary">
-                            <i class="fas fa-eye"></i> View Project
-                        </a>
-                        <a href="#" class="btn btn-secondary">
-                            <i class="fas fa-download"></i> Download App
-                        </a>
-                    </div>
-                </div>
-
-                <div class="project-card" data-aos="fade-up" data-aos-delay="600">
-                    <div class="project-header">
-                        <div class="project-logo">FA</div>
-                        <h3 class="project-title">FaceAttend</h3>
-                    </div>
-                    <p class="project-description">
-                        An AI-powered attendance management system utilizing advanced face recognition technology 
-                        for secure, automated attendance tracking with comprehensive data management.
-                    </p>
-                    <div class="project-buttons">
-                        <a href="https://facetech.netlify.app" class="btn btn-primary">
-                            <i class="fas fa-eye"></i> View Project
-                        </a>
-                        <a href="#" class="btn btn-secondary">
-                            <i class="fas fa-download"></i> Download App
-                        </a>
-                    </div>
-                </div>
-
-                <div class="project-card" data-aos="fade-up" data-aos-delay="700">
-                    <div class="project-header">
-                        <div class="project-logo">AI</div>
-                        <h3 class="project-title">VVPIET AI Chatbot</h3>
-                    </div>
-                    <p class="project-description">
-                        An intelligent chatbot solution for VVPIET College designed to handle student and parent queries 
-                        automatically, providing instant responses and improving institutional communication efficiency.
-                    </p>
-                    <div class="project-buttons">
-                        <a href="https://vvpengineering.org" class="btn btn-primary">
-                            <i class="fas fa-eye"></i> View Project
-                        </a>
-                        <a href="#" class="btn btn-secondary">
-                            <i class="fas fa-download"></i> Download App
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Client Projects Section -->
-        <section class="section" id="client-projects">
-            <h2 class="section-title" data-aos="fade-up">Client Projects</h2>
-            <div class="intro-section" data-aos="fade-up" data-aos-delay="200">
-                <p class="intro-text">
-                    This section showcases projects developed for various clients including Private Limited companies and local businesses. 
-                    Each project represents a unique solution tailored to specific business requirements and challenges.
-                </p>
-            </div>
-        </section>
-
-        <!-- Skills Section -->
-        <section id="skills" class="section">
-            <h2 class="section-title" data-aos="fade-up">Technical Skills</h2>
-            <div class="skills-grid">
-                <div class="skill-item" data-aos="fade-up" data-aos-delay="250">
-                    <div class="skill-icon"><i class="fas fa-database"></i></div>
-                    <div class="skill-name">SQL</div>
-                </div>
-                <div class="skill-item" data-aos="fade-up" data-aos-delay="300">
-                    <div class="skill-icon"><i class="fas fa-mobile-alt"></i></div>
-                    <div class="skill-name">PWA</div>
-                </div>
-                <!-- <div class="skill-item" data-aos="fade-up" data-aos-delay="350">
-                    <div class="skill-icon"><i class="fas fa-fire"></i></div>
-                    <div class="skill-name">Firebase</div>
-                </div> -->
-                <div class="skill-item" data-aos="fade-up" data-aos-delay="350">
-                    <div class="skill-icon"><i class="fas fa-server"></i></div>
-                    <div class="skill-name">Supabase</div>
-                </div>
-                <div class="skill-item" data-aos="fade-up" data-aos-delay="400">
-    <div class="skill-icon"><i class="fas fa-globe-americas"></i></div>
-    <div class="skill-name">Web Development</div>
-</div>
-<div class="skill-item" data-aos="fade-up" data-aos-delay="450">
-    <div class="skill-icon"><i class="fas fa-tasks"></i></div>
-    <div class="skill-name">Project Management</div>
-</div>
-<div class="skill-item" data-aos="fade-up" data-aos-delay="500">
-    <div class="skill-icon"><i class="fas fa-chart-line"></i></div>
-    <div class="skill-name">Business Development</div>
-</div>
-<div class="skill-item" data-aos="fade-up" data-aos-delay="550">
-    <div class="skill-icon"><i class="fas fa-palette"></i></div>
-    <div class="skill-name">Brand Development</div>
-</div>
-                <div class="skill-item" data-aos="fade-up" data-aos-delay="600">
-                    <div class="skill-icon"><i class="fab fa-node-js"></i></div>
-                    <div class="skill-name">Node.js</div>
-                </div>
-                <div class="skill-item" data-aos="fade-up" data-aos-delay="650">
-                    <div class="skill-icon"><i class="fas fa-bolt"></i></div>
-                    <div class="skill-name">Express.js</div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Programming Languages Section -->
-<section class="section" id="languages">
-   <h2 class="section-title" data-aos="fade-up">Programming Languages</h2>
-   <div class="languages-grid">
-       <div class="language-item" data-aos="fade-up" data-aos-delay="100">
-           <div class="language-flag"><i class="fab fa-html5"></i></div>
-           <div class="language-info">
-               <h3 class="language-name">HTML5</h3>
-               <div class="proficiency-bar">
-                   <div class="proficiency-fill" data-level="95"></div>
-               </div>
-               <span class="proficiency-text">Expert</span>
-           </div>
-       </div>
-       <div class="language-item" data-aos="fade-up" data-aos-delay="200">
-           <div class="language-flag"><i class="fab fa-css3-alt"></i></div>
-           <div class="language-info">
-               <h3 class="language-name">CSS3</h3>
-               <div class="proficiency-bar">
-                   <div class="proficiency-fill" data-level="90"></div>
-               </div>
-               <span class="proficiency-text">Expert</span>
-           </div>
-       </div>
-       <div class="language-item" data-aos="fade-up" data-aos-delay="300">
-           <div class="language-flag"><i class="fab fa-js-square"></i></div>
-           <div class="language-info">
-               <h3 class="language-name">JavaScript</h3>
-               <div class="proficiency-bar">
-                   <div class="proficiency-fill" data-level="85"></div>
-               </div>
-               <span class="proficiency-text">Advanced</span>
-           </div>
-       </div>
-       <div class="language-item" data-aos="fade-up" data-aos-delay="400">
-           <div class="language-flag"><i class="fas fa-database"></i></div>
-           <div class="language-info">
-               <h3 class="language-name">SQL</h3>
-               <div class="proficiency-bar">
-                   <div class="proficiency-fill" data-level="80"></div>
-               </div>
-               <span class="proficiency-text">Advanced</span>
-           </div>
-       </div>
-   </div>
-</section>
-
-    <!-- Footer -->
-    <footer id="contact">
-        <div class="social-links">
-            <a href="#" class="social-link" title="LinkedIn">
-                <i class="fab fa-linkedin-in"></i>
-            </a>
-            <a href="#" class="social-link" title="GitHub">
-                <i class="fab fa-github"></i>
-            </a>
-            <a href="mailto:mdyahyamundewadi@gmail.com" class="social-link" title="Email">
-                <i class="fas fa-envelope"></i>
-            </a>
-        </div>
-        <p>&copy; 2024 Md. Yahya Mundewadi. All rights reserved.</p>
-    </footer>
-
-    <!-- PWA Install Button -->
-    <button class="install-btn" id="installBtn">
-        <i class="fas fa-download"></i>
-        Install App
-    </button>
-
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script>
-        // Initialize AOS
-        AOS.init({
-            duration: 800,
-            easing: 'ease-in-out',
-            once: true
-        });
+        // Global variables
+        let canvas, ctx, videoElement, overlayCanvas, overlayCtx;
+        let currentScale = 1.0;
+        let currentChaos = 0.0;
+        let targetScale = 1.0;
+        let targetChaos = 0.0;
+        let hands;
+        let camera;
+        let galaxySystem;
+        let lastTime = Date.now();
+        let handIndicators = [];
 
-        // Mobile menu toggle
-        const menuToggle = document.getElementById('menuToggle');
-        const navLinks = document.getElementById('navLinks');
-
-        menuToggle.addEventListener('click', () => {
-            menuToggle.classList.toggle('active');
-            navLinks.classList.toggle('active');
-        });
-
-        // Close mobile menu when clicking on a link
-        navLinks.addEventListener('click', (e) => {
-            if (e.target.tagName === 'A') {
-                menuToggle.classList.remove('active');
-                navLinks.classList.remove('active');
+        // Galaxy particle system
+        class GalaxyParticle {
+            constructor(angle, distance, baseDistance) {
+                this.baseAngle = angle;
+                this.baseDistance = baseDistance;
+                this.angle = angle;
+                this.distance = distance;
+                this.x = 0;
+                this.y = 0;
+                this.life = Math.random() * 0.5 + 0.5;
+                this.maxLife = this.life;
+                this.size = Math.random() * 2 + 1;
+                this.opacity = Math.random() * 0.5 + 0.5;
+                this.color = this.getColor();
+                this.rotationSpeed = (Math.random() - 0.5) * 0.02;
+                this.chaosOffset = { x: 0, y: 0 };
+                this.chaosVelocity = { x: 0, y: 0 };
             }
-        });
 
-
-
-
-        const icons = [
-    'fas fa-code',
-    'fas fa-cloud', 
-    'fas fa-fingerprint',
-    'fas fa-user-shield',
-    'fas fa-brain',
-    'fas fa-chart-pie',
-    'fas fa-palette',
-    'fas fa-tools'
-];
-
-
-
-let currentIndex = 0;
-let autoRotateInterval;
-let isAnimating = false;
-
-function updateSlideshow(direction = 'next') {
-    if (isAnimating) return;
-    
-    isAnimating = true;
-    const wrapper = document.querySelector('.slideshow-wrapper');
-    const iconElements = wrapper.querySelectorAll('.slideshow-icon');
-    
-    // Add sliding animation classes
-    iconElements.forEach((icon, index) => {
-        icon.classList.remove('slide-left', 'slide-right', 'slide-to-center');
-        
-        if (direction === 'next') {
-            if (icon.classList.contains('active')) {
-                icon.classList.add('slide-left');
-            } else if (icon.classList.contains('next')) {
-                icon.classList.add('slide-to-center');
-            } else if (icon.classList.contains('prev')) {
-                icon.classList.add('slide-right');
+            getColor() {
+                const colors = [
+                    { r: 147, g: 112, b: 219 },
+                    { r: 138, g: 180, b: 248 },
+                    { r: 255, g: 215, b: 180 },
+                    { r: 180, g: 220, b: 255 },
+                    { r: 255, g: 255, b: 255 },
+                    { r: 200, g: 160, b: 255 },
+                ];
+                return colors[Math.floor(Math.random() * colors.length)];
             }
-        } else {
-            if (icon.classList.contains('active')) {
-                icon.classList.add('slide-right');
-            } else if (icon.classList.contains('prev')) {
-                icon.classList.add('slide-to-center');
-            } else if (icon.classList.contains('next')) {
-                icon.classList.add('slide-left');
-            }
-        }
-    });
-    
-    // Update positions after animation
-    setTimeout(() => {
-        const prevIndex = (currentIndex - 1 + icons.length) % icons.length;
-        const nextIndex = (currentIndex + 1) % icons.length;
-        
-        // Clear existing icons
-        wrapper.innerHTML = '';
-        
-        // Create and append new icons
-        const prevIcon = document.createElement('i');
-        prevIcon.className = `${icons[prevIndex]} slideshow-icon prev`;
-        
-        const currentIcon = document.createElement('i');
-        currentIcon.className = `${icons[currentIndex]} slideshow-icon active`;
-        
-        const nextIcon = document.createElement('i');
-        nextIcon.className = `${icons[nextIndex]} slideshow-icon next`;
-        
-        wrapper.appendChild(prevIcon);
-        wrapper.appendChild(currentIcon);
-        wrapper.appendChild(nextIcon);
-        
-        isAnimating = false;
-    }, 300);
-}
 
-function nextSlide() {
-    if (isAnimating) return;
-    currentIndex = (currentIndex + 1) % icons.length;
-    updateSlideshow('next');
-}
-
-function previousSlide() {
-    if (isAnimating) return;
-    currentIndex = (currentIndex - 1 + icons.length) % icons.length;
-    updateSlideshow('prev');
-}
-
-function startAutoRotate() {
-    autoRotateInterval = setInterval(nextSlide, 2000);
-}
-
-function stopAutoRotate() {
-    if (autoRotateInterval) {
-        clearInterval(autoRotateInterval);
-    }
-}
-
-// Touch/Swipe support for mobile
-let startX = 0;
-let startY = 0;
-
-function handleTouchStart(e) {
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-}
-
-function handleTouchEnd(e) {
-    if (!startX || !startY) return;
-    
-    const endX = e.changedTouches[0].clientX;
-    const endY = e.changedTouches[0].clientY;
-    
-    const diffX = startX - endX;
-    const diffY = startY - endY;
-    
-    // Check if horizontal swipe is more significant than vertical
-    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
-        if (diffX > 0) {
-            nextSlide(); // Swipe left -> next
-        } else {
-            previousSlide(); // Swipe right -> previous
-        }
-    }
-    
-    startX = 0;
-    startY = 0;
-}
-
-// Initialize slideshow
-document.addEventListener('DOMContentLoaded', function() {
-    updateSlideshow();
-    startAutoRotate();
-    
-    const container = document.querySelector('.animation-container');
-    
-    // Mouse events
-    container.addEventListener('mouseenter', stopAutoRotate);
-    container.addEventListener('mouseleave', startAutoRotate);
-    
-    // Touch events for mobile
-    container.addEventListener('touchstart', handleTouchStart, { passive: true });
-    container.addEventListener('touchend', handleTouchEnd, { passive: true });
-    container.addEventListener('touchstart', stopAutoRotate);
-    container.addEventListener('touchend', () => {
-        setTimeout(startAutoRotate, 3000); // Resume after 3 seconds
-    });
-});
-
-
-        // Background particles animation
-        function createParticles() {
-            const bgAnimation = document.getElementById('bgAnimation');
-            const particleCount = 50;
-
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 6 + 's';
-                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
-                bgAnimation.appendChild(particle);
-            }
-        }
-
-        // Header scroll effect
-        window.addEventListener('scroll', () => {
-            const header = document.querySelector('header');
-            if (window.scrollY > 100) {
-                header.style.background = 'rgba(15, 20, 25, 0.98)';
-            } else {
-                header.style.background = 'rgba(15, 20, 25, 0.95)';
-            }
-        });
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+            update(centerX, centerY, scale, chaos, deltaTime) {
+                if (chaos > 0) {
+                    this.chaosVelocity.x += (Math.random() - 0.5) * chaos * 0.5;
+                    this.chaosVelocity.y += (Math.random() - 0.5) * chaos * 0.5;
+                    this.chaosVelocity.x *= 0.95;
+                    this.chaosVelocity.y *= 0.95;
+                    this.chaosOffset.x += this.chaosVelocity.x;
+                    this.chaosOffset.y += this.chaosVelocity.y;
+                    this.chaosOffset.x *= 0.98;
+                    this.chaosOffset.y *= 0.98;
+                } else {
+                    this.chaosOffset.x *= 0.9;
+                    this.chaosOffset.y *= 0.9;
+                    this.chaosVelocity.x *= 0.9;
+                    this.chaosVelocity.y *= 0.9;
                 }
-            });
-        });
 
-        // PWA Install functionality
-        let deferredPrompt;
-        const installBtn = document.getElementById('installBtn');
+                this.angle += this.rotationSpeed * (1 + chaos * 0.5);
+                const scaledDistance = this.distance * scale;
+                this.x = centerX + Math.cos(this.angle) * scaledDistance + this.chaosOffset.x;
+                this.y = centerY + Math.sin(this.angle) * scaledDistance + this.chaosOffset.y;
 
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installBtn.style.display = 'flex';
-        });
-
-        installBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    installBtn.style.display = 'none';
+                this.life -= 0.001 * deltaTime;
+                if (this.life <= 0) {
+                    this.life = this.maxLife;
+                    this.distance = this.baseDistance;
                 }
-                deferredPrompt = null;
+
+                this.opacity = (Math.sin(Date.now() * 0.001 + this.baseAngle) * 0.2 + 0.8) * (this.life / this.maxLife);
             }
-        });
 
-        window.addEventListener('appinstalled', () => {
-            installBtn.style.display = 'none';
-        });
+            draw(ctx, scale, chaos) {
+                const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * scale);
+                gradient.addColorStop(0, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.opacity})`);
+                gradient.addColorStop(0.5, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.opacity * 0.5})`);
+                gradient.addColorStop(1, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, 0)`);
 
-        // Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                const swScript = `
-                    const CACHE_NAME = 'yahya-portfolio-v1';
-                    const urlsToCache = [
-                        '/',
-                        '/styles.css',
-                        '/script.js',
-                        'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap',
-                        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-                        'https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css',
-                        'https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js'
-                    ];
-
-                    self.addEventListener('install', (event) => {
-                        event.waitUntil(
-                            caches.open(CACHE_NAME)
-                                .then((cache) => cache.addAll(urlsToCache))
-                        );
-                    });
-
-                    self.addEventListener('fetch', (event) => {
-                        event.respondWith(
-                            caches.match(event.request)
-                                .then((response) => {
-                                    if (response) {
-                                        return response;
-                                    }
-                                    return fetch(event.request);
-                                })
-                        );
-                    });
-                `;
-
-                const blob = new Blob([swScript], { type: 'application/javascript' });
-                const swUrl = URL.createObjectURL(blob);
-
-                navigator.serviceWorker.register(swUrl)
-                    .then((registration) => {
-                        console.log('SW registered: ', registration);
-                    })
-                    .catch((registrationError) => {
-                        console.log('SW registration failed: ', registrationError);
-                    });
-            });
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size * scale * (1 + chaos * 0.3), 0, Math.PI * 2);
+                ctx.fill();
+            }
         }
 
-        // Initialize particles on load
-        window.addEventListener('load', () => {
-            createParticles();
-        });
-
-        // Add hover effects to project cards
-        document.addEventListener('DOMContentLoaded', () => {
-            const projectCards = document.querySelectorAll('.project-card');
-            
-            projectCards.forEach(card => {
-                card.addEventListener('mouseenter', () => {
-                    card.style.transform = 'translateY(-10px) scale(1.02)';
-                });
+        class GalaxyTendril {
+            constructor(baseAngle, armIndex, totalArms) {
+                this.baseAngle = baseAngle;
+                this.armIndex = armIndex;
+                this.points = [];
+                this.particles = [];
+                const segmentCount = 80;
                 
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = 'translateY(0) scale(1)';
+                for (let i = 0; i < segmentCount; i++) {
+                    const t = i / segmentCount;
+                    const distance = 30 + t * 200;
+                    const angleOffset = t * Math.PI * 1.5;
+                    const angle = baseAngle + angleOffset;
+                    
+                    this.points.push({
+                        angle: angle,
+                        distance: distance,
+                        baseDistance: distance,
+                        chaosOffset: { x: 0, y: 0 },
+                        chaosVelocity: { x: 0, y: 0 }
+                    });
+
+                    if (i % 3 === 0) {
+                        this.particles.push(new GalaxyParticle(angle, distance, distance));
+                    }
+                }
+            }
+
+            update(centerX, centerY, scale, chaos, deltaTime) {
+                this.points.forEach((point, i) => {
+                    if (chaos > 0) {
+                        point.chaosVelocity.x += (Math.random() - 0.5) * chaos * 0.3;
+                        point.chaosVelocity.y += (Math.random() - 0.5) * chaos * 0.3;
+                        point.chaosVelocity.x *= 0.96;
+                        point.chaosVelocity.y *= 0.96;
+                        point.chaosOffset.x += point.chaosVelocity.x;
+                        point.chaosOffset.y += point.chaosVelocity.y;
+                        point.chaosOffset.x *= 0.98;
+                        point.chaosOffset.y *= 0.98;
+                    } else {
+                        point.chaosOffset.x *= 0.92;
+                        point.chaosOffset.y *= 0.92;
+                    }
                 });
+
+                this.particles.forEach(particle => {
+                    particle.update(centerX, centerY, scale, chaos, deltaTime);
+                });
+            }
+
+            draw(ctx, centerX, centerY, scale, chaos) {
+                ctx.strokeStyle = `rgba(138, 180, 248, ${0.15 * (1 + chaos * 0.5)})`;
+                ctx.lineWidth = 2 * scale;
+                ctx.beginPath();
+
+                this.points.forEach((point, i) => {
+                    const scaledDistance = point.distance * scale;
+                    const x = centerX + Math.cos(point.angle) * scaledDistance + point.chaosOffset.x;
+                    const y = centerY + Math.sin(point.angle) * scaledDistance + point.chaosOffset.y;
+
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                });
+
+                ctx.stroke();
+
+                this.particles.forEach(particle => {
+                    particle.draw(ctx, scale, chaos);
+                });
+            }
+        }
+
+        class GalaxySystem {
+            constructor() {
+                this.tendrils = [];
+                this.coreParticles = [];
+                const armCount = 8;
+
+                for (let i = 0; i < armCount; i++) {
+                    const angle = (Math.PI * 2 / armCount) * i;
+                    this.tendrils.push(new GalaxyTendril(angle, i, armCount));
+                }
+
+                for (let i = 0; i < 100; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = Math.random() * 40 + 10;
+                    this.coreParticles.push(new GalaxyParticle(angle, distance, distance));
+                }
+            }
+
+            update(centerX, centerY, scale, chaos, deltaTime) {
+                this.tendrils.forEach(tendril => {
+                    tendril.update(centerX, centerY, scale, chaos, deltaTime);
+                });
+
+                this.coreParticles.forEach(particle => {
+                    particle.update(centerX, centerY, scale, chaos, deltaTime);
+                });
+            }
+
+            draw(ctx, centerX, centerY, scale, chaos) {
+                this.tendrils.forEach(tendril => {
+                    tendril.draw(ctx, centerX, centerY, scale, chaos);
+                });
+
+                // Draw core
+                const coreGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 30 * scale);
+                coreGradient.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
+                coreGradient.addColorStop(0.3, 'rgba(180, 220, 255, 0.6)');
+                coreGradient.addColorStop(0.6, 'rgba(138, 180, 248, 0.3)');
+                coreGradient.addColorStop(1, 'rgba(138, 180, 248, 0)');
+
+                ctx.fillStyle = coreGradient;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, 30 * scale, 0, Math.PI * 2);
+                ctx.fill();
+
+                this.coreParticles.forEach(particle => {
+                    particle.draw(ctx, scale, chaos);
+                });
+            }
+        }
+
+        function calculateDistance(point1, point2) {
+            const dx = point1.x - point2.x;
+            const dy = point1.y - point2.y;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        function onResults(results) {
+            overlayCtx.save();
+            overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+
+            // Remove old hand indicators
+            handIndicators.forEach(indicator => indicator.remove());
+            handIndicators = [];
+
+            // Remove old connection lines
+            document.querySelectorAll('.connection-line').forEach(line => line.remove());
+
+            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                const hands = results.multiHandLandmarks;
+
+                if (hands.length === 2) {
+                    // Two hands detected - calculate pinch gesture
+                    const hand1 = hands[0];
+                    const hand2 = hands[1];
+
+                    // Get thumb tips and index finger tips
+                    const thumb1 = hand1[4];
+                    const index1 = hand1[8];
+                    const thumb2 = hand2[4];
+                    const index2 = hand2[8];
+
+                    // Calculate pinch points (midpoint between thumb and index for each hand)
+                    const pinch1 = {
+                        x: (thumb1.x + index1.x) / 2,
+                        y: (thumb1.y + index1.y) / 2
+                    };
+                    const pinch2 = {
+                        x: (thumb2.x + index2.x) / 2,
+                        y: (thumb2.y + index2.y) / 2
+                    };
+
+                    // Calculate distance between pinch points
+                    const distance = calculateDistance(pinch1, pinch2);
+
+                    // Map distance to scale (0.1 to 3.0)
+                    targetScale = Math.max(0.3, Math.min(3.0, distance * 4));
+
+                    // Reset chaos when using scale
+                    targetChaos = 0.0;
+
+                    // Draw hand indicators
+                    const videoRect = videoElement.getBoundingClientRect();
+                    [pinch1, pinch2].forEach(pinch => {
+                        const indicator = document.createElement('div');
+                        indicator.className = 'hand-indicator';
+                        indicator.style.left = (videoRect.left + pinch.x * videoRect.width) + 'px';
+                        indicator.style.top = (videoRect.top + pinch.y * videoRect.height) + 'px';
+                        document.body.appendChild(indicator);
+                        handIndicators.push(indicator);
+                    });
+
+                    // Draw connection line
+                    const line = document.createElement('div');
+                    line.className = 'connection-line';
+                    const x1 = videoRect.left + pinch1.x * videoRect.width;
+                    const y1 = videoRect.top + pinch1.y * videoRect.height;
+                    const x2 = videoRect.left + pinch2.x * videoRect.width;
+                    const y2 = videoRect.top + pinch2.y * videoRect.height;
+                    const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+                    const angle = Math.atan2(y2 - y1, x2 - x1);
+
+                    line.style.left = x1 + 'px';
+                    line.style.top = y1 + 'px';
+                    line.style.width = length + 'px';
+                    line.style.transform = `rotate(${angle}rad)`;
+                    document.body.appendChild(line);
+
+                } else if (hands.length === 1) {
+                    // One hand detected - calculate chaos based on hand spread
+                    const hand = hands[0];
+                    const thumb = hand[4];
+                    const pinky = hand[20];
+                    const spread = calculateDistance(thumb, pinky);
+
+                    // Map spread to chaos (0.0 to 1.0)
+                    targetChaos = Math.max(0, Math.min(1.0, spread * 2));
+
+                    // Draw hand landmarks
+                    overlayCtx.fillStyle = 'rgba(138, 180, 248, 0.8)';
+                    hand.forEach(landmark => {
+                        overlayCtx.beginPath();
+                        overlayCtx.arc(
+                            landmark.x * overlayCanvas.width,
+                            landmark.y * overlayCanvas.height,
+                            5,
+                            0,
+                            Math.PI * 2
+                        );
+                        overlayCtx.fill();
+                    });
+                }
+            } else {
+                // No hands detected - gradually return to defaults
+                targetScale = 1.0;
+                targetChaos = 0.0;
+            }
+
+            overlayCtx.restore();
+        }
+
+        function animate() {
+            const now = Date.now();
+            const deltaTime = Math.min(now - lastTime, 100);
+            lastTime = now;
+
+            // Smooth interpolation
+            currentScale += (targetScale - currentScale) * 0.1;
+            currentChaos += (targetChaos - currentChaos) * 0.1;
+
+            // Update UI
+            document.getElementById('scaleValue').textContent = currentScale.toFixed(2);
+            document.getElementById('chaosValue').textContent = currentChaos.toFixed(1);
+
+            // Clear canvas
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Update and draw galaxy
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height * 0.3;
+            galaxySystem.update(centerX, centerY, currentScale, currentChaos, deltaTime);
+            galaxySystem.draw(ctx, centerX, centerY, currentScale, currentChaos);
+
+            requestAnimationFrame(animate);
+        }
+
+        async function allowCamera() {
+            document.getElementById('permissionModal').style.display = 'none';
+            document.getElementById('loadingOverlay').classList.add('active');
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: 'user',
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    }
+                });
+
+                videoElement.srcObject = stream;
+
+                await new Promise((resolve) => {
+                    videoElement.onloadedmetadata = resolve;
+                });
+
+                // Initialize MediaPipe Hands
+                hands = new Hands({
+                    locateFile: (file) => {
+                        return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+                    }
+                });
+
+                hands.setOptions({
+                    maxNumHands: 2,
+                    modelComplexity: 1,
+                    minDetectionConfidence: 0.5,
+                    minTrackingConfidence: 0.5
+                });
+
+                hands.onResults(onResults);
+
+                camera = new Camera(videoElement, {
+                    onFrame: async () => {
+                        await hands.send({ image: videoElement });
+                    },
+                    width: 640,
+                    height: 480
+                });
+
+                camera.start();
+
+                document.getElementById('loadingOverlay').classList.remove('active');
+
+            } catch (error) {
+                document.getElementById('loadingOverlay').classList.remove('active');
+                showError('Camera access denied or not available. Please enable camera permissions and reload.');
+                console.error('Camera error:', error);
+            }
+        }
+
+        function denyCamera() {
+            document.getElementById('permissionModal').style.display = 'none';
+            showError('Camera access is required for hand gesture control. You can still view the galaxy, but cannot interact with it.');
+        }
+
+        function showError(message) {
+            const errorElement = document.getElementById('errorMessage');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 5000);
+        }
+
+        function initializeCanvas() {
+            canvas = document.getElementById('galaxyCanvas');
+            ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            videoElement = document.getElementById('webcam');
+            overlayCanvas = document.getElementById('canvasOverlay');
+            overlayCtx = overlayCanvas.getContext('2d');
+
+            const videoContainer = document.getElementById('videoContainer');
+            overlayCanvas.width = videoContainer.offsetWidth;
+            overlayCanvas.height = videoContainer.offsetHeight;
+
+            galaxySystem = new GalaxySystem();
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const videoContainer = document.getElementById('videoContainer');
+            overlayCanvas.width = videoContainer.offsetWidth;
+            overlayCanvas.height = videoContainer.offsetHeight;
+        });
+
+        // Prevent default touch behaviors
+        document.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+        }, { passive: false });
+
+        document.addEventListener('gesturestart', (e) => {
+            e.preventDefault();
+        });
+
+        document.addEventListener('gesturechange', (e) => {
+            e.preventDefault();
+        });
+
+        document.addEventListener('gestureend', (e) => {
+            e.preventDefault();
+        });
+
+        // Initialize everything when page loads
+        window.addEventListener('load', () => {
+            initializeCanvas();
+            animate();
+        });
+
+        // Add visual feedback for touch
+        document.addEventListener('touchstart', (e) => {
+            Array.from(e.touches).forEach(touch => {
+                const ripple = document.createElement('div');
+                ripple.style.position = 'absolute';
+                ripple.style.left = touch.pageX + 'px';
+                ripple.style.top = touch.pageY + 'px';
+                ripple.style.width = '40px';
+                ripple.style.height = '40px';
+                ripple.style.marginLeft = '-20px';
+                ripple.style.marginTop = '-20px';
+                ripple.style.borderRadius = '50%';
+                ripple.style.border = '2px solid rgba(138, 180, 248, 0.6)';
+                ripple.style.pointerEvents = 'none';
+                ripple.style.animation = 'ripple 0.6s ease-out';
+                ripple.style.zIndex = '1000';
+                document.body.appendChild(ripple);
+
+                setTimeout(() => ripple.remove(), 600);
             });
         });
 
-        // Add typing animation to hero text
-        function typeWriter(element, text, speed = 50) {
-            let i = 0;
-            element.innerHTML = '';
-            
-            function type() {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
-                    i++;
-                    setTimeout(type, speed);
+        // Add ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(2);
+                    opacity: 0;
                 }
             }
-            type();
+        `;
+        document.head.appendChild(style);
+
+        // Fallback: If MediaPipe fails to load, show error
+        window.addEventListener('error', (e) => {
+            if (e.message && e.message.includes('mediapipe')) {
+                showError('Failed to load hand tracking library. Please check your internet connection and reload.');
+            }
+        });
+
+        // Add performance monitoring
+        let frameCount = 0;
+        let lastFpsTime = Date.now();
+        let fps = 0;
+
+        setInterval(() => {
+            const now = Date.now();
+            const delta = now - lastFpsTime;
+            fps = Math.round((frameCount * 1000) / delta);
+            frameCount = 0;
+            lastFpsTime = now;
+        }, 1000);
+
+        // Optimize for mobile performance
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            // Reduce particle count for mobile
+            GalaxySystem.prototype.constructor = function() {
+                this.tendrils = [];
+                this.coreParticles = [];
+                const armCount = 6; // Reduced from 8
+
+                for (let i = 0; i < armCount; i++) {
+                    const angle = (Math.PI * 2 / armCount) * i;
+                    this.tendrils.push(new GalaxyTendril(angle, i, armCount));
+                }
+
+                for (let i = 0; i < 60; i++) { // Reduced from 100
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = Math.random() * 40 + 10;
+                    this.coreParticles.push(new GalaxyParticle(angle, distance, distance));
+                }
+            };
         }
 
-        // Initialize typing animation on load
-        window.addEventListener('load', () => {
-            const heroTitle = document.querySelector('.hero h1');
-            if (heroTitle) {
-                const originalText = heroTitle.textContent;
-                setTimeout(() => {
-                    typeWriter(heroTitle, originalText, 100);
-                }, 1000);
+        // Add battery status check for mobile
+        if ('getBattery' in navigator) {
+            navigator.getBattery().then(battery => {
+                if (battery.level < 0.2 && !battery.charging) {
+                    showError('Low battery detected. Performance may be reduced.');
+                }
+
+                battery.addEventListener('levelchange', () => {
+                    if (battery.level < 0.15 && !battery.charging) {
+                        showError('Critical battery. Consider charging your device.');
+                    }
+                });
+            });
+        }
+
+        // Add visibility change handler to pause when tab is hidden
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                if (camera) {
+                    camera.stop();
+                }
+            } else {
+                if (camera && videoElement.srcObject) {
+                    camera.start();
+                }
             }
         });
 
-        // Add parallax effect to hero section
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const parallax = document.querySelector('.hero');
-            const speed = scrolled * 0.5;
-            
-            if (parallax) {
-                parallax.style.transform = `translateY(${speed}px)`;
+        // Add connection quality indicator
+        let lastHandDetectionTime = Date.now();
+        setInterval(() => {
+            const now = Date.now();
+            if (now - lastHandDetectionTime > 5000 && videoElement.srcObject) {
+                // No hands detected for 5 seconds - might be a tracking issue
+                console.log('Hand tracking active, waiting for hand detection...');
             }
-        });
+        }, 5000);
 
-        // Add intersection observer for animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+        // Update last detection time in onResults
+        const originalOnResults = onResults;
+        onResults = function(results) {
+            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                lastHandDetectionTime = Date.now();
+            }
+            originalOnResults(results);
         };
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate');
+        // Add debug mode (shake device to toggle)
+        let debugMode = false;
+        let lastShakeTime = 0;
+        
+        if (window.DeviceMotionEvent) {
+            window.addEventListener('devicemotion', (e) => {
+                const acceleration = e.accelerationIncludingGravity;
+                const current = acceleration.x + acceleration.y + acceleration.z;
+                const now = Date.now();
+                
+                if (Math.abs(current) > 30 && now - lastShakeTime > 1000) {
+                    lastShakeTime = now;
+                    debugMode = !debugMode;
+                    
+                    if (debugMode) {
+                        // Show FPS counter
+                        const fpsCounter = document.createElement('div');
+                        fpsCounter.id = 'fpsCounter';
+                        fpsCounter.style.position = 'absolute';
+                        fpsCounter.style.top = '60px';
+                        fpsCounter.style.left = '10px';
+                        fpsCounter.style.color = '#8ab4f8';
+                        fpsCounter.style.fontSize = '12px';
+                        fpsCounter.style.zIndex = '1000';
+                        fpsCounter.style.fontFamily = 'monospace';
+                        document.body.appendChild(fpsCounter);
+                        
+                        setInterval(() => {
+                            const counter = document.getElementById('fpsCounter');
+                            if (counter) {
+                                counter.textContent = `FPS: ${fps} | Particles: ${galaxySystem.coreParticles.length}`;
+                            }
+                        }, 100);
+                    } else {
+                        const counter = document.getElementById('fpsCounter');
+                        if (counter) counter.remove();
+                    }
                 }
             });
-        }, observerOptions);
-
-        document.querySelectorAll('.project-card, .skill-item').forEach(el => {
-            observer.observe(el);
-        });
-
-        // Add dynamic gradient background
-        function updateGradient() {
-            const time = Date.now() * 0.0005;
-            const x = Math.sin(time) * 0.5 + 0.5;
-            const y = Math.cos(time * 0.7) * 0.5 + 0.5;
-            
-            document.documentElement.style.setProperty(
-                '--gradient-primary', 
-                `linear-gradient(${135 + x * 90}deg, hsl(${220 + x * 40}, 70%, 60%) 0%, hsl(${280 + y * 40}, 70%, 70%) 100%)`
-            );
         }
 
-        setInterval(updateGradient, 100);
+        // Add double tap to reset
+        let lastTapTime = 0;
+        canvas.addEventListener('touchstart', (e) => {
+            const now = Date.now();
+            if (now - lastTapTime < 300) {
+                // Double tap detected
+                targetScale = 1.0;
+                targetChaos = 0.0;
+                currentScale = 1.0;
+                currentChaos = 0.0;
+                
+                // Visual feedback
+                canvas.style.transition = 'opacity 0.2s';
+                canvas.style.opacity = '0.5';
+                setTimeout(() => {
+                    canvas.style.opacity = '1';
+                    setTimeout(() => {
+                        canvas.style.transition = '';
+                    }, 200);
+                }, 100);
+            }
+            lastTapTime = now;
+        });
+
+        // Add haptic feedback for mobile devices
+        function vibrate(pattern) {
+            if ('vibrate' in navigator) {
+                navigator.vibrate(pattern);
+            }
+        }
+
+        // Vibrate when scale changes significantly
+        let lastScaleVibration = 1.0;
+        setInterval(() => {
+            if (Math.abs(currentScale - lastScaleVibration) > 0.5) {
+                vibrate(10);
+                lastScaleVibration = currentScale;
+            }
+        }, 200);
+
+        // Add touch gesture hints
+        function showGestureHint() {
+            const hint = document.createElement('div');
+            hint.style.position = 'absolute';
+            hint.style.top = '50%';
+            hint.style.left = '50%';
+            hint.style.transform = 'translate(-50%, -50%)';
+            hint.style.background = 'rgba(0, 0, 0, 0.8)';
+            hint.style.color = 'white';
+            hint.style.padding = '20px';
+            hint.style.borderRadius = '10px';
+            hint.style.textAlign = 'center';
+            hint.style.zIndex = '100';
+            hint.style.maxWidth = '80%';
+            hint.innerHTML = `
+                <div style="font-size: 18px; margin-bottom: 10px;">👋 Hand Gestures</div>
+                <div style="font-size: 14px; line-height: 1.6;">
+                    🤏 Two hands: Pinch to zoom<br>
+                    ✋ One hand: Spread fingers for chaos<br>
+                    👆 Double tap to reset
+                </div>
+            `;
+            document.body.appendChild(hint);
+
+            setTimeout(() => {
+                hint.style.transition = 'opacity 0.5s';
+                hint.style.opacity = '0';
+                setTimeout(() => hint.remove(), 500);
+            }, 4000);
+        }
+
+        // Show gesture hint after camera is enabled
+        const originalAllowCamera = allowCamera;
+        allowCamera = async function() {
+            await originalAllowCamera();
+            setTimeout(showGestureHint, 1000);
+        };
+
+        // Add keyboard shortcuts for desktop testing
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowUp':
+                    targetScale = Math.min(3.0, targetScale + 0.1);
+                    break;
+                case 'ArrowDown':
+                    targetScale = Math.max(0.3, targetScale - 0.1);
+                    break;
+                case 'ArrowLeft':
+                    targetChaos = Math.max(0, targetChaos - 0.1);
+                    break;
+                case 'ArrowRight':
+                    targetChaos = Math.min(1.0, targetChaos + 0.1);
+                    break;
+                case 'r':
+                case 'R':
+                    targetScale = 1.0;
+                    targetChaos = 0.0;
+                    break;
+            }
+        });
+
+        // Log initialization
+        console.log('%c🌌 Collapsing Mini Galaxy Initialized', 'color: #8ab4f8; font-size: 16px; font-weight: bold;');
+        console.log('%cControls:', 'color: #8ab4f8; font-weight: bold;');
+        console.log('• Two hands pinch: Zoom in/out');
+        console.log('• One hand spread: Add chaos');
+        console.log('• Double tap: Reset');
+        console.log('• Arrow keys: Manual control (desktop)');
+        console.log('• Shake device: Toggle debug mode');
     </script>
 </body>
 </html>
-
-
