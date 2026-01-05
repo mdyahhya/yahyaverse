@@ -3,821 +3,1425 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestural 3D Particle Playground</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     
-    <!-- Three.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <!-- SEO Meta Tags -->
+    <title>Shadow Browser - Privacy-First Android Browser | Zero Tracking, 98%+ Ad Blocking</title>
+    <meta name="description" content="Shadow Browser: The ultimate privacy-focused Android browser with 98%+ ad blocking, zero tracking, full dark mode, and lightning-fast performance. Download APK now.">
+    <meta name="keywords" content="Shadow Browser, Android browser, privacy browser, ad blocker, dark mode browser, secure browser, APK download">
+    <meta name="author" content="Yahya Mundewadi">
+    <meta name="robots" content="index, follow">
     
-    <!-- MediaPipe Hands -->
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
-
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Shadow Browser - Browse Like a Shadow">
+    <meta property="og:description" content="Privacy-first Android browser with 98%+ ad blocking, zero tracking, and complete dark mode. Your privacy, your power.">
+    <meta property="og:url" content="https://shadow-browser.netlify.app">
+    <meta property="og:image" content="https://shadow-browser.netlify.app/browser_icon.png">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Shadow Browser - Privacy-First Android Browser">
+    <meta name="twitter:description" content="98%+ ad blocking, zero tracking, full dark mode. Download the most private Android browser.">
+    <meta name="twitter:image" content="https://shadow-browser.netlify.app/browser_icon.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="browser_icon.png">
+    <link rel="apple-touch-icon" href="browser_icon.png">
+    
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Shadow Browser",
+      "applicationCategory": "BrowserApplication",
+      "operatingSystem": "Android 8.0+",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Yahya Mundewadi",
+        "url": "https://yahya.dominal.in"
+      },
+      "description": "Privacy-first Android browser with advanced ad blocking and zero tracking"
+    }
+    </script>
+    
     <style>
-        :root {
-            --bg-color: #111;
-            --panel-bg: rgba(20, 20, 25, 0.85);
-            --accent: #00d2ff;
-            --text: #eee;
-            --font: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        body, html {
+        /* ========================================
+           GLOBAL RESET & BASE STYLES
+        ======================================== */
+        * {
             margin: 0;
             padding: 0;
-            overflow: hidden;
-            background-color: var(--bg-color);
-            font-family: var(--font);
-            color: var(--text);
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg-black: #000000;
+            --text-white: #FFFFFF;
+            --white-10: rgba(255, 255, 255, 0.1);
+            --white-20: rgba(255, 255, 255, 0.2);
+            --white-30: rgba(255, 255, 255, 0.3);
+            --white-05: rgba(255, 255, 255, 0.05);
+            --white-60: rgba(255, 255, 255, 0.6);
+            --white-80: rgba(255, 255, 255, 0.8);
+        }
+        
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* ========================================
+           BACKGROUND PATTERNS & EFFECTS
+        ======================================== */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    var(--white-05) 2px,
+                    var(--white-05) 4px
+                );
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.3;
         }
-
-        #canvas-container {
+        
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(var(--white-05) 1px, transparent 1px),
+                linear-gradient(90deg, var(--white-05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.15;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* ========================================
+           HEADER STYLES
+        ======================================== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--white-20);
+            box-shadow: 0 0 20px var(--white-10);
+            z-index: 1000;
+            padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+        
+        header.scrolled {
+            padding: 10px 0;
+            box-shadow: 0 0 30px var(--white-20);
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px var(--white-30));
+            transition: transform 0.3s ease;
+        }
+        
+        .logo-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, var(--text-white), var(--white-60));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* ========================================
+           HERO SECTION
+        ======================================== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 120px 20px 80px;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, var(--white-10) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
+        }
+        
+        .hero-content {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-size: clamp(48px, 8vw, 96px);
+            font-weight: 900;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-shadow: 0 0 30px var(--white-30);
+            animation: fadeInUp 1s ease;
+        }
+        
+        .hero-tagline {
+            font-size: clamp(20px, 3vw, 32px);
+            font-weight: 300;
+            margin-bottom: 15px;
+            color: var(--white-80);
+            animation: fadeInUp 1s ease 0.2s backwards;
+        }
+        
+        .hero-description {
+            font-size: clamp(16px, 2vw, 20px);
+            max-width: 700px;
+            margin: 0 auto 40px;
+            color: var(--white-60);
+            line-height: 1.8;
+            animation: fadeInUp 1s ease 0.4s backwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* ========================================
+           BUTTON STYLES
+        ======================================== */
+        .btn-primary {
+            display: inline-block;
+            padding: 18px 50px;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-white);
+            background: transparent;
+            border: 2px solid var(--text-white);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            animation: fadeInUp 1s ease 0.6s backwards;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: var(--text-white);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s ease, height 0.5s ease;
+            z-index: -1;
+        }
+        
+        .btn-primary:hover {
+            color: var(--bg-black);
+            box-shadow: 0 0 30px var(--white-30), inset 0 0 30px var(--white-10);
+            transform: translateY(-3px);
+        }
+        
+        .btn-primary:hover::before {
+            width: 120%;
+            height: 300%;
+        }
+        
+        .btn-primary.pulse {
+            animation: buttonPulse 2s ease infinite;
+        }
+        
+        @keyframes buttonPulse {
+            0%, 100% {
+                box-shadow: 0 0 20px var(--white-20);
+            }
+            50% {
+                box-shadow: 0 0 40px var(--white-30), 0 0 60px var(--white-20);
+            }
+        }
+        
+        /* ========================================
+           SECTION COMMON STYLES
+        ======================================== */
+        section {
+            padding: 100px 20px;
+            position: relative;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title {
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px var(--white-20);
+        }
+        
+        .section-subtitle {
+            font-size: clamp(16px, 2vw, 20px);
+            color: var(--white-60);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* ========================================
+           FEATURES SECTION
+        ======================================== */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .feature-card {
+            background: var(--white-05);
+            border: 1px solid var(--white-20);
+            padding: 40px 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1;
+            background: linear-gradient(135deg, var(--white-10), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-
-        /* UI Controls */
-        #ui-panel {
+        
+        .feature-card:hover {
+            border-color: var(--text-white);
+            box-shadow: 0 0 40px var(--white-20), inset 0 0 20px var(--white-05);
+            transform: translateY(-10px);
+        }
+        
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+        
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: block;
+            filter: drop-shadow(0 0 10px var(--white-30));
+        }
+        
+        .feature-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .feature-description {
+            font-size: 16px;
+            color: var(--white-60);
+            line-height: 1.6;
+        }
+        
+        /* ========================================
+           TECH SPECS SECTION
+        ======================================== */
+        .specs-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 50px;
+            margin-top: 50px;
+        }
+        
+        .specs-list {
+            background: var(--white-05);
+            border: 1px solid var(--white-20);
+            padding: 40px;
+        }
+        
+        .specs-list h3 {
+            font-size: 28px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 2px solid var(--white-20);
+            padding-bottom: 15px;
+        }
+        
+        .specs-list ul {
+            list-style: none;
+        }
+        
+        .specs-list li {
+            padding: 12px 0 12px 30px;
+            position: relative;
+            font-size: 16px;
+            color: var(--white-80);
+            border-bottom: 1px solid var(--white-10);
+            transition: all 0.3s ease;
+        }
+        
+        .specs-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .specs-list li::before {
+            content: '▶';
             position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 280px;
-            background: var(--panel-bg);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 12px;
-            z-index: 10;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: opacity 0.3s;
+            left: 0;
+            color: var(--text-white);
+            font-size: 12px;
+            transition: transform 0.3s ease;
         }
-
-        h1 {
-            font-size: 1.1rem;
-            margin: 0 0 15px 0;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 10px;
+        
+        .specs-list li:hover {
+            color: var(--text-white);
+            padding-left: 40px;
         }
-
-        .control-group {
+        
+        .specs-list li:hover::before {
+            transform: translateX(5px);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 30px;
+            background: var(--white-05);
+            border: 1px solid var(--white-20);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            border-color: var(--text-white);
+            box-shadow: 0 0 30px var(--white-20);
+            transform: scale(1.05);
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            display: block;
+            background: linear-gradient(135deg, var(--text-white), var(--white-60));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-label {
+            font-size: 16px;
+            color: var(--white-60);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* ========================================
+           DOWNLOAD SECTION
+        ======================================== */
+        .download-section {
+            background: linear-gradient(135deg, var(--white-05), transparent);
+            position: relative;
+        }
+        
+        .download-card {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--bg-black);
+            border: 2px solid var(--text-white);
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 0 50px var(--white-30);
+            position: relative;
+        }
+        
+        .download-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--text-white), var(--white-30));
+            z-index: -1;
+            filter: blur(10px);
+            opacity: 0.5;
+        }
+        
+        .download-title {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .version-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .info-label {
+            font-size: 14px;
+            color: var(--white-60);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-white);
+        }
+        
+        .download-instructions {
+            margin: 40px 0;
+            padding: 30px;
+            background: var(--white-05);
+            border: 1px solid var(--white-20);
+            border-left: 4px solid var(--text-white);
+        }
+        
+        .download-instructions h4 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .download-instructions ol {
+            text-align: left;
+            margin-left: 20px;
+            color: var(--white-80);
+        }
+        
+        .download-instructions li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        
+        .mirror-links {
+            margin-top: 30px;
+        }
+        
+        .mirror-links p {
+            font-size: 14px;
+            color: var(--white-60);
             margin-bottom: 15px;
         }
-
-        label {
-            font-size: 0.85rem;
-            display: block;
-            margin-bottom: 5px;
-            color: #aaa;
+        
+        .mirror-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            margin: 5px;
+            border: 1px solid var(--white-30);
+            color: var(--white-80);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
         }
-
-        /* Custom Sliders */
-        input[type=range] {
-            width: 100%;
-            -webkit-appearance: none;
-            background: transparent;
+        
+        .mirror-btn:hover {
+            border-color: var(--text-white);
+            color: var(--text-white);
+            box-shadow: 0 0 20px var(--white-20);
         }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 14px;
-            width: 14px;
+        
+        /* ========================================
+           DEVELOPER SECTION
+        ======================================== */
+        .developer-section {
+            background: var(--white-05);
+        }
+        
+        .developer-card {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .developer-image-wrapper {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+        
+        .developer-image-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border: 2px solid var(--text-white);
             border-radius: 50%;
-            background: var(--accent);
-            margin-top: -5px;
-            cursor: pointer;
+            animation: rotate 10s linear infinite;
         }
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 4px;
-            cursor: pointer;
-            background: rgba(255,255,255,0.2);
-            border-radius: 2px;
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-
-        /* Grid for Templates */
-        .template-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 5px;
-        }
-        .template-btn {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid transparent;
-            color: #ccc;
-            padding: 8px 0;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            transition: all 0.2s;
-        }
-        .template-btn:hover {
-            background: rgba(255,255,255,0.2);
-        }
-        .template-btn.active {
-            background: var(--accent);
-            color: #111;
-            font-weight: bold;
-        }
-
-        /* Camera Toggle */
-        .toggle-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        .toggle-btn {
-            background: #333;
-            border: none;
-            color: #fff;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .toggle-btn.active {
-            background: #2ecc71;
-        }
-
-        /* Webcam Preview */
-        #webcam-preview {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 160px;
-            height: 120px;
-            background: #000;
-            border-radius: 8px;
-            overflow: hidden;
-            z-index: 9;
-            border: 2px solid rgba(255,255,255,0.1);
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s;
-            transform: scaleX(-1); /* Mirror */
-        }
-        #webcam-preview.visible {
-            opacity: 0.8;
-        }
-        #input_video {
+        
+        .developer-image {
             width: 100%;
             height: 100%;
+            border-radius: 50%;
             object-fit: cover;
+            border: 3px solid var(--text-white);
+            filter: grayscale(20%);
+            transition: all 0.3s ease;
         }
-
-        .status-pill {
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            background: rgba(255,255,255,0.1);
+        
+        .developer-image:hover {
+            filter: grayscale(0%);
+            transform: scale(1.05);
         }
-        .status-active { color: #2ecc71; }
-        .status-inactive { color: #e74c3c; }
-
-        #screenshot-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: transparent;
-            border: none;
-            color: #555;
-            cursor: pointer;
+        
+        .developer-name {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
-        #screenshot-btn:hover { color: #fff; }
-
-        /* Loading */
-        #loader {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: var(--accent);
-            font-size: 1.2rem;
-            z-index: 100;
-            pointer-events: none;
-            transition: opacity 0.5s;
+        
+        .developer-title {
+            font-size: 20px;
+            color: var(--white-60);
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+        
+        .developer-bio {
+            font-size: 18px;
+            line-height: 1.8;
+            color: var(--white-80);
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            border: 2px solid var(--white-30);
+            color: var(--text-white);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        .social-btn:hover {
+            border-color: var(--text-white);
+            box-shadow: 0 0 30px var(--white-20);
+            transform: translateY(-3px);
+        }
+        
+        .social-icon {
+            font-size: 24px;
+        }
+        
+        /* ========================================
+           FOOTER
+        ======================================== */
+        footer {
+            background: var(--bg-black);
+            border-top: 1px solid var(--white-20);
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: var(--white-60);
+            text-decoration: none;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--text-white);
+        }
+        
+        .copyright {
+            font-size: 14px;
+            color: var(--white-60);
+            line-height: 1.6;
+        }
+        
+        .copyright strong {
+            color: var(--text-white);
+        }
+        
+        /* ========================================
+           RESPONSIVE DESIGN
+        ======================================== */
+        @media (max-width: 768px) {
+            .header-content {
+                gap: 10px;
+            }
+            
+            .logo-icon {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .logo-text {
+                font-size: 20px;
+            }
+            
+            .hero {
+                padding: 100px 20px 60px;
+            }
+            
+            section {
+                padding: 60px 20px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .specs-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .specs-list {
+                padding: 30px 20px;
+            }
+            
+            .download-card {
+                padding: 40px 20px;
+            }
+            
+            .version-info {
+                gap: 20px;
+            }
+            
+            .social-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .social-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .btn-primary {
+                padding: 15px 30px;
+                font-size: 16px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* ========================================
+           UTILITY CLASSES
+        ======================================== */
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-20 {
+            margin-top: 20px;
+        }
+        
+        .mt-40 {
+            margin-top: 40px;
+        }
+        
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+        
+        .mb-40 {
+            margin-bottom: 40px;
         }
     </style>
 </head>
 <body>
-
-    <div id="loader">Initializing Particle Engine...</div>
-
-    <div id="canvas-container"></div>
-
-    <!-- Webcam Preview -->
-    <div id="webcam-preview">
-        <video id="input_video" playsinline></video>
-    </div>
-
-    <!-- UI Panel -->
-    <div id="ui-panel">
-        <button id="screenshot-btn" title="Take Screenshot">📷</button>
-        <h1>Particle Playground</h1>
-        
-        <div class="toggle-row">
-            <span>Camera Control</span>
-            <button id="camera-toggle" class="toggle-btn">Off</button>
-        </div>
-        <div style="margin-bottom:10px; font-size:0.75rem; color:#777;" id="gesture-status">
-            Status: <span class="status-pill status-inactive">Mouse Mode</span>
-        </div>
-
-        <div class="control-group">
-            <label>Shape Template</label>
-            <div class="template-grid">
-                <button class="template-btn active" data-shape="sphere">Sphere</button>
-                <button class="template-btn" data-shape="heart">Heart</button>
-                <button class="template-btn" data-shape="flower">Flower</button>
-                <button class="template-btn" data-shape="saturn">Saturn</button>
-                <button class="template-btn" data-shape="buddha">Buddha</button>
-                <button class="template-btn" data-shape="fireworks">Fireworks</button>
+    
+    <!-- ========================================
+         HEADER
+    ======================================== -->
+    <header id="header">
+        <div class="container">
+            <div class="header-content">
+                <img src="browser_icon.png" alt="Shadow Browser Logo" class="logo-icon">
+                <div class="logo-text">Shadow Browser</div>
             </div>
         </div>
-
-        <div class="control-group">
-            <label>Particle Color (Hue)</label>
-            <input type="range" id="color-slider" min="0" max="1" step="0.01" value="0.6">
+    </header>
+    
+    <!-- ========================================
+         HERO SECTION
+    ======================================== -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>SHADOW BROWSER</h1>
+            <div class="hero-tagline">Browse Like a Shadow. Your Privacy, Your Power.</div>
+            <p class="hero-description">
+                Experience the web the way it should be: private, fast, and ad-free. Shadow Browser blocks 98%+ of ads, 
+                tracks nothing, and puts you in complete control. Built for those who value privacy without compromise.
+            </p>
+            <a href="https://ajapvxdpxifdhvvszuhp.supabase.co/storage/v1/object/sign/shadowbrowserapk/shadowbrowser.apk?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9lYjk2Y2MwMC1iZDg3LTQyODktODRiYS1mNmZiMjY0YzI3MGYiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzaGFkb3dicm93c2VyYXBrL3NoYWRvd2Jyb3dzZXIuYXBrIiwiaWF0IjoxNzY3NjM5NTQ1LCJleHAiOjE5MjUzMTk1NDV9.UfUytEpAIPXxsK7Au6MHI3Ptm4svtV7WhnJGImj9UQY" class="btn-primary pulse" id="downloadBtn" download>Download APK</a>
         </div>
-
-        <div class="control-group">
-            <label>Particle Size</label>
-            <input type="range" id="size-slider" min="0.2" max="3.0" step="0.1" value="1.2">
+    </section>
+    
+    <!-- ========================================
+         FEATURES SECTION
+    ======================================== -->
+    <section id="features">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Why Shadow Browser?</h2>
+                <p class="section-subtitle">Engineered for privacy, designed for speed, built for you</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <span class="feature-icon">🛡️</span>
+                    <h3 class="feature-title">98%+ Ad Blocking</h3>
+                    <p class="feature-description">
+                        Browse without distractions. Our advanced blocking engine eliminates 98%+ of ads, 
+                        trackers, and malicious scripts. Tested on adblock-tester.com.
+                    </p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <span class="feature-icon">🔒</span>
+                    <h3 class="feature-title">Privacy First</h3>
+                    <p class="feature-description">
+                        Zero data collection, zero tracking, zero compromises. Your browsing history stays 
+                        on your device. Complete anonymity guaranteed.
+                    </p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <span class="feature-icon">🌙</span>
+                    <h3 class="feature-title">Full Dark Mode</h3>
+                    <p class="feature-description">
+                        Pure black interface that's easy on your eyes and battery. Every element designed 
+                        for comfortable night browsing.
+                    </p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <span class="feature-icon">⚡</span>
+                    <h3 class="feature-title">Lightning Fast</h3>
+                    <p class="feature-description">
+                        No bloat, no unnecessary features. Just pure speed. Pages load instantly without 
+                        tracking scripts slowing you down.
+                    </p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <span class="feature-icon">📥</span>
+                    <h3 class="feature-title">Smart Downloads</h3>
+                    <p class="feature-description">
+                        Download images, videos, and files seamlessly. Built-in download manager with 
+                        progress tracking and notifications.
+                    </p>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <span class="feature-icon">🎬</span>
+                    <h3 class="feature-title">Fullscreen Videos</h3>
+                    <p class="feature-description">
+                        Watch YouTube and other videos in fullscreen with automatic landscape orientation. 
+                        True immersive viewing experience.
+                    </p>
+                </div>
+            </div>
         </div>
-
-        <div class="control-group">
-            <label>Noise / Chaos</label>
-            <input type="range" id="noise-slider" min="0" max="2.0" step="0.1" value="0.5">
+    </section>
+    
+    <!-- ========================================
+         TECH SPECS SECTION
+    ======================================== -->
+    <section id="specs">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">What Makes Shadow Different</h2>
+                <p class="section-subtitle">24 powerful features that put you in control</p>
+            </div>
+            
+            <div class="specs-container">
+                <div class="specs-list fade-in">
+                    <h3>Core Features</h3>
+                    <ul>
+                        <li>Advanced ad blocking (98%+ block rate)</li>
+                        <li>Zero user data collection</li>
+                        <li>Complete dark mode interface</li>
+                        <li>Incognito mode by default</li>
+                        <li>No tracking scripts allowed</li>
+                        <li>JavaScript control per site</li>
+                        <li>Cookie management</li>
+                        <li>Pop-up blocker</li>
+                        <li>Do Not Track enforcement</li>
+                        <li>HTTPS-only mode</li>
+                        <li>Fingerprinting protection</li>
+                        <li>Local history (device-only)</li>
+                    </ul>
+                </div>
+                
+                <div class="specs-list fade-in">
+                    <h3>Advanced Capabilities</h3>
+                    <ul>
+                        <li>Image/video download manager</li>
+                        <li>Fullscreen video support</li>
+                        <li>Auto-rotate for landscape videos</li>
+                        <li>File download with notifications</li>
+                        <li>Multiple tabs support</li>
+                        <li>Bookmark manager (local only)</li>
+                        <li>Search engine options</li>
+                        <li>Custom homepage</li>
+                        <li>Desktop mode toggle</li>
+                        <li>Text size adjustment</li>
+                        <li>Offline page access</li>
+                        <li>100% offline functionality</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="stats-grid fade-in">
+                <div class="stat-card">
+                    <span class="stat-number" data-target="98">0</span>
+                    <span class="stat-label">% Ads Blocked</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" data-target="450">0</span>
+                    <span class="stat-label">+ Blocked Domains</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" data-target="0">0</span>
+                    <span class="stat-label">Tracking Scripts</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" data-target="100">0</span>
+                    <span class="stat-label">% Offline Capable</span>
+                </div>
+            </div>
         </div>
-        
-        <div style="font-size: 0.75rem; color: #666; margin-top: 15px; line-height: 1.4;">
-            <b>Gestures:</b><br>
-            • Open Hand: Expand<br>
-            • Fist: Contract<br>
-            • Two Hands: Zoom<br>
-            • Snap: Burst
+    </section>
+    
+    <!-- ========================================
+         DOWNLOAD SECTION
+    ======================================== -->
+    <section class="download-section" id="download">
+        <div class="container">
+            <div class="download-card fade-in">
+                <h2 class="download-title">Get Shadow Browser</h2>
+                <p style="font-size: 18px; color: var(--white-60); margin-bottom: 30px;">
+                    Join the privacy revolution. Download now and take back control of your browsing.
+                </p>
+                
+                <div class="version-info">
+                    <div class="info-item">
+                        <span class="info-label">Latest Version</span>
+                        <span class="info-value">v1.0 Beta</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">File Size</span>
+                        <span class="info-value">~8 MB</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Android Version</span>
+                        <span class="info-value">8.0+</span>
+                    </div>
+                </div>
+                
+                <a href="shadow-browser.apk" class="btn-primary pulse mt-40" download>Download APK Now</a>
+                
+                <div class="download-instructions">
+                    <h4>Installation Instructions</h4>
+                    <ol>
+                        <li>Download the APK file to your Android device</li>
+                        <li>Open Settings → Security → Enable "Install from Unknown Sources"</li>
+                        <li>Locate the downloaded APK file in your Downloads folder</li>
+                        <li>Tap the file and follow the installation prompts</li>
+                        <li>Launch Shadow Browser and start browsing privately</li>
+                    </ol>
+                </div>
+                
+                <div class="mirror-links">
+                    <p>Alternative Download Links:</p>
+                    <a href="shadow-browser.apk" class="mirror-btn" download>Direct Download</a>
+                    <a href="#" class="mirror-btn" onclick="copyToClipboard(); return false;">Copy Link</a>
+                </div>
+            </div>
         </div>
-    </div>
-
+    </section>
+    
+    <!-- ========================================
+         DEVELOPER SECTION
+    ======================================== -->
+    <section class="developer-section" id="developer">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Meet the Developer</h2>
+            </div>
+            
+            <div class="developer-card fade-in">
+                <div class="developer-image-wrapper">
+                    <img src="yahya_photo.jpg" alt="Yahya Mundewadi" class="developer-image">
+                </div>
+                
+                <h3 class="developer-name">Yahya Mundewadi</h3>
+                <p class="developer-title">Full-Stack Developer | Founder of Dominal | Privacy Advocate</p>
+                
+                <p class="developer-bio">
+                    Passionate about building tools that empower users and protect their privacy. As the founder of 
+                    Dominal and a full-stack developer, I believe in creating technology that serves people, not corporations. 
+                    Shadow Browser is my commitment to giving users control over their digital lives. Built with expertise, 
+                    delivered with purpose.
+                </p>
+                
+                <div class="social-links">
+                    <a href="https://yahya.dominal.in" class="social-btn" target="_blank" rel="noopener">
+                        <span class="social-icon">🌐</span>
+                        <span>Portfolio</span>
+                    </a>
+                    <a href="https://www.linkedin.com/in/yahya-m-05b3191b9" class="social-btn" target="_blank" rel="noopener">
+                        <span class="social-icon">💼</span>
+                        <span>LinkedIn</span>
+                    </a>
+                    <a href="https://github.com/dominal-tech" class="social-btn" target="_blank" rel="noopener">
+                        <span class="social-icon">💻</span>
+                        <span>GitHub</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- ========================================
+         FOOTER
+    ======================================== -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="#home">Home</a>
+                <a href="#features">Features</a>
+                <a href="#download">Download</a>
+                <a href="mailto:contact@dominal.in">Contact</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Report Issues</a>
+            </div>
+            <div class="copyright">
+                <p>© 2025 <strong>Shadow Browser</strong> by <strong>Yahya Mundewadi</strong> | <strong>Team Dominal</strong></p>
+                <p style="margin-top: 10px; font-size: 12px;">
+                    Built with privacy in mind. No data collected, no tracking, no compromises.
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- ========================================
+         JAVASCRIPT
+    ======================================== -->
     <script>
-        /**
-         * CONFIGURATION & STATE
-         */
-        const CONFIG = {
-            particleCount: 15000, // Reduced for broader compatibility
-            baseSize: 0.08,
-            cameraEnabled: false,
-            mouseInteraction: true,
-            colors: new THREE.Color(0x00d2ff),
-            currentShape: 'sphere'
-        };
-
-        const STATE = {
-            handOpenness: 1.0, // 0 (closed) to 1 (open)
-            handDistance: 1.0, // Multiplier for global scale
-            repulsionStrength: 0.0,
-            gestureActive: false,
-            targetPositions: null, // Float32Array
-            particles: null,      // Three.js Points
-            velocities: null,     // Float32Array
-            originalPositions: null,
-            time: 0
-        };
-
-        // DOM Elements
-        const container = document.getElementById('canvas-container');
-        const loader = document.getElementById('loader');
-        const videoElement = document.getElementById('input_video');
-        const previewElement = document.getElementById('webcam-preview');
-        const statusEl = document.getElementById('gesture-status');
-
-        /**
-         * THREE.JS SETUP
-         */
-        const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x111111, 0.02);
-
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-        camera.position.z = 15;
-
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        container.appendChild(renderer.domElement);
-
-        // Mouse interaction
-        const mouse = new THREE.Vector2();
-        const raycaster = new THREE.Raycaster();
-        const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
-        const mouseWorldPos = new THREE.Vector3();
-
-        document.addEventListener('mousemove', (e) => {
-            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        // ========================================
+        // HEADER SCROLL EFFECT
+        // ========================================
+        const header = document.getElementById('header');
+        let lastScroll = 0;
+        
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
             
-            // Project mouse to Z=0 plane for interaction
-            raycaster.setFromCamera(mouse, camera);
-            raycaster.ray.intersectPlane(plane, mouseWorldPos);
+            if (currentScroll > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+            
+            lastScroll = currentScroll;
         });
-
-        /**
-         * PARTICLE SYSTEM
-         */
-        function initParticles() {
-            const geometry = new THREE.BufferGeometry();
-            const positions = new Float32Array(CONFIG.particleCount * 3);
-            const colors = new Float32Array(CONFIG.particleCount * 3);
-            
-            // Physics arrays
-            STATE.velocities = new Float32Array(CONFIG.particleCount * 3);
-            STATE.targetPositions = new Float32Array(CONFIG.particleCount * 3);
-
-            // Initialize random positions
-            for (let i = 0; i < CONFIG.particleCount; i++) {
-                positions[i * 3] = (Math.random() - 0.5) * 50;
-                positions[i * 3 + 1] = (Math.random() - 0.5) * 50;
-                positions[i * 3 + 2] = (Math.random() - 0.5) * 50;
+        
+        // ========================================
+        // SMOOTH SCROLL FOR ANCHOR LINKS
+        // ========================================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
                 
-                const c = new THREE.Color().setHSL(0.6 + Math.random() * 0.1, 0.8, 0.6);
-                colors[i * 3] = c.r;
-                colors[i * 3 + 1] = c.g;
-                colors[i * 3 + 2] = c.b;
-            }
-
-            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-            // Shader Material for nice glowing dots
-            const material = new THREE.ShaderMaterial({
-                uniforms: {
-                    uTime: { value: 0 },
-                    uSize: { value: CONFIG.baseSize * renderer.getPixelRatio() },
-                    uColor: { value: CONFIG.colors }
-                },
-                vertexShader: `
-                    uniform float uTime;
-                    uniform float uSize;
-                    attribute vec3 color;
-                    varying vec3 vColor;
-                    void main() {
-                        vColor = color;
-                        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                        gl_PointSize = uSize * (30.0 / -mvPosition.z);
-                        gl_Position = projectionMatrix * mvPosition;
-                    }
-                `,
-                fragmentShader: `
-                    varying vec3 vColor;
-                    void main() {
-                        // Circular particle
-                        float r = distance(gl_PointCoord, vec2(0.5));
-                        if (r > 0.5) discard;
-                        
-                        // Soft edge glow
-                        float glow = 1.0 - (r * 2.0);
-                        glow = pow(glow, 1.5);
-                        
-                        gl_FragColor = vec4(vColor, glow);
-                    }
-                `,
-                depthWrite: false,
-                blending: THREE.AdditiveBlending,
-                transparent: true
-            });
-
-            STATE.particles = new THREE.Points(geometry, material);
-            scene.add(STATE.particles);
-
-            // Initial Shape
-            setShape('sphere');
-        }
-
-        /**
-         * SHAPE GENERATORS
-         */
-        function setShape(type) {
-            CONFIG.currentShape = type;
-            const count = CONFIG.particleCount;
-            const targets = STATE.targetPositions;
-            
-            // Generators fill the 'targets' array
-            if (type === 'sphere') {
-                for (let i = 0; i < count; i++) {
-                    const r = 6;
-                    const theta = Math.random() * Math.PI * 2;
-                    const phi = Math.acos((Math.random() * 2) - 1);
-                    targets[i*3] = r * Math.sin(phi) * Math.cos(theta);
-                    targets[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
-                    targets[i*3+2] = r * Math.cos(phi);
-                }
-            }
-            else if (type === 'heart') {
-                for (let i = 0; i < count; i++) {
-                    // Parametric Heart
-                    const t = Math.random() * Math.PI * 2;
-                    const u = Math.random() * Math.PI; // thickness
-                    const scale = 0.5;
-                    // Simple 2D extrusions or 3D formula
-                    const x = 16 * Math.pow(Math.sin(t), 3);
-                    const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
-                    const z = (Math.random() - 0.5) * 4; // Thickness
-                    targets[i*3] = x * scale;
-                    targets[i*3+1] = y * scale;
-                    targets[i*3+2] = z;
-                }
-            }
-            else if (type === 'flower') {
-                for (let i = 0; i < count; i++) {
-                    const k = 4; // petals
-                    const theta = Math.random() * Math.PI * 2;
-                    const r = Math.cos(k * theta) * 7 + (Math.random()*1); 
-                    targets[i*3] = r * Math.cos(theta);
-                    targets[i*3+1] = r * Math.sin(theta);
-                    targets[i*3+2] = (Math.random() - 0.5) * 2;
-                }
-            }
-            else if (type === 'saturn') {
-                for (let i = 0; i < count; i++) {
-                    if (i < count * 0.3) {
-                        // Planet body
-                        const r = 4;
-                        const theta = Math.random() * Math.PI * 2;
-                        const phi = Math.acos((Math.random() * 2) - 1);
-                        targets[i*3] = r * Math.sin(phi) * Math.cos(theta);
-                        targets[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
-                        targets[i*3+2] = r * Math.cos(phi);
-                    } else {
-                        // Rings
-                        const angle = Math.random() * Math.PI * 2;
-                        const dist = 6 + Math.random() * 6;
-                        targets[i*3] = dist * Math.cos(angle);
-                        targets[i*3+1] = (Math.random()-0.5) * 0.5; // Flat ring
-                        targets[i*3+2] = dist * Math.sin(angle);
-                        // Tilt the ring
-                        const x = targets[i*3];
-                        const y = targets[i*3+1];
-                        targets[i*3] = x * Math.cos(0.4) - y * Math.sin(0.4);
-                        targets[i*3+1] = x * Math.sin(0.4) + y * Math.cos(0.4);
-                    }
-                }
-            }
-            else if (type === 'buddha') {
-                // Procedural silhouette approximation using 2D Canvas
-                const ctx = document.createElement('canvas').getContext('2d');
-                ctx.canvas.width = 100;
-                ctx.canvas.height = 100;
-                
-                // Draw shape
-                ctx.fillStyle = '#000';
-                ctx.fillRect(0,0,100,100);
-                ctx.fillStyle = '#fff';
-                
-                // Head
-                ctx.beginPath(); ctx.arc(50, 25, 12, 0, Math.PI*2); ctx.fill();
-                // Body
-                ctx.beginPath(); ctx.ellipse(50, 55, 20, 25, 0, 0, Math.PI*2); ctx.fill();
-                // Legs (Crossed)
-                ctx.beginPath(); ctx.ellipse(50, 85, 35, 12, 0, 0, Math.PI*2); ctx.fill();
-
-                const imgData = ctx.getImageData(0,0,100,100);
-                const pixels = [];
-                for(let y=0; y<100; y+=1) {
-                    for(let x=0; x<100; x+=1) {
-                        if(imgData.data[(y*100+x)*4] > 128) {
-                            pixels.push({x: (x-50)/4, y: -(y-50)/4});
-                        }
-                    }
+                // Don't prevent default for non-section links
+                if (href === '#' || href.length <= 1) {
+                    return;
                 }
                 
-                // Assign to particles
-                for (let i = 0; i < count; i++) {
-                    const p = pixels[i % pixels.length];
-                    // Add depth fuzz
-                    targets[i*3] = p.x + (Math.random()-0.5);
-                    targets[i*3+1] = p.y + (Math.random()-0.5);
-                    targets[i*3+2] = (Math.random()-0.5) * 3;
-                }
-            }
-            else if (type === 'fireworks') {
-                // Start at center
-                for (let i = 0; i < count; i++) {
-                    targets[i*3] = 0;
-                    targets[i*3+1] = 0;
-                    targets[i*3+2] = 0;
-                }
-            }
-        }
-
-        // Trigger fireworks explosion logic
-        function triggerExplosion() {
-            const pos = STATE.particles.geometry.attributes.position.array;
-            const vel = STATE.velocities;
-            
-            // Set shape to fireworks (center) to reset attraction point, but give massive velocity
-            // Or simply apply velocity to current positions
-            for(let i=0; i<CONFIG.particleCount; i++) {
-                const angle = Math.random() * Math.PI * 2;
-                const phi = Math.acos((Math.random() * 2) - 1);
-                const speed = 0.5 + Math.random() * 1.5;
+                e.preventDefault();
+                const target = document.querySelector(href);
                 
-                vel[i*3] += speed * Math.sin(phi) * Math.cos(angle);
-                vel[i*3+1] += speed * Math.sin(phi) * Math.sin(angle);
-                vel[i*3+2] += speed * Math.cos(phi);
-            }
-            
-            // Flash color
-            STATE.particles.material.uniforms.uColor.value.setHex(0xffffff);
-            setTimeout(() => {
-                STATE.particles.material.uniforms.uColor.value.setHSL(Math.random(), 0.8, 0.6);
-            }, 100);
-        }
-
-
-        /**
-         * ANIMATION LOOP
-         */
-        function animate() {
-            requestAnimationFrame(animate);
-            
-            STATE.time += 0.01;
-            const positions = STATE.particles.geometry.attributes.position.array;
-            const targets = STATE.targetPositions;
-            const vels = STATE.velocities;
-            
-            // Gesture Inputs
-            // Hand Openness: 0 (Closed) -> 1 (Open). 
-            // Effect: Closed = Contract (tight formation), Open = Spread (looser, more noise)
-            // Hand Distance: Effect: Global Scale
-            
-            // Determine Interaction Target (Mouse or Hand Center)
-            // For this demo, interaction is mostly repulsion/attraction to mouse/hand center
-            const interactPos = mouseWorldPos;
-
-            // Physics Params
-            let baseSpeed = 0.05;
-            let noiseStrength = parseFloat(document.getElementById('noise-slider').value);
-            let globalScale = STATE.handDistance; 
-            
-            // If mouse mode (no gesture), default spread
-            let spread = CONFIG.cameraEnabled ? STATE.handOpenness : 1.0;
-            // Map spread: 0.1 (fist) to 1.5 (wide open)
-            spread = 0.1 + (spread * 1.4);
-
-            for (let i = 0; i < CONFIG.particleCount; i++) {
-                const ix = i * 3;
-                const iy = i * 3 + 1;
-                const iz = i * 3 + 2;
-
-                // 1. Calc Target Force (Hooke's Law)
-                // Scale target by global scale (Hand Distance)
-                const tx = targets[ix] * globalScale * spread;
-                const ty = targets[iy] * globalScale * spread;
-                const tz = targets[iz] * globalScale * spread;
-
-                const dx = tx - positions[ix];
-                const dy = ty - positions[iy];
-                const dz = tz - positions[iz];
-
-                // Spring force
-                vels[ix] += dx * baseSpeed * 0.1;
-                vels[iy] += dy * baseSpeed * 0.1;
-                vels[iz] += dz * baseSpeed * 0.1;
-
-                // 2. Add Noise (Curl noise or simple sine noise)
-                // Increased noise when hand is open
-                const n = noiseStrength * spread;
-                vels[ix] += Math.sin(positions[iy] * 0.5 + STATE.time) * 0.02 * n;
-                vels[iy] += Math.cos(positions[iz] * 0.5 + STATE.time) * 0.02 * n;
-                vels[iz] += Math.sin(positions[ix] * 0.5 + STATE.time) * 0.02 * n;
-
-                // 3. Interaction (Repulsion from mouse/hand)
-                // If fist (spread low), attraction instead of repulsion? 
-                // Let's just do simple repulsion for interactivity
-                const distx = positions[ix] - interactPos.x;
-                const disty = positions[iy] - interactPos.y;
-                const distz = positions[iz] - interactPos.z; // Mouse is at z=0 plane usually
-                const distSq = distx*distx + disty*disty + distz*distz;
-
-                if (distSq < 25) {
-                    const f = (25 - distSq) * 0.005;
-                    vels[ix] += distx * f;
-                    vels[iy] += disty * f;
-                    vels[iz] += distz * f;
-                }
-
-                // 4. Integrate
-                positions[ix] += vels[ix];
-                positions[iy] += vels[iy];
-                positions[iz] += vels[iz];
-
-                // 5. Dampen
-                vels[ix] *= 0.92;
-                vels[iy] *= 0.92;
-                vels[iz] *= 0.92;
-            }
-
-            STATE.particles.geometry.attributes.position.needsUpdate = true;
-            
-            // Update Uniforms
-            STATE.particles.material.uniforms.uTime.value = STATE.time;
-            
-            renderer.render(scene, camera);
-        }
-
-        /**
-         * MEDIAPIPE HANDS SETUP
-         */
-        const hands = new Hands({locateFile: (file) => {
-            return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-        }});
-
-        hands.setOptions({
-            maxNumHands: 2,
-            modelComplexity: 0, // 0 is Lite (Fastest), 1 is Full
-            minDetectionConfidence: 0.5,
-            minTrackingConfidence: 0.5
-        });
-
-        hands.onResults(onHandsResults);
-
-        // Webcam setup
-        const cameraUtils = new Camera(videoElement, {
-            onFrame: async () => {
-                if (CONFIG.cameraEnabled) {
-                    await hands.send({image: videoElement});
-                }
-            },
-            width: 320,
-            height: 240
-        });
-
-        function onHandsResults(results) {
-            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-                STATE.gestureActive = true;
-                statusEl.innerHTML = 'Status: <span class="status-pill status-active">Hands Detected</span>';
-                
-                // 1. Detect Open/Closed (Average of all hands)
-                let totalOpenness = 0;
-                let handCount = 0;
-                
-                // Store wrist positions for distance calc
-                const wrists = [];
-
-                for (const landmarks of results.multiHandLandmarks) {
-                    handCount++;
-                    // Wrist is index 0. Tips: 4, 8, 12, 16, 20.
-                    // Proximal joints (base of finger): 2, 5, 9, 13, 17.
-                    // Measure distance from Tip to Wrist vs Base to Wrist to normalize?
-                    // Simple method: Avg dist of tips to wrist.
-                    
-                    const wrist = landmarks[0];
-                    wrists.push(wrist);
-
-                    // Calculate bounding box of hand approximately
-                    let avgTipDist = 0;
-                    const tips = [4, 8, 12, 16, 20];
-                    
-                    tips.forEach(idx => {
-                        const d = Math.hypot(landmarks[idx].x - wrist.x, landmarks[idx].y - wrist.y);
-                        avgTipDist += d;
+                if (target) {
+                    const offsetTop = target.offsetTop - 80;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
                     });
-                    avgTipDist /= 5;
-
-                    // Calibration: approx 0.15 is closed, 0.35 is open (normalized coords)
-                    // Normalize to 0..1
-                    let openness = (avgTipDist - 0.1) / (0.35 - 0.1);
-                    openness = Math.max(0, Math.min(1, openness));
-                    totalOpenness += openness;
-                    
-                    // Update mouseWorldPos to follow the first hand's index finger
-                    if (handCount === 1) {
-                        // Map 0..1 video coords to World Coords approx
-                        // Video x is flipped (mirror)
-                        const x = (1.0 - landmarks[8].x) * 2 - 1; 
-                        const y = -(landmarks[8].y) * 2 + 1;
-                        
-                        // Unproject roughly to plane z=0
-                        const vec = new THREE.Vector3(x, y, 0.5);
-                        vec.unproject(camera);
-                        const dir = vec.sub(camera.position).normalize();
-                        const distance = -camera.position.z / dir.z;
-                        const pos = camera.position.clone().add(dir.multiplyScalar(distance));
-                        mouseWorldPos.copy(pos);
-                    }
-                }
-                
-                const currentOpenness = totalOpenness / handCount;
-                
-                // Snap Detection
-                // If openness drops significantly in one frame
-                if (STATE.handOpenness - currentOpenness > 0.4) {
-                    triggerExplosion();
-                }
-
-                // Smooth lerp
-                STATE.handOpenness += (currentOpenness - STATE.handOpenness) * 0.1;
-
-                // 2. Two Hand Distance (Scale)
-                if (wrists.length === 2) {
-                    const d = Math.hypot(wrists[0].x - wrists[1].x, wrists[0].y - wrists[1].y);
-                    // Map 0.2 .. 0.8 -> 0.5 .. 2.0
-                    let distScale = (d - 0.2) * 3 + 0.5;
-                    STATE.handDistance += (distScale - STATE.handDistance) * 0.1;
-                } else {
-                    // Reset to 1.0 if only one hand
-                    STATE.handDistance += (1.0 - STATE.handDistance) * 0.05;
-                }
-
-            } else {
-                STATE.gestureActive = false;
-                if (CONFIG.cameraEnabled) {
-                    statusEl.innerHTML = 'Status: <span class="status-pill status-inactive">Searching...</span>';
-                }
-            }
-        }
-
-        /**
-         * UI EVENTS
-         */
-        // Template Selection
-        document.querySelectorAll('.template-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.template-btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-                const shape = e.target.dataset.shape;
-                
-                if (shape === 'fireworks') {
-                     triggerExplosion();
-                } else {
-                     setShape(shape);
                 }
             });
         });
-
-        // Sliders
-        document.getElementById('color-slider').addEventListener('input', (e) => {
-            const hue = parseFloat(e.target.value);
-            STATE.particles.material.uniforms.uColor.value.setHSL(hue, 0.8, 0.6);
+        
+        // ========================================
+        // FADE IN ON SCROLL (INTERSECTION OBSERVER)
+        // ========================================
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const fadeInObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all fade-in elements
+        document.querySelectorAll('.fade-in').forEach(el => {
+            fadeInObserver.observe(el);
         });
-
-        document.getElementById('size-slider').addEventListener('input', (e) => {
-             STATE.particles.material.uniforms.uSize.value = parseFloat(e.target.value) * renderer.getPixelRatio();
+        
+        // ========================================
+        // ANIMATED COUNTER FOR STATS
+        // ========================================
+        const statNumbers = document.querySelectorAll('.stat-number');
+        let hasAnimated = false;
+        
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !hasAnimated) {
+                    hasAnimated = true;
+                    animateStats();
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        // Observe stats section
+        const statsSection = document.querySelector('.stats-grid');
+        if (statsSection) {
+            statsObserver.observe(statsSection);
+        }
+        
+        function animateStats() {
+            statNumbers.forEach(stat => {
+                const target = parseInt(stat.getAttribute('data-target'));
+                const duration = 2000; // 2 seconds
+                const increment = target / (duration / 16); // 60fps
+                let current = 0;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    
+                    // Format numbers
+                    if (target > 100) {
+                        stat.textContent = Math.floor(current) + '+';
+                    } else {
+                        stat.textContent = Math.floor(current);
+                    }
+                }, 16);
+            });
+        }
+        
+        // ========================================
+        // DOWNLOAD BUTTON TRACKING
+        // ========================================
+        const downloadButtons = document.querySelectorAll('#downloadBtn, .btn-primary[download]');
+        
+        downloadButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                console.log('Download initiated:', new Date().toISOString());
+                
+                // Add visual feedback
+                btn.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    btn.style.transform = '';
+                }, 200);
+                
+                // You can add analytics tracking here
+                // Example: gtag('event', 'download', { 'event_category': 'APK' });
+            });
         });
-
-        // Camera Toggle
-        const camBtn = document.getElementById('camera-toggle');
-        camBtn.addEventListener('click', () => {
-            CONFIG.cameraEnabled = !CONFIG.cameraEnabled;
-            if (CONFIG.cameraEnabled) {
-                camBtn.textContent = "On";
-                camBtn.classList.add('active');
-                previewElement.classList.add('visible');
-                cameraUtils.start();
+        
+        // ========================================
+        // COPY LINK TO CLIPBOARD
+        // ========================================
+        function copyToClipboard() {
+            const apkUrl = window.location.origin + '/shadow-browser.apk';
+            
+            // Modern clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(apkUrl).then(() => {
+                    showCopyNotification('Link copied to clipboard!');
+                }).catch(err => {
+                    console.error('Failed to copy:', err);
+                    fallbackCopy(apkUrl);
+                });
             } else {
-                camBtn.textContent = "Off";
-                camBtn.classList.remove('active');
-                previewElement.classList.remove('visible');
-                // cameraUtils.stop(); // Usually better to just ignore frames to avoid restart lag
-                statusEl.innerHTML = 'Status: <span class="status-pill status-inactive">Mouse Mode</span>';
-                STATE.handDistance = 1.0;
-                STATE.handOpenness = 1.0;
+                fallbackCopy(apkUrl);
+            }
+        }
+        
+        // Fallback for older browsers
+        function fallbackCopy(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showCopyNotification('Link copied to clipboard!');
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                showCopyNotification('Failed to copy link');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        // Show copy notification
+        function showCopyNotification(message) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #FFFFFF;
+                color: #000000;
+                padding: 15px 30px;
+                border-radius: 0;
+                font-weight: 700;
+                font-size: 14px;
+                z-index: 10000;
+                box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+                animation: slideUp 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideDown 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 2000);
+        }
+        
+        // ========================================
+        // LAZY LOAD IMAGES
+        // ========================================
+        const imageObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    if (img.dataset.src) {
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                    }
+                    imageObserver.unobserve(img);
+                }
+            });
+        });
+        
+        document.querySelectorAll('img[data-src]').forEach(img => {
+            imageObserver.observe(img);
+        });
+        
+        // ========================================
+        // PARALLAX EFFECT ON HERO
+        // ========================================
+        const hero = document.querySelector('.hero');
+        
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            if (hero && scrolled < window.innerHeight) {
+                hero.style.transform = `translateY(${scrolled * 0.5}px)`;
             }
         });
-
-        // Screenshot
-        document.getElementById('screenshot-btn').addEventListener('click', () => {
-            renderer.render(scene, camera);
-            const data = renderer.domElement.toDataURL('image/png');
-            const a = document.createElement('a');
-            a.href = data;
-            a.download = 'particle-sculpture.png';
-            a.click();
+        
+        // ========================================
+        // PREVENT RIGHT CLICK ON IMAGES (OPTIONAL)
+        // ========================================
+        // Uncomment if you want to protect images
+        // document.querySelectorAll('img').forEach(img => {
+        //     img.addEventListener('contextmenu', e => e.preventDefault());
+        // });
+        
+        // ========================================
+        // CONSOLE MESSAGE
+        // ========================================
+        console.log('%c🌙 Shadow Browser', 'font-size: 24px; font-weight: bold; color: #FFFFFF; background: #000000; padding: 10px;');
+        console.log('%cBrowse Like a Shadow. Your Privacy, Your Power.', 'font-size: 14px; color: #999999;');
+        console.log('%cBuilt by Yahya Mundewadi | Team Dominal', 'font-size: 12px; color: #666666;');
+        
+        // ========================================
+        // PERFORMANCE MONITORING
+        // ========================================
+        window.addEventListener('load', () => {
+            const loadTime = window.performance.timing.domContentLoadedEventEnd - window.performance.timing.navigationStart;
+            console.log(`⚡ Page loaded in ${loadTime}ms`);
         });
-
-        // Handle Resize
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            STATE.particles.material.uniforms.uSize.value = document.getElementById('size-slider').value * renderer.getPixelRatio();
-        });
-
-        // Initialization
-        initParticles();
-        animate();
-        loader.style.opacity = 0;
-
     </script>
 </body>
 </html>
