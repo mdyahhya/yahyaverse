@@ -51,7 +51,7 @@
     }
     </script>
    <style>
-   /* ========================================
+       /* ========================================
    GLOBAL RESET & BASE STYLES
 ======================================== */
 * {
@@ -63,14 +63,13 @@
 :root {
     --bg-black: #000000;
     --text-white: #FFFFFF;
-    --cyan-glow: rgba(0, 255, 255, 0.15);
-    --purple-glow: rgba(138, 43, 226, 0.15);
     --white-10: rgba(255, 255, 255, 0.1);
     --white-20: rgba(255, 255, 255, 0.2);
     --white-30: rgba(255, 255, 255, 0.3);
     --white-05: rgba(255, 255, 255, 0.05);
     --white-60: rgba(255, 255, 255, 0.6);
     --white-80: rgba(255, 255, 255, 0.8);
+    --accent-glow: rgba(255, 255, 255, 0.15);
 }
 
 html {
@@ -79,7 +78,7 @@ html {
 }
 
 body {
-    font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background-color: var(--bg-black);
     color: var(--text-white);
     line-height: 1.6;
@@ -88,7 +87,7 @@ body {
 }
 
 /* ========================================
-   ANIMATED TECH BACKGROUND
+   MINIMAL GRID BACKGROUND
 ======================================== */
 body::before {
     content: '';
@@ -98,68 +97,15 @@ body::before {
     width: 100%;
     height: 100%;
     background-image: 
-        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 255, 0.03) 2px, rgba(0, 255, 255, 0.03) 4px),
-        repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(138, 43, 226, 0.03) 2px, rgba(138, 43, 226, 0.03) 4px);
-    background-size: 100px 100px;
-    animation: gridMove 20s linear infinite;
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
     pointer-events: none;
     z-index: 0;
-}
-
-@keyframes gridMove {
-    0% { transform: translate(0, 0); }
-    100% { transform: translate(100px, 100px); }
-}
-
-/* Scanning line effect */
-body::after {
-    content: '';
-    position: fixed;
-    top: -100%;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.8), transparent);
-    animation: scanLine 8s linear infinite;
-    pointer-events: none;
-    z-index: 1;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-}
-
-@keyframes scanLine {
-    0% { top: -100%; }
-    100% { top: 200%; }
-}
-
-/* Floating particles */
-.tech-particles {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    z-index: 0;
-}
-
-.particle {
-    position: absolute;
-    width: 2px;
-    height: 2px;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    animation: float 15s infinite;
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
 }
 
 .container {
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 24px;
     position: relative;
@@ -167,18 +113,17 @@ body::after {
 }
 
 /* ========================================
-   HEADER STYLES - GLITCH EFFECT
+   HEADER STYLES - CENTERED LOGO
 ======================================== */
 header {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(0, 255, 255, 0.3);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+    border-bottom: 1px solid var(--white-10);
     z-index: 1000;
     padding: 16px 0;
 }
@@ -194,50 +139,29 @@ header {
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    position: relative;
 }
 
 .logo-icon {
     width: 48px;
     height: 48px;
     object-fit: contain;
-    filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5));
-    transition: all 0.3s ease;
-    animation: pulse 3s ease-in-out infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5)); }
-    50% { filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.8)); }
+    transition: transform 0.3s ease;
 }
 
 .logo-icon:hover {
-    transform: scale(1.1) rotate(5deg);
-    filter: drop-shadow(0 0 20px rgba(138, 43, 226, 0.8));
+    transform: scale(1.05);
 }
 
 .logo-text {
     font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 3px;
+    font-weight: 600;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--text-white);
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-    position: relative;
-}
-
-.logo-text::before {
-    content: '[ ';
-    color: rgba(0, 255, 255, 0.7);
-}
-
-.logo-text::after {
-    content: ' ]';
-    color: rgba(0, 255, 255, 0.7);
+    color: var(--white-80);
 }
 
 /* ========================================
-   HERO SECTION - HOLOGRAPHIC ICON
+   HERO SECTION - CENTERED LARGE ICON
 ======================================== */
 .hero {
     min-height: 100vh;
@@ -246,149 +170,64 @@ header {
     justify-content: center;
     position: relative;
     padding: 120px 24px 80px;
-    overflow: hidden;
-}
-
-.hero::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, var(--cyan-glow) 0%, transparent 70%);
-    animation: heroGlow 4s ease-in-out infinite;
-}
-
-.hero::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 800px;
-    height: 800px;
-    background: radial-gradient(circle, var(--purple-glow) 0%, transparent 70%);
-    animation: heroGlow 6s ease-in-out infinite reverse;
-}
-
-@keyframes heroGlow {
-    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
-    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
 }
 
 .hero-content {
     text-align: center;
     position: relative;
     z-index: 2;
-    max-width: 1000px;
+    max-width: 900px;
 }
 
 .hero-icon-wrapper {
     margin-bottom: 48px;
     position: relative;
-    display: inline-block;
-}
-
-.hero-icon-wrapper::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 120%;
-    height: 120%;
-    border: 2px solid rgba(0, 255, 255, 0.3);
-    border-radius: 50%;
-    animation: rotate 10s linear infinite;
-}
-
-.hero-icon-wrapper::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 140%;
-    height: 140%;
-    border: 2px solid rgba(138, 43, 226, 0.3);
-    border-radius: 50%;
-    animation: rotate 15s linear infinite reverse;
-}
-
-@keyframes rotate {
-    0% { transform: translate(-50%, -50%) rotate(0deg); }
-    100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 .hero-logo-icon {
-    width: 180px;
-    height: 180px;
+    width: 160px;
+    height: 160px;
     object-fit: contain;
-    position: relative;
-    z-index: 2;
-    filter: drop-shadow(0 0 30px rgba(0, 255, 255, 0.6)) drop-shadow(0 0 60px rgba(138, 43, 226, 0.4));
-    animation: float 6s ease-in-out infinite, colorShift 8s ease-in-out infinite;
+    animation: fadeInScale 1s ease-out;
+    filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.2));
 }
 
-@keyframes colorShift {
-    0%, 100% { filter: drop-shadow(0 0 30px rgba(0, 255, 255, 0.6)) drop-shadow(0 0 60px rgba(138, 43, 226, 0.4)); }
-    50% { filter: drop-shadow(0 0 30px rgba(138, 43, 226, 0.6)) drop-shadow(0 0 60px rgba(0, 255, 255, 0.4)); }
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .hero h1 {
-    font-size: clamp(32px, 6vw, 64px);
-    font-weight: 900;
-    letter-spacing: 4px;
+    font-size: clamp(32px, 6vw, 56px);
+    font-weight: 700;
+    letter-spacing: -1px;
     margin-bottom: 16px;
-    text-transform: uppercase;
-    background: linear-gradient(90deg, #00FFFF, #FFFFFF, #8A2BE2, #FFFFFF, #00FFFF);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: gradientShift 3s linear infinite, glitch 5s infinite;
-    line-height: 1.1;
-}
-
-@keyframes gradientShift {
-    0% { background-position: 0% center; }
-    100% { background-position: 200% center; }
-}
-
-@keyframes glitch {
-    0%, 90%, 100% { transform: translate(0); }
-    91% { transform: translate(-2px, 2px); }
-    92% { transform: translate(2px, -2px); }
-    93% { transform: translate(-2px, -2px); }
-    94% { transform: translate(2px, 2px); }
-    95% { transform: translate(0); }
+    animation: fadeInUp 0.8s ease-out 0.2s backwards;
+    line-height: 1.2;
 }
 
 .hero-tagline {
-    font-size: clamp(16px, 3vw, 22px);
+    font-size: clamp(18px, 3vw, 24px);
     font-weight: 400;
     margin-bottom: 12px;
-    color: rgba(0, 255, 255, 0.8);
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    color: var(--white-60);
     animation: fadeInUp 0.8s ease-out 0.3s backwards;
     line-height: 1.4;
 }
 
-.hero-tagline::before {
-    content: '> ';
-    color: rgba(138, 43, 226, 0.8);
-}
-
 .hero-description {
-    font-size: clamp(13px, 2vw, 15px);
-    max-width: 700px;
+    font-size: clamp(14px, 2vw, 16px);
+    max-width: 600px;
     margin: 0 auto 40px;
-    color: var(--white-80);
-    line-height: 1.8;
+    color: var(--white-60);
+    line-height: 1.7;
     animation: fadeInUp 0.8s ease-out 0.4s backwards;
-    font-family: 'Courier New', monospace;
 }
 
 @keyframes fadeInUp {
@@ -403,55 +242,37 @@ header {
 }
 
 /* ========================================
-   BUTTON STYLES - CYBERPUNK
+   BUTTON STYLES
 ======================================== */
 .btn-primary {
     display: inline-block;
-    padding: 16px 40px;
+    padding: 14px 32px;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--text-white);
     background: transparent;
-    border: 2px solid rgba(0, 255, 255, 0.6);
+    border: 1px solid var(--white-30);
     text-decoration: none;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    position: relative;
-    overflow: hidden;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
     cursor: pointer;
     animation: fadeInUp 0.8s ease-out 0.5s backwards;
-    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-    transition: all 0.3s ease;
-}
-
-.btn-primary::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.3), transparent);
-    transition: left 0.5s ease;
-}
-
-.btn-primary:hover::before {
-    left: 100%;
 }
 
 .btn-primary:hover {
-    box-shadow: 
-        0 0 20px rgba(0, 255, 255, 0.6),
-        inset 0 0 20px rgba(0, 255, 255, 0.2);
-    transform: translateY(-3px);
-    border-color: rgba(0, 255, 255, 1);
+    background: var(--text-white);
+    color: var(--bg-black);
+    border-color: var(--text-white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
 }
 
 /* ========================================
    SECTION COMMON STYLES
 ======================================== */
 section {
-    padding: 100px 24px;
+    padding: 80px 24px;
     position: relative;
 }
 
@@ -461,47 +282,25 @@ section {
 }
 
 .section-title {
-    font-size: clamp(28px, 5vw, 48px);
-    font-weight: 900;
-    margin-bottom: 16px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    background: linear-gradient(90deg, #00FFFF, #8A2BE2);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-size: clamp(28px, 5vw, 40px);
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
     line-height: 1.2;
-    position: relative;
-    display: inline-block;
-}
-
-.section-title::before {
-    content: '<<';
-    position: absolute;
-    left: -40px;
-    color: rgba(0, 255, 255, 0.5);
-}
-
-.section-title::after {
-    content: '>>';
-    position: absolute;
-    right: -40px;
-    color: rgba(138, 43, 226, 0.5);
 }
 
 .section-subtitle {
-    font-size: clamp(13px, 2vw, 15px);
+    font-size: clamp(14px, 2vw, 16px);
     color: var(--white-60);
     max-width: 600px;
     margin: 0 auto;
-    line-height: 1.7;
-    font-family: 'Courier New', monospace;
+    line-height: 1.6;
 }
 
 .fade-in {
     opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
 .fade-in.visible {
@@ -510,94 +309,46 @@ section {
 }
 
 /* ========================================
-   FEATURES SECTION - HOLOGRAPHIC CARDS
+   FEATURES SECTION
 ======================================== */
 .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 32px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
     margin-top: 48px;
 }
 
 .feature-card {
-    background: rgba(0, 255, 255, 0.02);
-    border: 1px solid rgba(0, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--white-10);
     padding: 32px 24px;
-    position: relative;
-    overflow: hidden;
-    clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
-    transition: all 0.4s ease;
-}
-
-.feature-card::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent);
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
-
-.feature-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: 
-        linear-gradient(90deg, transparent 48%, rgba(138, 43, 226, 0.3) 50%, transparent 52%),
-        linear-gradient(0deg, transparent 48%, rgba(0, 255, 255, 0.3) 50%, transparent 52%);
-    background-size: 20px 20px;
-    opacity: 0;
-    transition: opacity 0.4s ease;
+    transition: all 0.3s ease;
 }
 
 .feature-card:hover {
-    border-color: rgba(0, 255, 255, 0.8);
-    transform: translateY(-8px);
-    box-shadow: 
-        0 10px 40px rgba(0, 255, 255, 0.2),
-        inset 0 0 30px rgba(0, 255, 255, 0.05);
-}
-
-.feature-card:hover::before,
-.feature-card:hover::after {
-    opacity: 1;
+    border-color: var(--white-20);
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-4px);
 }
 
 .feature-icon {
-    font-size: 40px;
-    margin-bottom: 20px;
+    font-size: 32px;
+    margin-bottom: 16px;
     display: block;
-    filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5));
-    animation: iconFloat 3s ease-in-out infinite;
-}
-
-@keyframes iconFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
 }
 
 .feature-title {
     font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 12px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: rgba(0, 255, 255, 0.9);
+    font-weight: 600;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
     line-height: 1.3;
 }
 
 .feature-description {
-    font-size: 13px;
-    color: var(--white-70);
-    line-height: 1.7;
-    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    color: var(--white-60);
+    line-height: 1.6;
 }
 
 /* ========================================
@@ -605,37 +356,23 @@ section {
 ======================================== */
 .specs-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 32px;
     margin-top: 48px;
 }
 
 .specs-list {
-    background: rgba(0, 255, 255, 0.02);
-    border: 1px solid rgba(0, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--white-10);
     padding: 32px 24px;
-    position: relative;
-    overflow: hidden;
-}
-
-.specs-list::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: linear-gradient(180deg, rgba(0, 255, 255, 0.8), rgba(138, 43, 226, 0.8));
 }
 
 .specs-list h3 {
     font-size: 20px;
     margin-bottom: 24px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: rgba(0, 255, 255, 0.9);
+    letter-spacing: 0.5px;
     padding-bottom: 12px;
-    border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+    border-bottom: 1px solid var(--white-10);
 }
 
 .specs-list ul {
@@ -643,14 +380,13 @@ section {
 }
 
 .specs-list li {
-    padding: 14px 0 14px 28px;
+    padding: 12px 0 12px 24px;
     position: relative;
-    font-size: 13px;
+    font-size: 14px;
     color: var(--white-80);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    transition: all 0.3s ease;
-    line-height: 1.6;
-    font-family: 'Courier New', monospace;
+    border-bottom: 1px solid var(--white-05);
+    transition: all 0.2s ease;
+    line-height: 1.5;
 }
 
 .specs-list li:last-child {
@@ -658,87 +394,59 @@ section {
 }
 
 .specs-list li::before {
-    content: '▸';
+    content: '→';
     position: absolute;
     left: 0;
-    color: rgba(0, 255, 255, 0.7);
-    font-size: 14px;
-    transition: all 0.3s ease;
+    color: var(--white-60);
+    font-size: 12px;
+    transition: transform 0.2s ease;
 }
 
 .specs-list li:hover {
-    color: rgba(0, 255, 255, 0.9);
-    padding-left: 32px;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    color: var(--text-white);
+    padding-left: 28px;
 }
 
 .specs-list li:hover::before {
     transform: translateX(4px);
-    color: rgba(0, 255, 255, 1);
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    color: var(--text-white);
 }
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 24px;
     margin-top: 64px;
 }
 
 .stat-card {
     text-align: center;
-    padding: 40px 24px;
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(0, 255, 255, 0.3);
-    position: relative;
-    overflow: hidden;
-    transition: all 0.4s ease;
-}
-
-.stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(138, 43, 226, 0.1));
-    opacity: 0;
-    transition: opacity 0.4s ease;
+    padding: 32px 24px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--white-10);
+    transition: all 0.3s ease;
 }
 
 .stat-card:hover {
-    border-color: rgba(0, 255, 255, 0.8);
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 10px 40px rgba(0, 255, 255, 0.3);
-}
-
-.stat-card:hover::before {
-    opacity: 1;
+    border-color: var(--white-20);
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-4px);
 }
 
 .stat-number {
-    font-size: 56px;
-    font-weight: 900;
-    margin-bottom: 12px;
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 8px;
     display: block;
-    background: linear-gradient(90deg, #00FFFF, #8A2BE2);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
     line-height: 1;
-    position: relative;
-    z-index: 1;
 }
 
 .stat-label {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--white-60);
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     line-height: 1.4;
-    position: relative;
-    z-index: 1;
 }
 
 /* ========================================
@@ -746,41 +454,29 @@ section {
 ======================================== */
 .download-section {
     position: relative;
-    background: radial-gradient(ellipse at center, rgba(0, 255, 255, 0.05), transparent);
 }
 
 .download-card {
-    max-width: 800px;
+    max-width: 700px;
     margin: 0 auto;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(0, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--white-10);
     padding: 48px 32px;
     text-align: center;
-    position: relative;
-    clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px);
-    box-shadow: 
-        0 0 40px rgba(0, 255, 255, 0.2),
-        inset 0 0 40px rgba(0, 255, 255, 0.05);
 }
 
 .download-title {
-    font-size: 36px;
-    font-weight: 900;
+    font-size: 32px;
+    font-weight: 700;
     margin-bottom: 24px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    background: linear-gradient(90deg, #00FFFF, #8A2BE2);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    letter-spacing: -0.5px;
     line-height: 1.2;
 }
 
 .version-info {
     display: flex;
     justify-content: center;
-    gap: 48px;
+    gap: 40px;
     margin: 32px 0;
     flex-wrap: wrap;
 }
@@ -789,53 +485,46 @@ section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
-    padding: 16px 24px;
-    border: 1px solid rgba(0, 255, 255, 0.3);
-    background: rgba(0, 255, 255, 0.02);
+    gap: 4px;
 }
 
 .info-label {
-    font-size: 11px;
-    color: rgba(0, 255, 255, 0.7);
+    font-size: 12px;
+    color: var(--white-60);
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
 }
 
 .info-value {
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 18px;
+    font-weight: 600;
     color: var(--text-white);
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
 }
 
 .download-instructions {
     margin: 40px 0;
     padding: 24px;
-    background: rgba(0, 255, 255, 0.02);
-    border: 1px solid rgba(0, 255, 255, 0.3);
-    border-left: 3px solid rgba(0, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--white-10);
+    border-left: 2px solid var(--text-white);
     text-align: left;
 }
 
 .download-instructions h4 {
     font-size: 18px;
     margin-bottom: 16px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: rgba(0, 255, 255, 0.9);
+    letter-spacing: 0.5px;
 }
 
 .download-instructions ol {
-    margin-left: 24px;
+    margin-left: 20px;
     color: var(--white-80);
 }
 
 .download-instructions li {
     margin: 12px 0;
-    line-height: 1.7;
-    font-size: 13px;
-    font-family: 'Courier New', monospace;
+    line-height: 1.6;
+    font-size: 14px;
 }
 
 .mirror-links {
@@ -843,55 +532,93 @@ section {
 }
 
 .mirror-links p {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--white-60);
     margin-bottom: 16px;
 }
 
 .mirror-btn {
     display: inline-block;
-    padding: 12px 28px;
-    margin: 8px;
-    border: 1px solid rgba(138, 43, 226, 0.5);
+    padding: 12px 24px;
+    margin: 6px;
+    border: 1px solid var(--white-20);
     color: var(--white-80);
     text-decoration: none;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
     transition: all 0.3s ease;
-    background: rgba(138, 43, 226, 0.02);
 }
 
 .mirror-btn:hover {
-    border-color: rgba(138, 43, 226, 1);
+    border-color: var(--text-white);
     color: var(--text-white);
-    background: rgba(138, 43, 226, 0.1);
-    box-shadow: 0 0 20px rgba(138, 43, 226, 0.4);
+    background: rgba(255, 255, 255, 0.05);
     transform: translateY(-2px);
 }
 
 /* ========================================
    DEVELOPER SECTION
 ======================================== */
+.developer-section {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.developer-card {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.developer-image-wrapper {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 24px;
+    position: relative;
+    border: 2px solid var(--white-20);
+    border-radius: 50%;
+    padding: 4px;
+}
+
+.developer-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    filter: grayscale(20%);
+    transition: all 0.3s ease;
+}
+
+.developer-image:hover {
+    filter: grayscale(0%);
+    transform: scale(1.05);
+}
+
+.developer-name {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+}
+
 .developer-title {
     font-size: 16px;
-    color: rgba(0, 255, 255, 0.8);
+    color: var(--white-60);
     margin-bottom: 24px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
+    letter-spacing: 0.5px;
     line-height: 1.5;
 }
 
 .developer-bio {
-    font-size: 14px;
-    line-height: 1.8;
+    font-size: 15px;
+    line-height: 1.7;
     color: var(--white-80);
     margin-bottom: 32px;
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
-    font-family: 'Courier New', monospace;
 }
 
 .social-links {
@@ -904,39 +631,34 @@ section {
 .social-btn {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 14px 28px;
-    border: 1px solid rgba(0, 255, 255, 0.4);
+    gap: 8px;
+    padding: 12px 24px;
+    border: 1px solid var(--white-20);
     color: var(--text-white);
     text-decoration: none;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
     transition: all 0.3s ease;
-    background: rgba(0, 255, 255, 0.02);
-    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
 }
 
 .social-btn:hover {
-    border-color: rgba(0, 255, 255, 1);
-    background: rgba(0, 255, 255, 0.1);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
-    transform: translateY(-3px);
+    border-color: var(--text-white);
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
 }
 
 .social-icon {
     font-size: 20px;
-    filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.5));
 }
 
 /* ========================================
    FOOTER
 ======================================== */
 footer {
-    background: rgba(0, 0, 0, 0.8);
-    border-top: 1px solid rgba(0, 255, 255, 0.3);
-    box-shadow: 0 -5px 30px rgba(0, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.5);
+    border-top: 1px solid var(--white-10);
     padding: 48px 24px;
     text-align: center;
 }
@@ -952,98 +674,24 @@ footer {
 .footer-links a {
     color: var(--white-60);
     text-decoration: none;
-    font-size: 13px;
+    font-size: 14px;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.footer-links a::before {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 0;
-    height: 1px;
-    background: rgba(0, 255, 255, 0.8);
-    transition: width 0.3s ease;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
 }
 
 .footer-links a:hover {
-    color: rgba(0, 255, 255, 1);
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-}
-
-.footer-links a:hover::before {
-    width: 100%;
+    color: var(--text-white);
 }
 
 .copyright {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--white-60);
-    line-height: 1.7;
-    font-family: 'Courier New', monospace;
+    line-height: 1.6;
 }
 
 .copyright strong {
-    color: rgba(0, 255, 255, 0.9);
-}
-
-.developer-card {
-    max-width: 700px;
-    margin: 0 auto;
-    text-align: center;
-}
-
-.developer-image-wrapper {
-    width: 140px;
-    height: 140px;
-    margin: 0 auto 32px;
-    position: relative;
-    border: 2px solid rgba(0, 255, 255, 0.4);
-    border-radius: 50%;
-    padding: 6px;
-    background: rgba(0, 0, 0, 0.5);
-}
-
-.developer-image-wrapper::before {
-    content: '';
-    position: absolute;
-    top: -4px;
-    left: -4px;
-    right: -4px;
-    bottom: -4px;
-    border: 2px solid rgba(138, 43, 226, 0.4);
-    border-radius: 50%;
-    animation: rotate 8s linear infinite;
-}
-
-.developer-image {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    filter: grayscale(30%) brightness(1.1);
-    transition: all 0.4s ease;
-}
-
-.developer-image:hover {
-    filter: grayscale(0%) brightness(1.2);
-    transform: scale(1.05);
-}
-
-.developer-name {
-    font-size: 36px;
-    font-weight: 900;
-    margin-bottom: 12px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    background: linear-gradient(90deg, #00FFFF, #8A2BE2);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    line-height: 1.2;
+    color: var(--text-white);
 }
 
 /* ========================================
@@ -1061,7 +709,6 @@ footer {
     
     .logo-text {
         font-size: 12px;
-        letter-spacing: 2px;
     }
     
     .hero {
@@ -1069,16 +716,8 @@ footer {
     }
     
     .hero-logo-icon {
-        width: 140px;
-        height: 140px;
-    }
-    
-    .section-title::before {
-        left: -25px;
-    }
-    
-    .section-title::after {
-        right: -25px;
+        width: 120px;
+        height: 120px;
     }
     
     section {
@@ -1091,12 +730,11 @@ footer {
     
     .features-grid {
         grid-template-columns: 1fr;
-        gap: 24px;
+        gap: 20px;
     }
     
     .feature-card {
-        padding: 28px 20px;
-        clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+        padding: 24px 20px;
     }
     
     .specs-container {
@@ -1111,12 +749,11 @@ footer {
     }
     
     .stat-number {
-        font-size: 40px;
+        font-size: 36px;
     }
     
     .download-card {
         padding: 32px 24px;
-        clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
     }
     
     .version-info {
@@ -1129,13 +766,13 @@ footer {
     
     .mirror-btn {
         display: block;
-        margin: 10px auto;
+        margin: 8px auto;
         max-width: 280px;
     }
     
     .developer-image-wrapper {
-        width: 120px;
-        height: 120px;
+        width: 100px;
+        height: 100px;
     }
     
     .social-links {
@@ -1147,7 +784,6 @@ footer {
         width: 100%;
         max-width: 280px;
         justify-content: center;
-        clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
     }
     
     .footer-links {
@@ -1158,23 +794,21 @@ footer {
 
 @media (max-width: 480px) {
     .hero-logo-icon {
-        width: 120px;
-        height: 120px;
+        width: 100px;
+        height: 100px;
     }
     
     .btn-primary {
-        padding: 14px 32px;
-        font-size: 12px;
-        letter-spacing: 1.5px;
-        clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+        padding: 12px 24px;
+        font-size: 13px;
     }
     
     .feature-card {
-        padding: 24px 16px;
+        padding: 20px 16px;
     }
     
     .feature-icon {
-        font-size: 32px;
+        font-size: 28px;
     }
     
     .stats-grid {
@@ -1182,16 +816,7 @@ footer {
     }
     
     .download-card {
-        padding: 28px 20px;
-    }
-    
-    .download-title {
-        font-size: 28px;
-    }
-    
-    .version-info {
-        flex-direction: column;
-        gap: 20px;
+        padding: 24px 20px;
     }
 }
 
@@ -1200,8 +825,8 @@ footer {
 ======================================== */
 @media (min-width: 1024px) {
     .hero-logo-icon {
-        width: 220px;
-        height: 220px;
+        width: 200px;
+        height: 200px;
     }
     
     .hero-icon-wrapper {
@@ -1238,11 +863,7 @@ footer {
 
 .mb-40 {
     margin-bottom: 40px;
-}section {
-    background: radial-gradient(ellipse at center, rgba(138, 43, 226, 0.05), transparent);
 }
-
-
        </style>
     
 </head>
@@ -1279,69 +900,116 @@ footer {
          FEATURES SECTION
     ======================================== -->
     <section id="features">
-        <div class="container">
-            <div class="section-header fade-in">
-                <h2 class="section-title">Why Shadow Browser?</h2>
-                <p class="section-subtitle">Engineered for privacy, designed for speed, built for you</p>
+    <div class="container">
+        <div class="section-header fade-in">
+            <h2 class="section-title">Why Shadow Browser?</h2>
+            <p class="section-subtitle">Engineered for privacy, designed for speed, built for you</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card fade-in">
+                <span class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M32 8 L32 20 M32 8 L42 14 M32 8 L22 14 M22 14 L22 30 L32 36 M42 14 L42 30 L32 36 M32 36 L32 56 M20 32 L14 36 L14 52 L32 62 L50 52 L50 36 L44 32" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="32" cy="28" r="4" fill="currentColor"/>
+                    </svg>
+                </span>
+                <h3 class="feature-title">98%+ Ad Blocking</h3>
+                <p class="feature-description">
+                    Browse without distractions. Our advanced blocking engine eliminates 98%+ of ads, 
+                    trackers, and malicious scripts. Tested on adblock-tester.com.
+                </p>
             </div>
             
-            <div class="features-grid">
-                <div class="feature-card fade-in">
-                    <span class="feature-icon">🛡️</span>
-                    <h3 class="feature-title">98%+ Ad Blocking</h3>
-                    <p class="feature-description">
-                        Browse without distractions. Our advanced blocking engine eliminates 98%+ of ads, 
-                        trackers, and malicious scripts. Tested on adblock-tester.com.
-                    </p>
-                </div>
-                
-                <div class="feature-card fade-in">
-                    <span class="feature-icon">🔒</span>
-                    <h3 class="feature-title">Privacy First</h3>
-                    <p class="feature-description">
-                        Zero data collection, zero tracking, zero compromises. Your browsing history stays 
-                        on your device. Complete anonymity guaranteed.
-                    </p>
-                </div>
-                
-                <div class="feature-card fade-in">
-                    <span class="feature-icon">🌙</span>
-                    <h3 class="feature-title">Full Dark Mode</h3>
-                    <p class="feature-description">
-                        Pure black interface that's easy on your eyes and battery. Every element designed 
-                        for comfortable night browsing.
-                    </p>
-                </div>
-                
-                <div class="feature-card fade-in">
-                    <span class="feature-icon">⚡</span>
-                    <h3 class="feature-title">Lightning Fast</h3>
-                    <p class="feature-description">
-                        No bloat, no unnecessary features. Just pure speed. Pages load instantly without 
-                        tracking scripts slowing you down.
-                    </p>
-                </div>
-                
-                <div class="feature-card fade-in">
-                    <span class="feature-icon">📥</span>
-                    <h3 class="feature-title">Smart Downloads</h3>
-                    <p class="feature-description">
-                        Download images, videos, and files seamlessly. Built-in download manager with 
-                        progress tracking and notifications.
-                    </p>
-                </div>
-                
-                <div class="feature-card fade-in">
-                    <span class="feature-icon">🎬</span>
-                    <h3 class="feature-title">Fullscreen Videos</h3>
-                    <p class="feature-description">
-                        Watch YouTube and other videos in fullscreen with automatic landscape orientation. 
-                        True immersive viewing experience.
-                    </p>
-                </div>
+            <div class="feature-card fade-in">
+                <span class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <rect x="18" y="12" width="28" height="40" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <rect x="22" y="18" width="20" height="28" rx="1" fill="currentColor" opacity="0.2"/>
+                        <path d="M28 48 L36 48" stroke-linecap="round"/>
+                        <circle cx="32" cy="32" r="8" fill="none" stroke-width="2"/>
+                        <path d="M32 28 L32 32 L35 35" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                <h3 class="feature-title">Privacy First</h3>
+                <p class="feature-description">
+                    Zero data collection, zero tracking, zero compromises. Your browsing history stays 
+                    on your device. Complete anonymity guaranteed.
+                </p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <span class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="currentColor">
+                        <circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <path d="M32 12 A20 20 0 0 1 52 32 L32 32 Z" opacity="0.8"/>
+                        <circle cx="22" cy="20" r="2"/>
+                        <circle cx="18" cy="28" r="1.5"/>
+                        <circle cx="42" cy="24" r="2"/>
+                        <circle cx="38" cy="16" r="1.5"/>
+                        <circle cx="46" cy="30" r="1.5"/>
+                        <path d="M28 34 Q32 38 36 34" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </span>
+                <h3 class="feature-title">Full Dark Mode</h3>
+                <p class="feature-description">
+                    Pure black interface that's easy on your eyes and battery. Every element designed 
+                    for comfortable night browsing.
+                </p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <span class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="currentColor">
+                        <path d="M20 32 L32 20 L44 32 L38 32 L38 48 L26 48 L26 32 Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                        <path d="M14 28 L10 32 L14 36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M50 28 L54 32 L50 36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="32" cy="26" r="3" fill="#00FFFF" opacity="0.8"/>
+                        <path d="M18 16 L22 20 M46 16 L42 20" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+                    </svg>
+                </span>
+                <h3 class="feature-title">Lightning Fast</h3>
+                <p class="feature-description">
+                    No bloat, no unnecessary features. Just pure speed. Pages load instantly without 
+                    tracking scripts slowing you down.
+                </p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <span class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <rect x="16" y="16" width="32" height="32" rx="2" stroke-linejoin="round"/>
+                        <path d="M32 24 L32 38 M26 32 L32 38 L38 32" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+                        <line x1="22" y1="44" x2="42" y2="44" stroke-linecap="round" stroke-width="3"/>
+                        <circle cx="32" cy="28" r="2" fill="currentColor"/>
+                    </svg>
+                </span>
+                <h3 class="feature-title">Smart Downloads</h3>
+                <p class="feature-description">
+                    Download images, videos, and files seamlessly. Built-in download manager with 
+                    progress tracking and notifications.
+                </p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <span class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <rect x="12" y="18" width="40" height="28" rx="2" stroke-linejoin="round"/>
+                        <rect x="16" y="22" width="32" height="20" rx="1" fill="currentColor" opacity="0.15"/>
+                        <path d="M26 32 L32 28 L32 36 Z" fill="currentColor"/>
+                        <circle cx="38" cy="32" r="6" fill="none" stroke-width="2"/>
+                        <path d="M38 28 L38 36 M34 32 L42 32" stroke-linecap="round"/>
+                    </svg>
+                </span>
+                <h3 class="feature-title">Fullscreen Videos</h3>
+                <p class="feature-description">
+                    Watch YouTube and other videos in fullscreen with automatic landscape orientation. 
+                    True immersive viewing experience.
+                </p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
     
     <!-- ========================================
          TECH SPECS SECTION
@@ -1783,3 +1451,4 @@ footer {
     </script>
 </body>
 </html>
+
