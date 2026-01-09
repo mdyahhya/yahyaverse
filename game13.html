@@ -1,1454 +1,394 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    
-    <!-- SEO Meta Tags -->
-    <title>Shadow Browser - Privacy-First Android Browser | Zero Tracking, 98%+ Ad Blocking</title>
-    <meta name="description" content="Shadow Browser: The ultimate privacy-focused Android browser with 98%+ ad blocking, zero tracking, full dark mode, and lightning-fast performance. Download APK now.">
-    <meta name="keywords" content="Shadow Browser, Android browser, privacy browser, ad blocker, dark mode browser, secure browser, APK download">
-    <meta name="author" content="Yahya Mundewadi">
-    <meta name="robots" content="index, follow">
-    
-    <!-- Open Graph / Social Media Meta Tags -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Shadow Browser - Browse Like a Shadow">
-    <meta property="og:description" content="Privacy-first Android browser with 98%+ ad blocking, zero tracking, and complete dark mode. Your privacy, your power.">
-    <meta property="og:url" content="https://shadow-browser.netlify.app">
-    <meta property="og:image" content="https://shadow-browser.netlify.app/browser_icon.png">
-    
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Shadow Browser - Privacy-First Android Browser">
-    <meta name="twitter:description" content="98%+ ad blocking, zero tracking, full dark mode. Download the most private Android browser.">
-    <meta name="twitter:image" content="https://shadow-browser.netlify.app/browser_icon.png">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="browser_icon.png">
-    <link rel="apple-touch-icon" href="browser_icon.png">
-    
-    <!-- Schema.org Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "Shadow Browser",
-      "applicationCategory": "BrowserApplication",
-      "operatingSystem": "Android 8.0+",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "author": {
-        "@type": "Person",
-        "name": "Yahya Mundewadi",
-        "url": "https://yahya.dominal.in"
-      },
-      "description": "Privacy-first Android browser with advanced ad blocking and zero tracking"
-    }
-    </script>
-   <style>
-       /* ========================================
-   GLOBAL RESET & BASE STYLES
-======================================== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-:root {
-    --bg-black: #000000;
-    --text-white: #FFFFFF;
-    --white-10: rgba(255, 255, 255, 0.1);
-    --white-20: rgba(255, 255, 255, 0.2);
-    --white-30: rgba(255, 255, 255, 0.3);
-    --white-05: rgba(255, 255, 255, 0.05);
-    --white-60: rgba(255, 255, 255, 0.6);
-    --white-80: rgba(255, 255, 255, 0.8);
-    --accent-glow: rgba(255, 255, 255, 0.15);
-}
-
-html {
-    scroll-behavior: smooth;
-    overflow-x: hidden;
-}
-
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: var(--bg-black);
-    color: var(--text-white);
-    line-height: 1.6;
-    overflow-x: hidden;
-    position: relative;
-}
-
-/* ========================================
-   MINIMAL GRID BACKGROUND
-======================================== */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: 
-        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-    background-size: 50px 50px;
-    pointer-events: none;
-    z-index: 0;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px;
-    position: relative;
-    z-index: 2;
-}
-
-/* ========================================
-   HEADER STYLES - CENTERED LOGO
-======================================== */
-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: rgba(0, 0, 0, 0.95);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--white-10);
-    z-index: 1000;
-    padding: 16px 0;
-}
-
-.header-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.logo-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-}
-
-.logo-icon {
-    width: 48px;
-    height: 48px;
-    object-fit: contain;
-    transition: transform 0.3s ease;
-}
-
-.logo-icon:hover {
-    transform: scale(1.05);
-}
-
-.logo-text {
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--white-80);
-}
-
-/* ========================================
-   HERO SECTION - CENTERED LARGE ICON
-======================================== */
-.hero {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    padding: 120px 24px 80px;
-}
-
-.hero-content {
-    text-align: center;
-    position: relative;
-    z-index: 2;
-    max-width: 900px;
-}
-
-.hero-icon-wrapper {
-    margin-bottom: 48px;
-    position: relative;
-}
-
-.hero-logo-icon {
-    width: 160px;
-    height: 160px;
-    object-fit: contain;
-    animation: fadeInScale 1s ease-out;
-    filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.2));
-}
-
-@keyframes fadeInScale {
-    from {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.hero h1 {
-    font-size: clamp(32px, 6vw, 56px);
-    font-weight: 700;
-    letter-spacing: -1px;
-    margin-bottom: 16px;
-    animation: fadeInUp 0.8s ease-out 0.2s backwards;
-    line-height: 1.2;
-}
-
-.hero-tagline {
-    font-size: clamp(18px, 3vw, 24px);
-    font-weight: 400;
-    margin-bottom: 12px;
-    color: var(--white-60);
-    animation: fadeInUp 0.8s ease-out 0.3s backwards;
-    line-height: 1.4;
-}
-
-.hero-description {
-    font-size: clamp(14px, 2vw, 16px);
-    max-width: 600px;
-    margin: 0 auto 40px;
-    color: var(--white-60);
-    line-height: 1.7;
-    animation: fadeInUp 0.8s ease-out 0.4s backwards;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* ========================================
-   BUTTON STYLES
-======================================== */
-.btn-primary {
-    display: inline-block;
-    padding: 14px 32px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-white);
-    background: transparent;
-    border: 1px solid var(--white-30);
-    text-decoration: none;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    animation: fadeInUp 0.8s ease-out 0.5s backwards;
-}
-
-.btn-primary:hover {
-    background: var(--text-white);
-    color: var(--bg-black);
-    border-color: var(--text-white);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
-}
-
-/* ========================================
-   SECTION COMMON STYLES
-======================================== */
-section {
-    padding: 80px 24px;
-    position: relative;
-}
-
-.section-header {
-    text-align: center;
-    margin-bottom: 64px;
-}
-
-.section-title {
-    font-size: clamp(28px, 5vw, 40px);
-    font-weight: 700;
-    margin-bottom: 12px;
-    letter-spacing: -0.5px;
-    line-height: 1.2;
-}
-
-.section-subtitle {
-    font-size: clamp(14px, 2vw, 16px);
-    color: var(--white-60);
-    max-width: 600px;
-    margin: 0 auto;
-    line-height: 1.6;
-}
-
-.fade-in {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.fade-in.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* ========================================
-   FEATURES SECTION
-======================================== */
-.features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-    margin-top: 48px;
-}
-
-.feature-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--white-10);
-    padding: 32px 24px;
-    transition: all 0.3s ease;
-}
-
-.feature-card:hover {
-    border-color: var(--white-20);
-    background: rgba(255, 255, 255, 0.05);
-    transform: translateY(-4px);
-}
-
-.feature-icon {
-    font-size: 32px;
-    margin-bottom: 16px;
-    display: block;
-}
-
-.feature-title {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    letter-spacing: 0.5px;
-    line-height: 1.3;
-}
-
-.feature-description {
-    font-size: 14px;
-    color: var(--white-60);
-    line-height: 1.6;
-}
-
-/* ========================================
-   TECH SPECS SECTION
-======================================== */
-.specs-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 32px;
-    margin-top: 48px;
-}
-
-.specs-list {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--white-10);
-    padding: 32px 24px;
-}
-
-.specs-list h3 {
-    font-size: 20px;
-    margin-bottom: 24px;
-    letter-spacing: 0.5px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--white-10);
-}
-
-.specs-list ul {
-    list-style: none;
-}
-
-.specs-list li {
-    padding: 12px 0 12px 24px;
-    position: relative;
-    font-size: 14px;
-    color: var(--white-80);
-    border-bottom: 1px solid var(--white-05);
-    transition: all 0.2s ease;
-    line-height: 1.5;
-}
-
-.specs-list li:last-child {
-    border-bottom: none;
-}
-
-.specs-list li::before {
-    content: '→';
-    position: absolute;
-    left: 0;
-    color: var(--white-60);
-    font-size: 12px;
-    transition: transform 0.2s ease;
-}
-
-.specs-list li:hover {
-    color: var(--text-white);
-    padding-left: 28px;
-}
-
-.specs-list li:hover::before {
-    transform: translateX(4px);
-    color: var(--text-white);
-}
-
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 24px;
-    margin-top: 64px;
-}
-
-.stat-card {
-    text-align: center;
-    padding: 32px 24px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--white-10);
-    transition: all 0.3s ease;
-}
-
-.stat-card:hover {
-    border-color: var(--white-20);
-    background: rgba(255, 255, 255, 0.05);
-    transform: translateY(-4px);
-}
-
-.stat-number {
-    font-size: 48px;
-    font-weight: 700;
-    margin-bottom: 8px;
-    display: block;
-    line-height: 1;
-}
-
-.stat-label {
-    font-size: 13px;
-    color: var(--white-60);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    line-height: 1.4;
-}
-
-/* ========================================
-   DOWNLOAD SECTION
-======================================== */
-.download-section {
-    position: relative;
-}
-
-.download-card {
-    max-width: 700px;
-    margin: 0 auto;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--white-10);
-    padding: 48px 32px;
-    text-align: center;
-}
-
-.download-title {
-    font-size: 32px;
-    font-weight: 700;
-    margin-bottom: 24px;
-    letter-spacing: -0.5px;
-    line-height: 1.2;
-}
-
-.version-info {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    margin: 32px 0;
-    flex-wrap: wrap;
-}
-
-.info-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-}
-
-.info-label {
-    font-size: 12px;
-    color: var(--white-60);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.info-value {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--text-white);
-}
-
-.download-instructions {
-    margin: 40px 0;
-    padding: 24px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--white-10);
-    border-left: 2px solid var(--text-white);
-    text-align: left;
-}
-
-.download-instructions h4 {
-    font-size: 18px;
-    margin-bottom: 16px;
-    letter-spacing: 0.5px;
-}
-
-.download-instructions ol {
-    margin-left: 20px;
-    color: var(--white-80);
-}
-
-.download-instructions li {
-    margin: 12px 0;
-    line-height: 1.6;
-    font-size: 14px;
-}
-
-.mirror-links {
-    margin-top: 32px;
-}
-
-.mirror-links p {
-    font-size: 14px;
-    color: var(--white-60);
-    margin-bottom: 16px;
-}
-
-.mirror-btn {
-    display: inline-block;
-    padding: 12px 24px;
-    margin: 6px;
-    border: 1px solid var(--white-20);
-    color: var(--white-80);
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
-}
-
-.mirror-btn:hover {
-    border-color: var(--text-white);
-    color: var(--text-white);
-    background: rgba(255, 255, 255, 0.05);
-    transform: translateY(-2px);
-}
-
-/* ========================================
-   DEVELOPER SECTION
-======================================== */
-.developer-section {
-    background: rgba(255, 255, 255, 0.02);
-}
-
-.developer-card {
-    max-width: 700px;
-    margin: 0 auto;
-    text-align: center;
-}
-
-.developer-image-wrapper {
-    width: 120px;
-    height: 120px;
-    margin: 0 auto 24px;
-    position: relative;
-    border: 2px solid var(--white-20);
-    border-radius: 50%;
-    padding: 4px;
-}
-
-.developer-image {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    filter: grayscale(20%);
-    transition: all 0.3s ease;
-}
-
-.developer-image:hover {
-    filter: grayscale(0%);
-    transform: scale(1.05);
-}
-
-.developer-name {
-    font-size: 32px;
-    font-weight: 700;
-    margin-bottom: 8px;
-    letter-spacing: -0.5px;
-    line-height: 1.2;
-}
-
-.developer-title {
-    font-size: 16px;
-    color: var(--white-60);
-    margin-bottom: 24px;
-    letter-spacing: 0.5px;
-    line-height: 1.5;
-}
-
-.developer-bio {
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--white-80);
-    margin-bottom: 32px;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.social-links {
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    flex-wrap: wrap;
-}
-
-.social-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
-    border: 1px solid var(--white-20);
-    color: var(--text-white);
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
-}
-
-.social-btn:hover {
-    border-color: var(--text-white);
-    background: rgba(255, 255, 255, 0.05);
-    transform: translateY(-2px);
-}
-
-.social-icon {
-    font-size: 20px;
-}
-
-/* ========================================
-   FOOTER
-======================================== */
-footer {
-    background: rgba(0, 0, 0, 0.5);
-    border-top: 1px solid var(--white-10);
-    padding: 48px 24px;
-    text-align: center;
-}
-
-.footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 32px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-}
-
-.footer-links a {
-    color: var(--white-60);
-    text-decoration: none;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: color 0.3s ease;
-}
-
-.footer-links a:hover {
-    color: var(--text-white);
-}
-
-.copyright {
-    font-size: 14px;
-    color: var(--white-60);
-    line-height: 1.6;
-}
-
-.copyright strong {
-    color: var(--text-white);
-}
-
-/* ========================================
-   RESPONSIVE DESIGN - MOBILE
-======================================== */
-@media (max-width: 768px) {
-    header {
-        padding: 12px 0;
-    }
-    
-    .logo-icon {
-        width: 40px;
-        height: 40px;
-    }
-    
-    .logo-text {
-        font-size: 12px;
-    }
-    
-    .hero {
-        padding: 100px 20px 60px;
-    }
-    
-    .hero-logo-icon {
-        width: 120px;
-        height: 120px;
-    }
-    
-    section {
-        padding: 60px 20px;
-    }
-    
-    .section-header {
-        margin-bottom: 48px;
-    }
-    
-    .features-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    
-    .feature-card {
-        padding: 24px 20px;
-    }
-    
-    .specs-container {
-        grid-template-columns: 1fr;
-        gap: 24px;
-    }
-    
-    .stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 20px;
-        margin-top: 48px;
-    }
-    
-    .stat-number {
-        font-size: 36px;
-    }
-    
-    .download-card {
-        padding: 32px 24px;
-    }
-    
-    .version-info {
-        gap: 24px;
-    }
-    
-    .download-instructions {
-        padding: 20px;
-    }
-    
-    .mirror-btn {
-        display: block;
-        margin: 8px auto;
-        max-width: 280px;
-    }
-    
-    .developer-image-wrapper {
-        width: 100px;
-        height: 100px;
-    }
-    
-    .social-links {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .social-btn {
-        width: 100%;
-        max-width: 280px;
-        justify-content: center;
-    }
-    
-    .footer-links {
-        flex-direction: column;
-        gap: 16px;
-    }
-}
-
-@media (max-width: 480px) {
-    .hero-logo-icon {
-        width: 100px;
-        height: 100px;
-    }
-    
-    .btn-primary {
-        padding: 12px 24px;
-        font-size: 13px;
-    }
-    
-    .feature-card {
-        padding: 20px 16px;
-    }
-    
-    .feature-icon {
-        font-size: 28px;
-    }
-    
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .download-card {
-        padding: 24px 20px;
-    }
-}
-
-/* ========================================
-   DESKTOP ENHANCEMENTS
-======================================== */
-@media (min-width: 1024px) {
-    .hero-logo-icon {
-        width: 200px;
-        height: 200px;
-    }
-    
-    .hero-icon-wrapper {
-        margin-bottom: 64px;
-    }
-    
-    .features-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-    
-    .stats-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
-
-/* ========================================
-   UTILITY CLASSES
-======================================== */
-.text-center {
-    text-align: center;
-}
-
-.mt-20 {
-    margin-top: 20px;
-}
-
-.mt-40 {
-    margin-top: 40px;
-}
-
-.mb-20 {
-    margin-bottom: 20px;
-}
-
-.mb-40 {
-    margin-bottom: 40px;
-}
-       </style>
-    
+    <title>Dominal Tech Park - Virtual IT Ecosystem</title>
+    <!-- Demo: Virtual IT Park by Dominal Tech -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        :root {
+            --navy: #1e3a8a;
+            --dark-gray: #1f2937;
+            --teal: #0ea5e9;
+            --white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #000000 100%);
+            color: var(--white);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(30, 58, 138, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px 5%;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--teal), #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            white-space: nowrap;
+        }
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            background: var(--glass);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: var(--white);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .search-box input:focus {
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+        }
+        .search-box i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+        }
+        select {
+            padding: 12px 16px;
+            background: var(--glass);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: var(--white);
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+        }
+        .cta-btn {
+            padding: 12px 24px;
+            background: var(--teal);
+            border: none;
+            border-radius: 12px;
+            color: var(--white);
+            font-weight: 600;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .cta-btn:hover {
+            background: #0284c7;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(14, 165, 233, 0.4);
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.7); }
+            50% { box-shadow: 0 0 0 10px rgba(14, 165, 233, 0); }
+        }
+        .grid {
+            padding: 40px 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 24px;
+            height: 420px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            animation: fadeIn 0.6s forwards;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(14, 165, 233, 0.3);
+            border-color: var(--teal);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .logo-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #475569, #64748b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 20px;
+        }
+        .company-name {
+            font-size: 18px;
+            font-weight: 700;
+            flex: 1;
+        }
+        .trust-score {
+            text-align: center;
+            margin: 16px 0;
+        }
+        .trust-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 8px;
+        }
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+        .verified { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+        .pending { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+        .tech-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 12px 0;
+        }
+        .hex-badge {
+            position: relative;
+            padding: 6px 12px;
+            background: rgba(14, 165, 233, 0.2);
+            border: 1px solid rgba(14, 165, 233, 0.4);
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--teal);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .hex-badge:hover {
+            background: rgba(14, 165, 233, 0.4);
+            transform: scale(1.1);
+        }
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 8px 0;
+        }
+        .info-row i { width: 16px; height: 16px; }
+        .view-btn {
+            margin-top: auto;
+            padding: 12px;
+            background: var(--teal);
+            border: none;
+            border-radius: 12px;
+            color: var(--white);
+            font-weight: 600;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        .card:hover .view-btn {
+            opacity: 1;
+            transform: translateY(-4px);
+        }
+        @media (max-width: 768px) {
+            .header { padding: 16px 4%; gap: 12px; }
+            .logo { font-size: 20px; }
+            .grid { grid-template-columns: 1fr; padding: 24px 4%; }
+        }
+    </style>
 </head>
 <body>
-    
-    <!-- ========================================
-         HEADER
-    ======================================== -->
-    <header id="header">
-        <div class="container">
-            <div class="header-content">
-                <img src="browser.png" alt="Shadow Browser Logo" class="logo-icon">
-                <div class="logo-text">Shadow Browser</div>
-            </div>
+    <header class="header">
+        <div class="logo">Dominal Tech Park</div>
+        <div class="search-box">
+            <i data-lucide="search"></i>
+            <input type="text" id="searchInput" placeholder="Search companies...">
         </div>
+        <select id="industryFilter">
+            <option value="all">All Industries</option>
+            <option value="AI/ML">AI/ML</option>
+            <option value="Fintech">Fintech</option>
+            <option value="SaaS">SaaS</option>
+            <option value="Consulting">Consulting</option>
+        </select>
+        <button class="cta-btn">Verify Company</button>
     </header>
-    
-    <!-- ========================================
-         HERO SECTION
-    ======================================== -->
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <h1>SHADOW BROWSER</h1>
-            <div class="hero-tagline">Browse Like a Shadow. Your Privacy, Your Power.</div>
-            <p class="hero-description">
-                Experience the web the way it should be: private, fast, and ad-free. Shadow Browser blocks 98%+ of ads, 
-                tracks nothing, and puts you in complete control. Built for those who value privacy without compromise.
-            </p>
-            <a href="https://ajapvxdpxifdhvvszuhp.supabase.co/storage/v1/object/sign/shadowbrowserapk/shadowbrowser.apk?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9lYjk2Y2MwMC1iZDg3LTQyODktODRiYS1mNmZiMjY0YzI3MGYiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzaGFkb3dicm93c2VyYXBrL3NoYWRvd2Jyb3dzZXIuYXBrIiwiaWF0IjoxNzY3NjgxMjkxLCJleHAiOjE5MjUzNjEyOTF9.Pt6q5efRxDehOImq9Axhb2oZAD8fyCZpCO_RpUp8LQE" class="btn-primary pulse" id="downloadBtn" download>Download APK</a>
-        </div>
-    </section>
-    
-    <!-- ========================================
-         FEATURES SECTION
-    ======================================== -->
-    <section id="features">
-    <div class="container">
-        <div class="section-header fade-in">
-            <h2 class="section-title">Why Shadow Browser?</h2>
-            <p class="section-subtitle">Engineered for privacy, designed for speed, built for you</p>
-        </div>
-        
-        <div class="features-grid">
-            <div class="feature-card fade-in">
-                <span class="feature-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M32 8 L32 20 M32 8 L42 14 M32 8 L22 14 M22 14 L22 30 L32 36 M42 14 L42 30 L32 36 M32 36 L32 56 M20 32 L14 36 L14 52 L32 62 L50 52 L50 36 L44 32" stroke-linecap="round" stroke-linejoin="round"/>
-                        <circle cx="32" cy="28" r="4" fill="currentColor"/>
-                    </svg>
-                </span>
-                <h3 class="feature-title">98%+ Ad Blocking</h3>
-                <p class="feature-description">
-                    Browse without distractions. Our advanced blocking engine eliminates 98%+ of ads, 
-                    trackers, and malicious scripts. Tested on adblock-tester.com.
-                </p>
-            </div>
-            
-            <div class="feature-card fade-in">
-                <span class="feature-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <rect x="18" y="12" width="28" height="40" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <rect x="22" y="18" width="20" height="28" rx="1" fill="currentColor" opacity="0.2"/>
-                        <path d="M28 48 L36 48" stroke-linecap="round"/>
-                        <circle cx="32" cy="32" r="8" fill="none" stroke-width="2"/>
-                        <path d="M32 28 L32 32 L35 35" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </span>
-                <h3 class="feature-title">Privacy First</h3>
-                <p class="feature-description">
-                    Zero data collection, zero tracking, zero compromises. Your browsing history stays 
-                    on your device. Complete anonymity guaranteed.
-                </p>
-            </div>
-            
-            <div class="feature-card fade-in">
-                <span class="feature-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="currentColor">
-                        <circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width="2"/>
-                        <path d="M32 12 A20 20 0 0 1 52 32 L32 32 Z" opacity="0.8"/>
-                        <circle cx="22" cy="20" r="2"/>
-                        <circle cx="18" cy="28" r="1.5"/>
-                        <circle cx="42" cy="24" r="2"/>
-                        <circle cx="38" cy="16" r="1.5"/>
-                        <circle cx="46" cy="30" r="1.5"/>
-                        <path d="M28 34 Q32 38 36 34" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                </span>
-                <h3 class="feature-title">Full Dark Mode</h3>
-                <p class="feature-description">
-                    Pure black interface that's easy on your eyes and battery. Every element designed 
-                    for comfortable night browsing.
-                </p>
-            </div>
-            
-            <div class="feature-card fade-in">
-                <span class="feature-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="currentColor">
-                        <path d="M20 32 L32 20 L44 32 L38 32 L38 48 L26 48 L26 32 Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                        <path d="M14 28 L10 32 L14 36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M50 28 L54 32 L50 36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <circle cx="32" cy="26" r="3" fill="#00FFFF" opacity="0.8"/>
-                        <path d="M18 16 L22 20 M46 16 L42 20" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
-                    </svg>
-                </span>
-                <h3 class="feature-title">Lightning Fast</h3>
-                <p class="feature-description">
-                    No bloat, no unnecessary features. Just pure speed. Pages load instantly without 
-                    tracking scripts slowing you down.
-                </p>
-            </div>
-            
-            <div class="feature-card fade-in">
-                <span class="feature-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <rect x="16" y="16" width="32" height="32" rx="2" stroke-linejoin="round"/>
-                        <path d="M32 24 L32 38 M26 32 L32 38 L38 32" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
-                        <line x1="22" y1="44" x2="42" y2="44" stroke-linecap="round" stroke-width="3"/>
-                        <circle cx="32" cy="28" r="2" fill="currentColor"/>
-                    </svg>
-                </span>
-                <h3 class="feature-title">Smart Downloads</h3>
-                <p class="feature-description">
-                    Download images, videos, and files seamlessly. Built-in download manager with 
-                    progress tracking and notifications.
-                </p>
-            </div>
-            
-            <div class="feature-card fade-in">
-                <span class="feature-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <rect x="12" y="18" width="40" height="28" rx="2" stroke-linejoin="round"/>
-                        <rect x="16" y="22" width="32" height="20" rx="1" fill="currentColor" opacity="0.15"/>
-                        <path d="M26 32 L32 28 L32 36 Z" fill="currentColor"/>
-                        <circle cx="38" cy="32" r="6" fill="none" stroke-width="2"/>
-                        <path d="M38 28 L38 36 M34 32 L42 32" stroke-linecap="round"/>
-                    </svg>
-                </span>
-                <h3 class="feature-title">Fullscreen Videos</h3>
-                <p class="feature-description">
-                    Watch YouTube and other videos in fullscreen with automatic landscape orientation. 
-                    True immersive viewing experience.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-    
-    <!-- ========================================
-         TECH SPECS SECTION
-    ======================================== -->
-    <section id="specs">
-        <div class="container">
-            <div class="section-header fade-in">
-                <h2 class="section-title">What Makes Shadow Different</h2>
-                <p class="section-subtitle">24 powerful features that put you in control</p>
-            </div>
-            
-            <div class="specs-container">
-                <div class="specs-list fade-in">
-                    <h3>Core Features</h3>
-                    <ul>
-                        <li>Advanced ad blocking (98%+ block rate)</li>
-                        <li>Zero user data collection</li>
-                        <li>Complete dark mode interface</li>
-                        <li>Incognito mode by default</li>
-                        <li>No tracking scripts allowed</li>
-                        <li>JavaScript control per site</li>
-                        <li>Cookie management</li>
-                        <li>Pop-up blocker</li>
-                        <li>Do Not Track enforcement</li>
-                        <li>HTTPS-only mode</li>
-                        <li>Fingerprinting protection</li>
-                        <li>Local history (device-only)</li>
-                    </ul>
-                </div>
-                
-                <div class="specs-list fade-in">
-                    <h3>Advanced Capabilities</h3>
-                    <ul>
-                        <li>Image/video download manager</li>
-                        <li>Fullscreen video support</li>
-                        <li>Auto-rotate for landscape videos</li>
-                        <li>File download with notifications</li>
-                        <li>Multiple tabs support</li>
-                        <li>Bookmark manager (local only)</li>
-                        <li>Search engine options</li>
-                        <li>Custom homepage</li>
-                        <li>Desktop mode toggle</li>
-                        <li>Text size adjustment</li>
-                        <li>Offline page access</li>
-                        <li>100% offline functionality</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="stats-grid fade-in">
-                <div class="stat-card">
-                    <span class="stat-number" data-target="98">0</span>
-                    <span class="stat-label">% Ads Blocked</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-number" data-target="450">0</span>
-                    <span class="stat-label">+ Blocked Domains</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-number" data-target="0">0</span>
-                    <span class="stat-label">Tracking Scripts</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-number" data-target="100">0</span>
-                    <span class="stat-label">% Offline Capable</span>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- ========================================
-         DOWNLOAD SECTION
-    ======================================== -->
-    <section class="download-section" id="download">
-        <div class="container">
-            <div class="download-card fade-in">
-                <h2 class="download-title">Get Shadow Browser</h2>
-                <p style="font-size: 18px; color: var(--white-60); margin-bottom: 30px;">
-                    Join the privacy revolution. Download now and take back control of your browsing.
-                </p>
-                
-                <div class="version-info">
-                    <div class="info-item">
-                        <span class="info-label">Latest Version</span>
-                        <span class="info-value">v1.0 Beta</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">File Size</span>
-                        <span class="info-value">~13 MB</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Android Version</span>
-                        <span class="info-value">8.0+</span>
-                    </div>
-                </div>
-                
-                <a href="https://ajapvxdpxifdhvvszuhp.supabase.co/storage/v1/object/sign/shadowbrowserapk/shadowbrowser.apk?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9lYjk2Y2MwMC1iZDg3LTQyODktODRiYS1mNmZiMjY0YzI3MGYiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzaGFkb3dicm93c2VyYXBrL3NoYWRvd2Jyb3dzZXIuYXBrIiwiaWF0IjoxNzY3NjgxMjkxLCJleHAiOjE5MjUzNjEyOTF9.Pt6q5efRxDehOImq9Axhb2oZAD8fyCZpCO_RpUp8LQE" class="btn-primary pulse mt-40" download>Download APK Now</a>
-                
-                <div class="download-instructions">
-                    <h4>Installation Instructions</h4>
-                    <ol>
-                        <li>Download the APK file to your Android device</li>
-                        <li>Open Settings → Security → Enable "Install from Unknown Sources"</li>
-                        <li>Locate the downloaded APK file in your Downloads folder</li>
-                        <li>Tap the file and follow the installation prompts</li>
-                        <li>Launch Shadow Browser and start browsing privately</li>
-                    </ol>
-                </div>
-                
-                <div class="mirror-links">
-                    <p>Alternative Download Links:</p>
-                    <a href="https://ajapvxdpxifdhvvszuhp.supabase.co/storage/v1/object/sign/shadowbrowserapk/shadowbrowser.apk?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9lYjk2Y2MwMC1iZDg3LTQyODktODRiYS1mNmZiMjY0YzI3MGYiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzaGFkb3dicm93c2VyYXBrL3NoYWRvd2Jyb3dzZXIuYXBrIiwiaWF0IjoxNzY3NjgxMjkxLCJleHAiOjE5MjUzNjEyOTF9.Pt6q5efRxDehOImq9Axhb2oZAD8fyCZpCO_RpUp8LQE" class="mirror-btn" download>Direct Download</a>
-                    <a href="https://ajapvxdpxifdhvvszuhp.supabase.co/storage/v1/object/sign/shadowbrowserapk/shadowbrowser.apk?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9lYjk2Y2MwMC1iZDg3LTQyODktODRiYS1mNmZiMjY0YzI3MGYiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzaGFkb3dicm93c2VyYXBrL3NoYWRvd2Jyb3dzZXIuYXBrIiwiaWF0IjoxNzY3NjgxMjkxLCJleHAiOjE5MjUzNjEyOTF9.Pt6q5efRxDehOImq9Axhb2oZAD8fyCZpCO_RpUp8LQE" class="mirror-btn" onclick="copyToClipboard(); return false;">Copy Link</a>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- ========================================
-         DEVELOPER SECTION
-    ======================================== -->
-    <section class="developer-section" id="developer">
-        <div class="container">
-            <div class="section-header fade-in">
-                <h2 class="section-title">Meet the Developer</h2>
-            </div>
-            
-            <div class="developer-card fade-in">
-                <div class="developer-image-wrapper">
-                    <img src="developer_photo.jpg" alt="Yahya Mundewadi" class="developer-image">
-                </div>
-                
-                <h3 class="developer-name">Yahya Mundewadi</h3>
-                <p class="developer-title">Full-Stack Developer | Founder of Dominal Tech | Privacy Advocate</p>
-                
-                <p class="developer-bio">
-                    Passionate about building tools that empower users and protect their privacy. As the founder of 
-                    Dominal Tech and a full-stack developer, I believe in creating technology that serves people, not corporations. 
-                    Shadow Browser is my commitment to giving users control over their digital lives. Built with expertise, 
-                    delivered with purpose.
-                </p>
-                
-                <div class="social-links">
-                    <a href="https://yahya.dominal.in" class="social-btn" target="_blank" rel="noopener">
-                        <span class="social-icon">🌐</span>
-                        <span>Portfolio</span>
-                    </a>
-                    <a href="https://www.linkedin.com/in/yahya-m-05b3191b9" class="social-btn" target="_blank" rel="noopener">
-                        <span class="social-icon">💼</span>
-                        <span>LinkedIn</span>
-                    </a>
-                    <a href="https://github.com/dominal-tech" class="social-btn" target="_blank" rel="noopener">
-                        <span class="social-icon">💻</span>
-                        <span>GitHub</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- ========================================
-         FOOTER
-    ======================================== -->
-    <footer>
-        <div class="container">
-            <div class="footer-links">
-                <a href="#home">Home</a>
-                <a href="#features">Features</a>
-                <a href="#download">Download</a>
-                <a href="mailto:contact@dominal.in">Contact</a>
-                <a href="#">Privacy Policy</a>
-                <a href="#">Report Issues</a>
-            </div>
-            <div class="copyright">
-                <p>© 2025 <strong>Shadow Browser</strong> by <strong>Yahya Mundewadi</strong> | <strong>Team Dominal</strong></p>
-                <p style="margin-top: 10px; font-size: 12px;">
-                    Built with privacy in mind. No data collected, no tracking, no compromises.
-                </p>
-            </div>
-        </div>
-    </footer>
-    
-    <!-- ========================================
-         JAVASCRIPT
-    ======================================== -->
+
+    <main class="grid" id="companyGrid"></main>
+
     <script>
-        // ========================================
-        // HEADER SCROLL EFFECT
-        // ========================================
-        const header = document.getElementById('header');
-        let lastScroll = 0;
-        
+        const companies = [
+            { id: 1, name: "Dominal AI", trust: 92, verified: true, badges: ["React", "Python", "AWS"], team: "12 Engineers • 4 Designers", activity: "3 active projects • 2h ago", industry: "AI/ML" },
+            { id: 2, name: "FinPulse", trust: 88, verified: true, badges: ["Node.js", "PostgreSQL", "Stripe"], team: "8 Engineers • 3 Designers", activity: "5 active projects • 1h ago", industry: "Fintech" },
+            { id: 3, name: "CloudScale", trust: 75, verified: true, badges: ["AWS", "Kubernetes", "Docker"], team: "15 Engineers • 2 Designers", activity: "7 active projects • 30m ago", industry: "SaaS" },
+            { id: 4, name: "DataForge", trust: 95, verified: true, badges: ["Python", "Spark", "Kafka"], team: "20 Engineers • 5 Designers", activity: "4 active projects • 3h ago", industry: "AI/ML" },
+            { id: 5, name: "SecureVault", trust: 67, verified: false, badges: ["Java", "Spring", "Redis"], team: "6 Engineers • 2 Designers", activity: "2 active projects • 5h ago", industry: "Fintech" },
+            { id: 6, name: "AgileMinds", trust: 82, verified: true, badges: ["Scrum", "Jira", "Agile"], team: "10 Engineers • 6 Designers", activity: "8 active projects • 1h ago", industry: "Consulting" },
+            { id: 7, name: "CodeCraft", trust: 78, verified: true, badges: ["Vue.js", "Firebase", "Tailwind"], team: "9 Engineers • 4 Designers", activity: "6 active projects • 2h ago", industry: "SaaS" },
+            { id: 8, name: "NeuralNet", trust: 91, verified: true, badges: ["TensorFlow", "PyTorch", "GPU"], team: "18 Engineers • 3 Designers", activity: "5 active projects • 1h ago", industry: "AI/ML" },
+            { id: 9, name: "PayStream", trust: 86, verified: true, badges: ["Go", "gRPC", "MongoDB"], team: "11 Engineers • 3 Designers", activity: "4 active projects • 4h ago", industry: "Fintech" },
+            { id: 10, name: "DevOpsHub", trust: 73, verified: true, badges: ["Jenkins", "Terraform", "Ansible"], team: "7 Engineers • 1 Designer", activity: "9 active projects • 2h ago", industry: "Consulting" },
+            { id: 11, name: "APIFirst", trust: 89, verified: true, badges: ["GraphQL", "REST", "OpenAPI"], team: "13 Engineers • 4 Designers", activity: "3 active projects • 1h ago", industry: "SaaS" },
+            { id: 12, name: "BlockChainX", trust: 70, verified: false, badges: ["Solidity", "Web3", "Ethereum"], team: "5 Engineers • 2 Designers", activity: "2 active projects • 6h ago", industry: "Fintech" },
+            { id: 13, name: "MLOps Pro", trust: 94, verified: true, badges: ["MLflow", "Kubeflow", "Airflow"], team: "16 Engineers • 3 Designers", activity: "5 active projects • 2h ago", industry: "AI/ML" },
+            { id: 14, name: "UXMasters", trust: 81, verified: true, badges: ["Figma", "React", "TypeScript"], team: "8 Engineers • 8 Designers", activity: "7 active projects • 3h ago", industry: "Consulting" },
+            { id: 15, name: "ServerlessIO", trust: 77, verified: true, badges: ["Lambda", "API Gateway", "DynamoDB"], team: "10 Engineers • 2 Designers", activity: "4 active projects • 1h ago", industry: "SaaS" },
+            { id: 16, name: "DeepLearn", trust: 93, verified: true, badges: ["Keras", "CUDA", "Jupyter"], team: "14 Engineers • 2 Designers", activity: "6 active projects • 2h ago", industry: "AI/ML" },
+            { id: 17, name: "CryptoWallet", trust: 65, verified: false, badges: ["Rust", "Bitcoin", "Security"], team: "4 Engineers • 1 Designer", activity: "1 active project • 8h ago", industry: "Fintech" },
+            { id: 18, name: "MicroServices", trust: 85, verified: true, badges: ["Spring Boot", "RabbitMQ", "Consul"], team: "12 Engineers • 3 Designers", activity: "5 active projects • 2h ago", industry: "SaaS" },
+            { id: 19, name: "AIConsult", trust: 87, verified: true, badges: ["Strategy", "ML", "Analytics"], team: "9 Engineers • 5 Designers", activity: "3 active projects • 4h ago", industry: "Consulting" },
+            { id: 20, name: "EdgeCompute", trust: 79, verified: true, badges: ["IoT", "Edge", "MQTT"], team: "11 Engineers • 2 Designers", activity: "4 active projects • 3h ago", industry: "AI/ML" },
+            { id: 21, name: "TradeTech", trust: 84, verified: true, badges: ["C++", "Low Latency", "FIX"], team: "15 Engineers • 2 Designers", activity: "6 active projects • 1h ago", industry: "Fintech" },
+            { id: 22, name: "CloudNative", trust: 76, verified: true, badges: ["Kubernetes", "Istio", "Helm"], team: "13 Engineers • 3 Designers", activity: "8 active projects • 2h ago", industry: "SaaS" },
+            { id: 23, name: "VisionAI", trust: 90, verified: true, badges: ["OpenCV", "YOLO", "CNN"], team: "17 Engineers • 4 Designers", activity: "4 active projects • 1h ago", industry: "AI/ML" },
+            { id: 24, name: "FinOps", trust: 71, verified: true, badges: ["Cost Optimization", "AWS", "Azure"], team: "6 Engineers • 2 Designers", activity: "3 active projects • 5h ago", industry: "Consulting" },
+            { id: 25, name: "DataLake", trust: 83, verified: true, badges: ["S3", "Athena", "Glue"], team: "10 Engineers • 2 Designers", activity: "5 active projects • 2h ago", industry: "SaaS" },
+            { id: 26, name: "RoboTech", trust: 88, verified: true, badges: ["ROS", "Python", "Computer Vision"], team: "12 Engineers • 3 Designers", activity: "3 active projects • 3h ago", industry: "AI/ML" },
+            { id: 27, name: "PaymentGate", trust: 80, verified: true, badges: ["PCI DSS", "Tokenization", "APIs"], team: "9 Engineers • 3 Designers", activity: "6 active projects • 2h ago", industry: "Fintech" },
+            { id: 28, name: "SaaSOps", trust: 74, verified: true, badges: ["Multi-tenant", "Scaling", "Monitoring"], team: "8 Engineers • 2 Designers", activity: "7 active projects • 4h ago", industry: "SaaS" },
+            { id: 29, name: "AutoML", trust: 92, verified: true, badges: ["AutoML", "Feature Engineering", "H2O"], team: "16 Engineers • 3 Designers", activity: "4 active projects • 1h ago", industry: "AI/ML" },
+            { id: 30, name: "StrategyLab", trust: 78, verified: true, badges: ["Business", "Digital Transform", "PMO"], team: "7 Engineers • 6 Designers", activity: "5 active projects • 3h ago", industry: "Consulting" },
+            { id: 31, name: "APIPlatform", trust: 86, verified: true, badges: ["Kong", "Rate Limiting", "OAuth"], team: "11 Engineers • 2 Designers", activity: "4 active projects • 2h ago", industry: "SaaS" },
+            { id: 32, name: "NLPLabs", trust: 91, verified: true, badges: ["BERT", "GPT", "Transformers"], team: "14 Engineers • 3 Designers", activity: "3 active projects • 1h ago", industry: "AI/ML" },
+            { id: 33, name: "InsureTech", trust: 69, verified: false, badges: ["Underwriting", "Claims", "APIs"], team: "5 Engineers • 2 Designers", activity: "2 active projects • 7h ago", industry: "Fintech" },
+            { id: 34, name: "ContainerOps", trust: 82, verified: true, badges: ["Docker", "Podman", "Buildah"], team: "10 Engineers • 2 Designers", activity: "6 active projects • 2h ago", industry: "SaaS" },
+            { id: 35, name: "ReinforceLab", trust: 89, verified: true, badges: ["RL", "OpenAI Gym", "Unity ML"], team: "13 Engineers • 3 Designers", activity: "4 active projects • 3h ago", industry: "AI/ML" },
+            { id: 36, name: "AgilePro", trust: 77, verified: true, badges: ["SAFe", "Kanban", "Lean"], team: "8 Engineers • 5 Designers", activity: "7 active projects • 2h ago", industry: "Consulting" },
+            { id: 37, name: "MetricsHQ", trust: 85, verified: true, badges: ["Analytics", "BI", "Dashboards"], team: "12 Engineers • 4 Designers", activity: "5 active projects • 1h ago", industry: "SaaS" },
+            { id: 38, name: "GenAI", trust: 94, verified: true, badges: ["LLM", "Stable Diffusion", "Midjourney"], team: "19 Engineers • 4 Designers", activity: "6 active projects • 1h ago", industry: "AI/ML" },
+            { id: 39, name: "WealthTech", trust: 72, verified: true, badges: ["Portfolio", "Risk", "Compliance"], team: "7 Engineers • 2 Designers", activity: "3 active projects • 4h ago", industry: "Fintech" },
+            { id: 40, name: "PlatformEng", trust: 81, verified: true, badges: ["IaC", "GitOps", "Backstage"], team: "11 Engineers • 2 Designers", activity: "8 active projects • 2h ago", industry: "SaaS" }
+        ];
+
+        let displayedCompanies = companies.slice(0, 20);
+
+        function getTrustColor(score) {
+            if (score < 40) return '#ef4444';
+            if (score < 70) return '#fbbf24';
+            return '#4ade80';
+        }
+
+        function createTrustSVG(score) {
+            const radius = 30;
+            const circumference = 2 * Math.PI * radius;
+            const offset = circumference - (score / 100) * circumference;
+            const color = getTrustColor(score);
+            
+            return `<svg width="80" height="80" viewBox="0 0 80 80">
+                <circle cx="40" cy="40" r="${radius}" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="6"/>
+                <circle cx="40" cy="40" r="${radius}" fill="none" stroke="${color}" stroke-width="6" 
+                    stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" 
+                    transform="rotate(-90 40 40)" style="transition: stroke-dashoffset 1s ease"/>
+                <text x="40" y="45" text-anchor="middle" fill="${color}" font-size="20" font-weight="700">${score}</text>
+            </svg>`;
+        }
+
+        function renderCard(company, delay) {
+            return `<div class="card" style="animation-delay: ${delay}ms">
+                <div class="card-header">
+                    <div class="logo-circle">${company.name.substring(0, 2)}</div>
+                    <h3 class="company-name">${company.name}</h3>
+                </div>
+                <div class="trust-score">
+                    ${createTrustSVG(company.trust)}
+                    <div class="trust-label">Trust Score</div>
+                </div>
+                <span class="badge-pill ${company.verified ? 'verified' : 'pending'}">
+                    ${company.verified ? '✅ Video Verified' : '⏳ Pending'}
+                </span>
+                <div class="tech-badges">
+                    ${company.badges.map(b => `<span class="hex-badge" title="${b}">${b}</span>`).join('')}
+                </div>
+                <div class="info-row">
+                    <i data-lucide="users"></i>
+                    <span>${company.team}</span>
+                </div>
+                <div class="info-row">
+                    <i data-lucide="activity"></i>
+                    <span>${company.activity}</span>
+                </div>
+                <button class="view-btn">View Profile →</button>
+            </div>`;
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('companyGrid');
+            grid.innerHTML = displayedCompanies.map((c, i) => renderCard(c, i * 50)).join('');
+            lucide.createIcons();
+        }
+
+        function filterCompanies() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const industry = document.getElementById('industryFilter').value;
+            
+            displayedCompanies = companies.filter(c => 
+                c.name.toLowerCase().includes(search) &&
+                (industry === 'all' || c.industry === industry)
+            ).slice(0, 20);
+            
+            renderGrid();
+        }
+
+        document.getElementById('searchInput').addEventListener('input', filterCompanies);
+        document.getElementById('industryFilter').addEventListener('change', filterCompanies);
+
         window.addEventListener('scroll', () => {
-            const currentScroll = window.pageYOffset;
-            
-            if (currentScroll > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-            
-            lastScroll = currentScroll;
-        });
-        
-        // ========================================
-        // SMOOTH SCROLL FOR ANCHOR LINKS
-        // ========================================
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                const href = this.getAttribute('href');
-                
-                // Don't prevent default for non-section links
-                if (href === '#' || href.length <= 1) {
-                    return;
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight * 0.8) {
+                if (displayedCompanies.length < companies.length) {
+                    displayedCompanies = companies.slice(0, displayedCompanies.length + 20);
+                    renderGrid();
                 }
-                
-                e.preventDefault();
-                const target = document.querySelector(href);
-                
-                if (target) {
-                    const offsetTop = target.offsetTop - 80;
-                    window.scrollTo({
-                        top: offsetTop,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-        
-        // ========================================
-        // FADE IN ON SCROLL (INTERSECTION OBSERVER)
-        // ========================================
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-        
-        const fadeInObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-        
-        // Observe all fade-in elements
-        document.querySelectorAll('.fade-in').forEach(el => {
-            fadeInObserver.observe(el);
-        });
-        
-        // ========================================
-        // ANIMATED COUNTER FOR STATS
-        // ========================================
-        const statNumbers = document.querySelectorAll('.stat-number');
-        let hasAnimated = false;
-        
-        const statsObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !hasAnimated) {
-                    hasAnimated = true;
-                    animateStats();
-                }
-            });
-        }, { threshold: 0.5 });
-        
-        // Observe stats section
-        const statsSection = document.querySelector('.stats-grid');
-        if (statsSection) {
-            statsObserver.observe(statsSection);
-        }
-        
-        function animateStats() {
-            statNumbers.forEach(stat => {
-                const target = parseInt(stat.getAttribute('data-target'));
-                const duration = 2000; // 2 seconds
-                const increment = target / (duration / 16); // 60fps
-                let current = 0;
-                
-                const timer = setInterval(() => {
-                    current += increment;
-                    if (current >= target) {
-                        current = target;
-                        clearInterval(timer);
-                    }
-                    
-                    // Format numbers
-                    if (target > 100) {
-                        stat.textContent = Math.floor(current) + '+';
-                    } else {
-                        stat.textContent = Math.floor(current);
-                    }
-                }, 16);
-            });
-        }
-        
-        // ========================================
-        // DOWNLOAD BUTTON TRACKING
-        // ========================================
-        const downloadButtons = document.querySelectorAll('#downloadBtn, .btn-primary[download]');
-        
-        downloadButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                console.log('Download initiated:', new Date().toISOString());
-                
-                // Add visual feedback
-                btn.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    btn.style.transform = '';
-                }, 200);
-                
-                // You can add analytics tracking here
-                // Example: gtag('event', 'download', { 'event_category': 'APK' });
-            });
-        });
-        
-        // ========================================
-        // COPY LINK TO CLIPBOARD
-        // ========================================
-        function copyToClipboard() {
-            const apkUrl = window.location.origin + '/shadow-browser.apk';
-            
-            // Modern clipboard API
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(apkUrl).then(() => {
-                    showCopyNotification('Link copied to clipboard!');
-                }).catch(err => {
-                    console.error('Failed to copy:', err);
-                    fallbackCopy(apkUrl);
-                });
-            } else {
-                fallbackCopy(apkUrl);
-            }
-        }
-        
-        // Fallback for older browsers
-        function fallbackCopy(text) {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            textArea.style.position = 'fixed';
-            textArea.style.left = '-999999px';
-            document.body.appendChild(textArea);
-            textArea.select();
-            
-            try {
-                document.execCommand('copy');
-                showCopyNotification('Link copied to clipboard!');
-            } catch (err) {
-                console.error('Failed to copy:', err);
-                showCopyNotification('Failed to copy link');
-            }
-            
-            document.body.removeChild(textArea);
-        }
-        
-        // Show copy notification
-        function showCopyNotification(message) {
-            const notification = document.createElement('div');
-            notification.textContent = message;
-            notification.style.cssText = `
-                position: fixed;
-                bottom: 30px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: #FFFFFF;
-                color: #000000;
-                padding: 15px 30px;
-                border-radius: 0;
-                font-weight: 700;
-                font-size: 14px;
-                z-index: 10000;
-                box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
-                animation: slideUp 0.3s ease;
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.style.animation = 'slideDown 0.3s ease';
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
-            }, 2000);
-        }
-        
-        // ========================================
-        // LAZY LOAD IMAGES
-        // ========================================
-        const imageObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    if (img.dataset.src) {
-                        img.src = img.dataset.src;
-                        img.removeAttribute('data-src');
-                    }
-                    imageObserver.unobserve(img);
-                }
-            });
-        });
-        
-        document.querySelectorAll('img[data-src]').forEach(img => {
-            imageObserver.observe(img);
-        });
-        
-        // ========================================
-        // PARALLAX EFFECT ON HERO
-        // ========================================
-        const hero = document.querySelector('.hero');
-        
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            if (hero && scrolled < window.innerHeight) {
-                hero.style.transform = `translateY(${scrolled * 0.5}px)`;
             }
         });
-        
-        // ========================================
-        // PREVENT RIGHT CLICK ON IMAGES (OPTIONAL)
-        // ========================================
-        // Uncomment if you want to protect images
-        // document.querySelectorAll('img').forEach(img => {
-        //     img.addEventListener('contextmenu', e => e.preventDefault());
-        // });
-        
-        // ========================================
-        // CONSOLE MESSAGE
-        // ========================================
-        console.log('%c🌙 Shadow Browser', 'font-size: 24px; font-weight: bold; color: #FFFFFF; background: #000000; padding: 10px;');
-        console.log('%cBrowse Like a Shadow. Your Privacy, Your Power.', 'font-size: 14px; color: #999999;');
-        console.log('%cBuilt by Yahya Mundewadi | Team Dominal', 'font-size: 12px; color: #666666;');
-        
-        // ========================================
-        // PERFORMANCE MONITORING
-        // ========================================
-        window.addEventListener('load', () => {
-            const loadTime = window.performance.timing.domContentLoadedEventEnd - window.performance.timing.navigationStart;
-            console.log(`⚡ Page loaded in ${loadTime}ms`);
-        });
+
+        setInterval(() => {
+            const indices = [Math.floor(Math.random() * displayedCompanies.length), 
+                           Math.floor(Math.random() * displayedCompanies.length)];
+            indices.forEach(i => {
+                if (displayedCompanies[i]) {
+                    displayedCompanies[i].trust = Math.max(50, Math.min(100, 
+                        displayedCompanies[i].trust + (Math.random() > 0.5 ? 2 : -2)));
+                }
+            });
+            renderGrid();
+        }, 30000);
+
+        renderGrid();
     </script>
 </body>
 </html>
-
