@@ -9,7 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 
     <style>
-        * {
+                * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -21,13 +21,17 @@
             color: #1a1a1a;
             overflow: hidden;
             height: 100vh;
+            width: 100vw;
+            position: fixed;
         }
 
         /* Main Layout */
         .app-container {
             display: flex;
             height: 100vh;
+            width: 100vw;
             position: relative;
+            overflow: hidden;
         }
 
         /* Sidebar */
@@ -39,6 +43,7 @@
             flex-direction: column;
             z-index: 100;
             transition: transform 0.3s ease;
+            flex-shrink: 0;
         }
 
         .sidebar-header {
@@ -97,6 +102,7 @@
         .upload-btn svg {
             width: 20px;
             height: 20px;
+            flex-shrink: 0;
         }
 
         #fileInput {
@@ -168,6 +174,8 @@
             flex-direction: column;
             background: #fafafa;
             position: relative;
+            overflow: hidden;
+            min-width: 0;
         }
 
         .canvas-toolbar {
@@ -177,6 +185,9 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            overflow-x: auto;
+            flex-shrink: 0;
+            -webkit-overflow-scrolling: touch;
         }
 
         .toolbar-btn {
@@ -190,6 +201,8 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .toolbar-btn:hover {
@@ -211,12 +224,17 @@
             background: #333;
         }
 
+        .toolbar-btn svg {
+            flex-shrink: 0;
+        }
+
         /* Realism Controls */
         .realism-controls {
             padding: 16px 20px;
             background: white;
             border-bottom: 1px solid #e5e5e5;
             display: none;
+            flex-shrink: 0;
         }
 
         .realism-controls.active {
@@ -280,11 +298,15 @@
             justify-content: center;
             padding: 40px;
             overflow: auto;
+            min-height: 0;
+            position: relative;
         }
 
         #canvas {
             box-shadow: 0 8px 32px rgba(0,0,0,0.12);
             border-radius: 4px;
+            max-width: 100%;
+            max-height: 100%;
         }
 
         /* Empty State */
@@ -295,6 +317,7 @@
             transform: translate(-50%, -50%);
             text-align: center;
             pointer-events: none;
+            padding: 20px;
         }
 
         .empty-state svg {
@@ -377,6 +400,7 @@
             background: #ccc;
             border-radius: 2px;
             margin: 12px auto;
+            cursor: pointer;
         }
 
         .drawer-content {
@@ -455,11 +479,16 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
+            body {
+                overflow: hidden;
+            }
+
             .sidebar {
                 position: fixed;
                 left: 0;
                 top: 0;
                 bottom: 0;
+                width: 280px;
                 transform: translateX(-100%);
                 box-shadow: 4px 0 12px rgba(0,0,0,0.1);
             }
@@ -468,25 +497,180 @@
                 transform: translateX(0);
             }
 
+            .canvas-container-wrapper {
+                width: 100%;
+            }
+
             .canvas-wrapper {
-                padding: 20px;
+                padding: 10px;
+                padding-bottom: 80px;
+            }
+
+            .canvas-toolbar {
+                padding: 12px 10px;
+                gap: 8px;
+                overflow-x: auto;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+
+            .canvas-toolbar::-webkit-scrollbar {
+                display: none;
+            }
+
+            .toolbar-btn {
+                font-size: 12px;
+                padding: 8px 12px;
+                min-width: fit-content;
+            }
+
+            .toolbar-btn svg {
+                width: 14px;
+                height: 14px;
+            }
+
+            .realism-controls {
+                padding: 12px 10px;
             }
 
             .fab-container {
                 display: flex;
+                bottom: 80px;
+                right: 16px;
             }
 
             .mobile-drawer {
                 display: block;
             }
 
+            .empty-state {
+                padding: 20px;
+            }
+
+            .empty-state svg {
+                width: 60px;
+                height: 60px;
+            }
+
+            .empty-state h3 {
+                font-size: 16px;
+            }
+
+            .empty-state p {
+                font-size: 13px;
+            }
+
+            .category-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+
+            .product-item {
+                border-width: 2px;
+            }
+
+            .product-item img {
+                padding: 8px;
+            }
+
+            .upload-btn {
+                padding: 14px;
+                font-size: 13px;
+            }
+
+            .category-title {
+                font-size: 14px;
+            }
+
+            .sidebar-header h1 {
+                font-size: 18px;
+            }
+
+            .sidebar-header p {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 100%;
+                max-width: 280px;
+            }
+
+            .canvas-wrapper {
+                padding: 5px;
+                padding-bottom: 80px;
+            }
+
             .canvas-toolbar {
-                flex-wrap: wrap;
+                padding: 10px 8px;
+                gap: 6px;
             }
 
             .toolbar-btn {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+
+            .fab-container {
+                bottom: 80px;
+                right: 12px;
+            }
+
+            .fab {
+                width: 48px;
+                height: 48px;
+            }
+
+            .fab svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            .category-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+
+            .empty-state svg {
+                width: 50px;
+                height: 50px;
+            }
+
+            .empty-state h3 {
+                font-size: 14px;
+            }
+
+            .empty-state p {
                 font-size: 12px;
-                padding: 6px 12px;
+            }
+        }
+
+        /* Landscape mode on mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .canvas-wrapper {
+                padding: 5px;
+                padding-bottom: 60px;
+            }
+
+            .canvas-toolbar {
+                padding: 8px;
+            }
+
+            .toolbar-btn {
+                padding: 6px 10px;
+            }
+
+            .fab-container {
+                bottom: 70px;
+            }
+
+            .mobile-drawer {
+                max-height: 60vh;
+            }
+
+            .drawer-content {
+                max-height: calc(60vh - 80px);
             }
         }
 
@@ -507,6 +691,36 @@
         .tooltip.show {
             opacity: 1;
         }
+
+        /* Prevent zoom on mobile inputs */
+        @media (max-width: 768px) {
+            input, select, textarea {
+                font-size: 16px;
+            }
+        }
+
+        /* Better scrollbar styling */
+        .sidebar-content::-webkit-scrollbar,
+        .drawer-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar-content::-webkit-scrollbar-track,
+        .drawer-content::-webkit-scrollbar-track {
+            background: #f5f5f5;
+        }
+
+        .sidebar-content::-webkit-scrollbar-thumb,
+        .drawer-content::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 3px;
+        }
+
+        .sidebar-content::-webkit-scrollbar-thumb:hover,
+        .drawer-content::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+
     </style>
 </head>
 <body>
