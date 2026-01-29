@@ -670,6 +670,16 @@
                 padding-bottom: 60px;
             }
 
+            .upload-section .upload-btn {
+    padding: 12px 8px;
+    font-size: 12px;
+}
+
+.upload-section .upload-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
             .canvas-toolbar {
                 padding: 8px;
             }
@@ -753,13 +763,22 @@
             <div class="sidebar-content">
                 <!-- Upload Section -->
                 <div class="upload-section">
-                    <button class="upload-btn" onclick="triggerFileUpload()">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
-                        </svg>
-                        Upload Wall Photo
-                    </button>
-                  <input type="file" id="fileInput" accept="image/*" onchange="handleImageUpload(event)">
+                  <button class="upload-btn" onclick="triggerFileUpload()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+    </svg>
+    Upload Wall Photo
+</button>
+<button class="upload-btn" onclick="triggerCamera()" style="background: #4f46e5; margin-top: 12px;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+        <circle cx="12" cy="13" r="4"/>
+    </svg>
+    Take Photo
+</button>
+
+                 <input type="file" id="fileInput" accept="image/*" onchange="handleImageUpload(event)">
+<input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="handleImageUpload(event)">
 </div>
 
                 <!-- Metal Wall Art -->
@@ -885,12 +904,24 @@
             <div class="drawer-handle" onclick="toggleDrawer()"></div>
             <div class="drawer-content">
                 <div class="upload-section">
-                    <button class="upload-btn" onclick="triggerFileUpload()">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
-                        </svg>
-                        Upload Wall Photo
-                    </button>
+                   <div class="upload-section">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <button class="upload-btn" onclick="triggerFileUpload()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+            </svg>
+            Gallery
+        </button>
+        <button class="upload-btn" onclick="triggerCamera()" style="background: #4f46e5;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+            </svg>
+            Camera
+        </button>
+    </div>
+</div>
+
                 </div>
 
                 <div class="category-section">
@@ -1053,10 +1084,14 @@
         // ===============================================
         // IMAGE UPLOAD
         // ===============================================
+function triggerFileUpload() {
+    document.getElementById('fileInput').click();
+}
 
-        function triggerFileUpload() {
-            document.getElementById('fileInput').click();
-        }
+function triggerCamera() {
+    document.getElementById('cameraInput').click();
+}
+
 
         function handleImageUpload(event) {
             const file = event.target.files[0];
