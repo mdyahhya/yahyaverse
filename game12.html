@@ -123,6 +123,51 @@
             user-select: none;
         }
 
+        .category-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.more-btn {
+    background: #1a1a1a;
+    color: white;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.more-btn:hover {
+    background: #333;
+}
+
+.search-btn {
+    background: white;
+    border: 1px solid #e5e5e5;
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.search-btn:hover {
+    border-color: #1a1a1a;
+    background: #f5f5f5;
+}
+
+.search-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+
         .category-title {
             font-size: 15px;
             font-weight: 600;
@@ -292,6 +337,21 @@
             border: none;
         }
 
+
+        .product-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    text-align: center;
+    padding: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
         /* Canvas Wrapper */
         .canvas-wrapper {
             flex: 1;
@@ -310,6 +370,97 @@
             max-width: 100%;
             max-height: 100%;
         }
+
+        /* View All Modal */
+.view-all-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    z-index: 9999;
+    overflow-y: auto;
+}
+
+.view-all-modal.active {
+    display: block;
+}
+
+.modal-header {
+    position: sticky;
+    top: 0;
+    background: white;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e5e5e5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+}
+
+.modal-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.modal-close {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #e5e5e5;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #666;
+}
+
+.modal-search {
+    padding: 16px 20px;
+    background: #fafafa;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    border-color: #1a1a1a;
+}
+
+.modal-content {
+    padding: 20px;
+}
+
+.modal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 16px;
+}
+
+.no-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+}
+
+@media (max-width: 768px) {
+    .modal-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+}
 
         /* Empty State */
         .empty-state {
@@ -751,7 +902,7 @@
     </style>
 </head>
 <body>
-    <!-- Main App Container -->
+        <!-- Main App Container -->
     <div class="app-container">
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
@@ -763,29 +914,36 @@
             <div class="sidebar-content">
                 <!-- Upload Section -->
                 <div class="upload-section">
-                  <button class="upload-btn" onclick="triggerFileUpload()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
-    </svg>
-    Upload Wall Photo
-</button>
-<button class="upload-btn" onclick="triggerCamera()" style="background: #4f46e5; margin-top: 12px;">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
-        <circle cx="12" cy="13" r="4"/>
-    </svg>
-    Take Photo
-</button>
-
-                 <input type="file" id="fileInput" accept="image/*" onchange="handleImageUpload(event)">
-<input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="handleImageUpload(event)">
-</div>
+                    <button class="upload-btn" onclick="triggerFileUpload()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                        </svg>
+                        Upload Wall Photo
+                    </button>
+                    <button class="upload-btn" onclick="triggerCamera()" style="background: #4f46e5; margin-top: 12px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+                            <circle cx="12" cy="13" r="4"/>
+                        </svg>
+                        Take Photo
+                    </button>
+                    <input type="file" id="fileInput" accept="image/*" onchange="handleImageUpload(event)">
+                    <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="handleImageUpload(event)">
+                </div>
 
                 <!-- Metal Wall Art -->
                 <div class="category-section">
                     <div class="category-header">
                         <span class="category-title">🎨 Metal Wall Art</span>
-                        <span class="category-count">6 items</span>
+                        <div class="category-actions">
+                            <button class="search-btn" onclick="openSearch('art')" title="Search">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"/>
+                                    <path d="M21 21l-4.35-4.35"/>
+                                </svg>
+                            </button>
+                            <button class="more-btn" onclick="viewAllProducts('art', '🎨 Metal Wall Art')">More</button>
+                        </div>
                     </div>
                     <div class="category-grid" id="artGrid"></div>
                 </div>
@@ -794,7 +952,15 @@
                 <div class="category-section">
                     <div class="category-header">
                         <span class="category-title">🕐 Metal Wall Clock</span>
-                        <span class="category-count">6 items</span>
+                        <div class="category-actions">
+                            <button class="search-btn" onclick="openSearch('clock')" title="Search">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"/>
+                                    <path d="M21 21l-4.35-4.35"/>
+                                </svg>
+                            </button>
+                            <button class="more-btn" onclick="viewAllProducts('clock', '🕐 Metal Wall Clock')">More</button>
+                        </div>
                     </div>
                     <div class="category-grid" id="clockGrid"></div>
                 </div>
@@ -803,7 +969,15 @@
                 <div class="category-section">
                     <div class="category-header">
                         <span class="category-title">🪞 Metal Wall Mirror</span>
-                        <span class="category-count">6 items</span>
+                        <div class="category-actions">
+                            <button class="search-btn" onclick="openSearch('mirror')" title="Search">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"/>
+                                    <path d="M21 21l-4.35-4.35"/>
+                                </svg>
+                            </button>
+                            <button class="more-btn" onclick="viewAllProducts('mirror', '🪞 Metal Wall Mirror')">More</button>
+                        </div>
                     </div>
                     <div class="category-grid" id="mirrorGrid"></div>
                 </div>
@@ -904,29 +1078,35 @@
             <div class="drawer-handle" onclick="toggleDrawer()"></div>
             <div class="drawer-content">
                 <div class="upload-section">
-                   <div class="upload-section">
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-        <button class="upload-btn" onclick="triggerFileUpload()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
-            </svg>
-            Gallery
-        </button>
-        <button class="upload-btn" onclick="triggerCamera()" style="background: #4f46e5;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
-                <circle cx="12" cy="13" r="4"/>
-            </svg>
-            Camera
-        </button>
-    </div>
-</div>
-
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <button class="upload-btn" onclick="triggerFileUpload()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                            </svg>
+                            Gallery
+                        </button>
+                        <button class="upload-btn" onclick="triggerCamera()" style="background: #4f46e5;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+                                <circle cx="12" cy="13" r="4"/>
+                            </svg>
+                            Camera
+                        </button>
+                    </div>
                 </div>
 
                 <div class="category-section">
                     <div class="category-header">
                         <span class="category-title">🎨 Metal Wall Art</span>
+                        <div class="category-actions">
+                            <button class="search-btn" onclick="openSearch('art')" title="Search">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"/>
+                                    <path d="M21 21l-4.35-4.35"/>
+                                </svg>
+                            </button>
+                            <button class="more-btn" onclick="viewAllProducts('art', '🎨 Metal Wall Art')">More</button>
+                        </div>
                     </div>
                     <div class="category-grid" id="artGridMobile"></div>
                 </div>
@@ -934,6 +1114,15 @@
                 <div class="category-section">
                     <div class="category-header">
                         <span class="category-title">🕐 Metal Wall Clock</span>
+                        <div class="category-actions">
+                            <button class="search-btn" onclick="openSearch('clock')" title="Search">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"/>
+                                    <path d="M21 21l-4.35-4.35"/>
+                                </svg>
+                            </button>
+                            <button class="more-btn" onclick="viewAllProducts('clock', '🕐 Metal Wall Clock')">More</button>
+                        </div>
                     </div>
                     <div class="category-grid" id="clockGridMobile"></div>
                 </div>
@@ -941,8 +1130,34 @@
                 <div class="category-section">
                     <div class="category-header">
                         <span class="category-title">🪞 Metal Wall Mirror</span>
+                        <div class="category-actions">
+                            <button class="search-btn" onclick="openSearch('mirror')" title="Search">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"/>
+                                    <path d="M21 21l-4.35-4.35"/>
+                                </svg>
+                            </button>
+                            <button class="more-btn" onclick="viewAllProducts('mirror', '🪞 Metal Wall Mirror')">More</button>
+                        </div>
                     </div>
                     <div class="category-grid" id="mirrorGridMobile"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View All Modal -->
+        <div class="view-all-modal" id="viewAllModal">
+            <div class="modal-header">
+                <h2 id="modalTitle">All Products</h2>
+                <button class="modal-close" onclick="closeViewAll()">×</button>
+            </div>
+            <div class="modal-search">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search by number (e.g., 001, 002)..." oninput="filterProducts()">
+            </div>
+            <div class="modal-content">
+                <div class="modal-grid" id="modalGrid"></div>
+                <div class="no-results" id="noResults" style="display: none;">
+                    No products found
                 </div>
             </div>
         </div>
@@ -1067,19 +1282,28 @@
             loadCategory('mirror', 'mirrorGridMobile');
         }
 
-        function loadCategory(category, containerId) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
+       function loadCategory(category, containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    // Show only first 6 products in main view
+    const productsToShow = products[category].slice(0, 6);
+    
+    productsToShow.forEach((product, index) => {
+        const item = document.createElement('div');
+        item.className = 'product-item';
+        const productNumber = String(index + 1).padStart(3, '0');
+        item.innerHTML = `
+            <img src="${product.src}" alt="${product.name}" draggable="false">
+            <div class="product-caption">${productNumber}</div>
+        `;
+        item.onclick = () => addProductToCanvas(product);
+        container.appendChild(item);
+    });
+}
 
-            container.innerHTML = '';
-            products[category].forEach(product => {
-                const item = document.createElement('div');
-                item.className = 'product-item';
-                item.innerHTML = `<img src="${product.src}" alt="${product.name}" draggable="false">`;
-                item.onclick = () => addProductToCanvas(product);
-                container.appendChild(item);
-            });
-        }
 
         // ===============================================
         // IMAGE UPLOAD
@@ -1550,6 +1774,103 @@ backgroundImage = null;
                 exportImage();
             }
         });
+
+
+        // ===============================================
+// VIEW ALL & SEARCH FUNCTIONALITY
+// ===============================================
+
+let currentViewCategory = null;
+let allCategoryProducts = [];
+
+function viewAllProducts(category, title) {
+    currentViewCategory = category;
+    allCategoryProducts = products[category];
+    
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('searchInput').value = '';
+    document.getElementById('viewAllModal').classList.add('active');
+    
+    renderModalProducts(allCategoryProducts);
+    closeMobileDrawer();
+}
+
+function closeViewAll() {
+    document.getElementById('viewAllModal').classList.remove('active');
+    currentViewCategory = null;
+    allCategoryProducts = [];
+}
+
+function renderModalProducts(productsToShow) {
+    const grid = document.getElementById('modalGrid');
+    const noResults = document.getElementById('noResults');
+    
+    grid.innerHTML = '';
+    
+    if (productsToShow.length === 0) {
+        noResults.style.display = 'block';
+        return;
+    }
+    
+    noResults.style.display = 'none';
+    
+    productsToShow.forEach((product) => {
+        const item = document.createElement('div');
+        item.className = 'product-item';
+        // Get original index from all products
+        const originalIndex = allCategoryProducts.indexOf(product);
+        const productNumber = String(originalIndex + 1).padStart(3, '0');
+        item.innerHTML = `
+            <img src="${product.src}" alt="${product.name}" draggable="false">
+            <div class="product-caption">${productNumber}</div>
+        `;
+        item.onclick = () => {
+            addProductToCanvas(product);
+            closeViewAll();
+        };
+        grid.appendChild(item);
+    });
+}
+
+function filterProducts() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    
+    if (!searchTerm) {
+        renderModalProducts(allCategoryProducts);
+        return;
+    }
+    
+    // Search by number (001, 002, etc.) or by index (1, 2, etc.)
+    const filtered = allCategoryProducts.filter((product, index) => {
+        const productNumber = String(index + 1).padStart(3, '0');
+        const simpleNumber = String(index + 1);
+        return productNumber.includes(searchTerm) || 
+               simpleNumber.includes(searchTerm) ||
+               product.name.toLowerCase().includes(searchTerm);
+    });
+    
+    renderModalProducts(filtered);
+}
+
+function openSearch(category) {
+    const title = category === 'art' ? '🎨 Metal Wall Art' : 
+                  category === 'clock' ? '🕐 Metal Wall Clock' : 
+                  '🪞 Metal Wall Mirror';
+    viewAllProducts(category, title);
+    
+    // Focus on search input after a short delay
+    setTimeout(() => {
+        document.getElementById('searchInput').focus();
+    }, 100);
+}
+
+// Close modal with ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && document.getElementById('viewAllModal').classList.contains('active')) {
+        closeViewAll();
+    }
+});
+
     </script>
 </body>
 </html>
