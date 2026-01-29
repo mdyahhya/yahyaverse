@@ -179,16 +179,18 @@
         }
 
         .canvas-toolbar {
-            padding: 16px 20px;
-            background: white;
-            border-bottom: 1px solid #e5e5e5;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            overflow-x: auto;
-            flex-shrink: 0;
-            -webkit-overflow-scrolling: touch;
-        }
+    padding: 16px 20px;
+    background: white;
+    border-bottom: 1px solid #e5e5e5;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    overflow-x: auto;
+    flex-shrink: 0;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: wrap;
+}
+
 
         .toolbar-btn {
             padding: 8px 16px;
@@ -506,13 +508,28 @@
                 padding-bottom: 80px;
             }
 
-            .canvas-toolbar {
-                padding: 12px 10px;
-                gap: 8px;
-                overflow-x: auto;
-                scrollbar-width: none;
-                -ms-overflow-style: none;
-            }
+           .canvas-toolbar {
+        padding: 12px 10px;
+        gap: 8px;
+        overflow-x: visible;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+.canvas-toolbar {
+    padding: 12px 10px;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.toolbar-btn {
+    font-size: 11px;
+    padding: 6px 10px;
+    min-width: auto;
+    flex: 0 0 auto;
+}
 
             .canvas-toolbar::-webkit-scrollbar {
                 display: none;
@@ -742,8 +759,8 @@
                         </svg>
                         Upload Wall Photo
                     </button>
-                    <input type="file" id="fileInput" accept="image/*" capture="environment" onchange="handleImageUpload(event)">
-                </div>
+                  <input type="file" id="fileInput" accept="image/*" onchange="handleImageUpload(event)">
+</div>
 
                 <!-- Metal Wall Art -->
                 <div class="category-section">
@@ -1057,12 +1074,18 @@
                     );
 
                     img.scale(scale);
-                    img.set({
-                        left: 0,
-                        top: 0,
-                        selectable: false,
-                        evented: false
-                    });
+                    // Center and scale image properly
+const centerLeft = (canvas.width / canvas.getZoom() - img.width * scale) / 2;
+const centerTop = (canvas.height / canvas.getZoom() - img.height * scale) / 2;
+
+img.set({
+    left: centerLeft,
+    top: centerTop,
+    selectable: true,
+    evented: true,
+    lockRotation: false
+});
+
 
                     // Remove previous background if exists
                     if (backgroundImage) {
@@ -1125,7 +1148,8 @@
 
         function deleteSelected() {
             const activeObject = canvas.getActiveObject();
-            if (activeObject && activeObject !== backgroundImage) {
+           if (activeObject) {
+
                 canvas.remove(activeObject);
                 canvas.renderAll();
             }
@@ -1185,10 +1209,9 @@
                 isHistoryAction = false;
 
                 // Restore background reference
-                const objects = canvas.getObjects();
-                if (objects.length > 0 && !objects[0].selectable) {
-                    backgroundImage = objects[0];
-                }
+               // All objects are now selectable
+backgroundImage = null;
+
             });
         }
 
@@ -1467,7 +1490,8 @@
             // Delete key
             if (e.key === 'Delete' || e.key === 'Backspace') {
                 const activeObject = canvas.getActiveObject();
-                if (activeObject && activeObject !== backgroundImage) {
+               if (activeObject) {
+
                     e.preventDefault();
                     deleteSelected();
                 }
