@@ -1740,29 +1740,13 @@ html {
     /* Add your existing 480px styles here */
     
     /* IMPORTANT: Add these hamburger styles */
-    .hamburger {
-        display: flex;
-         z-index: 1001; /* ADD THIS */
+    
+     nav ul {
+        max-width: 100%; /* Full width on small screens */
+        padding: 1.5rem;
     }
     
-    nav ul {
-        position: fixed;
-        top: 80px;
-        right: -100%;
-        width: 100%;
-        max-width: 100%; /* Changed from 400px for better mobile UX */
-        height: calc(100vh - 80px);
-        background: var(--white);
-        flex-direction: column;
-        padding: 2rem;
-        box-shadow: -5px 0 20px rgba(34, 7, 7, 0.1);
-        transition: right 0.4s ease;
-        gap: 1.5rem;
-        z-index: 1000; /* ADD THIS */
-    }
-    nav ul.active {
-        right: 0;
-    }
+    
 }
 
 /* Small Mobile (max-width: 480px) */
