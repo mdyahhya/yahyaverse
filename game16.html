@@ -1584,16 +1584,37 @@ html {
     width: 100%;
     display: flex;
 }
-
-.alumni-card {
-    min-width: calc(100vw - 110px); /* Screen width minus arrow space */
-    max-width: calc(100vw - 110px);
-    width: calc(100vw - 110px);
-    flex-shrink: 0;
-    padding: 2rem 1rem;
-    margin: 0 55px; /* Space for arrows */
-    box-sizing: border-box;
-}
+.alumni-slider-wrapper {
+        padding: 0 60px; /* Space for arrows */
+    }
+    
+    .alumni-slider-track {
+        gap: 0; /* Remove gap on mobile */
+    }
+    
+    .alumni-card {
+        min-width: 100%; /* Full width of container */
+        max-width: 100%;
+        width: 100%;
+        flex-shrink: 0;
+        padding: 2rem 1rem;
+        margin: 0; /* Remove margin */
+        box-sizing: border-box;
+    }
+    
+    .alumni-slider-wrapper .slider-arrow {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+    }
+    
+    .alumni-slider-wrapper .slider-arrow-left {
+        left: 5px;
+    }
+    
+    .alumni-slider-wrapper .slider-arrow-right {
+        right: 5px;
+    }
 
 .alumni-slider-wrapper .slider-arrow {
     position: absolute;
@@ -1605,7 +1626,7 @@ html {
     z-index: 20;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
-
+/* 
 .alumni-slider-wrapper .slider-arrow-left {
     left: 5px;
     top: 50%;
@@ -1616,7 +1637,7 @@ html {
     right: 5px;
     top: 50%;
     transform: translateY(-50%);
-}
+} */
 
 .alumni-image {
     width: 100px;
