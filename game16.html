@@ -3,20 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="HCC High School, Solapur - Excellence in Education. Admissions Open for 2026-27.">
-    <meta name="keywords" content="HCC High School, Solapur, Education, Admissions, School">
-    <meta name="theme-color" content="#220707">
-
-    <!-- PWA Manifest -->
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#220707">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="HCC School">
-<link rel="apple-touch-icon" href="/icons/icon-192x192.png">
-
-    <title>HCC High School, Solapur | Excellence in Education</title>
+    <title>Barcode Generator & Scanner</title>
+    
+    <!-- Required Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     
     <style>
         * {
@@ -25,3138 +16,532 @@
             box-sizing: border-box;
         }
 
-        :root {
-            --maroon-dark: #220707;
-            --maroon-primary: #531C22;
-            --neutral-warm: #AC9185;
-            --neutral-light: #E7D8CA;
-            --bg-light: #F9F3ED;
-            --white: #FFFFFF;
-        }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: var(--bg-light);
-            color: var(--maroon-dark);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* Header & Navigation */
-        header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(249, 243, 237, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 20px rgba(34, 7, 7, 0.08);
-            z-index: 1000;
-            transition: transform 0.3s ease;
-        }
-
-        .nav-container {
-            max-width: 1400px;
+            background: #ffffff;
+            color: #000000;
+            padding: 20px;
+            max-width: 800px;
             margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
         }
 
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logo-placeholder {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--maroon-primary), var(--maroon-dark));
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: var(--white);
-            font-size: 1.2rem;
-            transition: transform 0.3s ease;
-        }
-
-        .logo-placeholder:hover {
-            transform: rotate(5deg) scale(1.05);
-        }
-
-        .school-name {
-            font-size: 1.3rem;
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
             font-weight: 600;
-            color: var(--maroon-dark);
         }
 
-        .school-location {
-            font-size: 0.85rem;
-            color: var(--neutral-warm);
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 14px;
         }
 
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 2.5rem;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: var(--maroon-dark);
-            font-weight: 500;
-            font-size: 0.95rem;
-            position: relative;
-            transition: color 0.3s ease;
-        }
-
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--maroon-primary);
-            transition: width 0.3s ease;
-        }
-
-        nav a:hover {
-            color: var(--maroon-primary);
-        }
-
-        nav a:hover::after {
-            width: 100%;
-        }
-
-        /* Mobile Menu */
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-            padding: 8px;
-        }
-
-        .hamburger span {
-            width: 25px;
-            height: 3px;
-            background: var(--maroon-dark);
-            border-radius: 2px;
-            transition: all 0.3s ease;
-        }
-
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(8px, 8px);
-        }
-
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -7px);
-        }
-
-        /* Hero Section */
-        .hero {
-            margin-top: 80px;
-            min-height: 90vh;
-            background: linear-gradient(135deg, var(--neutral-light) 0%, var(--bg-light) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(83, 28, 34, 0.05) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: float 20s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(-30px, -30px); }
-        }
-
-        .hero-content {
-            max-width: 1200px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-            z-index: 1;
-        }
-
-        .hero-text h1 {
-            font-size: 3.5rem;
-            color: var(--maroon-dark);
-            margin-bottom: 1rem;
-            line-height: 1.2;
-            animation: fadeInUp 0.8s ease;
-        }
-
-        .hero-text p {
-            font-size: 1.2rem;
-            color: var(--neutral-warm);
-            margin-bottom: 2rem;
-            animation: fadeInUp 0.8s ease 0.2s backwards;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            animation: fadeInUp 0.8s ease 0.4s backwards;
-        }
-
-        .btn {
-            padding: 0.9rem 2rem;
-            border: none;
+        .section {
+            background: #ffffff;
+            border: 2px solid #000000;
             border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: var(--maroon-primary);
-            color: var(--white);
-        }
-
-        .btn-primary:hover {
-            background: var(--maroon-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(83, 28, 34, 0.3);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--maroon-primary);
-            border: 2px solid var(--maroon-primary);
-        }
-
-        .btn-secondary:hover {
-            background: var(--maroon-primary);
-            color: var(--white);
-            transform: translateY(-2px);
-        }
-
-        .hero-image {
-            position: relative;
-            animation: fadeInRight 0.8s ease 0.3s backwards;
-        }
-
-        @keyframes fadeInRight {
-            from {
-                opacity: 0;
-                transform: translateX(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .image-placeholder {
-            width: 100%;
-            height: 500px;
-            /* background: linear-gradient(135deg, var(--neutral-warm), var(--neutral-light)); */
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            /* color: var(--white); */
-            font-size: 1.2rem;
-            box-shadow: 0 20px 60px rgba(34, 7, 7, 0.15);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .image-placeholder::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
-        /* Quick Highlights */
-        .highlights {
-            padding: 5rem 2rem;
-            background: var(--white);
-        }
-
-        .highlights-container {
-            max-width: 1200px;
-            margin: 0 auto;
+            padding: 30px;
+            margin-bottom: 30px;
         }
 
         .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            color: var(--maroon-dark);
-            margin-bottom: 3rem;
-        }
-
-        .highlights-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .highlight-card {
-            background: var(--bg-light);
-            padding: 2.5rem;
-            border-radius: 12px;
-            text-align: center;
-            transition: all 0.4s ease;
-            border: 2px solid transparent;
-        }
-
-        .highlight-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--maroon-primary);
-            box-shadow: 0 15px 40px rgba(83, 28, 34, 0.15);
-        }
-
-        .highlight-icon {
-            width: 70px;
-            height: 70px;
-            margin: 0 auto 1.5rem;
-            background: linear-gradient(135deg, var(--maroon-primary), var(--maroon-dark));
-            border-radius: 12px;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
             display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #000000;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #000000;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn {
+            background: #000000;
+            color: #ffffff;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            background: #333333;
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #ffffff;
+            color: #000000;
+            border: 2px solid #000000;
+        }
+
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        .barcode-preview {
+            margin-top: 30px;
+            padding: 30px;
+            background: #fafafa;
+            border: 2px dashed #cccccc;
+            border-radius: 8px;
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: transform 0.3s ease;
         }
 
-        .highlight-card:hover .highlight-icon {
-            transform: scale(1.1) rotate(5deg);
+        .barcode-preview.has-barcode {
+            background: #ffffff;
+            border: 2px solid #000000;
         }
 
-        .highlight-card h3 {
-            font-size: 1.5rem;
-            color: var(--maroon-dark);
-            margin-bottom: 1rem;
+        #barcodeCanvas {
+            max-width: 100%;
+            margin-bottom: 15px;
         }
 
-        .highlight-card p {
-            color: var(--neutral-warm);
-            line-height: 1.8;
+        .barcode-info {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            font-size: 13px;
         }
 
-        /* Gallery Preview */
-        .gallery-preview {
-            padding: 5rem 2rem;
-            background: var(--bg-light);
+        .barcode-info-row {
+            margin: 5px 0;
         }
 
-        .gallery-container {
-            max-width: 1200px;
-            margin: 0 auto;
+        .barcode-info-label {
+            font-weight: 600;
+            display: inline-block;
+            width: 80px;
         }
 
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .gallery-item {
-            height: 250px;
-            background: linear-gradient(135deg, var(--neutral-light), var(--neutral-warm));
-            border-radius: 12px;
-            overflow: hidden;
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .gallery-item:hover {
-            transform: scale(1.03);
-        }
-
-        .gallery-item::after {
-            content: 'Gallery Image';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 1rem;
-            background: linear-gradient(to top, rgba(34, 7, 7, 0.8), transparent);
-            color: var(--white);
-            font-weight: 500;
-        }
-
-        .view-all {
-            text-align: center;
-        }
-
-        /* Footer */
-        footer {
-            background: var(--maroon-dark);
-            color: var(--bg-light);
-            padding: 3rem 2rem 1.5rem;
-        }
-
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 3rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-section h3 {
-            color: var(--white);
-            margin-bottom: 1rem;
-            font-size: 1.2rem;
-        }
-
-        .footer-section p, .footer-section a {
-            color: var(--neutral-light);
-            text-decoration: none;
-            display: block;
-            margin-bottom: 0.5rem;
-            transition: color 0.3s ease;
-        }
-
-        .footer-section a:hover {
-            color: var(--white);
-        }
-
-        .contact-item {
+        .button-group {
             display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 1rem;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
-        .contact-icon {
-            width: 20px;
-            height: 20px;
-            background: var(--maroon-primary);
+        .scanner-container {
+            margin-top: 20px;
+        }
+
+        #reader {
+            border: 2px solid #000000;
+            border-radius: 8px;
+            overflow: hidden;
+            max-width: 100%;
+        }
+
+        .scan-result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            border: 2px solid #000000;
+        }
+
+        .scan-result-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .scan-result-data {
+            font-family: 'Courier New', monospace;
+            background: #ffffff;
+            padding: 15px;
             border-radius: 4px;
+            border: 1px solid #ddd;
+            word-break: break-all;
         }
 
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid var(--maroon-primary);
-            color: var(--neutral-light);
+        .hidden {
+            display: none;
         }
 
-        /* Mobile Responsive */
-        @media (max-width: 968px) {
-            nav ul {
-                position: fixed;
-                top: 80px;
-                right: -100%;
-                width: 100%;
-                max-width: 400px;
-                height: calc(100vh - 80px);
-                background: var(--white);
+        .empty-state {
+            color: #999;
+            font-size: 14px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .button-group {
                 flex-direction: column;
-                padding: 2rem;
-                box-shadow: -5px 0 20px rgba(34, 7, 7, 0.1);
-                transition: right 0.4s ease;
-                gap: 1.5rem;
             }
 
-            nav ul.active {
-                right: 0;
-            }
-
-            .hamburger {
-                display: flex;
-            }
-
-            .hero-content {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .hero-text h1 {
-                font-size: 2.5rem;
-            }
-
-            .cta-buttons {
+            .btn {
+                width: 100%;
                 justify-content: center;
             }
-
-            .hero-image {
-                order: -1;
-            }
-
-            .image-placeholder {
-                height: 350px;
-            }
         }
-
-        @media (max-width: 640px) {
-            .nav-container {
-                padding: 1rem;
-            }
-
-            .school-name {
-                font-size: 1rem;
-            }
-
-            .school-location {
-                font-size: 0.75rem;
-            }
-
-            .hero-text h1 {
-                font-size: 2rem;
-            }
-
-            .hero-text p {
-                font-size: 1rem;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-
-            .highlights-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Smooth Scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* SVG Icons Inline */
-        .svg-icon {
-            width: 40px;
-            height: 40px;
-            fill: var(--white);
-        }
-
-
-
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-:root {
-    --maroon-dark: #220707;
-    --maroon-primary: #531C22;
-    --neutral-warm: #AC9185;
-    --neutral-light: #E7D8CA;
-    --bg-light: #F9F3ED;
-    --white: #FFFFFF;
-}
-
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background-color: var(--bg-light);
-    color: var(--maroon-dark);
-    line-height: 1.6;
-    overflow-x: hidden;
-}
-
-/* Header & Navigation */
-header {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    background: rgba(249, 243, 237, 0.95);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 2px 20px rgba(34, 7, 7, 0.08);
-    z-index: 1000;
-    transition: transform 0.3s ease;
-}
-
-.nav-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-}
-
-.logo-section {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.logo-placeholder {
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, var(--maroon-primary), var(--maroon-dark));
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    color: var(--white);
-    font-size: 1.2rem;
-    transition: transform 0.3s ease;
-}
-
-.logo-placeholder:hover {
-    transform: rotate(5deg) scale(1.05);
-}
-
-.school-name {
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: var(--maroon-dark);
-}
-
-.school-location {
-    font-size: 0.85rem;
-    color: var(--neutral-warm);
-}
-
-nav ul {
-    display: flex;
-    list-style: none;
-    gap: 2.5rem;
-}
-
-nav a {
-    text-decoration: none;
-    color: var(--maroon-dark);
-    font-weight: 500;
-    font-size: 0.95rem;
-    position: relative;
-    transition: color 0.3s ease;
-}
-
-nav a::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: var(--maroon-primary);
-    transition: width 0.3s ease;
-}
-
-nav a:hover {
-    color: var(--maroon-primary);
-}
-
-nav a:hover::after {
-    width: 100%;
-}
-
-/* Mobile Menu */
-.hamburger {
-    display: none;
-    flex-direction: column;
-    gap: 5px;
-    cursor: pointer;
-    padding: 8px;
-}
-
-.hamburger span {
-    width: 25px;
-    height: 3px;
-    background: var(--maroon-dark);
-    border-radius: 2px;
-    transition: all 0.3s ease;
-}
-
-.hamburger.active span:nth-child(1) {
-    transform: rotate(45deg) translate(8px, 8px);
-}
-
-.hamburger.active span:nth-child(2) {
-    opacity: 0;
-}
-
-.hamburger.active span:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -7px);
-}
-
-/* Hero Section */
-.hero {
-    margin-top: 80px;
-    min-height: 90vh;
-    background: linear-gradient(135deg, var(--neutral-light) 0%, var(--bg-light) 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    position: relative;
-    overflow: hidden;
-}
-
-.hero::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -20%;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(83, 28, 34, 0.05) 0%, transparent 70%);
-    border-radius: 50%;
-    animation: float 20s ease-in-out infinite;
-}
-
-@keyframes float {
-    0%, 100% { transform: translate(0, 0); }
-    50% { transform: translate(-30px, -30px); }
-}
-
-.hero-content {
-    max-width: 1200px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-    align-items: center;
-    z-index: 1;
-}
-
-.hero-text h1 {
-    font-size: 3.5rem;
-    color: var(--maroon-dark);
-    margin-bottom: 1rem;
-    line-height: 1.2;
-    animation: fadeInUp 0.8s ease;
-}
-
-.hero-text p {
-    font-size: 1.2rem;
-    color: var(--neutral-warm);
-    margin-bottom: 2rem;
-    animation: fadeInUp 0.8s ease 0.2s backwards;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.cta-buttons {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    animation: fadeInUp 0.8s ease 0.4s backwards;
-}
-
-.btn {
-    padding: 0.9rem 2rem;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-block;
-}
-
-.btn-primary {
-    background: var(--maroon-primary);
-    color: var(--white);
-}
-
-.btn-primary:hover {
-    background: var(--maroon-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(83, 28, 34, 0.3);
-}
-
-.btn-secondary {
-    background: transparent;
-    color: var(--maroon-primary);
-    border: 2px solid var(--maroon-primary);
-}
-
-.btn-secondary:hover {
-    background: var(--maroon-primary);
-    color: var(--white);
-    transform: translateY(-2px);
-}
-
-.hero-image {
-    position: relative;
-    animation: fadeInRight 0.8s ease 0.3s backwards;
-}
-
-@keyframes fadeInRight {
-    from {
-        opacity: 0;
-        transform: translateX(50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.image-placeholder {
-    width: 100%;
-    height: 500px;
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 20px 60px rgba(34, 7, 7, 0.15);
-    position: relative;
-    overflow: hidden;
-}
-
-.image-placeholder::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    animation: shimmer 3s infinite;
-}
-
-@keyframes shimmer {
-    0% { left: -100%; }
-    100% { left: 100%; }
-}
-/* Video Slider Section */
-.video-slider-section {
-    padding: 5rem 2rem;
-    background: var(--white);
-}
-
-.video-slider-container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-/* Video Filter Dropdown */
-.video-filter-container {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin: 2rem 0 3rem;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.filter-label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-weight: 600;
-    color: var(--maroon-dark);
-    font-size: 1.1rem;
-}
-
-.filter-label-icon {
-    width: 24px;
-    height: 24px;
-    fill: var(--maroon-primary);
-}
-
-.video-select {
-    padding: 0.8rem 2.5rem 0.8rem 1.2rem;
-    font-size: 1rem;
-    border: 2px solid var(--neutral-light);
-    border-radius: 10px;
-    background: var(--white);
-    color: var(--maroon-dark);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 500;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23531C22'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.5rem center;
-    background-size: 24px;
-    min-width: 280px;
-}
-
-.video-select:hover {
-    border-color: var(--maroon-primary);
-    box-shadow: 0 3px 12px rgba(83, 28, 34, 0.15);
-}
-
-.video-select:focus {
-    outline: none;
-    border-color: var(--maroon-primary);
-    box-shadow: 0 0 0 3px rgba(83, 28, 34, 0.1);
-}
-
-.video-slider-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    margin: 3rem 0;
-}
-
-.video-display {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-.video-container {
-    position: relative;
-    width: 100%;
-    max-width: 800px; /* Limit maximum width */
-    margin: 0 auto; /* Center the video */
-    aspect-ratio: 16 / 9; /* Wide screen format */
-    background: var(--maroon-dark);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 15px 50px rgba(34, 7, 7, 0.25);
-    touch-action: pan-y pinch-zoom;
-    -webkit-user-select: none;
-    user-select: none;
-}
-
-
-.video-container video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.video-caption {
-    text-align: center;
-    font-size: 1.3rem;
-    color: var(--maroon-dark);
-    font-weight: 600;
-    min-height: 2rem;
-}
-
-.video-counter {
-    text-align: center;
-    font-size: 1rem;
-    color: var(--neutral-warm);
-    font-weight: 500;
-}
-
-.slider-arrow {
-    width: 60px;
-    height: 60px;
-    background: var(--maroon-primary);
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease, opacity 0.3s ease;
-    flex-shrink: 0;
-    z-index: 100;
-    box-shadow: 0 5px 20px rgba(83, 28, 34, 0.3);
-    position: relative;
-}
-
-.slider-arrow:hover {
-    background: var(--maroon-dark);
-    transform: scale(1.15);
-}
-
-.slider-arrow:active {
-    transform: scale(0.95);
-}
-
-.slider-arrow:disabled,
-.slider-arrow[style*="opacity: 0.5"] {
-    pointer-events: none;
-}
-
-.slider-arrow svg {
-    width: 28px;
-    height: 28px;
-    fill: var(--white);
-}
-
-/* Quick Highlights */
-.highlights {
-    padding: 5rem 2rem;
-    background: var(--white);
-}
-
-.highlights-container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.section-title {
-    text-align: center;
-    font-size: 2.5rem;
-    color: var(--maroon-dark);
-    margin-bottom: 3rem;
-}
-
-.highlights-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-}
-
-.highlight-card {
-    background: var(--bg-light);
-    padding: 2.5rem;
-    border-radius: 12px;
-    text-align: center;
-    transition: all 0.4s ease;
-    border: 2px solid transparent;
-}
-
-.highlight-card:hover {
-    transform: translateY(-8px);
-    border-color: var(--maroon-primary);
-    box-shadow: 0 15px 40px rgba(83, 28, 34, 0.15);
-}
-
-.highlight-icon {
-    width: 70px;
-    height: 70px;
-    margin: 0 auto 1.5rem;
-    background: linear-gradient(135deg, var(--maroon-primary), var(--maroon-dark));
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.3s ease;
-}
-
-.highlight-card:hover .highlight-icon {
-    transform: scale(1.1) rotate(5deg);
-}
-
-.highlight-card h3 {
-    font-size: 1.5rem;
-    color: var(--maroon-dark);
-    margin-bottom: 1rem;
-}
-
-.highlight-card p {
-    color: var(--neutral-warm);
-    line-height: 1.8;
-}
-
-/* Alumni Section - FIXED */
-.alumni-section {
-    padding: 5rem 2rem;
-    background: var(--bg-light);
-}
-
-.alumni-container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.section-subtitle {
-    text-align: center;
-    color: var(--neutral-warm);
-    font-size: 1.1rem;
-    margin-top: -2rem;
-    margin-bottom: 3rem;
-}
-
-.alumni-slider-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    margin: 3rem 0;
-    overflow: hidden;
-    width: 100%; /* ADDED */
-}
-
-
-/* Ensure arrows are always visible */
-.alumni-slider-wrapper .slider-arrow {
-    flex-shrink: 0;
-    z-index: 100;
-    display: flex !important;
-    visibility: visible !important;
-}
-
-.alumni-slider-wrapper .slider-arrow-left,
-.alumni-slider-wrapper .slider-arrow-right {
-    flex-shrink: 0;
-    display: flex;
-    opacity: 1;
-    pointer-events: auto;
-}
-
-/* Override any conflicting styles */
-#prevAlumni,
-#nextAlumni {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    z-index: 100 !important;
-}
-
-.alumni-slider-track {
-    display: flex;
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    gap: 2rem;
-    flex: 1;
-    min-width: 0; /* IMPORTANT: Allows proper flex sizing */
-    touch-action: pan-y pinch-zoom;
-    -webkit-user-select: none;
-    user-select: none;
-}
-
-
-
-.alumni-card {
-    min-width: 100%;
-    background: var(--white);
-    border-radius: 16px;
-    padding: 3rem 2.5rem;
-    text-align: center;
-    border: 2px solid var(--neutral-light);
-    box-shadow: 0 10px 30px rgba(34, 7, 7, 0.1);
-    transition: all 0.3s ease;
-    flex-shrink: 0;
-}
-
-.alumni-card:hover {
-    border-color: var(--maroon-primary);
-    box-shadow: 0 15px 40px rgba(83, 28, 34, 0.2);
-}
-
-.alumni-image {
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    margin: 0 auto 1.5rem;
-    object-fit: cover;
-    border: 5px solid var(--maroon-primary);
-    transition: transform 0.3s ease;
-}
-
-.alumni-card:hover .alumni-image {
-    transform: scale(1.05);
-}
-
-.alumni-name {
-    font-size: 1.8rem;
-    color: var(--maroon-dark);
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-}
-
-.alumni-designation {
-    font-size: 1.1rem;
-    color: var(--maroon-primary);
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-}
-
-.alumni-quote {
-    font-style: italic;
-    color: var(--neutral-warm);
-    line-height: 1.8;
-    position: relative;
-    padding: 1.5rem 0;
-    font-size: 1.05rem;
-}
-
-.alumni-quote::before {
-    content: '"';
-    font-size: 4rem;
-    color: var(--neutral-light);
-    position: absolute;
-    top: -15px;
-    left: 10px;
-    font-family: Georgia, serif;
-    line-height: 1;
-}
-
-.alumni-quote::after {
-    content: '"';
-    font-size: 4rem;
-    color: var(--neutral-light);
-    position: absolute;
-    bottom: -35px;
-    right: 10px;
-    font-family: Georgia, serif;
-    line-height: 1;
-}
-
-/* Alumni Dots Navigation */
-.alumni-dots {
-    display: flex;
-    justify-content: center;
-    gap: 0.8rem;
-    margin-top: 2rem;
-}
-
-.alumni-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--neutral-light);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: none;
-    padding: 0;
-}
-
-.alumni-dot:hover {
-    background: var(--neutral-warm);
-    transform: scale(1.2);
-}
-
-.alumni-dot.active {
-    background: var(--maroon-primary);
-    width: 30px;
-    border-radius: 6px;
-}
-
-/* Desktop - Show 3 cards and arrows outside */
-/* Desktop - Show 1 card at a time */
-@media (min-width: 1025px) {
-    .alumni-slider-wrapper {
-        padding: 0;
-        gap: 2rem;
-    }
-    
-    .alumni-slider-wrapper .slider-arrow {
-        position: relative;
-    }
-    
-    .alumni-slider-wrapper .slider-arrow-left {
-        order: 1;
-    }
-    
-    .alumni-slider-track {
-        order: 2;
-        gap: 2rem;
-    }
-    
-    .alumni-slider-wrapper .slider-arrow-right {
-        order: 3;
-    }
-    
-    .alumni-card {
-        min-width: 100%; /* FIXED: Show 1 card */
-    }
-}
-
-/* Gallery Preview */
-.gallery-preview {
-    padding: 5rem 2rem;
-    background: var(--bg-light);
-}
-
-.gallery-container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.gallery-item {
-    height: 250px;
-    background: linear-gradient(135deg, var(--neutral-light), var(--neutral-warm));
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.gallery-item:hover {
-    transform: scale(1.03);
-}
-
-.gallery-item::after {
-    content: 'Gallery Image';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 1rem;
-    background: linear-gradient(to top, rgba(34, 7, 7, 0.8), transparent);
-    color: var(--white);
-    font-weight: 500;
-}
-
-.view-all {
-    text-align: center;
-}
-
-/* Footer */
-footer {
-    background: var(--maroon-dark);
-    color: var(--bg-light);
-    padding: 3rem 2rem 1.5rem;
-}
-
-.footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 3rem;
-    margin-bottom: 2rem;
-}
-
-.footer-section h3 {
-    color: var(--white);
-    margin-bottom: 1rem;
-    font-size: 1.2rem;
-}
-
-.footer-section p, .footer-section a {
-    color: var(--neutral-light);
-    text-decoration: none;
-    display: block;
-    margin-bottom: 0.5rem;
-    transition: color 0.3s ease;
-}
-
-.footer-section a:hover {
-    color: var(--white);
-}
-
-.contact-item {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    margin-bottom: 1rem;
-}
-
-.contact-icon {
-    width: 20px;
-    height: 20px;
-    background: var(--maroon-primary);
-    border-radius: 4px;
-}
-
-.footer-bottom {
-    text-align: center;
-    padding-top: 2rem;
-    border-top: 1px solid var(--maroon-primary);
-    color: var(--neutral-light);
-}
-
-/* SVG Icons Inline */
-.svg-icon {
-    width: 40px;
-    height: 40px;
-    fill: var(--white);
-}
-
-/* Smooth Scrolling */
-html {
-    scroll-behavior: smooth;
-}
-
-/* Tablet Responsive (769px - 1024px) */
-@media (min-width: 769px) and (max-width: 1024px) {
-    .alumni-slider-wrapper {
-        padding: 0 4rem;
-        gap: 0;
-    }
-    
-    .alumni-slider-wrapper .slider-arrow {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-    }
-    
-    .alumni-slider-wrapper .slider-arrow-left {
-        left: 0;
-    }
-    
-    .alumni-slider-wrapper .slider-arrow-right {
-        right: 0;
-    }
-    
-    .alumni-slider-track {
-        gap: 2rem;
-    }
-    
-    .alumni-card {
-        min-width: 100%; /* FIXED: Show 1 card */
-        padding: 2.5rem 2rem;
-    }
-
-    
-    .alumni-image {
-        width: 130px;
-        height: 130px;
-    }
-    
-    .alumni-name {
-        font-size: 1.5rem;
-    }
-
-    .alumni-designation {
-        font-size: 1rem;
-    }
-    
-    .alumni-quote {
-        font-size: 0.95rem;
-    }
-
-    .slider-arrow {
-        width: 50px;
-        height: 50px;
-    }
-}
-
-/* Mobile Responsive (max-width: 768px) */
-@media (max-width: 768px) {
-  
-
-    nav ul.active {
-        right: 0;
-    }
-
-    .hamburger {
-        display: flex;
-    }
-
-    .hero-content {
-        grid-template-columns: 1fr;
-        text-align: center;
-    }
-
-    .hero-text h1 {
-        font-size: 2.5rem;
-    }
-
-    .cta-buttons {
-        justify-content: center;
-    }
-
-    .hero-image {
-        order: -1;
-    }
-
-    .image-placeholder {
-        height: 350px;
-    }
-
-    /* Video Filter Mobile */
-    .video-filter-container {
-        flex-direction: column;
-        gap: 0.8rem;
-        margin: 1.5rem 0 2rem;
-    }
-
-    .filter-label {
-        font-size: 1rem;
-    }
-
-    .filter-label-icon {
-        width: 20px;
-        height: 20px;
-    }
-
-    .video-select {
-        min-width: 100%;
-        max-width: 100%;
-        font-size: 0.95rem;
-    }
-
-    .video-slider-section {
-        padding: 3rem 1rem;
-    }
-
-    .video-slider-wrapper {
-        gap: 0;
-    }
-
-    .slider-arrow {
-        position: absolute;
-        width: 45px;
-        height: 45px;
-        min-width: 45px;
-        min-height: 45px;
-        z-index: 100;
-    }
-
-    .video-slider-wrapper .slider-arrow-left {
-        left: 10px;
-        top: 40%;
-        transform: translateY(-50%);
-    }
-
-    .video-slider-wrapper .slider-arrow-right {
-        right: 10px;
-        top: 40%;
-        transform: translateY(-50%);
-    }
-
-    .slider-arrow svg {
-        width: 22px;
-        height: 22px;
-    }
-
-    .video-caption {
-        font-size: 1.1rem;
-    }
-
-    .video-counter {
-        font-size: 0.9rem;
-    }
-
-    /* Alumni Mobile */
-  /* Alumni Mobile */
-/* Alumni Mobile - COMPLETE FIX */
-.alumni-section {
-    padding: 3rem 0.5rem;
-}
-
-.alumni-container {
-    max-width: 100%;
-    padding: 0;
-}
-
-.alumni-slider-wrapper {
-    gap: 0;
-    margin: 2rem 0;
-    padding: 0;
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-}
-
-.alumni-slider-track {
-    gap: 0;
-    width: 100%;
-    display: flex;
-}
-.alumni-slider-wrapper {
-        padding: 0 60px; /* Space for arrows */
-    }
-    
-    .alumni-slider-track {
-        gap: 0; /* Remove gap on mobile */
-    }
-    
-    .alumni-card {
-        min-width: 100%; /* Full width of container */
-        max-width: 100%;
-        width: 100%;
-        flex-shrink: 0;
-        padding: 2rem 1rem;
-        margin: 0; /* Remove margin */
-        box-sizing: border-box;
-    }
-    
-    .alumni-slider-wrapper .slider-arrow {
-        position: absolute;
-        width: 50px;
-        height: 50px;
-    }
-    
-    .alumni-slider-wrapper .slider-arrow-left {
-        left: 5px;
-    }
-    
-    .alumni-slider-wrapper .slider-arrow-right {
-        right: 5px;
-    }
-
-.alumni-slider-wrapper .slider-arrow {
-    position: absolute;
-    background: rgba(83, 28, 34, 0.95);
-    backdrop-filter: blur(5px);
-    width: 45px;
-    height: 45px;
-    min-width: 45px;
-    z-index: 20;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-/* 
-.alumni-slider-wrapper .slider-arrow-left {
-    left: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.alumni-slider-wrapper .slider-arrow-right {
-    right: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-} */
-
-.alumni-image {
-    width: 100px;
-    height: 100px;
-    border: 4px solid var(--maroon-primary);
-}
-
-.alumni-name {
-    font-size: 1.3rem;
-}
-
-.alumni-designation {
-    font-size: 0.95rem;
-}
-
-.alumni-quote {
-    font-size: 0.85rem;
-    padding: 0.8rem 0;
-}
-
-.alumni-quote::before,
-.alumni-quote::after {
-    font-size: 2.5rem;
-}
-
-.alumni-quote::before {
-    left: 0;
-    top: -10px;
-}
-
-.alumni-quote::after {
-    right: 0;
-    bottom: -25px;
-}
-
-.alumni-dots {
-    gap: 0.5rem;
-    margin-top: 1.5rem;
-    padding: 0 1rem;
-}
-
-.alumni-dot {
-    width: 8px;
-    height: 8px;
-}
-
-.alumni-dot.active {
-    width: 20px;
-}
-
-    .section-title {
-        font-size: 2rem;
-    }
-
-    .highlights-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Small Mobile (max-width: 480px) */
-@media (max-width: 480px) {
-    .nav-container {
-        padding: 1rem;
-    }
-
-    .school-name {
-        font-size: 1rem;
-    }
-
-    .school-location {
-        font-size: 0.75rem;
-    }
-
-    .hero-text h1 {
-        font-size: 2rem;
-    }
-
-    .hero-text p {
-        font-size: 1rem;
-    }
-
-    .video-select {
-        padding: 0.7rem 2rem 0.7rem 1rem;
-        font-size: 0.9rem;
-    }
-
-    .slider-arrow {
-        width: 40px;
-        height: 40px;
-        min-width: 40px;
-        min-height: 40px;
-    }
-
-    .video-caption {
-        font-size: 1rem;
-    }
-
-    .video-counter {
-        font-size: 0.85rem;
-    }
-
-  
-}
-
-
-/* For smaller mobile devices */
-@media (max-width: 480px) {
-    /* Add your existing 480px styles here */
-    
-    /* IMPORTANT: Add these hamburger styles */
-    
-     nav ul {
-        max-width: 100%; /* Full width on small screens */
-        padding: 1.5rem;
-    }
-    
-    
-}
-
-/* Small Mobile (max-width: 480px) */
-@media (max-width: 480px) {
-    .alumni-card {
-        min-width: calc(100vw - 100px);
-        max-width: calc(100vw - 100px);
-        width: calc(100vw - 100px);
-        margin: 0 50px;
-        padding: 1.5rem 0.8rem;
-    }
-
-    .alumni-slider-wrapper .slider-arrow {
-        width: 40px;
-        height: 40px;
-        min-width: 40px;
-    }
-
-    .alumni-slider-wrapper .slider-arrow-left {
-        left: 5px;
-    }
-
-    .alumni-slider-wrapper .slider-arrow-right {
-        right: 5px;
-    }
-
-    .alumni-image {
-        width: 90px;
-        height: 90px;
-        border: 3px solid var(--maroon-primary);
-    }
-
-    .alumni-name {
-        font-size: 1.2rem;
-    }
-
-    .alumni-designation {
-        font-size: 0.9rem;
-    }
-
-    .alumni-quote {
-        font-size: 0.8rem;
-        padding: 0.6rem 0;
-    }
-}
-
-
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="nav-container">
-            <div class="logo-section">
-                <img src="hcclogo.jpg" alt="HCC Logo" style="width: 50px; height: 50px; border-radius: 8px;">
-                <div>
-                    <div class="school-name">HCC High School</div>
-                    <div class="school-location">Solapur</div>
-                </div>
-            </div>
-            
-            <nav>
-                <ul id="navMenu">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="staff.html">Staff</a></li>
-                    <li><a href="admission.html">Admission</a></li>
-                    <li><a href="infrastructure.html">Infrastructure</a></li>
-                    <li><a href="gallery.html">Image Gallery</a></li>
-                    <li><a href="achievements.html">Achievements</a></li>
-                    <li><a href="notices.html">Notices</a></li>
-                </ul>
-            </nav>
+    <h1>Barcode Generator & Scanner</h1>
+    <p class="subtitle">Create and scan barcodes with item details</p>
 
-            <div class="hamburger" id="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+    <!-- Generator Section -->
+    <div class="section">
+        <div class="section-title">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="16" rx="2"/>
+                <line x1="7" y1="8" x2="7" y2="16"/>
+                <line x1="11" y1="8" x2="11" y2="16"/>
+                <line x1="15" y1="8" x2="15" y2="16"/>
+                <line x1="17" y1="8" x2="17" y2="16"/>
+            </svg>
+            Generate Barcode
         </div>
-    </header>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <div class="hero-text">
-                <h1>Welcome to HCC High School</h1>
-                <p>Empowering minds, shaping futures. Excellence in education since 1990.</p>
-                <div class="cta-buttons">
-                    <a href="admission.html" class="btn btn-primary">Admissions Open 2026-27</a>
-                    <a href="about.html" class="btn btn-secondary">About Us</a>
-                </div>
-            </div>
-            <div class="hero-image">
-                <img src="hcc.jpg" 
-                     alt="HCC High School Building" 
-                     style="width: 100%; 
-                            height: 500px; 
-                            object-fit: cover; 
-                            object-position: center;
-                            border-radius: 16px; 
-                            box-shadow: 0 20px 60px rgba(34, 7, 7, 0.15);">
-            </div>
+        <div class="form-group">
+            <label for="itemName">Item Name</label>
+            <input type="text" id="itemName" placeholder="e.g., Wireless Mouse">
         </div>
-    </section>
 
-    <!-- Video Slider Section -->
-   <!-- Video Slider Section -->
-<!-- Video Slider Section --><!-- Video Slider Section -->
-<section class="video-slider-section">
-    <div class="video-slider-container">
-        <h2 class="section-title">School Life in Action</h2>
-        
-        <!-- Video Filter/Selector - Dropdown -->
-        <div class="video-filter-container">
-            <label for="videoSelect" class="filter-label">
-                <svg class="filter-label-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M18 3V5H16V3H8V5H6V3H4V21H6V19H8V21H16V19H18V21H20V3H18ZM12 15L8.5 12L12 9V15Z"/>
-                </svg>
-                Select Video:
-            </label>
-            <select id="videoSelect" class="video-select">
-                <!-- Options dynamically populated by JavaScript -->
-            </select>
+        <div class="form-group">
+            <label for="itemNumber">Item Number</label>
+            <input type="text" id="itemNumber" placeholder="e.g., 1234567890123" maxlength="13">
         </div>
-        
-        <!-- Video Player with Arrows -->
-        <div class="video-slider-wrapper">
-            <button class="slider-arrow slider-arrow-left" id="prevVideo" aria-label="Previous video">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M15.41 7.41L14 6L8 12L14 18L15.41 16.59L10.83 12L15.41 7.41Z"/>
-                </svg>
-            </button>
 
-            <div class="video-display">
-                <div class="video-container">
-                    <video id="mainVideo" controls playsinline>
-                        <source src="" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-                <div class="video-caption" id="videoCaption">Loading...</div>
-                <div class="video-counter" id="videoCounter">0 / 0</div>
-            </div>
+        <div class="form-group">
+            <label for="itemPrice">Price ($)</label>
+            <input type="number" id="itemPrice" placeholder="e.g., 29.99" step="0.01" min="0">
+        </div>
 
-            <button class="slider-arrow slider-arrow-right" id="nextVideo" aria-label="Next video">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8.59 16.59L10 18L16 12L10 6L8.59 7.41L13.17 12L8.59 16.59Z"/>
-                </svg>
-            </button>
+        <button class="btn" onclick="generateBarcode()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="16 16 12 12 8 16"/>
+                <line x1="12" y1="12" x2="12" y2="21"/>
+                <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+            </svg>
+            Generate Barcode
+        </button>
+
+        <div id="barcodePreview" class="barcode-preview">
+            <p class="empty-state">Your barcode will appear here</p>
         </div>
     </div>
-</section>
 
+    <!-- Scanner Section -->
+    <div class="section">
+        <div class="section-title">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+            </svg>
+            Scan Barcode
+        </div>
 
-    <!-- Alumni Section -->
-    <!-- Alumni Section -->
-<section class="alumni-section">
-    <div class="alumni-container">
-        <h2 class="section-title">Our Distinguished Alumni</h2>
-        <p class="section-subtitle">Proud graduates making an impact across the world</p>
-        
-        <div class="alumni-slider-wrapper">
-            <button class="slider-arrow slider-arrow-left" id="prevAlumni" aria-label="Previous alumni">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M15.41 7.41L14 6L8 12L14 18L15.41 16.59L10.83 12L15.41 7.41Z"/>
+        <div class="button-group">
+            <button class="btn" onclick="startCamera()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                    <circle cx="12" cy="13" r="4"/>
                 </svg>
+                Open Camera
             </button>
 
-            <div class="alumni-slider-track" id="alumniSliderTrack">
-                <!-- Alumni 1 -->
-                <div class="alumni-card">
-                    <img src="https://YOUR_SUPABASE_URL/storage/v1/object/public/alumni/alumni1.jpg" 
-                         alt="Dr. Rajesh Kumar" class="alumni-image">
-                    <h3 class="alumni-name">Dr. Rajesh Kumar</h3>
-                    <p class="alumni-designation">Chief Surgeon, Apollo Hospital</p>
-                    <p class="alumni-quote">HCC shaped my foundation in science and values that guide my medical practice today.</p>
-                </div>
-
-                <!-- Alumni 2 -->
-                <div class="alumni-card">
-                    <img src="https://YOUR_SUPABASE_URL/storage/v1/object/public/alumni/alumni2.jpg" 
-                         alt="Priya Sharma" class="alumni-image">
-                    <h3 class="alumni-name">Priya Sharma</h3>
-                    <p class="alumni-designation">Software Engineer, Google</p>
-                    <p class="alumni-quote">The teachers at HCC inspired me to pursue technology and innovation fearlessly.</p>
-                </div>
-
-                <!-- Alumni 3 -->
-                <div class="alumni-card">
-                    <img src="https://YOUR_SUPABASE_URL/storage/v1/object/public/alumni/alumni3.jpg" 
-                         alt="Amit Deshmukh" class="alumni-image">
-                    <h3 class="alumni-name">Amit Deshmukh</h3>
-                    <p class="alumni-designation">IAS Officer, Maharashtra Cadre</p>
-                    <p class="alumni-quote">HCC instilled discipline, leadership, and a sense of social responsibility in me.</p>
-                </div>
-
-                <!-- Alumni 4 -->
-                <div class="alumni-card">
-                    <img src="https://YOUR_SUPABASE_URL/storage/v1/object/public/alumni/alumni4.jpg" 
-                         alt="Sneha Patil" class="alumni-image">
-                    <h3 class="alumni-name">Sneha Patil</h3>
-                    <p class="alumni-designation">Entrepreneur, Founder of EduTech Solutions</p>
-                    <p class="alumni-quote">My journey from HCC classroom to running my own startup has been incredible.</p>
-                </div>
-
-                <!-- Alumni 5 -->
-                <div class="alumni-card">
-                    <img src="https://YOUR_SUPABASE_URL/storage/v1/object/public/alumni/alumni5.jpg" 
-                         alt="Vikram Joshi" class="alumni-image">
-                    <h3 class="alumni-name">Vikram Joshi</h3>
-                    <p class="alumni-designation">Chartered Accountant, KPMG Partner</p>
-                    <p class="alumni-quote">The strong mathematics foundation from HCC led me to excel in finance and accounting.</p>
-                </div>
-
-                <!-- Alumni 6 -->
-                <div class="alumni-card">
-                    <img src="https://YOUR_SUPABASE_URL/storage/v1/object/public/alumni/alumni6.jpg" 
-                         alt="Anjali Mehta" class="alumni-image">
-                    <h3 class="alumni-name">Anjali Mehta</h3>
-                    <p class="alumni-designation">Architect, Award-Winning Designer</p>
-                    <p class="alumni-quote">HCC nurtured my creativity and gave me confidence to pursue architecture.</p>
-                </div>
-
-                <!-- Alumni 7 -->
-                <div class="alumni-card">
-                    <img src="https://YOUR_SUPABASE_URL/storage/v1/object/public/alumni/alumni7.jpg" 
-                         alt="Rahul Pawar" class="alumni-image">
-                    <h3 class="alumni-name">Rahul Pawar</h3>
-                    <p class="alumni-designation">Professional Cricketer, Mumbai Indians</p>
-                    <p class="alumni-quote">HCC's sports program and supportive teachers helped me balance academics and cricket.</p>
-                </div>
-
-                <!-- Alumni 8 -->
-                <div class="alumni-card">
-                    <img src="https://YOUR_SUPABASE_URL/storage/v1/object/public/alumni/alumni8.jpg" 
-                         alt="Kavita Reddy" class="alumni-image">
-                    <h3 class="alumni-name">Kavita Reddy</h3>
-                    <p class="alumni-designation">Research Scientist, ISRO</p>
-                    <p class="alumni-quote">HCC's science labs and inspiring teachers sparked my passion for space research.</p>
-                </div>
-
-                <!-- Alumni 9 -->
-                <div class="alumni-card">
-                    <img src="https://YOUR_SUPABASE_URL/storage/v1/object/public/alumni/alumni9.jpg" 
-                         alt="Sandeep Kulkarni" class="alumni-image">
-                    <h3 class="alumni-name">Sandeep Kulkarni</h3>
-                    <p class="alumni-designation">Film Director, National Award Winner</p>
-                    <p class="alumni-quote">The cultural activities at HCC shaped my artistic vision and storytelling skills.</p>
-                </div>
-
-                <!-- Alumni 10 -->
-                <div class="alumni-card">
-                    <img src="https://YOUR_SUPABASE_URL/storage/v1/object/public/alumni/alumni10.jpg" 
-                         alt="Meera Singh" class="alumni-image">
-                    <h3 class="alumni-name">Meera Singh</h3>
-                    <p class="alumni-designation">Banking Executive, HDFC Bank VP</p>
-                    <p class="alumni-quote">HCC taught me integrity and excellence that define my career in banking today.</p>
-                </div>
-            </div>
-
-            <button class="slider-arrow slider-arrow-right" id="nextAlumni" aria-label="Next alumni">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8.59 16.59L10 18L16 12L10 6L8.59 7.41L13.17 12L8.59 16.59Z"/>
+            <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
                 </svg>
+                Upload Image
+            </button>
+
+            <button class="btn btn-secondary hidden" id="stopBtn" onclick="stopCamera()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="6" y="6" width="12" height="12"/>
+                </svg>
+                Stop Camera
             </button>
         </div>
 
-        <div class="alumni-dots" id="alumniDots"></div>
+        <input type="file" id="fileInput" accept="image/*" onchange="scanFromFile(event)">
+
+        <div class="scanner-container">
+            <div id="reader" class="hidden"></div>
+        </div>
+
+        <div id="scanResult" class="scan-result hidden">
+            <div class="scan-result-title">Scan Result:</div>
+            <div id="scanResultData" class="scan-result-data"></div>
+        </div>
     </div>
-    
-</section>
 
-    <!-- Quick Highlights -->
-    <section class="highlights">
-        <div class="highlights-container">
-            <h2 class="section-title">Why Choose HCC High School</h2>
-            <div class="highlights-grid">
-                <div class="highlight-card">
-                    <div class="highlight-icon">
-                        <svg class="svg-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/>
-                        </svg>
-                    </div>
-                    <h3>Expert Faculty</h3>
-                    <p>Highly qualified and experienced teachers dedicated to student success and holistic development.</p>
-                </div>
-
-                <div class="highlight-card">
-                    <div class="highlight-icon">
-                        <svg class="svg-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2L2 7V11C2 16.55 6.84 21.74 12 23C17.16 21.74 22 16.55 22 11V7L12 2ZM12 11H20C19.91 15.13 16.88 18.78 12 19.93V13H4V8.3L12 4.19V11Z"/>
-                        </svg>
-                    </div>
-                    <h3>Modern Infrastructure</h3>
-                    <p>State-of-the-art classrooms, laboratories, library, and sports facilities for comprehensive learning.</p>
-                </div>
-
-                <div class="highlight-card">
-                    <div class="highlight-icon">
-                        <svg class="svg-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z"/>
-                        </svg>
-                    </div>
-                    <h3>Academic Excellence</h3>
-                    <p>Consistent track record of outstanding results and successful alumni across diverse fields.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Gallery Preview -->
-    <!-- <section class="gallery-preview">
-        <div class="gallery-container">
-            <h2 class="section-title">Campus Glimpses</h2>
-            <div class="gallery-grid">
-                <div class="gallery-item"></div>
-                <div class="gallery-item"></div>
-                <div class="gallery-item"></div>
-                <div class="gallery-item"></div>
-            </div>
-            <div class="view-all">
-                <a href="gallery.html" class="btn btn-primary">View Full Gallery</a>
-            </div>
-        </div>
-    </section> -->
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-section">
-                <h3>HCC High School</h3>
-                <p>Excellence in education since 1990</p>
-                <p>Shaping young minds for a brighter tomorrow</p>
-            </div>
-
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <a href="about.html">About Us</a>
-                <a href="admission.html">Admissions</a>
-                <a href="staff.html">Faculty</a>
-                <a href="achievements.html">Achievements</a>
-            </div>
-
-            <div class="footer-section">
-                <h3>Contact Information</h3>
-                <div class="contact-item">
-                    <div class="contact-icon"></div>
-                    <span>123 School Road, Solapur, Maharashtra</span>
-                </div>
-                <div class="contact-item">
-                    <div class="contact-icon"></div>
-                    <span>+91 1234567890</span>
-                </div>
-                <div class="contact-item">
-                    <div class="contact-icon"></div>
-                    <span>info@hccschool.edu.in</span>
-                </div>
-            </div>
-
-            <div class="footer-section">
-                <h3>Notifications</h3>
-                <a href="javascript:void(0)" onclick="showNotificationSettings()">🔔 Notification Settings</a>
-                <p style="font-size: 0.85rem; color: var(--neutral-light); margin-top: 0.5rem;">
-                    Manage your notification preferences
-                </p>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <p>&copy; 2026 HCC High School, Solapur. All rights reserved.</p>
-        </div>
-    </footer>
     <script>
-        if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
-            window.location.reload();
-        }
-    </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-        <script>
-    // ============================================
-    // SUPABASE CONFIGURATION
-    // ============================================
-    const SUPABASE_URL = 'https://tqpjyqrlawhjuzugosyh.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcGp5cXJsYXdoanV6dWdvc3loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxOTI4NzQsImV4cCI6MjA4NTc2ODg3NH0.Qsajz9iar_Qu0N7UHTm5ltjnUtVzNSpapJf1xnqGJLQ';
+        let html5QrCode = null;
+        let currentBarcodeData = null;
 
-    const { createClient } = supabase;
-    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        function generateBarcode() {
+            const itemName = document.getElementById('itemName').value.trim();
+            const itemNumber = document.getElementById('itemNumber').value.trim();
+            const itemPrice = document.getElementById('itemPrice').value.trim();
 
-    // Mobile Menu Toggle
-      const hamburger = document.getElementById('hamburger');
-    const navMenu = document.getElementById('navMenu');
-
-    hamburger.addEventListener('click', () => {
-        hamburger.classList.toggle('active');
-        navMenu.classList.toggle('active');
-    });
-
-    // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
-            hamburger.classList.remove('active');
-            navMenu.classList.remove('active');
-        }
-    });
-
-
-    // Header hide on scroll down, show on scroll up
-    let lastScroll = 0;
-    const header = document.querySelector('header');
-
-    window.addEventListener('scroll', () => {
-        const currentScroll = window.pageYOffset;
-        
-        if (currentScroll <= 0) {
-            header.style.transform = 'translateY(0)';
-            return;
-        }
-        
-        if (currentScroll > lastScroll && currentScroll > 80) {
-            header.style.transform = 'translateY(-100%)';
-        } else {
-            header.style.transform = 'translateY(0)';
-        }
-        
-        lastScroll = currentScroll;
-    });
-
-    // Smooth scroll for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-                hamburger.classList.remove('active');
-                navMenu.classList.remove('active');
+            if (!itemName || !itemNumber || !itemPrice) {
+                alert('Please fill in all fields');
+                return;
             }
-        });
-    });
 
-    // ============================================
-    // PUSH NOTIFICATION SETUP
-    // ============================================
-    const VAPID_PUBLIC_KEY = 'BMjWrT4Mo49qpPCXXx_qWNS8VJfVNE5-laD52FT-usDylWdolRBv4qU1EpzdwK-PUAqj2JKB4ZAFvfABhZxMyKs';
+            // Validate item number (should be numeric)
+            if (!/^\d+$/.test(itemNumber)) {
+                alert('Item number should contain only digits');
+                return;
+            }
 
-    // Convert VAPID key
-    function urlBase64ToUint8Array(base64String) {
-        const padding = '='.repeat((4 - base64String.length % 4) % 4);
-        const base64 = (base64String + padding)
-            .replace(/\-/g, '+')
-            .replace(/_/g, '/');
+            // Store current barcode data
+            currentBarcodeData = {
+                name: itemName,
+                number: itemNumber,
+                price: itemPrice
+            };
 
-        const rawData = window.atob(base64);
-        const outputArray = new Uint8Array(rawData.length);
-
-        for (let i = 0; i < rawData.length; ++i) {
-            outputArray[i] = rawData.charCodeAt(i);
-        }
-        return outputArray;
-    }
-
-    // Subscribe to push notifications
-    async function subscribeToPush() {
-        try {
-            const registration = await navigator.serviceWorker.ready;
+            const preview = document.getElementById('barcodePreview');
+            preview.classList.add('has-barcode');
             
-            let subscription = await registration.pushManager.getSubscription();
+            // Clear previous content
+            preview.innerHTML = '';
 
-            if (!subscription) {
-                subscription = await registration.pushManager.subscribe({
-                    userVisibleOnly: true,
-                    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+            // Create canvas for barcode
+            const canvas = document.createElement('canvas');
+            canvas.id = 'barcodeCanvas';
+            preview.appendChild(canvas);
+
+            // Generate barcode using JsBarcode
+            try {
+                JsBarcode(canvas, itemNumber, {
+                    format: "CODE128",
+                    width: 2,
+                    height: 100,
+                    displayValue: true,
+                    fontSize: 14,
+                    margin: 10
                 });
+
+                // Add item information below barcode
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'barcode-info';
+                infoDiv.innerHTML = `
+                    <div class="barcode-info-row">
+                        <span class="barcode-info-label">Item:</span>
+                        <span>${itemName}</span>
+                    </div>
+                    <div class="barcode-info-row">
+                        <span class="barcode-info-label">Number:</span>
+                        <span>${itemNumber}</span>
+                    </div>
+                    <div class="barcode-info-row">
+                        <span class="barcode-info-label">Price:</span>
+                        <span>$${parseFloat(itemPrice).toFixed(2)}</span>
+                    </div>
+                `;
+                preview.appendChild(infoDiv);
+
+                // Add download button
+                const downloadBtn = document.createElement('button');
+                downloadBtn.className = 'btn';
+                downloadBtn.style.marginTop = '20px';
+                downloadBtn.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Download Barcode
+                `;
+                downloadBtn.onclick = downloadBarcode;
+                preview.appendChild(downloadBtn);
+
+            } catch (error) {
+                alert('Error generating barcode: ' + error.message);
             }
-
-            await saveSubscriptionToDatabase(subscription);
-            console.log('✅ Push subscription saved');
-            return subscription;
-
-        } catch (error) {
-            console.error('❌ Failed to subscribe to push:', error);
-            return null;
-        }
-    }
-
-    // Save subscription to Supabase
-    async function saveSubscriptionToDatabase(subscription) {
-        const subscriptionJson = subscription.toJSON();
-        
-        const deviceType = /Mobile|Android|iPhone/i.test(navigator.userAgent) 
-            ? 'mobile' 
-            : 'desktop';
-
-        const { data, error } = await supabaseClient
-            .from('push_subscriptions')
-            .upsert({
-                endpoint: subscription.endpoint,
-                p256dh: subscriptionJson.keys.p256dh,
-                auth: subscriptionJson.keys.auth,
-                user_agent: navigator.userAgent,
-                device_type: deviceType,
-                is_active: true,
-                last_used: new Date().toISOString()
-            }, {
-                onConflict: 'endpoint'
-            });
-
-        if (error) {
-            console.error('❌ Failed to save subscription:', error);
-        }
-    }
-
-    // Request notification permission
-    async function requestNotificationPermission() {
-        if (!('Notification' in window)) {
-            console.log('❌ Notifications not supported');
-            return false;
         }
 
-        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-            console.log('❌ Push notifications not supported');
-            return false;
-        }
+        function downloadBarcode() {
+            const canvas = document.getElementById('barcodeCanvas');
+            if (!canvas) return;
 
-        const permission = await Notification.requestPermission();
-        
-        if (permission === 'granted') {
-            console.log('✅ Notification permission granted');
-            localStorage.setItem('notifications_enabled', 'true');
-            await subscribeToPush();
-            return true;
-        } else {
-            console.log('❌ Notification permission denied');
-            localStorage.setItem('notifications_enabled', 'false');
-            return false;
-        }
-    }
-
-    // Unsubscribe from push notifications
-    async function unsubscribeFromPush() {
-        try {
-            const registration = await navigator.serviceWorker.ready;
-            const subscription = await registration.pushManager.getSubscription();
-
-            if (subscription) {
-                await subscription.unsubscribe();
-                
-                await supabaseClient
-                    .from('push_subscriptions')
-                    .update({ is_active: false })
-                    .eq('endpoint', subscription.endpoint);
-                
-                console.log('✅ Unsubscribed from push notifications');
-            }
-
-            localStorage.setItem('notifications_enabled', 'false');
-        } catch (error) {
-            console.error('❌ Failed to unsubscribe:', error);
-        }
-    }
-
-    // Show notification settings modal
-    function showNotificationSettings() {
-        const modal = document.createElement('div');
-        modal.id = 'notificationSettingsModal';
-        modal.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(34, 7, 7, 0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            animation: fadeIn 0.3s ease;
-        `;
-
-        const isEnabled = localStorage.getItem('notifications_enabled') === 'true';
-        const blogsEnabled = localStorage.getItem('notify_blogs') !== 'false';
-        const achievementsEnabled = localStorage.getItem('notify_achievements') !== 'false';
-
-        modal.innerHTML = `
-            <div style="
-                background: white;
-                padding: 2rem;
-                border-radius: 16px;
-                max-width: 450px;
-                width: 90%;
-                animation: slideUp 0.4s ease;
-            ">
-                <h2 style="color: #220707; margin-bottom: 1.5rem; font-size: 1.6rem;">Notification Settings</h2>
-                
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: #F9F3ED; border-radius: 8px; cursor: pointer; margin-bottom: 0.5rem;">
-                        <span style="color: #220707; font-weight: 600;">Enable Notifications</span>
-                        <input type="checkbox" id="enableNotifications" ${isEnabled ? 'checked' : ''} style="width: 20px; height: 20px; cursor: pointer;">
-                    </label>
-                    <p style="color: #AC9185; font-size: 0.85rem; padding-left: 1rem;">Receive updates about school notices and achievements</p>
-                </div>
-
-                <div style="margin-bottom: 1rem; opacity: ${isEnabled ? '1' : '0.5'};">
-                    <label style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: #F9F3ED; border-radius: 8px; cursor: pointer; margin-bottom: 0.5rem;">
-                        <div>
-                            <div style="color: #220707; font-weight: 600;">📢 Notices & Updates</div>
-                            <div style="color: #AC9185; font-size: 0.85rem;">Get notified about new school notices</div>
-                        </div>
-                        <input type="checkbox" id="notifyBlogs" ${blogsEnabled ? 'checked' : ''} ${!isEnabled ? 'disabled' : ''} style="width: 20px; height: 20px; cursor: pointer;">
-                    </label>
-
-                    <label style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: #F9F3ED; border-radius: 8px; cursor: pointer;">
-                        <div>
-                            <div style="color: #220707; font-weight: 600;">🏆 Achievements</div>
-                            <div style="color: #AC9185; font-size: 0.85rem;">Get notified about new achievements</div>
-                        </div>
-                        <input type="checkbox" id="notifyAchievements" ${achievementsEnabled ? 'checked' : ''} ${!isEnabled ? 'disabled' : ''} style="width: 20px; height: 20px; cursor: pointer;">
-                    </label>
-                </div>
-
-                <button id="saveSettings" style="
-                    padding: 1rem 2rem;
-                    background: #531C22;
-                    color: white;
-                    border: none;
-                    border-radius: 8px;
-                    font-size: 1rem;
-                    font-weight: 600;
-                    cursor: pointer;
-                    width: 100%;
-                    margin-bottom: 0.5rem;
-                ">Save Settings</button>
-                
-                <button id="closeSettings" style="
-                    padding: 1rem 2rem;
-                    background: transparent;
-                    color: #531C22;
-                    border: 2px solid #E7D8CA;
-                    border-radius: 8px;
-                    font-size: 1rem;
-                    font-weight: 600;
-                    cursor: pointer;
-                    width: 100%;
-                ">Close</button>
-            </div>
-        `;
-
-        document.body.appendChild(modal);
-
-        // Toggle dependent checkboxes
-        document.getElementById('enableNotifications').addEventListener('change', (e) => {
-            const isChecked = e.target.checked;
-            document.getElementById('notifyBlogs').disabled = !isChecked;
-            document.getElementById('notifyAchievements').disabled = !isChecked;
-            document.getElementById('notifyBlogs').parentElement.parentElement.style.opacity = isChecked ? '1' : '0.5';
-        });
-
-        // Save settings
-        document.getElementById('saveSettings').addEventListener('click', async () => {
-            const enableNotifications = document.getElementById('enableNotifications').checked;
-            const notifyBlogs = document.getElementById('notifyBlogs').checked;
-            const notifyAchievements = document.getElementById('notifyAchievements').checked;
-
-            if (enableNotifications) {
-                const granted = await requestNotificationPermission();
-                if (granted) {
-                    localStorage.setItem('notify_blogs', notifyBlogs);
-                    localStorage.setItem('notify_achievements', notifyAchievements);
-                    alert('✅ Notification settings saved!');
-                }
-            } else {
-                await unsubscribeFromPush();
-                alert('✅ Notifications disabled');
-            }
-
-            modal.remove();
-        });
-
-        // Close button
-        document.getElementById('closeSettings').addEventListener('click', () => {
-            modal.remove();
-        });
-    }
-
-    // Show notification permission prompt
-    function showNotificationPrompt() {
-        // Don't show if already answered
-        if (localStorage.getItem('notification_prompt_shown') === 'true') {
-            return;
-        }
-
-        // Don't show if permission already granted or denied
-        if (Notification.permission !== 'default') {
-            localStorage.setItem('notification_prompt_shown', 'true');
-            return;
-        }
-
-        const modal = document.createElement('div');
-        modal.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(34, 7, 7, 0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            animation: fadeIn 0.3s ease;
-        `;
-
-        modal.innerHTML = `
-            <div style="
-                background: white;
-                padding: 2rem;
-                border-radius: 16px;
-                max-width: 400px;
-                width: 90%;
-                text-align: center;
-                animation: slideUp 0.4s ease;
-            ">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">🔔</div>
-                <h2 style="color: #220707; margin-bottom: 1rem; font-size: 1.5rem;">Stay Updated!</h2>
-                <p style="color: #AC9185; margin-bottom: 2rem; line-height: 1.6;">
-                    Enable notifications to receive important school notices, announcements, and achievement updates instantly - even when the app is closed.
-                </p>
-                <button id="allowNotifications" style="
-                    padding: 1rem 2rem;
-                    background: #531C22;
-                    color: white;
-                    border: none;
-                    border-radius: 8px;
-                    font-size: 1rem;
-                    font-weight: 600;
-                    cursor: pointer;
-                    width: 100%;
-                    margin-bottom: 0.5rem;
-                ">Allow Notifications</button>
-                <button id="notNow" style="
-                    padding: 1rem 2rem;
-                    background: transparent;
-                    color: #531C22;
-                    border: 2px solid #E7D8CA;
-                    border-radius: 8px;
-                    font-size: 1rem;
-                    font-weight: 600;
-                    cursor: pointer;
-                    width: 100%;
-                ">Not Now</button>
-                <button id="customizeNotifications" style="
-                    padding: 0.5rem;
-                    background: transparent;
-                    color: #AC9185;
-                    border: none;
-                    font-size: 0.9rem;
-                    cursor: pointer;
-                    width: 100%;
-                    margin-top: 0.5rem;
-                    text-decoration: underline;
-                ">Customize Settings</button>
-            </div>
-        `;
-
-        document.body.appendChild(modal);
-
-        // Allow button
-        document.getElementById('allowNotifications').addEventListener('click', async () => {
-            modal.remove();
-            localStorage.setItem('notification_prompt_shown', 'true');
-            await requestNotificationPermission();
-        });
-
-        // Not now button
-        document.getElementById('notNow').addEventListener('click', () => {
-            modal.remove();
-            localStorage.setItem('notification_prompt_shown', 'true');
-        });
-
-        // Customize button
-        document.getElementById('customizeNotifications').addEventListener('click', () => {
-            modal.remove();
-            localStorage.setItem('notification_prompt_shown', 'true');
-            showNotificationSettings();
-        });
-    }
-
-
-
-
-
-
-
-
-// Video Data (Hardcoded) - SINGLE SOURCE OF TRUTH
-const videos = [
-    {
-        url: 'https://tqpjyqrlawhjuzugosyh.supabase.co/storage/v1/object/public/site_videos/Hindustani%20Covenant%20Church%20High%20School%20and%20Junior%20College_%20Solapur._10th%20August%202014__hcc.%20_artcompetition_As%20we%20celebrate%20our%2025th%20Silver%20Jubilee%20year_%20we%20(.mp4',
-        caption: 'Art Competition',
-        icon: 'sports'
-    },
-    {
-        url: 'https://tqpjyqrlawhjuzugosyh.supabase.co/storage/v1/object/public/site_videos/DRhAaD9kVbA(MP4).mp4',
-        caption: 'Grand Parents Day Celebration',
-        icon: 'science'
-    },
-    {
-        url: 'https://tqpjyqrlawhjuzugosyh.supabase.co/storage/v1/object/public/site_videos/_HCC%20_preprimary%20_firstdayofschool%20__23rd%20June%202025_First%20day%20of%20our%20toddlers.%20_Our%20Secretary%20Dr.%20MRS.%20Mackenzie%20ma_am%20was%20the%20chief%20guest.__Tiny%20shoes%20and%20(.mp4',
-        caption: 'First Day Pre-Primary',
-        icon: 'music'
-    },
-    {
-        url: 'https://tqpjyqrlawhjuzugosyh.supabase.co/storage/v1/object/public/site_videos/_hcc%20_rainyseason%20_rainydayfun%20_rainydayvibes%20_preprimary%20_rainactivity%20.%20%2025th%20July%202024_Pre-primary%20section._Rainy%20days%20can%20be%20a%20wonderful%20opportunity%20to%20(.mp4',
-        caption: 'Rainy Day',
-        icon: 'graduation'
-    },
-    {
-        url: 'https://tqpjyqrlawhjuzugosyh.supabase.co/storage/v1/object/public/site_videos/DLH-DrKxXYa(MP4).mp4',
-        caption: 'International Yoga Day',
-        icon: 'campus'
-    }
-];
-
-let currentVideoIndex = 0;
-let currentAlumniIndex = 0;
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-   
-    initializeVideoSlider();
-    initializeAlumniSlider();
-});
-
-
-// KEEP THE EXISTING "Close menu when clicking outside" CODE
-
-
-// Hamburger Menu Toggle
-
-// Initialize Video Slider with Dropdown Filter
-function initializeVideoSlider() {
-    const mainVideo = document.getElementById('mainVideo');
-    const videoCaption = document.getElementById('videoCaption');
-    const videoCounter = document.getElementById('videoCounter');
-    const prevBtn = document.getElementById('prevVideo');
-    const nextBtn = document.getElementById('nextVideo');
-    const videoContainer = document.querySelector('.video-container');
-    const videoSelect = document.getElementById('videoSelect');
-    
-    // Populate dropdown from videos array
-    populateVideoDropdown();
-    
-    // Load first video
-    loadVideo(0);
-    
-    // Dropdown change event
-    if (videoSelect) {
-        videoSelect.addEventListener('change', (e) => {
-            currentVideoIndex = parseInt(e.target.value);
-            loadVideo(currentVideoIndex);
-        });
-    }
-    
-    // Previous button
-    prevBtn.addEventListener('click', () => {
-        currentVideoIndex = (currentVideoIndex - 1 + videos.length) % videos.length;
-        loadVideo(currentVideoIndex);
-        updateVideoSelect();
-    });
-    
-    // Next button
-    nextBtn.addEventListener('click', () => {
-        currentVideoIndex = (currentVideoIndex + 1) % videos.length;
-        loadVideo(currentVideoIndex);
-        updateVideoSelect();
-    });
-    
-    // Touch/Swipe Support for Video
-    let videoTouchStartX = 0;
-    let videoTouchEndX = 0;
-    let videoTouchStartY = 0;
-    let videoTouchEndY = 0;
-    
-    videoContainer.addEventListener('touchstart', (e) => {
-        videoTouchStartX = e.changedTouches[0].screenX;
-        videoTouchStartY = e.changedTouches[0].screenY;
-    }, { passive: true });
-    
-    videoContainer.addEventListener('touchend', (e) => {
-        videoTouchEndX = e.changedTouches[0].screenX;
-        videoTouchEndY = e.changedTouches[0].screenY;
-        handleVideoSwipe();
-    }, { passive: true });
-    
-    function handleVideoSwipe() {
-        const swipeThreshold = 50;
-        const horizontalDistance = Math.abs(videoTouchEndX - videoTouchStartX);
-        const verticalDistance = Math.abs(videoTouchEndY - videoTouchStartY);
-        
-        // Only trigger if horizontal swipe is more significant than vertical
-        if (horizontalDistance > verticalDistance && horizontalDistance > swipeThreshold) {
-            if (videoTouchEndX < videoTouchStartX) {
-                // Swiped left - next video
-                currentVideoIndex = (currentVideoIndex + 1) % videos.length;
-                loadVideo(currentVideoIndex);
-                updateVideoSelect();
-            }
+            // Create a new canvas with white background and item info
+            const exportCanvas = document.createElement('canvas');
+            const ctx = exportCanvas.getContext('2d');
             
-            if (videoTouchEndX > videoTouchStartX) {
-                // Swiped right - previous video
-                currentVideoIndex = (currentVideoIndex - 1 + videos.length) % videos.length;
-                loadVideo(currentVideoIndex);
-                updateVideoSelect();
+            // Set canvas size
+            exportCanvas.width = canvas.width;
+            exportCanvas.height = canvas.height + 120;
+            
+            // Fill white background
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+            
+            // Draw barcode
+            ctx.drawImage(canvas, 0, 0);
+            
+            // Add text information
+            ctx.fillStyle = '#000000';
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'center';
+            
+            const centerX = exportCanvas.width / 2;
+            let textY = canvas.height + 30;
+            
+            ctx.fillText(`Item: ${currentBarcodeData.name}`, centerX, textY);
+            textY += 25;
+            ctx.fillText(`Number: ${currentBarcodeData.number}`, centerX, textY);
+            textY += 25;
+            ctx.fillText(`Price: $${parseFloat(currentBarcodeData.price).toFixed(2)}`, centerX, textY);
+            
+            // Download
+            const link = document.createElement('a');
+            link.download = `barcode-${currentBarcodeData.number}.png`;
+            link.href = exportCanvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function startCamera() {
+            const reader = document.getElementById('reader');
+            reader.classList.remove('hidden');
+            document.getElementById('stopBtn').classList.remove('hidden');
+
+            if (html5QrCode === null) {
+                html5QrCode = new Html5Qrcode("reader");
             }
-        }
-    }
-  // Remove auto-play - user must manually play video
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (!entry.isIntersecting) {
-            // Video scrolled out of view - pause it
-            mainVideo.pause();
-        }
-        // Removed auto-play when video enters viewport
-    });
-}, {
-    threshold: 0.5 // Trigger when 50% of video is visible
-});
 
-
-// Start observing the video container
-observer.observe(videoContainer);
-
-// Click anywhere on video to play/pause
-mainVideo.addEventListener('click', (e) => {
-    if (mainVideo.paused) {
-        mainVideo.play().catch(err => {
-            console.log('Play prevented:', err);
-        });
-    } else {
-        mainVideo.pause();
-    }
-});
-
-// Also pause when clicking outside arrows
-mainVideo.addEventListener('click', () => {
-    if (mainVideo.paused) {
-        mainVideo.play().catch(err => {
-            console.log('Play prevented:', err);
-        });
-    } else {
-        mainVideo.pause();
-    }
-});
-
-    
-    // Video ended - don't auto-play next
-    mainVideo.addEventListener('ended', () => {
-        mainVideo.controls = true;
-    });
-    
-    // Update dropdown selection
-    function updateVideoSelect() {
-        if (videoSelect) {
-            videoSelect.value = currentVideoIndex;
-        }
-    }
-}
-
-// Populate Video Dropdown from videos array
-function populateVideoDropdown() {
-    const videoSelect = document.getElementById('videoSelect');
-    
-    if (!videoSelect) return;
-    
-    // Clear existing options
-    videoSelect.innerHTML = '';
-    
-    // Add options from videos array
-    videos.forEach((video, index) => {
-        const option = document.createElement('option');
-        option.value = index;
-        option.textContent = video.caption;
-        videoSelect.appendChild(option);
-    });
-}
-
-// Load specific video
-function loadVideo(index) {
-    const mainVideo = document.getElementById('mainVideo');
-    const videoCaption = document.getElementById('videoCaption');
-    const videoCounter = document.getElementById('videoCounter');
-    
-    currentVideoIndex = index;
-    
-    // Pause current video before switching
-    mainVideo.pause();
-    
-    // Update video source from videos array
-    mainVideo.src = videos[index].url;
-    mainVideo.load();
-    
-    // Update caption and counter from videos array
-    videoCaption.textContent = videos[index].caption;
-    videoCounter.textContent = `${index + 1} / ${videos.length}`;
-    
-    // Auto-play new video (browser might block this)
-    mainVideo.play().catch(e => {
-        console.log('Autoplay prevented, user needs to click play');
-    });
-}
-
-// Initialize Alumni Slider with Touch Support
-function initializeAlumniSlider() {
-    const sliderTrack = document.getElementById('alumniSliderTrack');
-    const prevBtn = document.getElementById('prevAlumni');
-    const nextBtn = document.getElementById('nextAlumni');
-    const dotsContainer = document.getElementById('alumniDots');
-    const alumniCards = sliderTrack.querySelectorAll('.alumni-card');
-    const totalAlumni = alumniCards.length;
-    
-   if (!sliderTrack || !prevBtn || !nextBtn || !dotsContainer) {
-    console.log('Alumni slider elements not found');
-    return;
-}
-
-// Check if cards exist
-if (totalAlumni === 0) {
-    console.log('No alumni cards found');
-    return;
-}
-
-// FIXED: Always show 1 card at a time
-const cardsPerView = 1;
-let maxIndex = totalAlumni - 1; // 0 to 9 for 10 cards
-
-
-
-   // Create dots - one for each card
-function createDots() {
-    dotsContainer.innerHTML = '';
-    for (let i = 0; i < totalAlumni; i++) {
-        const dot = document.createElement('button');
-        dot.className = 'alumni-dot';
-        dot.setAttribute('aria-label', `Go to alumni ${i + 1}`);
-        if (i === 0) dot.classList.add('active');
-        dot.addEventListener('click', () => goToSlide(i));
-        dotsContainer.appendChild(dot);
-    }
-}
- 
-    createDots();
-    
-    // Update slider position
-    function updateSlider() {
-        const cardWidth = alumniCards[0].offsetWidth;
-        const gap = parseFloat(getComputedStyle(sliderTrack).gap) || 0;
-        const offset = -(currentAlumniIndex * (cardWidth + gap));
-        sliderTrack.style.transform = `translateX(${offset}px)`;
-        
-        // Update dots
-        const dots = dotsContainer.querySelectorAll('.alumni-dot');
-        dots.forEach((dot, index) => {
-            dot.classList.toggle('active', index === currentAlumniIndex);
-        });
-        
-        // Update button states
-        prevBtn.style.opacity = currentAlumniIndex === 0 ? '0.5' : '1';
-        prevBtn.style.cursor = currentAlumniIndex === 0 ? 'not-allowed' : 'pointer';
-        nextBtn.style.opacity = currentAlumniIndex === maxIndex ? '0.5' : '1';
-        nextBtn.style.cursor = currentAlumniIndex === maxIndex ? 'not-allowed' : 'pointer';
-    }
-    
-    // Go to specific slide
-    function goToSlide(index) {
-        currentAlumniIndex = Math.max(0, Math.min(index, maxIndex));
-        updateSlider();
-    }
-    
-   // Previous button
-prevBtn.addEventListener('click', () => {
-    if (currentAlumniIndex > 0) {
-        currentAlumniIndex--;
-        updateSlider();
-    }
-});
-
-// Next button
-nextBtn.addEventListener('click', () => {
-    if (currentAlumniIndex < maxIndex) {
-        currentAlumniIndex++;
-        updateSlider();
-    }
-});
-
-    
-    // Touch/Swipe Support for Alumni
-    let alumniTouchStartX = 0;
-    let alumniTouchEndX = 0;
-    let alumniTouchStartY = 0;
-    let alumniTouchEndY = 0;
-    
-    sliderTrack.addEventListener('touchstart', (e) => {
-        alumniTouchStartX = e.changedTouches[0].screenX;
-        alumniTouchStartY = e.changedTouches[0].screenY;
-    }, { passive: true });
-    
-    sliderTrack.addEventListener('touchend', (e) => {
-        alumniTouchEndX = e.changedTouches[0].screenX;
-        alumniTouchEndY = e.changedTouches[0].screenY;
-        handleAlumniSwipe();
-    }, { passive: true });
-    
-    function handleAlumniSwipe() {
-        const swipeThreshold = 50;
-        const horizontalDistance = Math.abs(alumniTouchEndX - alumniTouchStartX);
-        const verticalDistance = Math.abs(alumniTouchEndY - alumniTouchStartY);
-        
-        // Only trigger if horizontal swipe is more significant than vertical
-        if (horizontalDistance > verticalDistance && horizontalDistance > swipeThreshold) {
-         if (alumniTouchEndX < alumniTouchStartX && currentAlumniIndex < maxIndex) {
-    // Swiped left - next slide
-    currentAlumniIndex++;
-    updateSlider();
-}
-
-if (alumniTouchEndX > alumniTouchStartX && currentAlumniIndex > 0) {
-    // Swiped right - previous slide
-    currentAlumniIndex--;
-    updateSlider();
-}
-
-        }
-    }
-    
-    // Handle window resize
-   // Handle window resize
-let resizeTimeout;
-window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-        updateSlider();
-    }, 250);
-});
-
-    
-    // Initial update
-  // Initial update
-updateSlider();
-
-// DEBUG - Check card visibility
-console.log('=== ALUMNI SLIDER DEBUG ===');
-console.log('Total alumni cards:', totalAlumni);
-console.log('Max index:', maxIndex);
-console.log('Current index:', currentAlumniIndex);
-console.log('Track width:', sliderTrack.offsetWidth);
-if (alumniCards[0]) {
-    console.log('First card width:', alumniCards[0].offsetWidth);
-}
-alumniCards.forEach((card, index) => {
-    console.log(`Card ${index + 1}:`, {
-        width: card.offsetWidth,
-        display: window.getComputedStyle(card).display,
-        minWidth: window.getComputedStyle(card).minWidth
-    });
-});
-console.log('========================');
-
-}
-
-// Notification Settings
-function showNotificationSettings() {
-    alert('Notification settings will be available soon!');
-}
-
-// Smooth scroll for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
+            html5QrCode.start(
+                { facingMode: "environment" },
+                {
+                    fps: 10,
+                    qrbox: { width: 250, height: 150 }
+                },
+                onScanSuccess,
+                onScanError
+            ).catch(err => {
+                alert('Unable to start camera: ' + err);
+                stopCamera();
             });
         }
-    });
-});
 
-
-    // ============================================
-    // PWA INSTALL PROMPT
-    // ============================================
-    let deferredPrompt;
-    const MAX_PROMPTS_PER_DAY = 2;
-
-    // Initialize install stats
-    let installStats = JSON.parse(localStorage.getItem('pwaInstallStats') || '{}');
-    const today = new Date().toDateString();
-
-    if (installStats.lastPromptDate !== today) {
-        installStats.lastPromptDate = today;
-        installStats.promptCount = 0;
-        localStorage.setItem('pwaInstallStats', JSON.stringify(installStats));
-    }
-
-    // Show install prompt
-    function showInstallPrompt() {
-        const stats = JSON.parse(localStorage.getItem('pwaInstallStats') || '{}');
-
-        if (stats.promptCount >= MAX_PROMPTS_PER_DAY || !deferredPrompt) {
-            console.log('⏸️ Install prompt conditions not met');
-            return;
-        }
-
-        const modal = document.createElement('div');
-        modal.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(34, 7, 7, 0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            animation: fadeIn 0.3s ease;
-        `;
-
-        modal.innerHTML = `
-            <div style="
-                background: white;
-                padding: 2rem;
-                border-radius: 16px;
-                max-width: 400px;
-                width: 90%;
-                text-align: center;
-                animation: slideUp 0.4s ease;
-            ">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">📱</div>
-                <h2 style="color: #220707; margin-bottom: 1rem; font-size: 1.5rem;">Install HCC School App</h2>
-                <p style="color: #AC9185; margin-bottom: 2rem; line-height: 1.6;">
-                    Get quick access to admissions, gallery, and updates. Works offline!
-                </p>
-                <button id="installBtn" style="
-                    padding: 1rem 2rem;
-                    background: #531C22;
-                    color: white;
-                    border: none;
-                    border-radius: 8px;
-                    font-size: 1rem;
-                    font-weight: 600;
-                    cursor: pointer;
-                    width: 100%;
-                    margin-bottom: 0.5rem;
-                ">Install Now</button>
-                <button id="laterBtn" style="
-                    padding: 1rem 2rem;
-                    background: transparent;
-                    color: #531C22;
-                    border: 2px solid #E7D8CA;
-                    border-radius: 8px;
-                    font-size: 1rem;
-                    font-weight: 600;
-                    cursor: pointer;
-                    width: 100%;
-                ">Maybe Later</button>
-            </div>
-        `;
-
-        document.body.appendChild(modal);
-
-        document.getElementById('installBtn').addEventListener('click', async () => {
-            modal.remove();
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            
-            if (outcome === 'accepted') {
-                console.log('✅ User installed the app');
-                localStorage.setItem('pwaInstalled', 'true');
-                // Show notification prompt after install
-                setTimeout(() => showNotificationPrompt(), 2000);
+        function stopCamera() {
+            if (html5QrCode) {
+                html5QrCode.stop().then(() => {
+                    document.getElementById('reader').classList.add('hidden');
+                    document.getElementById('stopBtn').classList.add('hidden');
+                }).catch(err => {
+                    console.error('Error stopping camera:', err);
+                });
             }
-            
-            deferredPrompt = null;
-        });
-
-        document.getElementById('laterBtn').addEventListener('click', () => {
-            modal.remove();
-        });
-
-        // Update stats
-        const newStats = JSON.parse(localStorage.getItem('pwaInstallStats') || '{}');
-        newStats.promptCount = (newStats.promptCount || 0) + 1;
-        localStorage.setItem('pwaInstallStats', JSON.stringify(newStats));
-    }
-
-    // Capture install prompt event
-    window.addEventListener('beforeinstallprompt', (e) => {
-        console.log('📱 Install prompt event captured');
-        e.preventDefault();
-        deferredPrompt = e;
-
-        // Check if already installed
-        if (window.matchMedia('(display-mode: standalone)').matches) {
-            console.log('✅ App already installed');
-            return;
         }
 
-        const currentHour = new Date().getHours();
-        const stats = JSON.parse(localStorage.getItem('pwaInstallStats') || '{}');
+        function scanFromFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-        // First prompt: Before 3 PM (if not shown today)
-        if (currentHour < 15 && stats.promptCount === 0) {
-            console.log('📱 Scheduling first install prompt');
-            setTimeout(() => showInstallPrompt(), 5000);
-        }
-        
-        // Second prompt: After 3 PM (if only 1 shown today)
-        if (currentHour >= 15 && stats.promptCount === 1) {
-            console.log('📱 Scheduling second install prompt');
-            setTimeout(() => showInstallPrompt(), 10000);
-        }
-    });
+            if (html5QrCode === null) {
+                html5QrCode = new Html5Qrcode("reader");
+            }
 
-    // App installed event
-    window.addEventListener('appinstalled', () => {
-        console.log('✅ PWA was installed');
-        localStorage.setItem('pwaInstalled', 'true');
-        setTimeout(() => showNotificationPrompt(), 2000);
-    });
-
-    // Check if running as installed app
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-        console.log('✅ Running as installed PWA');
-        document.body.classList.add('pwa-mode');
-    }
-
-    // ============================================
-    // SERVICE WORKER REGISTRATION
-    // ============================================
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js')
-                .then((registration) => {
-                    console.log('✅ SW registered:', registration.scope);
-
-                    // Check for updates every 5 minutes
-                    setInterval(() => {
-                        registration.update();
-                    }, 5 * 60 * 1000);
-
-                    // Listen for new service worker
-                    registration.addEventListener('updatefound', () => {
-                        const newWorker = registration.installing;
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                if (confirm('New version available! Reload to update?')) {
-                                    newWorker.postMessage({ type: 'SKIP_WAITING' });
-                                    window.location.reload();
-                                }
-                            }
-                        });
-                    });
+            html5QrCode.scanFile(file, true)
+                .then(decodedText => {
+                    onScanSuccess(decodedText);
                 })
-                .catch((error) => {
-                    console.error('❌ SW registration failed:', error);
+                .catch(err => {
+                    alert('No barcode found in image. Please try another image.');
+                    console.error('Scan error:', err);
                 });
 
-            // Reload when new SW takes control
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                window.location.reload();
-            });
-        });
-    }
+            // Reset file input
+            event.target.value = '';
+        }
 
-    // ============================================
-    // INITIALIZE ON PAGE LOAD
-    // ============================================
-    window.addEventListener('DOMContentLoaded', () => {
-        console.log('🚀 Page loaded, initializing...');
+        function onScanSuccess(decodedText) {
+            const resultDiv = document.getElementById('scanResult');
+            const resultData = document.getElementById('scanResultData');
+            
+            resultDiv.classList.remove('hidden');
+            resultData.textContent = decodedText;
 
-        // Show notification prompt after 15 seconds if not already shown
-        setTimeout(() => {
-            console.log('⏰ Checking notification prompt conditions...');
-            if (Notification.permission === 'default' && 
-                localStorage.getItem('notification_prompt_shown') !== 'true') {
-                console.log('🔔 Showing notification prompt');
-                showNotificationPrompt();
-            } else {
-                console.log('⏸️ Notification prompt already shown or permission set');
+            // Stop camera after successful scan
+            if (html5QrCode && html5QrCode.isScanning) {
+                stopCamera();
             }
-        }, 15000);
-    });
 
-    // Make showNotificationSettings available globally
-    window.showNotificationSettings = showNotificationSettings;
-</script>
-   </body>
+            // Play success sound (optional)
+            console.log('Barcode detected:', decodedText);
+        }
+
+        function onScanError(error) {
+            // Ignore scan errors (they happen continuously while scanning)
+            // console.warn('Scan error:', error);
+        }
+
+        // Clean up on page unload
+        window.addEventListener('beforeunload', () => {
+            if (html5QrCode) {
+                html5QrCode.stop().catch(err => console.error(err));
+            }
+        });
+    </script>
+</body>
 </html>
