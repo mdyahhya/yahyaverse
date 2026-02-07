@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barcode Generator & Scanner</title>
+    <title>Complete Barcode System</title>
     
     <!-- Required Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
@@ -21,7 +21,7 @@
             background: #ffffff;
             color: #000000;
             padding: 20px;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
         }
 
@@ -68,7 +68,8 @@
         }
 
         input[type="text"],
-        input[type="number"] {
+        input[type="number"],
+        textarea {
             width: 100%;
             padding: 12px;
             border: 2px solid #000000;
@@ -78,8 +79,14 @@
             transition: all 0.2s;
         }
 
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
         input[type="text"]:focus,
-        input[type="number"]:focus {
+        input[type="number"]:focus,
+        textarea:focus {
             outline: none;
             border-color: #000000;
             box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
@@ -150,6 +157,7 @@
             background: #f5f5f5;
             border-radius: 6px;
             font-size: 13px;
+            width: 100%;
         }
 
         .barcode-info-row {
@@ -179,28 +187,6 @@
             max-width: 100%;
         }
 
-        .scan-result {
-            margin-top: 20px;
-            padding: 20px;
-            background: #f5f5f5;
-            border-radius: 6px;
-            border: 2px solid #000000;
-        }
-
-        .scan-result-title {
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .scan-result-data {
-            font-family: 'Courier New', monospace;
-            background: #ffffff;
-            padding: 15px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-            word-break: break-all;
-        }
-
         .hidden {
             display: none;
         }
@@ -212,6 +198,209 @@
 
         input[type="file"] {
             display: none;
+        }
+
+        /* Product Info Card */
+        .product-card {
+            background: #ffffff;
+            border: 3px solid #000000;
+            border-radius: 12px;
+            padding: 0;
+            margin-top: 30px;
+            overflow: hidden;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .product-header {
+            background: #000000;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .product-header h2 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .product-status {
+            display: inline-block;
+            padding: 6px 16px;
+            background: #ffffff;
+            color: #000000;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .product-status.in-stock {
+            background: #4CAF50;
+            color: #ffffff;
+        }
+
+        .product-status.out-of-stock {
+            background: #f44336;
+            color: #ffffff;
+        }
+
+        .product-body {
+            padding: 30px;
+        }
+
+        .product-image {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 30px;
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .product-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .product-detail {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .product-detail-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .product-detail-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #000000;
+        }
+
+        .product-price {
+            font-size: 32px;
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .product-description {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #000000;
+        }
+
+        .product-description-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .product-description-text {
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .message-section {
+            background: #fffacd;
+            border: 2px solid #000000;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .message-section-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .message-section-text {
+            color: #000;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .barcode-display {
+            text-align: center;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .barcode-display canvas {
+            max-width: 100%;
+        }
+
+        .no-product {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .no-product svg {
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+
+        .scan-instruction {
+            text-align: center;
+            padding: 30px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 2px dashed #ddd;
+            margin-top: 20px;
+        }
+
+        .scan-instruction svg {
+            margin-bottom: 15px;
+        }
+
+        .scan-instruction p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
         }
 
         @media (max-width: 600px) {
@@ -235,12 +424,16 @@
                 width: 100%;
                 justify-content: center;
             }
+
+            .product-detail-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Barcode Generator & Scanner</h1>
-    <p class="subtitle">Create and scan barcodes with item details</p>
+    <h1>Complete Barcode System</h1>
+    <p class="subtitle">Generate barcodes with messages & Scan to view full product info</p>
 
     <!-- Generator Section -->
     <div class="section">
@@ -261,7 +454,7 @@
         </div>
 
         <div class="form-group">
-            <label for="itemNumber">Item Number</label>
+            <label for="itemNumber">Item Number (Barcode ID)</label>
             <input type="text" id="itemNumber" placeholder="e.g., 1234567890123" maxlength="13">
         </div>
 
@@ -270,14 +463,31 @@
             <input type="number" id="itemPrice" placeholder="e.g., 29.99" step="0.01" min="0">
         </div>
 
-        <button class="btn" onclick="generateBarcode()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="16 16 12 12 8 16"/>
-                <line x1="12" y1="12" x2="12" y2="21"/>
-                <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
-            </svg>
-            Generate Barcode
-        </button>
+        <div class="form-group">
+            <label for="itemMessage">Custom Message (Optional)</label>
+            <textarea id="itemMessage" placeholder="Add a custom message that will be saved with this barcode..." maxlength="500"></textarea>
+            <div class="char-count"><span id="messageCount">0</span>/500 characters</div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn" onclick="generateBarcode()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="16 16 12 12 8 16"/>
+                    <line x1="12" y1="12" x2="12" y2="21"/>
+                    <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+                </svg>
+                Generate Barcode
+            </button>
+
+            <button class="btn btn-secondary" onclick="saveToDatabase()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                    <polyline points="17 21 17 13 7 13 7 21"/>
+                    <polyline points="7 3 7 8 15 8"/>
+                </svg>
+                Save to Database
+            </button>
+        </div>
 
         <div id="barcodePreview" class="barcode-preview">
             <p class="empty-state">Your barcode will appear here</p>
@@ -326,51 +536,121 @@
             <div id="reader" class="hidden"></div>
         </div>
 
-        <div id="scanResult" class="scan-result hidden">
-            <div class="scan-result-title">Scan Result:</div>
-            <div id="scanResultData" class="scan-result-data"></div>
+        <div id="scanInstruction" class="scan-instruction">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="4" width="18" height="16" rx="2"/>
+                <line x1="7" y1="8" x2="7" y2="16"/>
+                <line x1="11" y1="8" x2="11" y2="16"/>
+                <line x1="15" y1="8" x2="15" y2="16"/>
+                <line x1="17" y1="8" x2="17" y2="16"/>
+            </svg>
+            <p>Click "Open Camera" or "Upload Image" to scan a barcode</p>
         </div>
     </div>
+
+    <!-- Product Display Section -->
+    <div id="productDisplay" class="hidden"></div>
 
     <script>
         let html5QrCode = null;
         let currentBarcodeData = null;
 
+        // Character counter
+        document.getElementById('itemMessage').addEventListener('input', function(e) {
+            document.getElementById('messageCount').textContent = e.target.value.length;
+        });
+
+        // Enhanced product database with messages
+        const productDatabase = {
+            '1234567890123': {
+                name: 'Wireless Mouse',
+                barcode: '1234567890123',
+                price: 29.99,
+                category: 'Electronics',
+                brand: 'TechPro',
+                stock: 'In Stock',
+                sku: 'WM-2024-001',
+                description: 'Ergonomic wireless mouse with precision tracking and 18-month battery life. Features include silent clicking, adjustable DPI settings, and universal compatibility with Windows, Mac, and Linux systems.',
+                manufacturer: 'TechPro Industries',
+                warranty: '2 Years',
+                weight: '85g',
+                message: 'Welcome! This is our best-selling wireless mouse. Perfect for office work and gaming. Don\'t forget to check out our extended warranty options!'
+            },
+            '9876543210987': {
+                name: 'USB-C Cable 6ft',
+                barcode: '9876543210987',
+                price: 15.99,
+                category: 'Accessories',
+                brand: 'ConnectPlus',
+                stock: 'In Stock',
+                sku: 'UC-6FT-BLK',
+                description: 'Premium braided USB-C cable supports fast charging up to 100W and data transfer speeds up to 480Mbps. Durable design with reinforced connectors for extended lifespan.',
+                manufacturer: 'ConnectPlus Corp',
+                warranty: '1 Year',
+                weight: '42g',
+                message: 'High-quality cable tested for 10,000+ bends. Compatible with all USB-C devices!'
+            },
+            '5551234567890': {
+                name: 'Bluetooth Headphones',
+                barcode: '5551234567890',
+                price: 89.99,
+                category: 'Audio',
+                brand: 'SoundWave',
+                stock: 'In Stock',
+                sku: 'BH-PRO-300',
+                description: 'Premium over-ear Bluetooth headphones with active noise cancellation, 30-hour battery life, and Hi-Fi audio quality. Includes carrying case and airplane adapter.',
+                manufacturer: 'SoundWave Audio',
+                warranty: '2 Years',
+                weight: '250g',
+                message: 'Award-winning sound quality! These headphones have received 5-star reviews from tech enthusiasts worldwide. Try our 30-day satisfaction guarantee!'
+            },
+            '7778889990001': {
+                name: 'Portable SSD 1TB',
+                barcode: '7778889990001',
+                price: 149.99,
+                category: 'Storage',
+                brand: 'DataVault',
+                stock: 'Out of Stock',
+                sku: 'SSD-1TB-EXT',
+                description: 'Ultra-fast portable SSD with read speeds up to 1050MB/s. Shock-resistant design with USB 3.2 Gen 2 interface. Perfect for photographers and video editors.',
+                manufacturer: 'DataVault Technologies',
+                warranty: '5 Years',
+                weight: '68g',
+                message: 'Currently out of stock. Expected back in stock on March 15th. Reserve yours now with a 10% pre-order discount!'
+            }
+        };
+
         function generateBarcode() {
             const itemName = document.getElementById('itemName').value.trim();
             const itemNumber = document.getElementById('itemNumber').value.trim();
             const itemPrice = document.getElementById('itemPrice').value.trim();
+            const itemMessage = document.getElementById('itemMessage').value.trim();
 
             if (!itemName || !itemNumber || !itemPrice) {
-                alert('Please fill in all fields');
+                alert('Please fill in Item Name, Item Number, and Price');
                 return;
             }
 
-            // Validate item number (should be numeric)
             if (!/^\d+$/.test(itemNumber)) {
                 alert('Item number should contain only digits');
                 return;
             }
 
-            // Store current barcode data
             currentBarcodeData = {
                 name: itemName,
                 number: itemNumber,
-                price: itemPrice
+                price: itemPrice,
+                message: itemMessage
             };
 
             const preview = document.getElementById('barcodePreview');
             preview.classList.add('has-barcode');
-            
-            // Clear previous content
             preview.innerHTML = '';
 
-            // Create canvas for barcode
             const canvas = document.createElement('canvas');
             canvas.id = 'barcodeCanvas';
             preview.appendChild(canvas);
 
-            // Generate barcode using JsBarcode
             try {
                 JsBarcode(canvas, itemNumber, {
                     format: "CODE128",
@@ -381,7 +661,6 @@
                     margin: 10
                 });
 
-                // Add item information below barcode
                 const infoDiv = document.createElement('div');
                 infoDiv.className = 'barcode-info';
                 infoDiv.innerHTML = `
@@ -397,10 +676,15 @@
                         <span class="barcode-info-label">Price:</span>
                         <span>$${parseFloat(itemPrice).toFixed(2)}</span>
                     </div>
+                    ${itemMessage ? `
+                    <div class="barcode-info-row" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd;">
+                        <span class="barcode-info-label">Message:</span>
+                        <span style="display: block; margin-top: 5px;">${escapeHtml(itemMessage)}</span>
+                    </div>
+                    ` : ''}
                 `;
                 preview.appendChild(infoDiv);
 
-                // Add download button
                 const downloadBtn = document.createElement('button');
                 downloadBtn.className = 'btn';
                 downloadBtn.style.marginTop = '20px';
@@ -420,32 +704,57 @@
             }
         }
 
+        function saveToDatabase() {
+            if (!currentBarcodeData) {
+                alert('Please generate a barcode first');
+                return;
+            }
+
+            // Add to local database
+            productDatabase[currentBarcodeData.number] = {
+                name: currentBarcodeData.name,
+                barcode: currentBarcodeData.number,
+                price: parseFloat(currentBarcodeData.price),
+                category: 'Custom',
+                brand: 'User Added',
+                stock: 'In Stock',
+                sku: 'CUSTOM-' + currentBarcodeData.number,
+                description: 'User-generated product entry',
+                manufacturer: 'N/A',
+                warranty: 'N/A',
+                weight: 'N/A',
+                message: currentBarcodeData.message || 'No custom message added.'
+            };
+
+            alert('Product saved to database! You can now scan this barcode to see full details.');
+        }
+
         function downloadBarcode() {
             const canvas = document.getElementById('barcodeCanvas');
             if (!canvas) return;
 
-            // Create a new canvas with white background and item info
             const exportCanvas = document.createElement('canvas');
             const ctx = exportCanvas.getContext('2d');
             
-            // Set canvas size
-            exportCanvas.width = canvas.width;
-            exportCanvas.height = canvas.height + 120;
+            const messageLines = currentBarcodeData.message ? wrapText(ctx, currentBarcodeData.message, 700) : [];
+            const lineHeight = 20;
+            const messageHeight = messageLines.length > 0 ? messageLines.length * lineHeight + 80 : 0;
             
-            // Fill white background
+            exportCanvas.width = Math.max(canvas.width, 750);
+            exportCanvas.height = canvas.height + messageHeight + 150;
+            
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
             
-            // Draw barcode
-            ctx.drawImage(canvas, 0, 0);
+            const barcodeX = (exportCanvas.width - canvas.width) / 2;
+            ctx.drawImage(canvas, barcodeX, 20);
             
-            // Add text information
             ctx.fillStyle = '#000000';
             ctx.font = 'bold 16px Arial';
             ctx.textAlign = 'center';
             
             const centerX = exportCanvas.width / 2;
-            let textY = canvas.height + 30;
+            let textY = canvas.height + 40;
             
             ctx.fillText(`Item: ${currentBarcodeData.name}`, centerX, textY);
             textY += 25;
@@ -453,16 +762,56 @@
             textY += 25;
             ctx.fillText(`Price: $${parseFloat(currentBarcodeData.price).toFixed(2)}`, centerX, textY);
             
-            // Download
+            if (messageLines.length > 0) {
+                textY += 40;
+                ctx.font = 'bold 12px Arial';
+                ctx.fillStyle = '#666666';
+                ctx.textAlign = 'left';
+                ctx.fillText('MESSAGE:', 25, textY);
+                
+                textY += 25;
+                ctx.fillStyle = '#000000';
+                ctx.font = '14px Arial';
+                
+                messageLines.forEach(line => {
+                    ctx.fillText(line, 25, textY);
+                    textY += lineHeight;
+                });
+            }
+            
             const link = document.createElement('a');
             link.download = `barcode-${currentBarcodeData.number}.png`;
             link.href = exportCanvas.toDataURL('image/png');
             link.click();
         }
 
+        function wrapText(ctx, text, maxWidth) {
+            const words = text.split(' ');
+            const lines = [];
+            let currentLine = '';
+
+            ctx.font = '14px Arial';
+
+            for (let i = 0; i < words.length; i++) {
+                const testLine = currentLine + words[i] + ' ';
+                const metrics = ctx.measureText(testLine);
+                
+                if (metrics.width > maxWidth && i > 0) {
+                    lines.push(currentLine.trim());
+                    currentLine = words[i] + ' ';
+                } else {
+                    currentLine = testLine;
+                }
+            }
+            lines.push(currentLine.trim());
+            return lines;
+        }
+
         function startCamera() {
             const reader = document.getElementById('reader');
+            const instruction = document.getElementById('scanInstruction');
             reader.classList.remove('hidden');
+            instruction.classList.add('hidden');
             document.getElementById('stopBtn').classList.remove('hidden');
 
             if (html5QrCode === null) {
@@ -486,7 +835,10 @@
         function stopCamera() {
             if (html5QrCode) {
                 html5QrCode.stop().then(() => {
-                    document.getElementById('reader').classList.add('hidden');
+                    const reader = document.getElementById('reader');
+                    const instruction = document.getElementById('scanInstruction');
+                    reader.classList.add('hidden');
+                    instruction.classList.remove('hidden');
                     document.getElementById('stopBtn').classList.add('hidden');
                 }).catch(err => {
                     console.error('Error stopping camera:', err);
@@ -511,32 +863,152 @@
                     console.error('Scan error:', err);
                 });
 
-            // Reset file input
             event.target.value = '';
         }
 
         function onScanSuccess(decodedText) {
-            const resultDiv = document.getElementById('scanResult');
-            const resultData = document.getElementById('scanResultData');
-            
-            resultDiv.classList.remove('hidden');
-            resultData.textContent = decodedText;
+            console.log('Barcode detected:', decodedText);
 
-            // Stop camera after successful scan
             if (html5QrCode && html5QrCode.isScanning) {
                 stopCamera();
             }
 
-            // Play success sound (optional)
-            console.log('Barcode detected:', decodedText);
+            displayProductInfo(decodedText);
         }
 
         function onScanError(error) {
-            // Ignore scan errors (they happen continuously while scanning)
-            // console.warn('Scan error:', error);
+            // Ignore continuous scan errors
         }
 
-        // Clean up on page unload
+        function displayProductInfo(barcode) {
+            const product = productDatabase[barcode];
+            const displayDiv = document.getElementById('productDisplay');
+            
+            displayDiv.classList.remove('hidden');
+
+            if (product) {
+                const isInStock = product.stock === 'In Stock';
+                
+                displayDiv.innerHTML = `
+                    <div class="product-card">
+                        <div class="product-header">
+                            <h2>${product.name}</h2>
+                            <div class="product-status ${isInStock ? 'in-stock' : 'out-of-stock'}">
+                                ${product.stock}
+                            </div>
+                        </div>
+                        <div class="product-body">
+                            <div class="product-image">
+                                <span>Product Image</span>
+                            </div>
+
+                            ${product.message ? `
+                            <div class="message-section">
+                                <div class="message-section-title">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                    </svg>
+                                    Custom Message
+                                </div>
+                                <div class="message-section-text">${escapeHtml(product.message)}</div>
+                            </div>
+                            ` : ''}
+
+                            <div class="product-detail-grid">
+                                <div class="product-detail">
+                                    <div class="product-detail-label">Price</div>
+                                    <div class="product-detail-value product-price">$${product.price.toFixed(2)}</div>
+                                </div>
+                                <div class="product-detail">
+                                    <div class="product-detail-label">Brand</div>
+                                    <div class="product-detail-value">${product.brand}</div>
+                                </div>
+                                <div class="product-detail">
+                                    <div class="product-detail-label">Category</div>
+                                    <div class="product-detail-value">${product.category}</div>
+                                </div>
+                                <div class="product-detail">
+                                    <div class="product-detail-label">SKU</div>
+                                    <div class="product-detail-value">${product.sku}</div>
+                                </div>
+                                <div class="product-detail">
+                                    <div class="product-detail-label">Weight</div>
+                                    <div class="product-detail-value">${product.weight}</div>
+                                </div>
+                                <div class="product-detail">
+                                    <div class="product-detail-label">Warranty</div>
+                                    <div class="product-detail-value">${product.warranty}</div>
+                                </div>
+                            </div>
+
+                            <div class="product-description">
+                                <div class="product-description-title">Product Description</div>
+                                <div class="product-description-text">${product.description}</div>
+                            </div>
+
+                            <div class="product-detail-grid">
+                                <div class="product-detail">
+                                    <div class="product-detail-label">Manufacturer</div>
+                                    <div class="product-detail-value" style="font-size: 14px;">${product.manufacturer}</div>
+                                </div>
+                                <div class="product-detail">
+                                    <div class="product-detail-label">Barcode</div>
+                                    <div class="product-detail-value" style="font-size: 14px; font-family: monospace;">${product.barcode}</div>
+                                </div>
+                            </div>
+
+                            <div class="barcode-display">
+                                <canvas id="productBarcode"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                setTimeout(() => {
+                    const canvas = document.getElementById('productBarcode');
+                    if (canvas) {
+                        JsBarcode(canvas, product.barcode, {
+                            format: "CODE128",
+                            width: 2,
+                            height: 80,
+                            displayValue: true,
+                            fontSize: 14,
+                            margin: 10
+                        });
+                    }
+                }, 100);
+
+            } else {
+                displayDiv.innerHTML = `
+                    <div class="product-card">
+                        <div class="product-header">
+                            <h2>Product Not Found</h2>
+                        </div>
+                        <div class="product-body">
+                            <div class="no-product">
+                                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="12" y1="8" x2="12" y2="12"/>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                                </svg>
+                                <p style="font-size: 16px; margin-top: 15px;">No product information available for barcode:</p>
+                                <p style="font-family: monospace; font-size: 18px; font-weight: 600; margin-top: 10px;">${barcode}</p>
+                                <p style="font-size: 14px; color: #999; margin-top: 20px;">This barcode is not registered in the database. Generate and save it first!</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            displayDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
         window.addEventListener('beforeunload', () => {
             if (html5QrCode) {
                 html5QrCode.stop().catch(err => console.error(err));
