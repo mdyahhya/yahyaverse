@@ -1716,7 +1716,7 @@ nav a:hover::after {
 
 .hero-image img {
     width: 100%;
-    aspect-ratio: 2 / 1;          /* Landscape on desktop */
+          /* Landscape on desktop */
     object-fit: cover;
     object-position: center;
     border-radius: 16px;
@@ -1726,13 +1726,15 @@ nav a:hover::after {
 /* 📱 Mobile: show FULL image, no crop */
 @media (max-width: 768px) {
     .hero-image img {
-        aspect-ratio: auto;       /* Remove forced ratio */
-        height: auto;              /* Natural image height */
-        max-height: 280px;         /* Adjust if needed */
-        object-fit: contain;       /* FULL image visible */
-        background: #f5f5f5;       /* Optional: clean background */
+        aspect-ratio: auto;
+        height: auto;
+        max-height: 340px;     /* ⬆ height increased */
+        width: 100%;
+        object-fit: contain;
+        background: #f5f5f5;
     }
 }
+
 
 
 
