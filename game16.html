@@ -3,11 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complete Barcode System</title>
-    
-    <!-- Required Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <meta name="description" content="HCC High School, Solapur - Excellence in Education. Admissions Open for 2026-27.">
+    <meta name="keywords" content="HCC High School, Solapur, Education, Admissions, School">
+    <meta name="theme-color" content="#220707">
+
+    <!-- PWA Manifest -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#220707">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="HCC School">
+<link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+
+    <title>HCC High School, Solapur | Excellence in Education</title>
     
     <style>
         * {
@@ -16,205 +25,200 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --maroon-dark: #220707;
+            --maroon-primary: #531C22;
+            --neutral-warm: #AC9185;
+            --neutral-light: #E7D8CA;
+            --bg-light: #F9F3ED;
+            --white: #FFFFFF;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #ffffff;
-            color: #000000;
-            padding: 20px;
-            max-width: 900px;
-            margin: 0 auto;
+            background-color: var(--bg-light);
+            color: var(--maroon-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        h1 {
-            text-align: center;
-            margin-bottom: 10px;
-            font-size: 28px;
-            font-weight: 600;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 40px;
-            font-size: 14px;
-        }
-
-        .section {
-            background: #ffffff;
-            border: 2px solid #000000;
-            border-radius: 8px;
-            padding: 30px;
-            margin-bottom: 30px;
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        textarea {
+        /* Header & Navigation */
+        header {
+            position: fixed;
+            top: 0;
             width: 100%;
-            padding: 12px;
-            border: 2px solid #000000;
-            border-radius: 6px;
-            font-size: 14px;
-            font-family: inherit;
-            transition: all 0.2s;
+            background: rgba(249, 243, 237, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(34, 7, 7, 0.08);
+            z-index: 1000;
+            transition: transform 0.3s ease;
         }
 
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        input[type="text"]:focus,
-        input[type="number"]:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #000000;
-            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn {
-            background: #000000;
-            color: #ffffff;
-            border: none;
-            padding: 14px 24px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-
-        .btn:hover {
-            background: #333333;
-            transform: translateY(-1px);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .btn-secondary {
-            background: #ffffff;
-            color: #000000;
-            border: 2px solid #000000;
-        }
-
-        .btn-secondary:hover {
-            background: #f5f5f5;
-        }
-
-        .barcode-preview {
-            margin-top: 30px;
-            padding: 30px;
-            background: #fafafa;
-            border: 2px dashed #cccccc;
-            border-radius: 8px;
-            text-align: center;
-            min-height: 200px;
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-placeholder {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--maroon-primary), var(--maroon-dark));
+            border-radius: 8px;
+            display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: bold;
+            color: var(--white);
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
         }
 
-        .barcode-preview.has-barcode {
-            background: #ffffff;
-            border: 2px solid #000000;
+        .logo-placeholder:hover {
+            transform: rotate(5deg) scale(1.05);
         }
 
-        #barcodeCanvas {
-            max-width: 100%;
-            margin-bottom: 15px;
+        .school-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--maroon-dark);
         }
 
-        .barcode-info {
-            margin-top: 15px;
-            padding: 15px;
-            background: #f5f5f5;
-            border-radius: 6px;
-            font-size: 13px;
+        .school-location {
+            font-size: 0.85rem;
+            color: var(--neutral-warm);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--maroon-dark);
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--maroon-primary);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--maroon-primary);
+        }
+
+        nav a:hover::after {
             width: 100%;
         }
 
-        .barcode-info-row {
-            margin: 5px 0;
+        /* Mobile Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px;
         }
 
-        .barcode-info-label {
-            font-weight: 600;
-            display: inline-block;
-            width: 80px;
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--maroon-dark);
+            border-radius: 2px;
+            transition: all 0.3s ease;
         }
 
-        .button-group {
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            min-height: 90vh;
+            background: linear-gradient(135deg, var(--neutral-light) 0%, var(--bg-light) 100%);
             display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .scanner-container {
-            margin-top: 20px;
-        }
-
-        #reader {
-            border: 2px solid #000000;
-            border-radius: 8px;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
             overflow: hidden;
-            max-width: 100%;
         }
 
-        .hidden {
-            display: none;
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(83, 28, 34, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 20s ease-in-out infinite;
         }
 
-        .empty-state {
-            color: #999;
-            font-size: 14px;
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-30px, -30px); }
         }
 
-        input[type="file"] {
-            display: none;
+        .hero-content {
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            z-index: 1;
         }
 
-        /* Product Info Card */
-        .product-card {
-            background: #ffffff;
-            border: 3px solid #000000;
-            border-radius: 12px;
-            padding: 0;
-            margin-top: 30px;
-            overflow: hidden;
-            animation: slideIn 0.3s ease-out;
+        .hero-text h1 {
+            font-size: 3.5rem;
+            color: var(--maroon-dark);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            animation: fadeInUp 0.8s ease;
         }
 
-        @keyframes slideIn {
+        .hero-text p {
+            font-size: 1.2rem;
+            color: var(--neutral-warm);
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease 0.2s backwards;
+        }
+
+        @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
@@ -222,798 +226,1139 @@
             }
         }
 
-        .product-header {
-            background: #000000;
-            color: #ffffff;
-            padding: 20px;
-            text-align: center;
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 0.4s backwards;
         }
 
-        .product-header h2 {
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-
-        .product-status {
-            display: inline-block;
-            padding: 6px 16px;
-            background: #ffffff;
-            color: #000000;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-top: 10px;
-        }
-
-        .product-status.in-stock {
-            background: #4CAF50;
-            color: #ffffff;
-        }
-
-        .product-status.out-of-stock {
-            background: #f44336;
-            color: #ffffff;
-        }
-
-        .product-body {
-            padding: 30px;
-        }
-
-        .product-image {
-            width: 200px;
-            height: 200px;
-            margin: 0 auto 30px;
-            background: #f5f5f5;
-            border: 2px solid #e0e0e0;
+        .btn {
+            padding: 0.9rem 2rem;
+            border: none;
             border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--maroon-primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--maroon-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(83, 28, 34, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--maroon-primary);
+            border: 2px solid var(--maroon-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--maroon-primary);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        .hero-image {
+            position: relative;
+            animation: fadeInRight 0.8s ease 0.3s backwards;
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 500px;
+            /* background: linear-gradient(135deg, var(--neutral-warm), var(--neutral-light)); */
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #999;
-            font-size: 14px;
+            /* color: var(--white); */
+            font-size: 1.2rem;
+            box-shadow: 0 20px 60px rgba(34, 7, 7, 0.15);
+            position: relative;
+            overflow: hidden;
         }
 
-        .product-detail-grid {
+        .image-placeholder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Quick Highlights */
+        .highlights {
+            padding: 5rem 2rem;
+            background: var(--white);
+        }
+
+        .highlights-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--maroon-dark);
+            margin-bottom: 3rem;
+        }
+
+        .highlights-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
         }
 
-        .product-detail {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
+        .highlight-card {
+            background: var(--bg-light);
+            padding: 2.5rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 2px solid transparent;
         }
 
-        .product-detail-label {
-            font-size: 12px;
-            color: #666;
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 5px;
-            letter-spacing: 0.5px;
+        .highlight-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--maroon-primary);
+            box-shadow: 0 15px 40px rgba(83, 28, 34, 0.15);
         }
 
-        .product-detail-value {
-            font-size: 18px;
-            font-weight: 600;
-            color: #000000;
-        }
-
-        .product-price {
-            font-size: 32px;
-            font-weight: 700;
-            color: #000000;
-        }
-
-        .product-description {
-            background: #f5f5f5;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 4px solid #000000;
-        }
-
-        .product-description-title {
-            font-weight: 600;
-            margin-bottom: 10px;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .product-description-text {
-            color: #333;
-            line-height: 1.6;
-        }
-
-        .message-section {
-            background: #fffacd;
-            border: 2px solid #000000;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .message-section-title {
-            font-weight: 600;
-            margin-bottom: 10px;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .highlight-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, var(--maroon-primary), var(--maroon-dark));
+            border-radius: 12px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            transition: transform 0.3s ease;
         }
 
-        .message-section-text {
-            color: #000;
-            line-height: 1.6;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+        .highlight-card:hover .highlight-icon {
+            transform: scale(1.1) rotate(5deg);
         }
 
-        .barcode-display {
+        .highlight-card h3 {
+            font-size: 1.5rem;
+            color: var(--maroon-dark);
+            margin-bottom: 1rem;
+        }
+
+        .highlight-card p {
+            color: var(--neutral-warm);
+            line-height: 1.8;
+        }
+
+        /* Gallery Preview */
+        .gallery-preview {
+            padding: 5rem 2rem;
+            background: var(--bg-light);
+        }
+
+        .gallery-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .gallery-item {
+            height: 250px;
+            background: linear-gradient(135deg, var(--neutral-light), var(--neutral-warm));
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.03);
+        }
+
+        .gallery-item::after {
+            content: 'Gallery Image';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            background: linear-gradient(to top, rgba(34, 7, 7, 0.8), transparent);
+            color: var(--white);
+            font-weight: 500;
+        }
+
+        .view-all {
             text-align: center;
-            padding: 20px;
-            background: #fafafa;
-            border-radius: 8px;
-            margin-top: 20px;
         }
 
-        .barcode-display canvas {
-            max-width: 100%;
+        /* Footer */
+        footer {
+            background: var(--maroon-dark);
+            color: var(--bg-light);
+            padding: 3rem 2rem 1.5rem;
         }
 
-        .no-product {
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            color: var(--white);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-section p, .footer-section a {
+            color: var(--neutral-light);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--white);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-icon {
+            width: 20px;
+            height: 20px;
+            background: var(--maroon-primary);
+            border-radius: 4px;
+        }
+
+        .footer-bottom {
             text-align: center;
-            padding: 40px;
-            color: #999;
+            padding-top: 2rem;
+            border-top: 1px solid var(--maroon-primary);
+            color: var(--neutral-light);
         }
 
-        .no-product svg {
-            margin-bottom: 15px;
-            opacity: 0.3;
-        }
-
-        .scan-instruction {
-            text-align: center;
-            padding: 30px;
-            background: #f9f9f9;
-            border-radius: 8px;
-            border: 2px dashed #ddd;
-            margin-top: 20px;
-        }
-
-        .scan-instruction svg {
-            margin-bottom: 15px;
-        }
-
-        .scan-instruction p {
-            color: #666;
-            margin-bottom: 20px;
-        }
-
-        .char-count {
-            text-align: right;
-            font-size: 12px;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-
-            .section {
-                padding: 20px;
-            }
-
-            h1 {
-                font-size: 24px;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-
-            .btn {
+        /* Mobile Responsive */
+        @media (max-width: 968px) {
+            nav ul {
+                position: fixed;
+                top: 80px;
+                right: -100%;
                 width: 100%;
+                max-width: 400px;
+                height: calc(100vh - 80px);
+                background: var(--white);
+                flex-direction: column;
+                padding: 2rem;
+                box-shadow: -5px 0 20px rgba(34, 7, 7, 0.1);
+                transition: right 0.4s ease;
+                gap: 1.5rem;
+            }
+
+            nav ul.active {
+                right: 0;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .cta-buttons {
                 justify-content: center;
             }
 
-            .product-detail-grid {
+            .hero-image {
+                order: -1;
+            }
+
+            .image-placeholder {
+                height: 350px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .nav-container {
+                padding: 1rem;
+            }
+
+            .school-name {
+                font-size: 1rem;
+            }
+
+            .school-location {
+                font-size: 0.75rem;
+            }
+
+            .hero-text h1 {
+                font-size: 2rem;
+            }
+
+            .hero-text p {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .highlights-grid {
                 grid-template-columns: 1fr;
             }
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* SVG Icons Inline */
+        .svg-icon {
+            width: 40px;
+            height: 40px;
+            fill: var(--white);
         }
     </style>
 </head>
 <body>
-    <h1>Complete Barcode System</h1>
-    <p class="subtitle">Generate barcodes with messages & Scan to view full product info</p>
+    <!-- Header -->
+    <header>
+        <div class="nav-container">
+            <div class="logo-section">
+                <img src="hcclogo.jpg" alt="HCC Logo" style="width: 50px; height: 50px; border-radius: 8px;">
+                <div>
+                    <div class="school-name">HCC High School</div>
+                    <div class="school-location">Solapur</div>
+                </div>
+            </div>
+            
+            <nav>
+                <ul id="navMenu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="staff.html">Staff</a></li>
+                    <li><a href="admission.html">Admission</a></li>
+                    <li><a href="infrastructure.html">Infrastructure</a></li>
+                    <li><a href="gallery.html">Image Gallery</a></li>
+                    <li><a href="achievements.html">Achievements</a></li>
+                    <li><a href="notices.html">Notices</a></li>
+                </ul>
+            </nav>
 
-    <!-- Generator Section -->
-    <div class="section">
-        <div class="section-title">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="4" width="18" height="16" rx="2"/>
-                <line x1="7" y1="8" x2="7" y2="16"/>
-                <line x1="11" y1="8" x2="11" y2="16"/>
-                <line x1="15" y1="8" x2="15" y2="16"/>
-                <line x1="17" y1="8" x2="17" y2="16"/>
-            </svg>
-            Generate Barcode
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Welcome to HCC High School</h1>
+                <p>Empowering minds, shaping futures. Excellence in education since 1990.</p>
+                <div class="cta-buttons">
+                    <a href="admission.html" class="btn btn-primary">Admissions Open 2026-27</a>
+                    <a href="about.html" class="btn btn-secondary">About Us</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="hcc.jpg" 
+                     alt="HCC High School Building" 
+                     style="width: 100%; 
+                            height: 500px; 
+                            object-fit: cover; 
+                            object-position: center;
+                            border-radius: 16px; 
+                            box-shadow: 0 20px 60px rgba(34, 7, 7, 0.15);
+                            image-rendering: -webkit-optimize-contrast;
+                            image-rendering: crisp-edges;">
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Highlights -->
+    <section class="highlights">
+        <div class="highlights-container">
+            <h2 class="section-title">Why Choose HCC High School</h2>
+            <div class="highlights-grid">
+                <div class="highlight-card">
+                    <div class="highlight-icon">
+                        <svg class="svg-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/>
+                        </svg>
+                    </div>
+                    <h3>Expert Faculty</h3>
+                    <p>Highly qualified and experienced teachers dedicated to student success and holistic development.</p>
+                </div>
+
+                <div class="highlight-card">
+                    <div class="highlight-icon">
+                        <svg class="svg-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L2 7V11C2 16.55 6.84 21.74 12 23C17.16 21.74 22 16.55 22 11V7L12 2ZM12 11H20C19.91 15.13 16.88 18.78 12 19.93V13H4V8.3L12 4.19V11Z"/>
+                        </svg>
+                    </div>
+                    <h3>Modern Infrastructure</h3>
+                    <p>State-of-the-art classrooms, laboratories, library, and sports facilities for comprehensive learning.</p>
+                </div>
+
+                <div class="highlight-card">
+                    <div class="highlight-icon">
+                        <svg class="svg-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z"/>
+                        </svg>
+                    </div>
+                    <h3>Academic Excellence</h3>
+                    <p>Consistent track record of outstanding results and successful alumni across diverse fields.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Preview -->
+    <section class="gallery-preview">
+        <div class="gallery-container">
+            <h2 class="section-title">Campus Glimpses</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item"></div>
+                <div class="gallery-item"></div>
+                <div class="gallery-item"></div>
+                <div class="gallery-item"></div>
+            </div>
+            <div class="view-all">
+                <a href="gallery.html" class="btn btn-primary">View Full Gallery</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>HCC High School</h3>
+                <p>Excellence in education since 1990</p>
+                <p>Shaping young minds for a brighter tomorrow</p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="about.html">About Us</a>
+                <a href="admission.html">Admissions</a>
+                <a href="staff.html">Faculty</a>
+                <a href="achievements.html">Achievements</a>
+            </div>
+
+            <div class="footer-section">
+                <h3>Contact Information</h3>
+                <div class="contact-item">
+                    <div class="contact-icon"></div>
+                    <span>123 School Road, Solapur, Maharashtra</span>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon"></div>
+                    <span>+91 1234567890</span>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon"></div>
+                    <span>info@hccschool.edu.in</span>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3>Notifications</h3>
+                <a href="javascript:void(0)" onclick="window.showNotificationSettings()">🔔 Notification Settings</a>
+                <p style="font-size: 0.85rem; color: var(--neutral-light); margin-top: 0.5rem;">
+                    Manage your notification preferences
+                </p>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="itemName">Item Name</label>
-            <input type="text" id="itemName" placeholder="e.g., Wireless Mouse">
+        <div class="footer-bottom">
+            <p>&copy; 2026 HCC High School, Solapur. All rights reserved.</p>
         </div>
-
-        <div class="form-group">
-            <label for="itemNumber">Item Number (Barcode ID)</label>
-            <input type="text" id="itemNumber" placeholder="e.g., 1234567890123" maxlength="13">
-        </div>
-
-        <div class="form-group">
-            <label for="itemPrice">Price ($)</label>
-            <input type="number" id="itemPrice" placeholder="e.g., 29.99" step="0.01" min="0">
-        </div>
-
-        <div class="form-group">
-            <label for="itemMessage">Custom Message (Optional)</label>
-            <textarea id="itemMessage" placeholder="Add a custom message that will be saved with this barcode..." maxlength="500"></textarea>
-            <div class="char-count"><span id="messageCount">0</span>/500 characters</div>
-        </div>
-
-        <div class="button-group">
-            <button class="btn" onclick="generateBarcode()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="16 16 12 12 8 16"/>
-                    <line x1="12" y1="12" x2="12" y2="21"/>
-                    <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
-                </svg>
-                Generate Barcode
-            </button>
-
-            <button class="btn btn-secondary" onclick="saveToDatabase()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-                    <polyline points="17 21 17 13 7 13 7 21"/>
-                    <polyline points="7 3 7 8 15 8"/>
-                </svg>
-                Save to Database
-            </button>
-        </div>
-
-        <div id="barcodePreview" class="barcode-preview">
-            <p class="empty-state">Your barcode will appear here</p>
-        </div>
-    </div>
-
-    <!-- Scanner Section -->
-    <div class="section">
-        <div class="section-title">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                <circle cx="12" cy="13" r="4"/>
-            </svg>
-            Scan Barcode
-        </div>
-
-        <div class="button-group">
-            <button class="btn" onclick="startCamera()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                    <circle cx="12" cy="13" r="4"/>
-                </svg>
-                Open Camera
-            </button>
-
-            <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                    <circle cx="8.5" cy="8.5" r="1.5"/>
-                    <polyline points="21 15 16 10 5 21"/>
-                </svg>
-                Upload Image
-            </button>
-
-            <button class="btn btn-secondary hidden" id="stopBtn" onclick="stopCamera()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="6" y="6" width="12" height="12"/>
-                </svg>
-                Stop Camera
-            </button>
-        </div>
-
-        <input type="file" id="fileInput" accept="image/*" onchange="scanFromFile(event)">
-
-        <div class="scanner-container">
-            <div id="reader" class="hidden"></div>
-        </div>
-
-        <div id="scanInstruction" class="scan-instruction">
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <rect x="3" y="4" width="18" height="16" rx="2"/>
-                <line x1="7" y1="8" x2="7" y2="16"/>
-                <line x1="11" y1="8" x2="11" y2="16"/>
-                <line x1="15" y1="8" x2="15" y2="16"/>
-                <line x1="17" y1="8" x2="17" y2="16"/>
-            </svg>
-            <p>Click "Open Camera" or "Upload Image" to scan a barcode</p>
-        </div>
-    </div>
-
-    <!-- Product Display Section -->
-    <div id="productDisplay" class="hidden"></div>
+    </footer>
 
     <script>
-        let html5QrCode = null;
-        let currentBarcodeData = null;
-
-        // Character counter
-        document.getElementById('itemMessage').addEventListener('input', function(e) {
-            document.getElementById('messageCount').textContent = e.target.value.length;
-        });
-
-        // Enhanced product database with messages
-        const productDatabase = {
-            '1234567890123': {
-                name: 'Wireless Mouse',
-                barcode: '1234567890123',
-                price: 29.99,
-                category: 'Electronics',
-                brand: 'TechPro',
-                stock: 'In Stock',
-                sku: 'WM-2024-001',
-                description: 'Ergonomic wireless mouse with precision tracking and 18-month battery life. Features include silent clicking, adjustable DPI settings, and universal compatibility with Windows, Mac, and Linux systems.',
-                manufacturer: 'TechPro Industries',
-                warranty: '2 Years',
-                weight: '85g',
-                message: 'Welcome! This is our best-selling wireless mouse. Perfect for office work and gaming. Don\'t forget to check out our extended warranty options!'
-            },
-            '9876543210987': {
-                name: 'USB-C Cable 6ft',
-                barcode: '9876543210987',
-                price: 15.99,
-                category: 'Accessories',
-                brand: 'ConnectPlus',
-                stock: 'In Stock',
-                sku: 'UC-6FT-BLK',
-                description: 'Premium braided USB-C cable supports fast charging up to 100W and data transfer speeds up to 480Mbps. Durable design with reinforced connectors for extended lifespan.',
-                manufacturer: 'ConnectPlus Corp',
-                warranty: '1 Year',
-                weight: '42g',
-                message: 'High-quality cable tested for 10,000+ bends. Compatible with all USB-C devices!'
-            },
-            '5551234567890': {
-                name: 'Bluetooth Headphones',
-                barcode: '5551234567890',
-                price: 89.99,
-                category: 'Audio',
-                brand: 'SoundWave',
-                stock: 'In Stock',
-                sku: 'BH-PRO-300',
-                description: 'Premium over-ear Bluetooth headphones with active noise cancellation, 30-hour battery life, and Hi-Fi audio quality. Includes carrying case and airplane adapter.',
-                manufacturer: 'SoundWave Audio',
-                warranty: '2 Years',
-                weight: '250g',
-                message: 'Award-winning sound quality! These headphones have received 5-star reviews from tech enthusiasts worldwide. Try our 30-day satisfaction guarantee!'
-            },
-            '7778889990001': {
-                name: 'Portable SSD 1TB',
-                barcode: '7778889990001',
-                price: 149.99,
-                category: 'Storage',
-                brand: 'DataVault',
-                stock: 'Out of Stock',
-                sku: 'SSD-1TB-EXT',
-                description: 'Ultra-fast portable SSD with read speeds up to 1050MB/s. Shock-resistant design with USB 3.2 Gen 2 interface. Perfect for photographers and video editors.',
-                manufacturer: 'DataVault Technologies',
-                warranty: '5 Years',
-                weight: '68g',
-                message: 'Currently out of stock. Expected back in stock on March 15th. Reserve yours now with a 10% pre-order discount!'
-            }
-        };
-
-        function generateBarcode() {
-            const itemName = document.getElementById('itemName').value.trim();
-            const itemNumber = document.getElementById('itemNumber').value.trim();
-            const itemPrice = document.getElementById('itemPrice').value.trim();
-            const itemMessage = document.getElementById('itemMessage').value.trim();
-
-            if (!itemName || !itemNumber || !itemPrice) {
-                alert('Please fill in Item Name, Item Number, and Price');
-                return;
-            }
-
-            if (!/^\d+$/.test(itemNumber)) {
-                alert('Item number should contain only digits');
-                return;
-            }
-
-            currentBarcodeData = {
-                name: itemName,
-                number: itemNumber,
-                price: itemPrice,
-                message: itemMessage
-            };
-
-            const preview = document.getElementById('barcodePreview');
-            preview.classList.add('has-barcode');
-            preview.innerHTML = '';
-
-            const canvas = document.createElement('canvas');
-            canvas.id = 'barcodeCanvas';
-            preview.appendChild(canvas);
-
-            try {
-                JsBarcode(canvas, itemNumber, {
-                    format: "CODE128",
-                    width: 2,
-                    height: 100,
-                    displayValue: true,
-                    fontSize: 14,
-                    margin: 10
-                });
-
-                const infoDiv = document.createElement('div');
-                infoDiv.className = 'barcode-info';
-                infoDiv.innerHTML = `
-                    <div class="barcode-info-row">
-                        <span class="barcode-info-label">Item:</span>
-                        <span>${itemName}</span>
-                    </div>
-                    <div class="barcode-info-row">
-                        <span class="barcode-info-label">Number:</span>
-                        <span>${itemNumber}</span>
-                    </div>
-                    <div class="barcode-info-row">
-                        <span class="barcode-info-label">Price:</span>
-                        <span>$${parseFloat(itemPrice).toFixed(2)}</span>
-                    </div>
-                    ${itemMessage ? `
-                    <div class="barcode-info-row" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd;">
-                        <span class="barcode-info-label">Message:</span>
-                        <span style="display: block; margin-top: 5px;">${escapeHtml(itemMessage)}</span>
-                    </div>
-                    ` : ''}
-                `;
-                preview.appendChild(infoDiv);
-
-                const downloadBtn = document.createElement('button');
-                downloadBtn.className = 'btn';
-                downloadBtn.style.marginTop = '20px';
-                downloadBtn.innerHTML = `
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                        <polyline points="7 10 12 15 17 10"/>
-                        <line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>
-                    Download Barcode
-                `;
-                downloadBtn.onclick = downloadBarcode;
-                preview.appendChild(downloadBtn);
-
-            } catch (error) {
-                alert('Error generating barcode: ' + error.message);
-            }
+        if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
+            window.location.reload();
         }
-
-        function saveToDatabase() {
-            if (!currentBarcodeData) {
-                alert('Please generate a barcode first');
-                return;
-            }
-
-            // Add to local database
-            productDatabase[currentBarcodeData.number] = {
-                name: currentBarcodeData.name,
-                barcode: currentBarcodeData.number,
-                price: parseFloat(currentBarcodeData.price),
-                category: 'Custom',
-                brand: 'User Added',
-                stock: 'In Stock',
-                sku: 'CUSTOM-' + currentBarcodeData.number,
-                description: 'User-generated product entry',
-                manufacturer: 'N/A',
-                warranty: 'N/A',
-                weight: 'N/A',
-                message: currentBarcodeData.message || 'No custom message added.'
-            };
-
-            alert('Product saved to database! You can now scan this barcode to see full details.');
-        }
-
-        function downloadBarcode() {
-            const canvas = document.getElementById('barcodeCanvas');
-            if (!canvas) return;
-
-            const exportCanvas = document.createElement('canvas');
-            const ctx = exportCanvas.getContext('2d');
-            
-            const messageLines = currentBarcodeData.message ? wrapText(ctx, currentBarcodeData.message, 700) : [];
-            const lineHeight = 20;
-            const messageHeight = messageLines.length > 0 ? messageLines.length * lineHeight + 80 : 0;
-            
-            exportCanvas.width = Math.max(canvas.width, 750);
-            exportCanvas.height = canvas.height + messageHeight + 150;
-            
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
-            
-            const barcodeX = (exportCanvas.width - canvas.width) / 2;
-            ctx.drawImage(canvas, barcodeX, 20);
-            
-            ctx.fillStyle = '#000000';
-            ctx.font = 'bold 16px Arial';
-            ctx.textAlign = 'center';
-            
-            const centerX = exportCanvas.width / 2;
-            let textY = canvas.height + 40;
-            
-            ctx.fillText(`Item: ${currentBarcodeData.name}`, centerX, textY);
-            textY += 25;
-            ctx.fillText(`Number: ${currentBarcodeData.number}`, centerX, textY);
-            textY += 25;
-            ctx.fillText(`Price: $${parseFloat(currentBarcodeData.price).toFixed(2)}`, centerX, textY);
-            
-            if (messageLines.length > 0) {
-                textY += 40;
-                ctx.font = 'bold 12px Arial';
-                ctx.fillStyle = '#666666';
-                ctx.textAlign = 'left';
-                ctx.fillText('MESSAGE:', 25, textY);
-                
-                textY += 25;
-                ctx.fillStyle = '#000000';
-                ctx.font = '14px Arial';
-                
-                messageLines.forEach(line => {
-                    ctx.fillText(line, 25, textY);
-                    textY += lineHeight;
-                });
-            }
-            
-            const link = document.createElement('a');
-            link.download = `barcode-${currentBarcodeData.number}.png`;
-            link.href = exportCanvas.toDataURL('image/png');
-            link.click();
-        }
-
-        function wrapText(ctx, text, maxWidth) {
-            const words = text.split(' ');
-            const lines = [];
-            let currentLine = '';
-
-            ctx.font = '14px Arial';
-
-            for (let i = 0; i < words.length; i++) {
-                const testLine = currentLine + words[i] + ' ';
-                const metrics = ctx.measureText(testLine);
-                
-                if (metrics.width > maxWidth && i > 0) {
-                    lines.push(currentLine.trim());
-                    currentLine = words[i] + ' ';
-                } else {
-                    currentLine = testLine;
-                }
-            }
-            lines.push(currentLine.trim());
-            return lines;
-        }
-
-        function startCamera() {
-            const reader = document.getElementById('reader');
-            const instruction = document.getElementById('scanInstruction');
-            reader.classList.remove('hidden');
-            instruction.classList.add('hidden');
-            document.getElementById('stopBtn').classList.remove('hidden');
-
-            if (html5QrCode === null) {
-                html5QrCode = new Html5Qrcode("reader");
-            }
-
-            html5QrCode.start(
-                { facingMode: "environment" },
-                {
-                    fps: 10,
-                    qrbox: { width: 250, height: 150 }
-                },
-                onScanSuccess,
-                onScanError
-            ).catch(err => {
-                alert('Unable to start camera: ' + err);
-                stopCamera();
-            });
-        }
-
-        function stopCamera() {
-            if (html5QrCode) {
-                html5QrCode.stop().then(() => {
-                    const reader = document.getElementById('reader');
-                    const instruction = document.getElementById('scanInstruction');
-                    reader.classList.add('hidden');
-                    instruction.classList.remove('hidden');
-                    document.getElementById('stopBtn').classList.add('hidden');
-                }).catch(err => {
-                    console.error('Error stopping camera:', err);
-                });
-            }
-        }
-
-        function scanFromFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            if (html5QrCode === null) {
-                html5QrCode = new Html5Qrcode("reader");
-            }
-
-            html5QrCode.scanFile(file, true)
-                .then(decodedText => {
-                    onScanSuccess(decodedText);
-                })
-                .catch(err => {
-                    alert('No barcode found in image. Please try another image.');
-                    console.error('Scan error:', err);
-                });
-
-            event.target.value = '';
-        }
-
-        function onScanSuccess(decodedText) {
-            console.log('Barcode detected:', decodedText);
-
-            if (html5QrCode && html5QrCode.isScanning) {
-                stopCamera();
-            }
-
-            displayProductInfo(decodedText);
-        }
-
-        function onScanError(error) {
-            // Ignore continuous scan errors
-        }
-
-        function displayProductInfo(barcode) {
-            const product = productDatabase[barcode];
-            const displayDiv = document.getElementById('productDisplay');
-            
-            displayDiv.classList.remove('hidden');
-
-            if (product) {
-                const isInStock = product.stock === 'In Stock';
-                
-                displayDiv.innerHTML = `
-                    <div class="product-card">
-                        <div class="product-header">
-                            <h2>${product.name}</h2>
-                            <div class="product-status ${isInStock ? 'in-stock' : 'out-of-stock'}">
-                                ${product.stock}
-                            </div>
-                        </div>
-                        <div class="product-body">
-                            <div class="product-image">
-                                <span>Product Image</span>
-                            </div>
-
-                            ${product.message ? `
-                            <div class="message-section">
-                                <div class="message-section-title">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                                    </svg>
-                                    Custom Message
-                                </div>
-                                <div class="message-section-text">${escapeHtml(product.message)}</div>
-                            </div>
-                            ` : ''}
-
-                            <div class="product-detail-grid">
-                                <div class="product-detail">
-                                    <div class="product-detail-label">Price</div>
-                                    <div class="product-detail-value product-price">$${product.price.toFixed(2)}</div>
-                                </div>
-                                <div class="product-detail">
-                                    <div class="product-detail-label">Brand</div>
-                                    <div class="product-detail-value">${product.brand}</div>
-                                </div>
-                                <div class="product-detail">
-                                    <div class="product-detail-label">Category</div>
-                                    <div class="product-detail-value">${product.category}</div>
-                                </div>
-                                <div class="product-detail">
-                                    <div class="product-detail-label">SKU</div>
-                                    <div class="product-detail-value">${product.sku}</div>
-                                </div>
-                                <div class="product-detail">
-                                    <div class="product-detail-label">Weight</div>
-                                    <div class="product-detail-value">${product.weight}</div>
-                                </div>
-                                <div class="product-detail">
-                                    <div class="product-detail-label">Warranty</div>
-                                    <div class="product-detail-value">${product.warranty}</div>
-                                </div>
-                            </div>
-
-                            <div class="product-description">
-                                <div class="product-description-title">Product Description</div>
-                                <div class="product-description-text">${product.description}</div>
-                            </div>
-
-                            <div class="product-detail-grid">
-                                <div class="product-detail">
-                                    <div class="product-detail-label">Manufacturer</div>
-                                    <div class="product-detail-value" style="font-size: 14px;">${product.manufacturer}</div>
-                                </div>
-                                <div class="product-detail">
-                                    <div class="product-detail-label">Barcode</div>
-                                    <div class="product-detail-value" style="font-size: 14px; font-family: monospace;">${product.barcode}</div>
-                                </div>
-                            </div>
-
-                            <div class="barcode-display">
-                                <canvas id="productBarcode"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                setTimeout(() => {
-                    const canvas = document.getElementById('productBarcode');
-                    if (canvas) {
-                        JsBarcode(canvas, product.barcode, {
-                            format: "CODE128",
-                            width: 2,
-                            height: 80,
-                            displayValue: true,
-                            fontSize: 14,
-                            margin: 10
-                        });
-                    }
-                }, 100);
-
-            } else {
-                displayDiv.innerHTML = `
-                    <div class="product-card">
-                        <div class="product-header">
-                            <h2>Product Not Found</h2>
-                        </div>
-                        <div class="product-body">
-                            <div class="no-product">
-                                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <circle cx="12" cy="12" r="10"/>
-                                    <line x1="12" y1="8" x2="12" y2="12"/>
-                                    <line x1="12" y1="16" x2="12.01" y2="16"/>
-                                </svg>
-                                <p style="font-size: 16px; margin-top: 15px;">No product information available for barcode:</p>
-                                <p style="font-family: monospace; font-size: 18px; font-weight: 600; margin-top: 10px;">${barcode}</p>
-                                <p style="font-size: 14px; color: #999; margin-top: 20px;">This barcode is not registered in the database. Generate and save it first!</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            displayDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        window.addEventListener('beforeunload', () => {
-            if (html5QrCode) {
-                html5QrCode.stop().catch(err => console.error(err));
-            }
-        });
     </script>
-</body>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script>
+    // ============================================
+    // SUPABASE CONFIGURATION
+    // ============================================
+    const SUPABASE_URL = 'https://tqpjyqrlawhjuzugosyh.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcGp5cXJsYXdoanV6dWdvc3loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxOTI4NzQsImV4cCI6MjA4NTc2ODg3NH0.Qsajz9iar_Qu0N7UHTm5ltjnUtVzNSpapJf1xnqGJLQ';
+
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Mobile Menu Toggle
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('navMenu');
+
+    hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navMenu.classList.toggle('active');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+        }
+    });
+
+    // Header hide on scroll down, show on scroll up
+    let lastScroll = 0;
+    const header = document.querySelector('header');
+
+    window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        
+        if (currentScroll <= 0) {
+            header.style.transform = 'translateY(0)';
+            return;
+        }
+        
+        if (currentScroll > lastScroll && currentScroll > 80) {
+            header.style.transform = 'translateY(-100%)';
+        } else {
+            header.style.transform = 'translateY(0)';
+        }
+        
+        lastScroll = currentScroll;
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            }
+        });
+    });
+
+    // ============================================
+    // PUSH NOTIFICATION SETUP
+    // ============================================
+    const VAPID_PUBLIC_KEY = 'BMjWrT4Mo49qpPCXXx_qWNS8VJfVNE5-laD52FT-usDylWdolRBv4qU1EpzdwK-PUAqj2JKB4ZAFvfABhZxMyKs';
+
+    // Convert VAPID key
+    function urlBase64ToUint8Array(base64String) {
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding)
+            .replace(/\-/g, '+')
+            .replace(/_/g, '/');
+
+        const rawData = window.atob(base64);
+        const outputArray = new Uint8Array(rawData.length);
+
+        for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+        }
+        return outputArray;
+    }
+
+    // Subscribe to push notifications
+    async function subscribeToPush() {
+        try {
+            const registration = await navigator.serviceWorker.ready;
+            
+            let subscription = await registration.pushManager.getSubscription();
+
+            if (!subscription) {
+                subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+                });
+            }
+
+            await saveSubscriptionToDatabase(subscription);
+            console.log('✅ Push subscription saved');
+            return subscription;
+
+        } catch (error) {
+            console.error('❌ Failed to subscribe to push:', error);
+            return null;
+        }
+    }
+
+    // Save subscription to Supabase
+    async function saveSubscriptionToDatabase(subscription) {
+        const subscriptionJson = subscription.toJSON();
+        
+        const deviceType = /Mobile|Android|iPhone/i.test(navigator.userAgent) 
+            ? 'mobile' 
+            : 'desktop';
+
+        const { data, error } = await supabaseClient
+            .from('push_subscriptions')
+            .upsert({
+                endpoint: subscription.endpoint,
+                p256dh: subscriptionJson.keys.p256dh,
+                auth: subscriptionJson.keys.auth,
+                user_agent: navigator.userAgent,
+                device_type: deviceType,
+                is_active: true,
+                last_used: new Date().toISOString()
+            }, {
+                onConflict: 'endpoint'
+            });
+
+        if (error) {
+            console.error('❌ Failed to save subscription:', error);
+        }
+    }
+
+    // Request notification permission
+    async function requestNotificationPermission() {
+        if (!('Notification' in window)) {
+            console.log('❌ Notifications not supported');
+            return false;
+        }
+
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+            console.log('❌ Push notifications not supported');
+            return false;
+        }
+
+        const permission = await Notification.requestPermission();
+        
+        if (permission === 'granted') {
+            console.log('✅ Notification permission granted');
+            localStorage.setItem('notifications_enabled', 'true');
+            await subscribeToPush();
+            return true;
+        } else {
+            console.log('❌ Notification permission denied');
+            localStorage.setItem('notifications_enabled', 'false');
+            return false;
+        }
+    }
+
+    // Unsubscribe from push notifications
+    async function unsubscribeFromPush() {
+        try {
+            const registration = await navigator.serviceWorker.ready;
+            const subscription = await registration.pushManager.getSubscription();
+
+            if (subscription) {
+                await subscription.unsubscribe();
+                
+                await supabaseClient
+                    .from('push_subscriptions')
+                    .update({ is_active: false })
+                    .eq('endpoint', subscription.endpoint);
+                
+                console.log('✅ Unsubscribed from push notifications');
+            }
+
+            localStorage.setItem('notifications_enabled', 'false');
+        } catch (error) {
+            console.error('❌ Failed to unsubscribe:', error);
+        }
+    }
+
+    // Show notification settings modal
+    function showNotificationSettings() {
+        const modal = document.createElement('div');
+        modal.id = 'notificationSettingsModal';
+        modal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(34, 7, 7, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease;
+        `;
+
+        const isEnabled = localStorage.getItem('notifications_enabled') === 'true';
+        const blogsEnabled = localStorage.getItem('notify_blogs') !== 'false';
+        const achievementsEnabled = localStorage.getItem('notify_achievements') !== 'false';
+
+        modal.innerHTML = `
+            <div style="
+                background: white;
+                padding: 2rem;
+                border-radius: 16px;
+                max-width: 450px;
+                width: 90%;
+                animation: slideUp 0.4s ease;
+            ">
+                <h2 style="color: #220707; margin-bottom: 1.5rem; font-size: 1.6rem;">Notification Settings</h2>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: #F9F3ED; border-radius: 8px; cursor: pointer; margin-bottom: 0.5rem;">
+                        <span style="color: #220707; font-weight: 600;">Enable Notifications</span>
+                        <input type="checkbox" id="enableNotifications" ${isEnabled ? 'checked' : ''} style="width: 20px; height: 20px; cursor: pointer;">
+                    </label>
+                    <p style="color: #AC9185; font-size: 0.85rem; padding-left: 1rem;">Receive updates about school notices and achievements</p>
+                </div>
+
+                <div style="margin-bottom: 1rem; opacity: ${isEnabled ? '1' : '0.5'};">
+                    <label style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: #F9F3ED; border-radius: 8px; cursor: pointer; margin-bottom: 0.5rem;">
+                        <div>
+                            <div style="color: #220707; font-weight: 600;">📢 Notices & Updates</div>
+                            <div style="color: #AC9185; font-size: 0.85rem;">Get notified about new school notices</div>
+                        </div>
+                        <input type="checkbox" id="notifyBlogs" ${blogsEnabled ? 'checked' : ''} ${!isEnabled ? 'disabled' : ''} style="width: 20px; height: 20px; cursor: pointer;">
+                    </label>
+
+                    <label style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: #F9F3ED; border-radius: 8px; cursor: pointer;">
+                        <div>
+                            <div style="color: #220707; font-weight: 600;">🏆 Achievements</div>
+                            <div style="color: #AC9185; font-size: 0.85rem;">Get notified about new achievements</div>
+                        </div>
+                        <input type="checkbox" id="notifyAchievements" ${achievementsEnabled ? 'checked' : ''} ${!isEnabled ? 'disabled' : ''} style="width: 20px; height: 20px; cursor: pointer;">
+                    </label>
+                </div>
+
+                <button id="saveSettings" style="
+                    padding: 1rem 2rem;
+                    background: #531C22;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    width: 100%;
+                    margin-bottom: 0.5rem;
+                ">Save Settings</button>
+                
+                <button id="closeSettings" style="
+                    padding: 1rem 2rem;
+                    background: transparent;
+                    color: #531C22;
+                    border: 2px solid #E7D8CA;
+                    border-radius: 8px;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    width: 100%;
+                ">Close</button>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Toggle dependent checkboxes
+        document.getElementById('enableNotifications').addEventListener('change', (e) => {
+            const isChecked = e.target.checked;
+            document.getElementById('notifyBlogs').disabled = !isChecked;
+            document.getElementById('notifyAchievements').disabled = !isChecked;
+            document.getElementById('notifyBlogs').parentElement.parentElement.style.opacity = isChecked ? '1' : '0.5';
+        });
+
+        // Save settings
+        document.getElementById('saveSettings').addEventListener('click', async () => {
+            const enableNotifications = document.getElementById('enableNotifications').checked;
+            const notifyBlogs = document.getElementById('notifyBlogs').checked;
+            const notifyAchievements = document.getElementById('notifyAchievements').checked;
+
+            if (enableNotifications) {
+                const granted = await requestNotificationPermission();
+                if (granted) {
+                    localStorage.setItem('notify_blogs', notifyBlogs);
+                    localStorage.setItem('notify_achievements', notifyAchievements);
+                    alert('✅ Notification settings saved!');
+                }
+            } else {
+                await unsubscribeFromPush();
+                alert('✅ Notifications disabled');
+            }
+
+            modal.remove();
+        });
+
+        // Close button
+        document.getElementById('closeSettings').addEventListener('click', () => {
+            modal.remove();
+        });
+    }
+
+    // Show notification permission prompt
+    function showNotificationPrompt() {
+        // Don't show if already answered
+        if (localStorage.getItem('notification_prompt_shown') === 'true') {
+            return;
+        }
+
+        // Don't show if permission already granted or denied
+        if (Notification.permission !== 'default') {
+            localStorage.setItem('notification_prompt_shown', 'true');
+            return;
+        }
+
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(34, 7, 7, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease;
+        `;
+
+        modal.innerHTML = `
+            <div style="
+                background: white;
+                padding: 2rem;
+                border-radius: 16px;
+                max-width: 400px;
+                width: 90%;
+                text-align: center;
+                animation: slideUp 0.4s ease;
+            ">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🔔</div>
+                <h2 style="color: #220707; margin-bottom: 1rem; font-size: 1.5rem;">Stay Updated!</h2>
+                <p style="color: #AC9185; margin-bottom: 2rem; line-height: 1.6;">
+                    Enable notifications to receive important school notices, announcements, and achievement updates instantly - even when the app is closed.
+                </p>
+                <button id="allowNotifications" style="
+                    padding: 1rem 2rem;
+                    background: #531C22;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    width: 100%;
+                    margin-bottom: 0.5rem;
+                ">Allow Notifications</button>
+                <button id="notNow" style="
+                    padding: 1rem 2rem;
+                    background: transparent;
+                    color: #531C22;
+                    border: 2px solid #E7D8CA;
+                    border-radius: 8px;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    width: 100%;
+                ">Not Now</button>
+                <button id="customizeNotifications" style="
+                    padding: 0.5rem;
+                    background: transparent;
+                    color: #AC9185;
+                    border: none;
+                    font-size: 0.9rem;
+                    cursor: pointer;
+                    width: 100%;
+                    margin-top: 0.5rem;
+                    text-decoration: underline;
+                ">Customize Settings</button>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Allow button
+        document.getElementById('allowNotifications').addEventListener('click', async () => {
+            modal.remove();
+            localStorage.setItem('notification_prompt_shown', 'true');
+            await requestNotificationPermission();
+        });
+
+        // Not now button
+        document.getElementById('notNow').addEventListener('click', () => {
+            modal.remove();
+            localStorage.setItem('notification_prompt_shown', 'true');
+        });
+
+        // Customize button
+        document.getElementById('customizeNotifications').addEventListener('click', () => {
+            modal.remove();
+            localStorage.setItem('notification_prompt_shown', 'true');
+            showNotificationSettings();
+        });
+    }
+
+    // ============================================
+    // PWA INSTALL PROMPT
+    // ============================================
+    let deferredPrompt;
+    const MAX_PROMPTS_PER_DAY = 2;
+
+    // Initialize install stats
+    let installStats = JSON.parse(localStorage.getItem('pwaInstallStats') || '{}');
+    const today = new Date().toDateString();
+
+    if (installStats.lastPromptDate !== today) {
+        installStats.lastPromptDate = today;
+        installStats.promptCount = 0;
+        localStorage.setItem('pwaInstallStats', JSON.stringify(installStats));
+    }
+
+    // Show install prompt
+    function showInstallPrompt() {
+        const stats = JSON.parse(localStorage.getItem('pwaInstallStats') || '{}');
+
+        if (stats.promptCount >= MAX_PROMPTS_PER_DAY || !deferredPrompt) {
+            console.log('⏸️ Install prompt conditions not met');
+            return;
+        }
+
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(34, 7, 7, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease;
+        `;
+
+        modal.innerHTML = `
+            <div style="
+                background: white;
+                padding: 2rem;
+                border-radius: 16px;
+                max-width: 400px;
+                width: 90%;
+                text-align: center;
+                animation: slideUp 0.4s ease;
+            ">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📱</div>
+                <h2 style="color: #220707; margin-bottom: 1rem; font-size: 1.5rem;">Install HCC School App</h2>
+                <p style="color: #AC9185; margin-bottom: 2rem; line-height: 1.6;">
+                    Get quick access to admissions, gallery, and updates. Works offline!
+                </p>
+                <button id="installBtn" style="
+                    padding: 1rem 2rem;
+                    background: #531C22;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    width: 100%;
+                    margin-bottom: 0.5rem;
+                ">Install Now</button>
+                <button id="laterBtn" style="
+                    padding: 1rem 2rem;
+                    background: transparent;
+                    color: #531C22;
+                    border: 2px solid #E7D8CA;
+                    border-radius: 8px;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    width: 100%;
+                ">Maybe Later</button>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        document.getElementById('installBtn').addEventListener('click', async () => {
+            modal.remove();
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                console.log('✅ User installed the app');
+                localStorage.setItem('pwaInstalled', 'true');
+                // Show notification prompt after install
+                setTimeout(() => showNotificationPrompt(), 2000);
+            }
+            
+            deferredPrompt = null;
+        });
+
+        document.getElementById('laterBtn').addEventListener('click', () => {
+            modal.remove();
+        });
+
+        // Update stats
+        const newStats = JSON.parse(localStorage.getItem('pwaInstallStats') || '{}');
+        newStats.promptCount = (newStats.promptCount || 0) + 1;
+        localStorage.setItem('pwaInstallStats', JSON.stringify(newStats));
+    }
+
+    // Capture install prompt event
+    window.addEventListener('beforeinstallprompt', (e) => {
+        console.log('📱 Install prompt event captured');
+        e.preventDefault();
+        deferredPrompt = e;
+
+        // Check if already installed
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            console.log('✅ App already installed');
+            return;
+        }
+
+        const currentHour = new Date().getHours();
+        const stats = JSON.parse(localStorage.getItem('pwaInstallStats') || '{}');
+
+        // First prompt: Before 3 PM (if not shown today)
+        if (currentHour < 15 && stats.promptCount === 0) {
+            console.log('📱 Scheduling first install prompt');
+            setTimeout(() => showInstallPrompt(), 5000);
+        }
+        
+        // Second prompt: After 3 PM (if only 1 shown today)
+        if (currentHour >= 15 && stats.promptCount === 1) {
+            console.log('📱 Scheduling second install prompt');
+            setTimeout(() => showInstallPrompt(), 10000);
+        }
+    });
+
+    // App installed event
+    window.addEventListener('appinstalled', () => {
+        console.log('✅ PWA was installed');
+        localStorage.setItem('pwaInstalled', 'true');
+        setTimeout(() => showNotificationPrompt(), 2000);
+    });
+
+    // Check if running as installed app
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        console.log('✅ Running as installed PWA');
+        document.body.classList.add('pwa-mode');
+    }
+
+    // ============================================
+    // SERVICE WORKER REGISTRATION
+    // ============================================
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then((registration) => {
+                    console.log('✅ SW registered:', registration.scope);
+
+                    // Check for updates every 5 minutes
+                    setInterval(() => {
+                        registration.update();
+                    }, 5 * 60 * 1000);
+
+                    // Listen for new service worker
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                if (confirm('New version available! Reload to update?')) {
+                                    newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    });
+                })
+                .catch((error) => {
+                    console.error('❌ SW registration failed:', error);
+                });
+
+            // Reload when new SW takes control
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                window.location.reload();
+            });
+        });
+    }
+
+    // ============================================
+    // INITIALIZE ON PAGE LOAD
+    // ============================================
+    window.addEventListener('DOMContentLoaded', () => {
+        console.log('🚀 Page loaded, initializing...');
+
+        // Show notification prompt after 15 seconds if not already shown
+        setTimeout(() => {
+            console.log('⏰ Checking notification prompt conditions...');
+            if (Notification.permission === 'default' && 
+                localStorage.getItem('notification_prompt_shown') !== 'true') {
+                console.log('🔔 Showing notification prompt');
+                showNotificationPrompt();
+            } else {
+                console.log('⏸️ Notification prompt already shown or permission set');
+            }
+        }, 15000);
+    });
+
+    // Make showNotificationSettings available globally
+    window.showNotificationSettings = showNotificationSettings;
+</script>
+   </body>
 </html>
